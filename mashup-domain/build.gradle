@@ -12,6 +12,7 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    implementation "com.github.ulisesbocchio:jasypt-spring-boot-starter:$jasyptVersion"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
