@@ -9,11 +9,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Service
-class SmsRequestServiceImpl {
+class SmsRequestServiceImpl implements SmsRequestService{
 
     private final SmsRequestRepository smsRequestRepository;
 
-    SmsRequest createSmsRequest(SmsRequestVo smsRequestVo) {
+    @Override
+    public SmsRequest createSmsRequest(SmsRequestVo smsRequestVo) {
         return SmsRequest.builder()
                 .groupId(smsRequestVo.getGroupId())
                 .userId(smsRequestVo.getUserId())
@@ -23,19 +24,23 @@ class SmsRequestServiceImpl {
                 .build();
     }
 
-    List<SmsRequest> getRequests(Long groupId) {
+    @Override
+    public List<SmsRequest> getRequests(Long groupId) {
         return smsRequestRepository.findAllByGroupId(groupId);
     }
 
-    List<SmsRequest> getFailedRequests(Long groupId) {
+    @Override
+    public List<SmsRequest> getFailedRequests(Long groupId) {
         return smsRequestRepository.findAllByGroupIdAndIsSuccessFalse(groupId);
     }
 
-    void markAsSuccess(SmsRequest smsRequest) {
+    @Override
+    public void markAsSuccess(SmsRequest smsRequest) {
         smsRequest.setIsSuccess(true);
     }
 
-    void markAsFail(SmsRequest smsRequest) {
+    @Override
+    public void markAsFail(SmsRequest smsRequest) {
         smsRequest.setIsSuccess(false);
     }
 

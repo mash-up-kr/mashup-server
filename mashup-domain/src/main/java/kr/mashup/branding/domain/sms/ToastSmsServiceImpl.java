@@ -3,9 +3,10 @@ package kr.mashup.branding.domain.sms;
 import org.springframework.stereotype.Service;
 
 @Service
-class SmsSendServiceImpl {
+public class ToastSmsServiceImpl implements ToastSmsService{
 
-    public void sendSmsUsingToast() {
+    @Override
+    public void send() {
 
     }
 }

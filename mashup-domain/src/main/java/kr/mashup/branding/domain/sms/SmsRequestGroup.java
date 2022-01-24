@@ -1,6 +1,7 @@
 package kr.mashup.branding.domain.sms;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @Getter
 @Entity

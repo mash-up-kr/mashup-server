@@ -8,15 +8,17 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @Service
-class SmsRequestGroupServiceImpl {
+class SmsRequestGroupServiceImpl implements SmsRequestGroupService{
 
     private final SmsRequestGroupRepository smsRequestGroupRepository;
 
-    SmsRequestGroup getRequestGroup(Long id) {
+    @Override
+    public SmsRequestGroup getRequestGroup(Long id) {
         return smsRequestGroupRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    SmsRequestGroup create(SmsRequestGroupVo smsRequestGroupVo) {
+    @Override
+    public SmsRequestGroup create(SmsRequestGroupVo smsRequestGroupVo) {
         SmsRequestGroup smsRequestGroup = SmsRequestGroup
                 .builder()
                 .description(smsRequestGroupVo.getDescription())

@@ -10,12 +10,13 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class SmsServiceImpl {
+public class SmsServiceImpl implements SmsService{
 
-    private final SmsSendServiceImpl smsSendService;
-    private final SmsRequestServiceImpl smsRequestService;
-    private final SmsRequestGroupServiceImpl smsRequestGroupService;
+    private final ToastSmsService toastSmsService;
+    private final SmsRequestService smsRequestService;
+    private final SmsRequestGroupService smsRequestGroupService;
 
+    @Override
     public SmsRequestGroup sendSms(SmsRequestGroupVo smsRequestGroupVo, List<SmsRequestVo> smsRequestVoList) {
         SmsRequestGroup smsRequestGroup = smsRequestGroupService.create(smsRequestGroupVo);
 
@@ -28,6 +29,7 @@ public class SmsServiceImpl {
         return smsRequestGroup;
     }
 
+    @Override
     public SmsRequestGroup retrySendSms(Long groupId) {
         SmsRequestGroup requestGroup = smsRequestGroupService.getRequestGroup(groupId);
         List<SmsRequest> failedRequests = smsRequestService.getFailedRequests(groupId);
@@ -37,10 +39,12 @@ public class SmsServiceImpl {
         return requestGroup;
     }
 
+    @Override
     public SmsRequestGroup getRequestGroup(Long id) {
         return smsRequestGroupService.getRequestGroup(id);
     }
 
+    @Override
     public List<SmsRequest> getRequests(Long groupId) {
         return smsRequestService.getRequests(groupId);
     }
@@ -48,7 +52,7 @@ public class SmsServiceImpl {
     private void send(SmsRequest smsRequest) {
         try {
             // TODO: toast sms service 연동 ~ 1.29
-            smsSendService.sendSmsUsingToast();
+            toastSmsService.send();
             smsRequestService.markAsSuccess(smsRequest);
         } catch (Exception e) {
             log.info("[SmsService] 문자 발송 실패. Id: " + smsRequest.getId() + ", userId: " + smsRequest.getUserId());
