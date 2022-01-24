@@ -1,5 +1,6 @@
 package kr.mashup.branding.domain.sms;
 
+import kr.mashup.branding.domain.sms.dto.ToastSmsRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,8 +52,7 @@ public class SmsServiceImpl implements SmsService{
 
     private void send(SmsRequest smsRequest) {
         try {
-            // TODO: toast sms service 연동 ~ 1.29
-            toastSmsService.send();
+            toastSmsService.send(new ToastSmsRequest());
             smsRequestService.markAsSuccess(smsRequest);
         } catch (Exception e) {
             log.info("[SmsService] 문자 발송 실패. Id: " + smsRequest.getId() + ", userId: " + smsRequest.getUserId());
