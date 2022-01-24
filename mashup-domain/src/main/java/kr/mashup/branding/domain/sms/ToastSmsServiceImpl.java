@@ -8,11 +8,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
-
 @RequiredArgsConstructor
 @Service
-public class ToastSmsServiceImpl implements ToastSmsService{
+public class ToastSmsServiceImpl implements ToastSmsService {
 
     @Value("${toast.sms.url}")
     private String toastUrl;
@@ -47,8 +45,4 @@ public class ToastSmsServiceImpl implements ToastSmsService{
         return headers;
     }
 
-    @PostConstruct
-    public void hh(){
-        System.out.println("toastUrl: " + toastUrl);
-    }
 }
