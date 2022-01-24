@@ -18,7 +18,7 @@ class SmsRequestGroupServiceImpl implements SmsRequestGroupService{
     }
 
     @Override
-    public SmsRequestGroup create(SmsRequestGroupVo smsRequestGroupVo) {
+    public SmsRequestGroup createAndSave(SmsRequestGroupVo smsRequestGroupVo) {
         SmsRequestGroup smsRequestGroup = SmsRequestGroup
                 .builder()
                 .description(smsRequestGroupVo.getDescription())

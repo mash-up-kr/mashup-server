@@ -1,6 +1,6 @@
 package kr.mashup.branding.domain.sms;
 
-import kr.mashup.branding.domain.sms.dto.ToastSmsRequest;
+import kr.mashup.branding.domain.sms.dto.ToastSmsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class SmsServiceImpl implements SmsService{
+public class SmsServiceImpl implements SmsService {
 
     private final ToastSmsService toastSmsService;
     private final SmsRequestService smsRequestService;
@@ -19,13 +19,17 @@ public class SmsServiceImpl implements SmsService{
 
     @Override
     public SmsRequestGroup sendSms(SmsRequestGroupVo smsRequestGroupVo, List<SmsRequestVo> smsRequestVoList) {
-        SmsRequestGroup smsRequestGroup = smsRequestGroupService.create(smsRequestGroupVo);
+        SmsRequestGroup smsRequestGroup = smsRequestGroupService.createAndSave(smsRequestGroupVo);
 
         List<SmsRequest> smsRequests = smsRequestVoList.stream()
                 .map(smsRequestService::createSmsRequest)
                 .collect(Collectors.toList());
+        smsRequestService.saveAll(smsRequests);
 
-        smsRequests.forEach(request -> send(request));
+        List<SmsRequest> savedRequests = smsRequestService.getRequests(smsRequestGroup.getId());
+        ToastSmsResponse toastSmsResponse = toastSmsService.send(savedRequests);
+
+        smsRequestService.markRequests(toastSmsResponse, savedRequests);
 
         return smsRequestGroup;
     }
@@ -35,7 +39,7 @@ public class SmsServiceImpl implements SmsService{
         SmsRequestGroup requestGroup = smsRequestGroupService.getRequestGroup(groupId);
         List<SmsRequest> failedRequests = smsRequestService.getFailedRequests(groupId);
 
-        failedRequests.forEach(request -> send(request));
+        toastSmsService.send(failedRequests);
 
         return requestGroup;
     }
@@ -48,15 +52,5 @@ public class SmsServiceImpl implements SmsService{
     @Override
     public List<SmsRequest> getRequests(Long groupId) {
         return smsRequestService.getRequests(groupId);
-    }
-
-    private void send(SmsRequest smsRequest) {
-        try {
-            toastSmsService.send(new ToastSmsRequest());
-            smsRequestService.markAsSuccess(smsRequest);
-        } catch (Exception e) {
-            log.info("[SmsService] 문자 발송 실패. Id: " + smsRequest.getId() + ", userId: " + smsRequest.getUserId());
-            smsRequestService.markAsFail(smsRequest);
-        }
     }
 }

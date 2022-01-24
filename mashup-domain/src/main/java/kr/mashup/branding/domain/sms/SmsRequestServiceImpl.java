@@ -1,5 +1,6 @@
 package kr.mashup.branding.domain.sms;
 
+import kr.mashup.branding.domain.sms.dto.ToastSmsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,11 @@ import java.util.List;
 class SmsRequestServiceImpl implements SmsRequestService{
 
     private final SmsRequestRepository smsRequestRepository;
+
+    @Override
+    public void saveAll(List<SmsRequest> requests){
+        smsRequestRepository.saveAll(requests);
+    }
 
     @Override
     public SmsRequest createSmsRequest(SmsRequestVo smsRequestVo) {
@@ -35,12 +41,21 @@ class SmsRequestServiceImpl implements SmsRequestService{
     }
 
     @Override
-    public void markAsSuccess(SmsRequest smsRequest) {
+    public void markRequests(ToastSmsResponse toastSmsResponse, List<SmsRequest> requests) {
+        if (!toastSmsResponse.getHeader().getIsSuccessful()) {
+            requests.forEach(this::markAsFail);
+            return;
+        }
+
+        //TODO: 발송 성공, 실패 request 분리 ~ 01.29
+
+    }
+
+    private void markAsSuccess(SmsRequest smsRequest) {
         smsRequest.setIsSuccess(true);
     }
 
-    @Override
-    public void markAsFail(SmsRequest smsRequest) {
+    private void markAsFail(SmsRequest smsRequest) {
         smsRequest.setIsSuccess(false);
     }
 

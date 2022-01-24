@@ -8,6 +8,8 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class ToastSmsServiceImpl implements ToastSmsService {
@@ -24,9 +26,11 @@ public class ToastSmsServiceImpl implements ToastSmsService {
     private final RestTemplate toastRestTemplate;
 
     @Override
-    public ToastSmsResponse send(ToastSmsRequest toastSmsRequest) {
+    public ToastSmsResponse send(List<SmsRequest> requests) {
         HttpHeaders headers = buildHeader();
+        ToastSmsRequest toastSmsRequest = buildBody(requests);
         HttpEntity httpEntity = new HttpEntity(toastSmsRequest, headers);
+
         ResponseEntity<ToastSmsResponse> exchange = toastRestTemplate.exchange(
                 toastUrl + "/sms/v3.0/appKeys/" + appKey + "/sender/sms",
                 HttpMethod.POST,
@@ -43,6 +47,10 @@ public class ToastSmsServiceImpl implements ToastSmsService {
         headers.set("X-Secret-Key", secretKey);
 
         return headers;
+    }
+
+    private ToastSmsRequest buildBody(List<SmsRequest> requests) {
+        return new ToastSmsRequest();
     }
 
 }
