@@ -5,11 +5,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class SmsServiceImpl implements SmsService {
 
@@ -18,18 +20,22 @@ public class SmsServiceImpl implements SmsService {
     private final SmsRequestGroupService smsRequestGroupService;
 
     @Override
-    public SmsRequestGroup sendSms(SmsRequestGroupVo smsRequestGroupVo, List<SmsRequestVo> smsRequestVoList) {
+    public SmsRequestGroup sendSms(SmsRequestGroupVo smsRequestGroupVo, List<SmsRequestVo> smsRequestVoList) throws Exception {
         SmsRequestGroup smsRequestGroup = smsRequestGroupService.createAndSave(smsRequestGroupVo);
 
         List<SmsRequest> smsRequests = smsRequestVoList.stream()
-                .map(smsRequestService::createSmsRequest)
+                .map(smsRequestVo ->  smsRequestService.createSmsRequest(smsRequestGroup, smsRequestVo))
                 .collect(Collectors.toList());
         smsRequestService.saveAll(smsRequests);
 
-        List<SmsRequest> savedRequests = smsRequestService.getRequests(smsRequestGroup.getId());
-        ToastSmsResponse toastSmsResponse = toastSmsService.send(savedRequests);
+        ToastSmsResponse toastSmsResponse = toastSmsService.send(smsRequestGroup, smsRequestGroup.getSmsRequests());
 
-        smsRequestService.markRequests(toastSmsResponse, savedRequests);
+        if (toastSmsResponse.getBody().getData().getStatusCode() == 2) {
+            return smsRequestGroup;
+        }
+
+        smsRequestService.markRequests(toastSmsResponse, smsRequestGroup);
+        smsRequestGroupService.markAsComplete(smsRequestGroup);
 
         return smsRequestGroup;
     }
@@ -39,7 +45,7 @@ public class SmsServiceImpl implements SmsService {
         SmsRequestGroup requestGroup = smsRequestGroupService.getRequestGroup(groupId);
         List<SmsRequest> failedRequests = smsRequestService.getFailedRequests(groupId);
 
-        toastSmsService.send(failedRequests);
+        toastSmsService.send(requestGroup, failedRequests);
 
         return requestGroup;
     }

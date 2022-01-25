@@ -7,8 +7,8 @@ import java.util.List;
 interface SmsRequestService {
 
     void saveAll(List<SmsRequest> requests);
-    SmsRequest createSmsRequest(SmsRequestVo smsRequestVo);
+    SmsRequest createSmsRequest(SmsRequestGroup requestGroup, SmsRequestVo smsRequestVo);
     List<SmsRequest> getRequests(Long groupId);
     List<SmsRequest> getFailedRequests(Long groupId);
-    void markRequests(ToastSmsResponse toastSmsResponse, List<SmsRequest> savedRequests);
+    void markRequests(ToastSmsResponse toastSmsResponse, SmsRequestGroup smsRequestGroup) throws Exception;
 }

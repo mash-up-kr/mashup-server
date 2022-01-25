@@ -5,10 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(of = "id")
@@ -21,29 +18,33 @@ public class SmsRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long groupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sms_request_id", nullable = false, updatable = false)
+    private SmsRequestGroup smsRequestGroup;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private SmsRequestStatus status = SmsRequestStatus.IN_PROGRESS;
 
     private Long userId;
+
     private String username;
+
     private String phoneNumber;
 
-    private String content;
-
-    private boolean isSuccess;
-
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
 
     @Builder
-    private SmsRequest(Long groupId, Long userId, String username, String content, String phoneNumber) {
-        this.groupId = groupId;
+    private SmsRequest(SmsRequestGroup smsRequestGroup, Long userId, String username, String phoneNumber) {
+        this.smsRequestGroup = smsRequestGroup;
         this.userId = userId;
         this.username = username;
-        this.content = content;
         this.phoneNumber = phoneNumber;
     }
 
-    public void setIsSuccess(boolean isSuccess) {
-        this.isSuccess = isSuccess;
+    public void setStatus(SmsRequestStatus status) {
+        this.status = status;
     }
 }

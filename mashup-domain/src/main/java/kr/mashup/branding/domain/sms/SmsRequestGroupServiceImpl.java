@@ -21,8 +21,14 @@ class SmsRequestGroupServiceImpl implements SmsRequestGroupService{
     public SmsRequestGroup createAndSave(SmsRequestGroupVo smsRequestGroupVo) {
         SmsRequestGroup smsRequestGroup = SmsRequestGroup
                 .builder()
+                .content(smsRequestGroupVo.getContent())
                 .description(smsRequestGroupVo.getDescription())
                 .build();
         return smsRequestGroupRepository.save(smsRequestGroup);
+    }
+
+    @Override
+    public void markAsComplete(SmsRequestGroup smsRequestGroup) {
+        smsRequestGroup.setStatus(SmsRequestGroupStatus.COMPLETE);
     }
 }

@@ -7,6 +7,5 @@ import java.util.List;
 
 @Repository
 interface SmsRequestRepository extends JpaRepository<SmsRequest, Long> {
-    List<SmsRequest> findAllByGroupId(Long groupId);
-    List<SmsRequest> findAllByGroupIdAndIsSuccessFalse(Long groupId);
+    List<SmsRequest> findAllBySmsRequestGroupIdAndStatus(SmsRequestGroup requestGroup, SmsRequestStatus status);
 }

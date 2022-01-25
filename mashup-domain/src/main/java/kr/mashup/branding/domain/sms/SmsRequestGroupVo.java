@@ -6,5 +6,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class SmsRequestGroupVo {
+    private String content;
     private String description;
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -26,9 +27,9 @@ public class ToastSmsServiceImpl implements ToastSmsService {
     private final RestTemplate toastRestTemplate;
 
     @Override
-    public ToastSmsResponse send(List<SmsRequest> requests) {
+    public ToastSmsResponse send(SmsRequestGroup requestGroup, List<SmsRequest> smsRequests) {
         HttpHeaders headers = buildHeader();
-        ToastSmsRequest toastSmsRequest = buildBody(requests);
+        ToastSmsRequest toastSmsRequest = buildBody(requestGroup);
         HttpEntity httpEntity = new HttpEntity(toastSmsRequest, headers);
 
         ResponseEntity<ToastSmsResponse> exchange = toastRestTemplate.exchange(
@@ -49,8 +50,17 @@ public class ToastSmsServiceImpl implements ToastSmsService {
         return headers;
     }
 
-    private ToastSmsRequest buildBody(List<SmsRequest> requests) {
-        return new ToastSmsRequest();
+    private ToastSmsRequest buildBody(SmsRequestGroup smsRequestGroup) {
+        List<SmsRequest> smsRequests = smsRequestGroup.getSmsRequests();
+        List<ToastSmsRequest.Recipient> recipients = smsRequests.stream()
+                .map(smsRequest -> ToastSmsRequest.Recipient.of(smsRequest.getPhoneNumber(), smsRequest.getId().toString()))
+                .collect(Collectors.toList());
+        return ToastSmsRequest.of(
+                smsRequestGroup.getContent(),
+                "01097944578",
+                smsRequestGroup.getId().toString(),
+                recipients
+        );
     }
 
 }
