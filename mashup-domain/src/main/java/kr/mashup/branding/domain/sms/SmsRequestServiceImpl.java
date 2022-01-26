@@ -50,6 +50,7 @@ class SmsRequestServiceImpl implements SmsRequestService{
         List<SmsRequest> smsRequests = smsRequestGroup.getSmsRequests();
         if (!toastSmsResponse.getHeader().getIsSuccessful()) {
             smsRequests.forEach(this::markAsFail);
+            // TODO custom exception 논의
             throw new Exception(toastSmsResponse.getHeader().getResultMessage());
         }
 

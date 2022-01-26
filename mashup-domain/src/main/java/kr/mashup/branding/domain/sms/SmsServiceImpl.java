@@ -20,7 +20,7 @@ public class SmsServiceImpl implements SmsService {
     private final SmsRequestGroupService smsRequestGroupService;
 
     @Override
-    public SmsRequestGroup sendSms(SmsRequestGroupVo smsRequestGroupVo, List<SmsRequestVo> smsRequestVoList) throws Exception {
+    public SmsRequestGroup sendSms(SmsRequestGroupVo smsRequestGroupVo, List<SmsRequestVo> smsRequestVoList){
         SmsRequestGroup smsRequestGroup = smsRequestGroupService.createAndSave(smsRequestGroupVo);
 
         List<SmsRequest> smsRequests = smsRequestVoList.stream()
@@ -34,7 +34,12 @@ public class SmsServiceImpl implements SmsService {
             return smsRequestGroup;
         }
 
-        smsRequestService.markRequests(toastSmsResponse, smsRequestGroup);
+        try {
+            smsRequestService.markRequests(toastSmsResponse, smsRequestGroup);
+        } catch (Exception e) {
+            log.error("문자 메세지 발송 실패");
+        }
+
         smsRequestGroupService.markAsComplete(smsRequestGroup);
 
         return smsRequestGroup;
@@ -53,6 +58,11 @@ public class SmsServiceImpl implements SmsService {
     @Override
     public SmsRequestGroup getRequestGroup(Long id) {
         return smsRequestGroupService.getRequestGroup(id);
+    }
+
+    @Override
+    public List<SmsRequestGroup> getRequestGroups() {
+        return smsRequestGroupService.getRequestGroups();
     }
 
     @Override
