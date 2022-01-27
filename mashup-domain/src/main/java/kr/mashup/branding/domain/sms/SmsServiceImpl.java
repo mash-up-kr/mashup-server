@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,11 +21,7 @@ public class SmsServiceImpl implements SmsService {
     @Override
     public SmsRequestGroup sendSms(SmsRequestGroupVo smsRequestGroupVo, List<SmsRequestVo> smsRequestVoList){
         SmsRequestGroup smsRequestGroup = smsRequestGroupService.createAndSave(smsRequestGroupVo);
-
-        List<SmsRequest> smsRequests = smsRequestVoList.stream()
-                .map(smsRequestVo ->  smsRequestService.createSmsRequest(smsRequestGroup, smsRequestVo))
-                .collect(Collectors.toList());
-        smsRequestService.saveAll(smsRequests);
+        smsRequestService.createAndSaveAll(smsRequestGroup, smsRequestVoList);
 
         ToastSmsResponse toastSmsResponse = toastSmsService.send(smsRequestGroup, smsRequestGroup.getSmsRequests());
 

@@ -19,18 +19,16 @@ class SmsRequestServiceImpl implements SmsRequestService{
     private final SmsRequestGroupService smsRequestGroupService;
 
     @Override
-    public void saveAll(List<SmsRequest> requests){
-        smsRequestRepository.saveAll(requests);
-    }
-
-    @Override
-    public SmsRequest createSmsRequest(SmsRequestGroup requestGroup, SmsRequestVo smsRequestVo) {
-        return SmsRequest.builder()
-                .smsRequestGroup(requestGroup)
-                .userId(smsRequestVo.getUserId())
-                .username(smsRequestVo.getUsername())
-                .phoneNumber(smsRequestVo.getPhoneNumber())
-                .build();
+    public void createAndSaveAll(SmsRequestGroup requestGroup, List<SmsRequestVo> smsRequestVoList) {
+        List<SmsRequest> smsRequests = smsRequestVoList.stream().map(smsRequestVo ->
+                SmsRequest.builder()
+                        .smsRequestGroup(requestGroup)
+                        .userId(smsRequestVo.getUserId())
+                        .username(smsRequestVo.getUsername())
+                        .phoneNumber(smsRequestVo.getPhoneNumber())
+                        .build()
+        ).collect(Collectors.toList());
+        smsRequestRepository.saveAll(smsRequests);
     }
 
     @Override
