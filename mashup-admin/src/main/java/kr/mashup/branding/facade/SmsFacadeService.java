@@ -1,9 +1,11 @@
 package kr.mashup.branding.facade;
 
 import kr.mashup.branding.domain.sms.SmsRequestGroupVo;
+import kr.mashup.branding.domain.sms.SmsRequestVo;
 import kr.mashup.branding.domain.sms.SmsService;
 import kr.mashup.branding.ui.sms.dto.SmsRequestGroupResponse;
 import kr.mashup.branding.ui.sms.dto.SmsRequestResponse;
+import kr.mashup.branding.ui.sms.dto.SmsSendRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +18,9 @@ public class SmsFacadeService {
 
     private final SmsService smsService;
 
-    public void sendSms() {
-        smsService.sendSms(SmsRequestGroupVo.of("", ""), List.of());
+    public void sendSms(SmsSendRequest request) {
+        //TODO: request.userIds 로 유저 그룹 조회 후 SmsRequestVo로 만들어 넘기기
+        smsService.sendSms(SmsRequestGroupVo.of("", ""), List.of(SmsRequestVo.of(1L, "이정원", "01000000000")));
     }
 
     public List<SmsRequestGroupResponse> getAllRequestGroup() {

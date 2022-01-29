@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.SmsFacadeService;
 import kr.mashup.branding.ui.sms.dto.SmsRequestGroupResponse;
 import kr.mashup.branding.ui.sms.dto.SmsRequestResponse;
+import kr.mashup.branding.ui.sms.dto.SmsSendRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +19,10 @@ public class SmsApiController {
 
     @ApiOperation("Sms 메세지 발송")
     @PostMapping("/send")
-    public Boolean sendSms() {
-        smsFacadeService.sendSms();
+    public Boolean sendSms(
+            @RequestBody SmsSendRequest request
+    ) {
+        smsFacadeService.sendSms(request);
         return true;
     }
 
