@@ -48,4 +48,8 @@ public enum ApplicationStatus {
         // 컴파일 에러 방지
         throw new IllegalStateException();
     }
+
+    public boolean isSubmitted() {
+        return this == SUBMITTED;
+    }
 }

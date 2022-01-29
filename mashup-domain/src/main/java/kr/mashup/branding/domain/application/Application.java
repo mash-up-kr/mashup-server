@@ -105,4 +105,8 @@ public class Application {
             // 이미 제출한 지원서를 다시 제출 시도하는 경우 성공으로 응답
         }
     }
+
+    boolean isSubmitted() {
+        return status.isSubmitted();
+    }
 }

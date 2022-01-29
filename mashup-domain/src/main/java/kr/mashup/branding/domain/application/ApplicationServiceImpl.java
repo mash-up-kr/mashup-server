@@ -53,12 +53,15 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new IllegalStateException();
         }
         if (applications.size() == 1) {
-            return applications.get(0);
+            Application application = applications.get(0);
+            if (application.isSubmitted()) {
+                throw new ApplicationAlreadySubmittedException();
+            }
+            return application;
         }
 
         // TODO: applicant 지원서 생성시 applicant 추가
-        final Application application = Application.from(applicationForm);
-        return applicationRepository.save(application);
+        return applicationRepository.save(Application.from(applicationForm));
     }
 
     @Override
