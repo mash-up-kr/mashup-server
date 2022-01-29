@@ -19,8 +19,10 @@ public class SmsFacadeService {
     private final SmsService smsService;
 
     public void sendSms(SmsSendRequest request) {
-        //TODO: request.userIds 로 유저 그룹 조회 후 SmsRequestVo로 만들어 넘기기
-        smsService.sendSms(SmsRequestGroupVo.of("", ""), List.of(SmsRequestVo.of(1L, "이정원", "01000000000")));
+        List<SmsRequestVo> smsRequestVoList = request.getUserIds().stream()
+                .map(userId -> SmsRequestVo.of(userId, "이정원", "01000000000"))
+                .collect(Collectors.toList());
+        smsService.sendSms(SmsRequestGroupVo.of("", ""), smsRequestVoList);
     }
 
     public List<SmsRequestGroupResponse> getAllRequestGroup() {
