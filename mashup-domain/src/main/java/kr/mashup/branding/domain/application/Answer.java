@@ -1,14 +1,20 @@
 package kr.mashup.branding.domain.application;
 
-import kr.mashup.branding.domain.application.form.Question;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import java.time.LocalDateTime;
+
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import kr.mashup.branding.domain.application.form.Question;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @ToString
@@ -34,6 +40,13 @@ public class Answer {
         Answer answer = new Answer();
         answer.question = question;
         answer.content = content;
+        return answer;
+    }
+
+    public static Answer empty(Question question) {
+        Answer answer = new Answer();
+        answer.question = question;
+        answer.content = "";
         return answer;
     }
 }
