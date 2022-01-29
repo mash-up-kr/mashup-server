@@ -6,12 +6,16 @@ import kr.mashup.branding.domain.application.form.ApplicationFormService;
 import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.domain.team.TeamService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -37,7 +41,22 @@ public class ApplicationServiceImpl implements ApplicationService {
             // TODO: 적절한 예외 만들기
             throw new IllegalArgumentException("ApplicationForm not found. teamId: " + createApplicationVo.getTeamId());
         }
-        // TODO: applicant
+
+        // TODO: applicant 쿼리 조건에 applicant 추가
+        List<Application> applications = applicationRepository.findByApplicationForm(applicationForm);
+        if (applications.size() >= 2) {
+            String formattedApplicationIds = applications.stream()
+                .map(Application::getApplicationId)
+                .map(String::valueOf)
+                .collect(Collectors.joining(",", "[", "]"));
+            log.error("1개 form 에 지원서가 2개 이상 존재합니다. applicationIds: " + formattedApplicationIds);
+            throw new IllegalStateException();
+        }
+        if (applications.size() == 1) {
+            return applications.get(0);
+        }
+
+        // TODO: applicant 지원서 생성시 applicant 추가
         final Application application = Application.from(applicationForm);
         return applicationRepository.save(application);
     }

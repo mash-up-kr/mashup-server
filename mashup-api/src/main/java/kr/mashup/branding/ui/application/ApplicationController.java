@@ -1,10 +1,8 @@
 package kr.mashup.branding.ui.application;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
-import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
-import kr.mashup.branding.domain.application.CreateApplicationVo;
-import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.facade.application.ApplicationFacadeService;
 import lombok.RequiredArgsConstructor;
 
@@ -26,28 +21,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApplicationController {
     private final ApplicationFacadeService applicationFacadeService;
+    private final ApplicationAssembler applicationAssembler;
 
     /**
      * 팀 id(or name) 받아서 만들기
-     * 새로만들면 201, 있던거면 200
      */
     @ApiOperation("내 지원서 생성")
     @PostMapping
     public ApplicationResponse create(
         @RequestBody CreateApplicationRequest createApplicationRequest
     ) {
-        Application application = applicationFacadeService.create(toCreateApplicationVo(createApplicationRequest));
-        return toApplicationResponse(application);
-    }
-
-    private CreateApplicationVo toCreateApplicationVo(CreateApplicationRequest createApplicationRequest) {
-        Assert.notNull(createApplicationRequest, "'createApplicationRequest' must not be null");
-        return new CreateApplicationVo(createApplicationRequest.getTeamId());
-    }
-
-    private ApplicationResponse toApplicationResponse(Application application) {
-        Assert.notNull(application, "'application' must not be null");
-        return new ApplicationResponse(application.getApplicationId());
+        Application application = applicationFacadeService.create(
+            applicationAssembler.toCreateApplicationVo(createApplicationRequest)
+        );
+        return applicationAssembler.toApplicationResponse(application);
     }
 
     /**
@@ -62,29 +49,9 @@ public class ApplicationController {
     ) {
         Application application = applicationFacadeService.update(
             applicationId,
-            toUpdateApplicationVo(updateApplicationRequest)
+            applicationAssembler.toUpdateApplicationVo(updateApplicationRequest)
         );
-        return toApplicationResponse(application);
-    }
-
-    private UpdateApplicationVo toUpdateApplicationVo(UpdateApplicationRequest updateApplicationRequest) {
-        Assert.notNull(updateApplicationRequest, "'updateApplicationRequest' must not be null");
-        return UpdateApplicationVo.of(
-            updateApplicationRequest.getName(),
-            updateApplicationRequest.getPhoneNumber(),
-            updateApplicationRequest.getAnswers()
-                .stream()
-                .map(this::toAnswerRequestVo)
-                .collect(Collectors.toList())
-        );
-    }
-
-    private AnswerRequestVo toAnswerRequestVo(AnswerRequest answerRequest) {
-        Assert.notNull(answerRequest, "'answerRequest' must not be null");
-        return AnswerRequestVo.of(
-            answerRequest.getQuestionId(),
-            answerRequest.getContent()
-        );
+        return applicationAssembler.toApplicationResponse(application);
     }
 
     /**
@@ -98,7 +65,7 @@ public class ApplicationController {
         @PathVariable Long applicationId
     ) {
         Application application = applicationFacadeService.submit(applicationId);
-        return toApplicationResponse(application);
+        return applicationAssembler.toApplicationResponse(application);
     }
 
     @ApiOperation("내 지원서 목록 조회")
@@ -108,7 +75,7 @@ public class ApplicationController {
         Long applicantId = 0L;
         List<Application> applications = applicationFacadeService.getApplications(applicantId);
         return applications.stream()
-            .map(this::toApplicationResponse)
+            .map(applicationAssembler::toApplicationResponse)
             .collect(Collectors.toList());
     }
 
@@ -120,6 +87,6 @@ public class ApplicationController {
         // TODO: applicant
         Long applicantId = 0L;
         Application application = applicationFacadeService.getApplication(applicantId, applicationId);
-        return null;
+        return applicationAssembler.toApplicationResponse(application);
     }
 }
