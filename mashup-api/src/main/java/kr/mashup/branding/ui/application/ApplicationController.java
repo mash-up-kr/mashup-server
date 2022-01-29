@@ -70,6 +70,8 @@ public class ApplicationController {
     private UpdateApplicationVo toUpdateApplicationVo(UpdateApplicationRequest updateApplicationRequest) {
         Assert.notNull(updateApplicationRequest, "'updateApplicationRequest' must not be null");
         return UpdateApplicationVo.of(
+            updateApplicationRequest.getName(),
+            updateApplicationRequest.getPhoneNumber(),
             updateApplicationRequest.getAnswers()
                 .stream()
                 .map(this::toAnswerRequestVo)

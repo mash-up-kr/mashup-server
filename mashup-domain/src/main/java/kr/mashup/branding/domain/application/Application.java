@@ -28,7 +28,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-// TODO: member
+// TODO: applicant
+//  지원자 relation 추가
 @Entity
 @Getter
 @ToString
@@ -52,6 +53,9 @@ public class Application {
     @JoinColumn(name = "applicationId")
     private final List<Answer> answers = new ArrayList<>();
 
+    /**
+     * 제출 완료 시각
+     */
     private LocalDateTime submittedAt;
 
     @CreatedDate

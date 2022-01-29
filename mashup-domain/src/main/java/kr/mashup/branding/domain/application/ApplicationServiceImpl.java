@@ -48,6 +48,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Assert.notNull(applicationId, "'applicationId' must not be null");
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
 
+        // TODO: applicant 이름, 연락처 저장
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(ApplicationNotFoundException::new);
         application.update(updateApplicationVo);
