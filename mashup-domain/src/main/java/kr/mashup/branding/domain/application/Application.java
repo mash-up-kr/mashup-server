@@ -3,6 +3,8 @@ package kr.mashup.branding.domain.application;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -19,6 +21,7 @@ import javax.persistence.OneToMany;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.Assert;
 
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import lombok.EqualsAndHashCode;
@@ -49,12 +52,17 @@ public class Application {
     @JoinColumn(name = "applicationId")
     private final List<Answer> answers = new ArrayList<>();
 
+    private LocalDateTime submittedAt;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    /**
+     * 빈 지원서 생성
+     */
     static Application from(
         ApplicationForm applicationForm
     ) {
@@ -67,5 +75,30 @@ public class Application {
             .collect(Collectors.toList());
         application.answers.addAll(answers);
         return application;
+    }
+
+    /**
+     * 지원서 임시 저장
+     */
+    void update(UpdateApplicationVo updateApplicationVo) {
+        Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
+        Map<Long, AnswerRequestVo> questionAnswerMap = updateApplicationVo.getAnswerRequestVoList()
+            .stream()
+            .collect(Collectors.toMap(AnswerRequestVo::getQuestionId, Function.identity()));
+        answers.forEach(it -> {
+            Long questionId = it.getQuestion().getQuestionId();
+            AnswerRequestVo answerRequestVo = questionAnswerMap.get(questionId);
+            it.update(answerRequestVo.getContent());
+        });
+        status = status.update();
+    }
+
+    void submit() {
+        try {
+            status = status.submit();
+            submittedAt = LocalDateTime.now();
+        } catch (ApplicationAlreadySubmittedException e) {
+            // 이미 제출한 지원서를 다시 제출 시도하는 경우 성공으로 응답
+        }
     }
 }

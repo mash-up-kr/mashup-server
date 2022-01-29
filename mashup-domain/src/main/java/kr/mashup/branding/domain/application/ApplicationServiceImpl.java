@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,10 +22,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public Application createApplication(CreateApplicationVo createApplicationVo) {
+    public Application create(CreateApplicationVo createApplicationVo) {
         Assert.notNull(createApplicationVo, "'createApplicationVo' must not be null");
-        // TODO: member
-//        val member = memberService.getMember(memberId =  createApplicationVo.memberId)
         try {
             teamService.getTeam(createApplicationVo.getTeamId());
         } catch (TeamNotFoundException e) {
@@ -40,39 +37,45 @@ public class ApplicationServiceImpl implements ApplicationService {
             // TODO: 적절한 예외 만들기
             throw new IllegalArgumentException("ApplicationForm not found. teamId: " + createApplicationVo.getTeamId());
         }
+        // TODO: applicant
         final Application application = Application.from(applicationForm);
         return applicationRepository.save(application);
     }
 
     @Override
     @Transactional
-    public Application updateApplication(UpdateApplicationVo updateApplicationVo) {
+    public Application update(Long applicationId, UpdateApplicationVo updateApplicationVo) {
+        Assert.notNull(applicationId, "'applicationId' must not be null");
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
-        Application application = applicationRepository.findById(updateApplicationVo.getApplicationId())
+
+        Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(ApplicationNotFoundException::new);
-        return null;
+        application.update(updateApplicationVo);
+        return application;
     }
 
     @Override
-    public List<Application> getAllApplication() {
-        return applicationRepository.findAll();
+    @Transactional
+    public Application submit(Long applicationId) {
+        Assert.notNull(applicationId, "'applicationId' must not be null");
+
+        Application application = applicationRepository.findById(applicationId)
+            .orElseThrow(ApplicationNotFoundException::new);
+        application.submit();
+        return application;
     }
 
     @Override
-    public List<Application> getApplications(Long memberId) {
-        // TODO: memberId
-        return applicationRepository.findAll();
+    public List<Application> getApplications(Long applicantId) {
+        // TODO: applicant
+        return applicationRepository.findByStatusIn(ApplicationStatus.validSet());
     }
 
     @Override
-    public Application getApplication(Long memberId, Long applicationId) {
-        // TODO: memberId
-        return applicationRepository.findById(applicationId)
-                .orElseThrow(ApplicationNotFoundException::new);
-    }
-
-    @Override
-    public Application getApplication(Long applicationId) {
+    public Application getApplication(Long applicantId, Long applicationId) {
+        Assert.notNull(applicantId, "'applicantId' must not be null");
+        Assert.notNull(applicationId, "'applicationId' must not be null");
+        // TODO: applicant
         return applicationRepository.findById(applicationId)
                 .orElseThrow(ApplicationNotFoundException::new);
     }

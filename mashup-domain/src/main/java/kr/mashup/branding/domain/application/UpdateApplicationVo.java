@@ -7,8 +7,7 @@ import java.util.List;
 /**
  * 지원서 임시저장
  */
-@Value
+@Value(staticConstructor = "of")
 public class UpdateApplicationVo {
-    Long applicationId;
     List<AnswerRequestVo> answerRequestVoList;
 }

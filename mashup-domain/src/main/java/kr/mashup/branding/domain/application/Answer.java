@@ -11,12 +11,15 @@ import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.Assert;
 
 import kr.mashup.branding.domain.application.form.Question;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 @Entity
+@Getter
 @ToString
 @EqualsAndHashCode(of = "answerId")
 @EntityListeners(AuditingEntityListener.class)
@@ -48,5 +51,11 @@ public class Answer {
         answer.question = question;
         answer.content = "";
         return answer;
+    }
+
+    void update(String content) {
+        Assert.notNull(content, "'content' must not be null");
+        // TODO : validation (length, ..)
+        this.content = content;
     }
 }
