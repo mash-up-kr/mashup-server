@@ -9,6 +9,4 @@ public interface SmsRequestService {
     List<SmsRequest> getRequests(Long groupId);
     List<SmsRequest> getFailedRequests(Long groupId);
     void markRequestsWithToastResponse(ToastSmsResponse toastSmsResponse, SmsRequestGroup smsRequestGroup);
-    void markAsSuccess(SmsRequest smsRequest);
-    void markAsFail(SmsRequest smsRequest);
 }

@@ -46,8 +46,13 @@ public class SmsRequest {
         this.username = username;
         this.phoneNumber = phoneNumber;
     }
-
-    public void setStatus(SmsRequestStatus status) {
+    public void markAsSuccess() {
+        setStatus(SmsRequestStatus.SUCCESS);
+    }
+    public void markAsFail() {
+        setStatus(SmsRequestStatus.FAIL);
+    }
+    private void setStatus(SmsRequestStatus status) {
         this.status = status;
     }
 }

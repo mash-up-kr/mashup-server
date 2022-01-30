@@ -52,19 +52,11 @@ class SmsRequestServiceImpl implements SmsRequestService{
                 toastSendResult -> {
                     SmsRequest smsRequest = requestMap.get(Long.parseLong(toastSendResult.getRecipientGroupingKey()));
                     if (toastSendResult.getResultCode() == 0) {
-                        markAsSuccess(smsRequest);
+                        smsRequest.markAsSuccess();
                     } else {
-                        markAsFail(smsRequest);
+                        smsRequest.markAsFail();
                     }
                 }
         );
     }
-
-    public void markAsSuccess(SmsRequest smsRequest) {
-        smsRequest.setStatus(SmsRequestStatus.SUCCESS);
-    }
-    public void markAsFail(SmsRequest smsRequest) {
-        smsRequest.setStatus(SmsRequestStatus.FAIL);
-    }
-
 }
