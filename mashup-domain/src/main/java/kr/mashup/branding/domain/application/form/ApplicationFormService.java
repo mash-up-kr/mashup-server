@@ -1,9 +1,11 @@
 package kr.mashup.branding.domain.application.form;
 
+import java.util.List;
+
 public interface ApplicationFormService {
     ApplicationForm createApplicationForm(CreateApplicationFormVo createApplicationFormVo);
 
     ApplicationForm getApplicationFormById(Long applicationFormId);
 
-    ApplicationForm getApplicationFormByTeamId(Long teamId);
+    List<ApplicationForm> getApplicationFormsByTeamId(Long teamId);
 }

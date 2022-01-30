@@ -1,5 +1,11 @@
 package kr.mashup.branding.domain.application;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
@@ -7,12 +13,6 @@ import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.domain.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -38,7 +38,10 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         final ApplicationForm applicationForm;
         try {
-            applicationForm = applicationFormService.getApplicationFormByTeamId(createApplicationVo.getTeamId());
+            applicationForm = applicationFormService.getApplicationFormsByTeamId(createApplicationVo.getTeamId())
+                .stream()
+                .findFirst()
+                .orElseThrow(ApplicationFormNotFoundException::new);
         } catch (ApplicationFormNotFoundException e) {
             // TODO: 적절한 예외 만들기
             throw new IllegalArgumentException("ApplicationForm not found. teamId: " + createApplicationVo.getTeamId());
