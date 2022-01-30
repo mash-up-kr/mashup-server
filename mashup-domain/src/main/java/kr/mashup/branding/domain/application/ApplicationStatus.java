@@ -41,7 +41,7 @@ public enum ApplicationStatus {
         switch (this) {
             case CREATED:
             case WRITING:
-                return WRITING;
+                return SUBMITTED;
             case SUBMITTED:
                 throw new ApplicationAlreadySubmittedException();
         }

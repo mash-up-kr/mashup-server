@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -24,10 +23,13 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationFormService applicationFormService;
     private final TeamService teamService;
 
+    // get or create
+    // TODO: 모르겠고 teamId 줄테니 다내놔! 에 대해서 고민해보기
     @Override
     @Transactional
     public Application create(CreateApplicationVo createApplicationVo) {
         Assert.notNull(createApplicationVo, "'createApplicationVo' must not be null");
+
         try {
             teamService.getTeam(createApplicationVo.getTeamId());
         } catch (TeamNotFoundException e) {
@@ -44,15 +46,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         // TODO: applicant 쿼리 조건에 applicant 추가
         List<Application> applications = applicationRepository.findByApplicationForm(applicationForm);
-        if (applications.size() >= 2) {
-            String formattedApplicationIds = applications.stream()
-                .map(Application::getApplicationId)
-                .map(String::valueOf)
-                .collect(Collectors.joining(",", "[", "]"));
-            log.error("1개 form 에 지원서가 2개 이상 존재합니다. applicationIds: " + formattedApplicationIds);
-            throw new IllegalStateException();
-        }
-        if (applications.size() == 1) {
+        // TODO: unique index (applicantId, applicationFormId)
+        if (!applications.isEmpty()) {
             Application application = applications.get(0);
             if (application.isSubmitted()) {
                 throw new ApplicationAlreadySubmittedException();
@@ -94,6 +89,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         return applicationRepository.findByStatusIn(ApplicationStatus.validSet());
     }
 
+    // TODO: 상세 조회시 form 도 같이 조합해서 내려주어야할듯 (teamId, memberId 요청하면 해당팀 쓰던 지원서 질문, 내용 다 합쳐서)
     @Override
     public Application getApplication(Long applicantId, Long applicationId) {
         Assert.notNull(applicantId, "'applicantId' must not be null");

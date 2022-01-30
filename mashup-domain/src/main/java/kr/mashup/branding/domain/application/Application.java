@@ -70,6 +70,7 @@ public class Application {
     static Application from(
         ApplicationForm applicationForm
     ) {
+        // TODO: applicant
         Application application = new Application();
         application.applicationForm = applicationForm;
         application.status = ApplicationStatus.CREATED;
