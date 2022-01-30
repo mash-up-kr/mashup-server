@@ -27,9 +27,9 @@ public class ToastSmsServiceImpl implements ToastSmsService {
     private final RestTemplate toastRestTemplate;
 
     @Override
-    public ToastSmsResponse send(SmsRequestGroup requestGroup, List<SmsRequest> smsRequests) {
+    public ToastSmsResponse send(SmsRequestGroup requestGroup, List<SmsRequest> requests) {
         HttpHeaders headers = buildHeader();
-        ToastSmsRequest toastSmsRequest = buildBody(requestGroup);
+        ToastSmsRequest toastSmsRequest = buildBody(requestGroup, requests);
         HttpEntity httpEntity = new HttpEntity(toastSmsRequest, headers);
 
         ResponseEntity<ToastSmsResponse> exchange = toastRestTemplate.exchange(
@@ -50,10 +50,9 @@ public class ToastSmsServiceImpl implements ToastSmsService {
         return headers;
     }
 
-    private ToastSmsRequest buildBody(SmsRequestGroup smsRequestGroup) {
-        List<SmsRequest> smsRequests = smsRequestGroup.getSmsRequests();
-        List<ToastSmsRequest.Recipient> recipients = smsRequests.stream()
-                .map(smsRequest -> ToastSmsRequest.Recipient.of(smsRequest.getPhoneNumber(), smsRequest.getId().toString()))
+    private ToastSmsRequest buildBody(SmsRequestGroup smsRequestGroup, List<SmsRequest> requests) {
+        List<ToastSmsRequest.Recipient> recipients = requests.stream()
+                .map(smsRequest -> ToastSmsRequest.Recipient.of(smsRequest.getToastKey(), smsRequest.getPhoneNumber()))
                 .collect(Collectors.toList());
         return ToastSmsRequest.of(
                 smsRequestGroup.getContent(),

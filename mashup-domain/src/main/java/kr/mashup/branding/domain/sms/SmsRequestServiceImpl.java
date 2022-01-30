@@ -19,16 +19,17 @@ class SmsRequestServiceImpl implements SmsRequestService{
     private final SmsRequestGroupService smsRequestGroupService;
 
     @Override
-    public void createAndSaveAll(SmsRequestGroup requestGroup, List<SmsRequestVo> smsRequestVoList) {
+    public List<SmsRequest> createAndSaveAll(SmsRequestGroup requestGroup, List<SmsRequestVo> smsRequestVoList) {
         List<SmsRequest> smsRequests = smsRequestVoList.stream().map(smsRequestVo ->
                 SmsRequest.builder()
                         .smsRequestGroup(requestGroup)
+                        .toastKey(smsRequestVo.getToastKey())
                         .userId(smsRequestVo.getUserId())
                         .username(smsRequestVo.getUsername())
                         .phoneNumber(smsRequestVo.getPhoneNumber())
                         .build()
         ).collect(Collectors.toList());
-        smsRequestRepository.saveAll(smsRequests);
+        return smsRequestRepository.saveAll(smsRequests);
     }
 
     @Override
@@ -44,32 +45,25 @@ class SmsRequestServiceImpl implements SmsRequestService{
     }
 
     @Override
-    public void markRequests(ToastSmsResponse toastSmsResponse, SmsRequestGroup smsRequestGroup) throws Exception {
+    public void markRequestsWithToastResponse(ToastSmsResponse toastSmsResponse, SmsRequestGroup smsRequestGroup) {
         List<SmsRequest> smsRequests = smsRequestGroup.getSmsRequests();
-        if (!toastSmsResponse.getHeader().getIsSuccessful()) {
-            smsRequests.forEach(this::markAsFail);
-            // TODO custom exception 논의
-            throw new Exception(toastSmsResponse.getHeader().getResultMessage());
-        }
-
         Map<Long, SmsRequest> requestMap = smsRequests.stream().collect(Collectors.toMap(SmsRequest::getId, Function.identity()));
-
         toastSmsResponse.getBody().getData().getSendResultList().forEach(
                 toastSendResult -> {
                     SmsRequest smsRequest = requestMap.get(Long.parseLong(toastSendResult.getRecipientGroupingKey()));
                     if (toastSendResult.getResultCode() == 0) {
-                        markAsFail(smsRequest);
-                    } else {
                         markAsSuccess(smsRequest);
+                    } else {
+                        markAsFail(smsRequest);
                     }
                 }
         );
     }
 
-    private void markAsSuccess(SmsRequest smsRequest) {
+    public void markAsSuccess(SmsRequest smsRequest) {
         smsRequest.setStatus(SmsRequestStatus.SUCCESS);
     }
-    private void markAsFail(SmsRequest smsRequest) {
+    public void markAsFail(SmsRequest smsRequest) {
         smsRequest.setStatus(SmsRequestStatus.FAIL);
     }
 

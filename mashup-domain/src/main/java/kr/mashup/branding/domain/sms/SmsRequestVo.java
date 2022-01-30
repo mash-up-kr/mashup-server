@@ -8,10 +8,11 @@ import lombok.Getter;
 @Getter
 public class SmsRequestVo {
     private Long userId;
+    private String toastKey;
     private String username;
     private String phoneNumber;
 
-    public static SmsRequestVo of(Long userId, String username, String phoneNumber) {
-        return new SmsRequestVo(userId, username, phoneNumber);
+    public static SmsRequestVo of(Long userId, String toastKey, String username, String phoneNumber) {
+        return new SmsRequestVo(userId, toastKey, username, phoneNumber);
     }
 }

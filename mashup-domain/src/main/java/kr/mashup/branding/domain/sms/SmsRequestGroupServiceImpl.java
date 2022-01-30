@@ -12,6 +12,7 @@ import java.util.List;
 @Service
 class SmsRequestGroupServiceImpl implements SmsRequestGroupService{
 
+    private final SmsRequestService smsRequestService;
     private final SmsRequestGroupRepository smsRequestGroupRepository;
 
     @Override
@@ -40,5 +41,11 @@ class SmsRequestGroupServiceImpl implements SmsRequestGroupService{
     @Override
     public void markAsComplete(SmsRequestGroup smsRequestGroup) {
         smsRequestGroup.setStatus(SmsRequestGroupStatus.COMPLETE);
+    }
+
+    @Override
+    public void markAsFail(SmsRequestGroup smsRequestGroup) {
+        smsRequestGroup.setStatus(SmsRequestGroupStatus.FAIL);
+        smsRequestGroup.getSmsRequests().forEach(smsRequestService::markAsFail);
     }
 }

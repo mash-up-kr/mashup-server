@@ -4,6 +4,6 @@ import kr.mashup.branding.domain.sms.dto.ToastSmsResponse;
 
 import java.util.List;
 
-interface ToastSmsService {
-    ToastSmsResponse send(SmsRequestGroup smsRequestGroup, List<SmsRequest> smsRequests);
+public interface ToastSmsService {
+    ToastSmsResponse send(SmsRequestGroup smsRequestGroup, List<SmsRequest> requests);
 }

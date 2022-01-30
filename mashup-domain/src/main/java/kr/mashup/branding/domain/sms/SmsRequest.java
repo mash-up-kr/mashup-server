@@ -26,6 +26,8 @@ public class SmsRequest {
     @Column(name = "status")
     private SmsRequestStatus status = SmsRequestStatus.IN_PROGRESS;
 
+    private String toastKey;
+
     private Long userId;
 
     private String username;
@@ -37,7 +39,8 @@ public class SmsRequest {
     private LocalDateTime updatedAt;
 
     @Builder
-    private SmsRequest(SmsRequestGroup smsRequestGroup, Long userId, String username, String phoneNumber) {
+    private SmsRequest(SmsRequestGroup smsRequestGroup, String toastKey, Long userId, String username, String phoneNumber) {
+        this.toastKey = toastKey;
         this.smsRequestGroup = smsRequestGroup;
         this.userId = userId;
         this.username = username;
