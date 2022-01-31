@@ -21,33 +21,32 @@ class SmsRequestServiceImpl implements SmsRequestService {
     @Override
     public List<SmsRequest> createAndSaveAll(SmsRequestGroup requestGroup, List<SmsRequestVo> smsRequestVoList) {
         List<SmsRequest> smsRequests = smsRequestVoList.stream().map(smsRequestVo ->
-                SmsRequest.builder()
-                        .smsRequestGroup(requestGroup)
-                        .toastKey(smsRequestVo.getToastKey())
-                        .userId(smsRequestVo.getUserId())
-                        .username(smsRequestVo.getUsername())
-                        .phoneNumber(smsRequestVo.getPhoneNumber())
-                        .build()
+                SmsRequest.of(
+                        requestGroup,
+                        smsRequestVo.getSmsSendKey(),
+                        smsRequestVo.getApplicantId(),
+                        smsRequestVo.getApplicantName(),
+                        smsRequestVo.getPhoneNumber()
+                )
         ).collect(Collectors.toList());
         return smsRequestRepository.saveAll(smsRequests);
     }
 
     @Override
-    public List<SmsRequest> getRequests(Long groupId) {
-        SmsRequestGroup requestGroup = smsRequestGroupService.getRequestGroup(groupId);
+    public List<SmsRequest> getRequests(Long smsRequestGroupId) {
+        SmsRequestGroup requestGroup = smsRequestGroupService.getRequestGroup(smsRequestGroupId);
         return requestGroup.getSmsRequests();
     }
 
     @Override
-    public List<SmsRequest> getFailedRequests(Long groupId) {
-        SmsRequestGroup requestGroup = smsRequestGroupService.getRequestGroup(groupId);
-        return smsRequestRepository.findAllBySmsRequestGroupAndStatus(requestGroup, SmsRequestStatus.FAIL);
+    public List<SmsRequest> getFailedRequests(Long smsRequestGroupId) {
+        return smsRequestRepository.findBySmsRequestGroup_smsRequestGroupIdAndStatus(smsRequestGroupId, SmsRequestStatus.FAIL);
     }
 
     @Override
     public void markRequestsWithToastResponse(ToastSmsResponse toastSmsResponse, SmsRequestGroup smsRequestGroup) {
         List<SmsRequest> smsRequests = smsRequestGroup.getSmsRequests();
-        Map<String, SmsRequest> requestMap = smsRequests.stream().collect(Collectors.toMap(SmsRequest::getToastKey, Function.identity()));
+        Map<String, SmsRequest> requestMap = smsRequests.stream().collect(Collectors.toMap(SmsRequest::getSmsSendKey, Function.identity()));
         toastSmsResponse.getBody().getData().getSendResultList().forEach(
                 toastSendResult -> {
                     SmsRequest smsRequest = requestMap.get(toastSendResult.getRecipientGroupingKey());

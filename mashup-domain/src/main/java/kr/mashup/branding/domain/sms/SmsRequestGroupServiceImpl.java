@@ -15,8 +15,8 @@ class SmsRequestGroupServiceImpl implements SmsRequestGroupService{
     private final SmsRequestGroupRepository smsRequestGroupRepository;
 
     @Override
-    public SmsRequestGroup getRequestGroup(Long id) {
-        return smsRequestGroupRepository.findById(id).orElseThrow(RuntimeException::new);
+    public SmsRequestGroup getRequestGroup(Long smsRequestGroupId) {
+        return smsRequestGroupRepository.findById(smsRequestGroupId).orElseThrow(RuntimeException::new);
     }
 
     @Override

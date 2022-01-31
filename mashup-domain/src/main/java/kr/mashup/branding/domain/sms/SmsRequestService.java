@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface SmsRequestService {
     List<SmsRequest> createAndSaveAll(SmsRequestGroup smsRequestGroup, List<SmsRequestVo> smsRequestVoList);
-    List<SmsRequest> getRequests(Long groupId);
-    List<SmsRequest> getFailedRequests(Long groupId);
+    List<SmsRequest> getRequests(Long smsRequestGroupId);
+    List<SmsRequest> getFailedRequests(Long smsRequestGroupId);
     void markRequestsWithToastResponse(ToastSmsResponse toastSmsResponse, SmsRequestGroup smsRequestGroup);
 }

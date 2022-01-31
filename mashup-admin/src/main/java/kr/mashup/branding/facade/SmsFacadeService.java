@@ -23,7 +23,7 @@ public class SmsFacadeService {
 
     public void sendSms(SmsSendRequest request) {
         SmsRequestGroup requestGroup = smsRequestGroupService.createAndSave(SmsRequestGroupVo.of("", ""));
-        List<SmsRequestVo> smsRequestVoList = request.getUserIds().stream()
+        List<SmsRequestVo> smsRequestVoList = request.getApplicantIds().stream()
                 .map(userId ->
                         SmsRequestVo.of(
                                 userId,

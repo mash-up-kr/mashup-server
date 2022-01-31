@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 @Service
 public class ToastSmsServiceImpl implements ToastSmsService {
 
-    @Value("${toast.sms.url}")
+    @Value("${sms.toast.url}")
     private String toastUrl;
 
-    @Value("${toast.sms.app-key}")
+    @Value("${sms.toast.app-key}")
     private String appKey;
 
-    @Value("${toast.sms.secret-key}")
+    @Value("${sms.toast.secret-key}")
     private String secretKey;
 
     private final RestTemplate toastRestTemplate;
@@ -52,7 +52,7 @@ public class ToastSmsServiceImpl implements ToastSmsService {
 
     private ToastSmsRequest buildBody(SmsRequestGroup smsRequestGroup, List<SmsRequest> requests) {
         List<ToastSmsRequest.Recipient> recipients = requests.stream()
-                .map(smsRequest -> ToastSmsRequest.Recipient.of(smsRequest.getPhoneNumber(), smsRequest.getToastKey()))
+                .map(smsRequest -> ToastSmsRequest.Recipient.of(smsRequest.getPhoneNumber(), smsRequest.getSmsSendKey()))
                 .collect(Collectors.toList());
         return ToastSmsRequest.of(
                 smsRequestGroup.getContent(),

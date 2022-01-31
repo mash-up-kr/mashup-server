@@ -3,7 +3,6 @@ package kr.mashup.branding.domain.sms.dto;
 import kr.mashup.branding.domain.sms.ToastResponseStatus;
 import lombok.Data;
 
-import java.security.PublicKey;
 import java.util.List;
 
 @Data

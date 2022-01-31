@@ -7,12 +7,12 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class SmsRequestVo {
-    private Long userId;
-    private String toastKey;
-    private String username;
+    private Long applicantId;
+    private String smsSendKey;
+    private String applicantName;
     private String phoneNumber;
 
-    public static SmsRequestVo of(Long userId, String toastKey, String username, String phoneNumber) {
-        return new SmsRequestVo(userId, toastKey, username, phoneNumber);
+    public static SmsRequestVo of(Long applicantId, String smsSendKey, String applicantName, String phoneNumber) {
+        return new SmsRequestVo(applicantId, smsSendKey, applicantName, phoneNumber);
     }
 }

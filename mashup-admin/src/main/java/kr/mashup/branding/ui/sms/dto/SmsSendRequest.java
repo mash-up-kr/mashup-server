@@ -17,5 +17,5 @@ public class SmsSendRequest {
     private String content;
 
     @ApiModelProperty(value = "문자 받을 유저 ID", example = "[1, 2, 3]")
-    private List<Long> userIds;
+    private List<Long> applicantIds;
 }

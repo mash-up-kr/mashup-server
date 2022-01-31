@@ -1,9 +1,8 @@
 package kr.mashup.branding.domain.sms;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -25,29 +24,32 @@ public class SmsRequest {
     private SmsRequestGroup smsRequestGroup;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
     private SmsRequestStatus status = SmsRequestStatus.IN_PROGRESS;
 
-    private String toastKey;
+    private String smsSendKey;
 
-    private Long userId;
+    private Long applicantId;
 
-    private String username;
+    private String applicantName;
 
     private String phoneNumber;
 
+    @CreatedDate
     private LocalDateTime createdAt;
 
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @Builder
-    private SmsRequest(SmsRequestGroup smsRequestGroup, String toastKey, Long userId, String username, String phoneNumber) {
-        this.toastKey = toastKey;
-        this.smsRequestGroup = smsRequestGroup;
-        this.userId = userId;
-        this.username = username;
-        this.phoneNumber = phoneNumber;
+    public static SmsRequest of(SmsRequestGroup smsRequestGroup, String smsSendKey, Long applicantId, String applicantName, String phoneNumber){
+        SmsRequest smsRequest = new SmsRequest();
+        smsRequest.smsRequestGroup = smsRequestGroup;
+        smsRequest.smsSendKey = smsSendKey;
+        smsRequest.applicantId = applicantId;
+        smsRequest.applicantName = applicantName;
+        smsRequest.phoneNumber = phoneNumber;
+        return smsRequest;
     }
+
     public void markAsSuccess() {
         setStatus(SmsRequestStatus.SUCCESS);
     }

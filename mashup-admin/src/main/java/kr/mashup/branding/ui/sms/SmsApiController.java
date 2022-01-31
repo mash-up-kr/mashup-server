@@ -40,15 +40,17 @@ public class SmsApiController {
         return smsFacadeService.getSmsRequests(requestGroupId);
     }
 
-    @ApiOperation("Sms 요청 그룹 새로고침")
-    @PostMapping("/request-group/{requestGroupId}/refresh")
-    public void refreshSmsRequestGroup() {
-        smsFacadeService.refreshRequestGroup();
-    }
-
-    @ApiOperation("Sms 요청 그룹 실패한 유저 대상 재시도")
-    @PostMapping("/request-group/{requestGroupId}/retry")
-    public void retrySendSms() {
-        smsFacadeService.retrySendSms();
-    }
+// TODO
+//
+//    @ApiOperation("Sms 요청 그룹 새로고침")
+//    @PostMapping("/request-group/{requestGroupId}/refresh")
+//    public void refreshSmsRequestGroup() {
+//        smsFacadeService.refreshRequestGroup();
+//    }
+//
+//    @ApiOperation("Sms 요청 그룹 실패한 유저 대상 재시도")
+//    @PostMapping("/request-group/{requestGroupId}/retry")
+//    public void retrySendSms() {
+//        smsFacadeService.retrySendSms();
+//    }
 }

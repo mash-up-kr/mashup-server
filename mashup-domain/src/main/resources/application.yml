@@ -2,8 +2,8 @@ spring:
   profiles:
     active: local
 
-toast:
-  sms:
+sms:
+  toast:
     url: https://api-sms.cloud.toast.com/
     app-key: ENC(6RJ/b4qil0Y8tFxhSnIMZQvmxzCrEEw7DAx2uZ3x6W668sB6sxQ3SNgBj5lxiG6yD4n4NPgr2lZPEEVrbUlBlg==)
     secret-key: ENC(ab1yfScRuzyplJ3e2xpdYX8qW5j4ZBjwmG4nKekbVp1NdJ/zV9BL7UO8P/68lrB9)
@@ -28,5 +28,5 @@ spring:
         show_sql: 'true'
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 ---
