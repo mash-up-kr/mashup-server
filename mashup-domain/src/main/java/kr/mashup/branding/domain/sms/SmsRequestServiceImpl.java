@@ -23,7 +23,6 @@ class SmsRequestServiceImpl implements SmsRequestService {
         List<SmsRequest> smsRequests = smsRequestVoList.stream().map(smsRequestVo ->
                 SmsRequest.of(
                         requestGroup,
-                        smsRequestVo.getSmsSendKey(),
                         smsRequestVo.getApplicantId(),
                         smsRequestVo.getApplicantName(),
                         smsRequestVo.getPhoneNumber()
@@ -57,5 +56,10 @@ class SmsRequestServiceImpl implements SmsRequestService {
                     }
                 }
         );
+    }
+
+    @Override
+    public void updateSmsSendKey(SmsRequest smsRequest, String smsSendKey) {
+        smsRequest.updateSmsSendKey(smsSendKey);
     }
 }

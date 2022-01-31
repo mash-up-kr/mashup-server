@@ -4,13 +4,11 @@ import kr.mashup.branding.util.ProfileUtil;
 
 public class ToastKeyUtil {
 
-    public static String makeKey(Long requestGroupId, Long userId) {
+    public static String makeKey(SmsRequest smsRequest) {
         return new StringBuilder()
                 .append(ProfileUtil.getProfile())
                 .append("-")
-                .append(requestGroupId.toString())
-                .append("-")
-                .append(userId.toString())
+                .append(smsRequest.getSmsRequestId())
                 .toString();
     }
 

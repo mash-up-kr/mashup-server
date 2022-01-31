@@ -40,10 +40,9 @@ public class SmsRequest {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public static SmsRequest of(SmsRequestGroup smsRequestGroup, String smsSendKey, Long applicantId, String applicantName, String phoneNumber){
+    public static SmsRequest of(SmsRequestGroup smsRequestGroup, Long applicantId, String applicantName, String phoneNumber){
         SmsRequest smsRequest = new SmsRequest();
         smsRequest.smsRequestGroup = smsRequestGroup;
-        smsRequest.smsSendKey = smsSendKey;
         smsRequest.applicantId = applicantId;
         smsRequest.applicantName = applicantName;
         smsRequest.phoneNumber = phoneNumber;
@@ -55,6 +54,9 @@ public class SmsRequest {
     }
     public void markAsFail() {
         setStatus(SmsRequestStatus.FAIL);
+    }
+    public void updateSmsSendKey(String smsSendKey) {
+        this.smsSendKey = smsSendKey;
     }
     private void setStatus(SmsRequestStatus status) {
         this.status = status;

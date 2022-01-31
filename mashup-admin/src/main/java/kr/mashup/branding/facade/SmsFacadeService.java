@@ -27,12 +27,18 @@ public class SmsFacadeService {
                 .map(userId ->
                         SmsRequestVo.of(
                                 userId,
-                                ToastKeyUtil.makeKey(requestGroup.getSmsRequestGroupId(), userId),
                                 "",
-                                "")
+                                ""
+                        )
                 )
                 .collect(Collectors.toList());
         List<SmsRequest> smsRequests = smsRequestService.createAndSaveAll(requestGroup, smsRequestVoList);
+        smsRequests.forEach(smsRequest ->
+                smsRequestService.updateSmsSendKey(
+                        smsRequest,
+                        ToastKeyUtil.makeKey(smsRequest)
+                )
+        );
 
         ToastSmsResponse toastSmsResponse;
         try {
