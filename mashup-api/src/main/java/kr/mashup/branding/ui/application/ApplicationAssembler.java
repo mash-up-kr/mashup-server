@@ -30,6 +30,7 @@ public class ApplicationAssembler {
             applicantName,
             phoneNumber,
             email,
+            application.getStatus().name(),
             application.getAnswers().stream()
                 .map(this::toAnswerResponse)
                 .collect(Collectors.toList())

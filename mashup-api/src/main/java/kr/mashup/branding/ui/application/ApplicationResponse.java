@@ -10,5 +10,6 @@ public class ApplicationResponse {
     private final String applicantName;
     private final String phoneNumber;
     private final String email;
+    private final String status;
     private final List<AnswerResponse> answers;
 }
