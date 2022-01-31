@@ -2,7 +2,7 @@ package kr.mashup.branding.domain.application.form;
 
 import lombok.Value;
 
-@Value(staticConstructor = "of")
+@Value
 public class CreateQuestionVo {
     String content;
     Integer properSize;
