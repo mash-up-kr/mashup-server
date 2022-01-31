@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "smsRequestId")
 @NoArgsConstructor
 @Getter
 @Entity
@@ -16,10 +16,10 @@ public class SmsRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long smsRequestId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sms_request_id", nullable = false, updatable = false)
+    @JoinColumn(name = "sms_request_group_id", nullable = false, updatable = false)
     private SmsRequestGroup smsRequestGroup;
 
     @Enumerated(EnumType.STRING)

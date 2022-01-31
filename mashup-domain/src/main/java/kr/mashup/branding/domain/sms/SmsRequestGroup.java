@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "smsRequestGroupId")
 @NoArgsConstructor
 @Getter
 @Entity
@@ -18,7 +18,7 @@ public class SmsRequestGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long smsRequestGroupId;
 
     @OneToMany(mappedBy = "smsRequestGroup")
     private List<SmsRequest> smsRequests = new ArrayList<>();

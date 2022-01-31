@@ -24,7 +24,7 @@ public class SmsRequestGroupResponse {
 
     public static SmsRequestGroupResponse of(SmsRequestGroup smsRequestGroup){
         return new SmsRequestGroupResponse(
-                smsRequestGroup.getId(),
+                smsRequestGroup.getSmsRequestGroupId(),
                 smsRequestGroup.getStatus(),
                 smsRequestGroup.getDescription(),
                 smsRequestGroup.getContent()

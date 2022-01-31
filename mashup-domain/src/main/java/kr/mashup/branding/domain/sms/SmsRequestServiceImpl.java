@@ -41,13 +41,13 @@ class SmsRequestServiceImpl implements SmsRequestService{
     @Override
     public List<SmsRequest> getFailedRequests(Long groupId) {
         SmsRequestGroup requestGroup = smsRequestGroupService.getRequestGroup(groupId);
-        return smsRequestRepository.findAllBySmsRequestGroupIdAndStatus(requestGroup, SmsRequestStatus.FAIL);
+        return smsRequestRepository.findAllBySmsRequestGroupAndStatus(requestGroup, SmsRequestStatus.FAIL);
     }
 
     @Override
     public void markRequestsWithToastResponse(ToastSmsResponse toastSmsResponse, SmsRequestGroup smsRequestGroup) {
         List<SmsRequest> smsRequests = smsRequestGroup.getSmsRequests();
-        Map<Long, SmsRequest> requestMap = smsRequests.stream().collect(Collectors.toMap(SmsRequest::getId, Function.identity()));
+        Map<Long, SmsRequest> requestMap = smsRequests.stream().collect(Collectors.toMap(SmsRequest::getSmsRequestId, Function.identity()));
         toastSmsResponse.getBody().getData().getSendResultList().forEach(
                 toastSendResult -> {
                     SmsRequest smsRequest = requestMap.get(Long.parseLong(toastSendResult.getRecipientGroupingKey()));

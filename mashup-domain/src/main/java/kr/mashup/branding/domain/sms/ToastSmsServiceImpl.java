@@ -57,7 +57,7 @@ public class ToastSmsServiceImpl implements ToastSmsService {
         return ToastSmsRequest.of(
                 smsRequestGroup.getContent(),
                 "01097944578",
-                smsRequestGroup.getId().toString(),
+                smsRequestGroup.getSmsRequestGroupId().toString(),
                 recipients
         );
     }

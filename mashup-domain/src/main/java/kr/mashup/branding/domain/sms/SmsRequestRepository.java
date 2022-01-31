@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 interface SmsRequestRepository extends JpaRepository<SmsRequest, Long> {
-    List<SmsRequest> findAllBySmsRequestGroupIdAndStatus(SmsRequestGroup requestGroup, SmsRequestStatus status);
+    List<SmsRequest> findAllBySmsRequestGroupAndStatus(SmsRequestGroup requestGroup, SmsRequestStatus status);
 }

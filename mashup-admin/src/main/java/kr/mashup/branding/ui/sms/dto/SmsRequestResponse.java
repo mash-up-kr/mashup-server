@@ -29,7 +29,7 @@ public class SmsRequestResponse {
 
     public static SmsRequestResponse of(SmsRequest smsRequest){
         return new SmsRequestResponse(
-                smsRequest.getId(),
+                smsRequest.getSmsRequestId(),
                 smsRequest.getStatus().getDescription(),
                 smsRequest.getUsername(),
                 smsRequest.getPhoneNumber(),
