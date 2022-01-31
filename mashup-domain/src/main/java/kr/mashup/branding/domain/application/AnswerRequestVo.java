@@ -4,6 +4,6 @@ import lombok.Value;
 
 @Value(staticConstructor = "of")
 public class AnswerRequestVo {
-    Long questionId;
+    Long answerId;
     String content;
 }

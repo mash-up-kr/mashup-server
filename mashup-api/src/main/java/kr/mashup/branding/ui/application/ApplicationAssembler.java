@@ -39,7 +39,7 @@ public class ApplicationAssembler {
     UpdateApplicationVo toUpdateApplicationVo(UpdateApplicationRequest updateApplicationRequest) {
         Assert.notNull(updateApplicationRequest, "'updateApplicationRequest' must not be null");
         return UpdateApplicationVo.of(
-            updateApplicationRequest.getName(),
+            updateApplicationRequest.getApplicantName(),
             updateApplicationRequest.getPhoneNumber(),
             updateApplicationRequest.getAnswers()
                 .stream()
@@ -51,7 +51,7 @@ public class ApplicationAssembler {
     private AnswerRequestVo toAnswerRequestVo(AnswerRequest answerRequest) {
         Assert.notNull(answerRequest, "'answerRequest' must not be null");
         return AnswerRequestVo.of(
-            answerRequest.getQuestionId(),
+            answerRequest.getAnswerId(),
             answerRequest.getContent()
         );
     }
