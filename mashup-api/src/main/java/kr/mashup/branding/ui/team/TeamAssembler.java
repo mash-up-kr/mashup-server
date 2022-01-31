@@ -6,9 +6,12 @@ import kr.mashup.branding.domain.team.Team;
 
 @Component
 public class TeamAssembler {
-    TeamResponse toTeamResponse(Team team) {
+    public TeamResponse toTeamResponse(Team team) {
         return new TeamResponse(
-            team.getTeamId()
+            team.getTeamId(),
+            team.getName(),
+            team.getCreatedAt(),
+            team.getUpdatedAt()
         );
     }
 }
