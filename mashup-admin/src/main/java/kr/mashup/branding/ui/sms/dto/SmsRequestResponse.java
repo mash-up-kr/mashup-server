@@ -10,8 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class SmsRequestResponse {
-    @ApiModelProperty(value = "ID", example = "1")
-    private Long id;
+    @ApiModelProperty(value = "SmsRequest 의 ID", example = "1")
+    private Long smsRequestId;
 
     @ApiModelProperty(value = "요청 상태(발송중, 성공, 실패)", example = "성공")
     private SmsRequestStatus status;

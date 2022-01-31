@@ -10,8 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class SmsRequestGroupResponse {
-    @ApiModelProperty(value = "ID", example = "1")
-    private Long id;
+    @ApiModelProperty(value = "SmsRequestGroup 의 ID", example = "1")
+    private Long smsRequestGroupId;
 
     @ApiModelProperty(value = "요청 그룹 상태(발송중, 완료)", example = "IN_PROGRESS")
     private SmsRequestGroupStatus status;
@@ -22,7 +22,7 @@ public class SmsRequestGroupResponse {
     @ApiModelProperty(value = "문자 내용", example = "합격을 축하행~!")
     private String content;
 
-    public static SmsRequestGroupResponse of(SmsRequestGroup smsRequestGroup){
+    public static SmsRequestGroupResponse of(SmsRequestGroup smsRequestGroup) {
         return new SmsRequestGroupResponse(
                 smsRequestGroup.getSmsRequestGroupId(),
                 smsRequestGroup.getStatus(),
