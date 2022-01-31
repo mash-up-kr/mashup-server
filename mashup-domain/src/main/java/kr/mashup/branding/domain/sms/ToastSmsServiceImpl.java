@@ -52,7 +52,7 @@ public class ToastSmsServiceImpl implements ToastSmsService {
 
     private ToastSmsRequest buildBody(SmsRequestGroup smsRequestGroup, List<SmsRequest> requests) {
         List<ToastSmsRequest.Recipient> recipients = requests.stream()
-                .map(smsRequest -> ToastSmsRequest.Recipient.of(smsRequest.getToastKey(), smsRequest.getPhoneNumber()))
+                .map(smsRequest -> ToastSmsRequest.Recipient.of(smsRequest.getPhoneNumber(), smsRequest.getToastKey()))
                 .collect(Collectors.toList());
         return ToastSmsRequest.of(
                 smsRequestGroup.getContent(),

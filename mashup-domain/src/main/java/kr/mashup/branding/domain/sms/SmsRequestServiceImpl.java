@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 @Service
-class SmsRequestServiceImpl implements SmsRequestService{
+class SmsRequestServiceImpl implements SmsRequestService {
 
     private final SmsRequestRepository smsRequestRepository;
     private final SmsRequestGroupService smsRequestGroupService;
@@ -47,10 +47,10 @@ class SmsRequestServiceImpl implements SmsRequestService{
     @Override
     public void markRequestsWithToastResponse(ToastSmsResponse toastSmsResponse, SmsRequestGroup smsRequestGroup) {
         List<SmsRequest> smsRequests = smsRequestGroup.getSmsRequests();
-        Map<Long, SmsRequest> requestMap = smsRequests.stream().collect(Collectors.toMap(SmsRequest::getSmsRequestId, Function.identity()));
+        Map<String, SmsRequest> requestMap = smsRequests.stream().collect(Collectors.toMap(SmsRequest::getToastKey, Function.identity()));
         toastSmsResponse.getBody().getData().getSendResultList().forEach(
                 toastSendResult -> {
-                    SmsRequest smsRequest = requestMap.get(Long.parseLong(toastSendResult.getRecipientGroupingKey()));
+                    SmsRequest smsRequest = requestMap.get(toastSendResult.getRecipientGroupingKey());
                     if (toastSendResult.getResultCode() == 0) {
                         smsRequest.markAsSuccess();
                     } else {
