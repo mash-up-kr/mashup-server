@@ -3,8 +3,8 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
-toast:
-  sms:
+sms:
+  toast:
     url: test
     app-key: test
     secret-key: test
