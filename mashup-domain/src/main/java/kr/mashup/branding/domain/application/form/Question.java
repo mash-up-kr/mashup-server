@@ -40,6 +40,11 @@ public class Question {
     private Integer properSize;
 
     /**
+     * 필수 질문 여부
+     */
+    private Boolean required;
+
+    /**
      * 질문 종류 (단답형, 장문형)
      */
     @Enumerated(EnumType.STRING)
@@ -55,6 +60,7 @@ public class Question {
         Question question = new Question();
         question.content = createQuestionVo.getContent();
         question.properSize = createQuestionVo.getProperSize();
+        question.required = createQuestionVo.getRequired();
         question.questionType = createQuestionVo.getQuestionType();
         return question;
     }
