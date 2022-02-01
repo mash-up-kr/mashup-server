@@ -8,4 +8,5 @@ import lombok.Value;
 public class CreateApplicationFormVo {
     Long teamId;
     List<CreateQuestionVo> createQuestionVoList;
+    String name;
 }

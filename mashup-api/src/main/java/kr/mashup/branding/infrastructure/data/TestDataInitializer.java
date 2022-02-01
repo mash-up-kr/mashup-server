@@ -78,7 +78,8 @@ public class TestDataInitializer {
                     "\uD83D\uDDA5 GitHub 혹은 블로그 주소가 있다면 알려주세요.",
                     null
                 )
-            )
+            ),
+            "스프링팀 11기 지원서"
         ));
     }
 }
