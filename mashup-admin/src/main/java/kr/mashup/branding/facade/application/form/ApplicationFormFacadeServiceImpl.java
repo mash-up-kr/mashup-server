@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
+import kr.mashup.branding.domain.application.form.UpdateApplicationFormVo;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -17,11 +18,25 @@ public class ApplicationFormFacadeServiceImpl implements ApplicationFormFacadeSe
 
     @Override
     public ApplicationForm create(CreateApplicationFormVo createApplicationFormVo) {
-        return applicationFormService.createApplicationForm(createApplicationFormVo);
+        return applicationFormService.create(createApplicationFormVo);
+    }
+
+    @Override
+    public ApplicationForm update(
+        Long teamId,
+        Long applicationFormId,
+        UpdateApplicationFormVo updateApplicationFormVo
+    ) {
+        return applicationFormService.update(teamId, applicationFormId, updateApplicationFormVo);
     }
 
     @Override
     public List<ApplicationForm> getApplicationForms(Long teamId) {
         return Collections.emptyList();
+    }
+
+    @Override
+    public void delete(Long teamId, Long applicationFormId) {
+        applicationFormService.delete(teamId, applicationFormId);
     }
 }

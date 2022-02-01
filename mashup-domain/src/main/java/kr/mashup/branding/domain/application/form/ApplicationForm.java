@@ -1,12 +1,16 @@
 package kr.mashup.branding.domain.application.form;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -22,18 +26,19 @@ import lombok.ToString;
 @Entity
 @Getter
 @ToString
-@EqualsAndHashCode(of = "ApplicationFormId")
+@EqualsAndHashCode(of = "applicationFormId")
 @EntityListeners(AuditingEntityListener.class)
 public class ApplicationForm {
     @Id
     @GeneratedValue
-    private Long ApplicationFormId;
+    private Long applicationFormId;
 
     @ManyToOne
     private Team team;
 
-    @OneToMany
-    private List<Question> questions;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "applicationFormId")
+    private final List<Question> questions = new ArrayList<>();
 
     private String name;
 
@@ -50,8 +55,21 @@ public class ApplicationForm {
     ) {
         ApplicationForm applicationForm = new ApplicationForm();
         applicationForm.team = team;
-        applicationForm.questions = questions;
+        applicationForm.questions.addAll(questions);
         applicationForm.name = name;
         return applicationForm;
+    }
+
+    /**
+     * 요청 보내주는대로 덮어쓰기
+     */
+    public void update(UpdateApplicationFormVo updateApplicationFormVo) {
+        questions.clear();
+        questions.addAll(updateApplicationFormVo.getQuestions()
+            .stream()
+            .map(Question::of)
+            .collect(Collectors.toList())
+        );
+        name = updateApplicationFormVo.getName();
     }
 }

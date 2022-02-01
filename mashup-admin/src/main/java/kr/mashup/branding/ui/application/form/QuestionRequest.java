@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class CreateQuestionRequest {
+public class QuestionRequest {
     private String content;
     private Integer properSize;
     private Boolean required;

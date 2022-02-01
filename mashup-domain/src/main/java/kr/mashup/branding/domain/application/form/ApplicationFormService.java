@@ -3,7 +3,11 @@ package kr.mashup.branding.domain.application.form;
 import java.util.List;
 
 public interface ApplicationFormService {
-    ApplicationForm createApplicationForm(CreateApplicationFormVo createApplicationFormVo);
+    ApplicationForm create(CreateApplicationFormVo createApplicationFormVo);
+
+    ApplicationForm update(Long teamId, Long applicationFormId, UpdateApplicationFormVo updateApplicationFormVo);
+
+    void delete(Long teamId, Long applicationFormId);
 
     ApplicationForm getApplicationFormById(Long applicationFormId);
 

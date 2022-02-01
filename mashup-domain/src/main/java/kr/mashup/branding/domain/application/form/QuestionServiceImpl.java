@@ -1,8 +1,9 @@
 package kr.mashup.branding.domain.application.form;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true)
@@ -12,7 +13,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public Question createQuestion(CreateQuestionVo createQuestionVo) {
-        return questionRepository.save(Question.of(createQuestionVo));
+    public Question createQuestion(QuestionRequestVo questionRequestVo) {
+        return questionRepository.save(Question.of(questionRequestVo));
     }
 }

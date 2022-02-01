@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class CreateApplicationFormRequest {
+public class UpdateApplicationFormRequest {
     private List<QuestionRequest> questions;
     private String name;
 }

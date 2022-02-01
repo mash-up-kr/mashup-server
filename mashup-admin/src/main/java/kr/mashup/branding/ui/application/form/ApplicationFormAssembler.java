@@ -6,9 +6,10 @@ import org.springframework.stereotype.Component;
 
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
-import kr.mashup.branding.domain.application.form.CreateQuestionVo;
 import kr.mashup.branding.domain.application.form.Question;
+import kr.mashup.branding.domain.application.form.QuestionRequestVo;
 import kr.mashup.branding.domain.application.form.QuestionType;
+import kr.mashup.branding.domain.application.form.UpdateApplicationFormVo;
 
 @Component
 public class ApplicationFormAssembler {
@@ -40,18 +41,28 @@ public class ApplicationFormAssembler {
             teamId,
             createApplicationFormRequest.getQuestions()
                 .stream()
-                .map(this::toCreateQuestionVo)
+                .map(this::toQuestionRequestVo)
                 .collect(Collectors.toList()),
             createApplicationFormRequest.getName()
         );
     }
 
-    CreateQuestionVo toCreateQuestionVo(CreateQuestionRequest createQuestionRequest) {
-        return CreateQuestionVo.of(
-            createQuestionRequest.getContent(),
-            createQuestionRequest.getProperSize(),
-            createQuestionRequest.getRequired(),
-            QuestionType.valueOf(createQuestionRequest.getQuestionType())
+    QuestionRequestVo toQuestionRequestVo(QuestionRequest questionRequest) {
+        return QuestionRequestVo.of(
+            questionRequest.getContent(),
+            questionRequest.getProperSize(),
+            questionRequest.getRequired(),
+            QuestionType.valueOf(questionRequest.getQuestionType())
+        );
+    }
+
+    UpdateApplicationFormVo toUpdateApplicationFormVo(UpdateApplicationFormRequest updateApplicationFormRequest) {
+        return UpdateApplicationFormVo.of(
+            updateApplicationFormRequest.getQuestions()
+                .stream()
+                .map(this::toQuestionRequestVo)
+                .collect(Collectors.toList()),
+            updateApplicationFormRequest.getName()
         );
     }
 }

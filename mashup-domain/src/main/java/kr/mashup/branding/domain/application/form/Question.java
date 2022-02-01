@@ -56,12 +56,12 @@ public class Question {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public static Question of(CreateQuestionVo createQuestionVo) {
+    public static Question of(QuestionRequestVo questionRequestVo) {
         Question question = new Question();
-        question.content = createQuestionVo.getContent();
-        question.properSize = createQuestionVo.getProperSize();
-        question.required = createQuestionVo.getRequired();
-        question.questionType = createQuestionVo.getQuestionType();
+        question.content = questionRequestVo.getContent();
+        question.properSize = questionRequestVo.getProperSize();
+        question.required = questionRequestVo.getRequired();
+        question.questionType = questionRequestVo.getQuestionType();
         return question;
     }
 }
