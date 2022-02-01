@@ -41,12 +41,12 @@ public class TestDataInitializer {
     }
 
     private List<Team> createTeams() {
-        teamService.createTeam(CreateTeamVo.of("Design"));
-        teamService.createTeam(CreateTeamVo.of("Web"));
-        teamService.createTeam(CreateTeamVo.of("Android"));
-        teamService.createTeam(CreateTeamVo.of("iOS"));
-        teamService.createTeam(CreateTeamVo.of("Node"));
-        teamService.createTeam(CreateTeamVo.of("Spring"));
+        teamService.create(CreateTeamVo.of("Design"));
+        teamService.create(CreateTeamVo.of("Web"));
+        teamService.create(CreateTeamVo.of("Android"));
+        teamService.create(CreateTeamVo.of("iOS"));
+        teamService.create(CreateTeamVo.of("Node"));
+        teamService.create(CreateTeamVo.of("Spring"));
         return teamService.findAllTeams();
     }
 
