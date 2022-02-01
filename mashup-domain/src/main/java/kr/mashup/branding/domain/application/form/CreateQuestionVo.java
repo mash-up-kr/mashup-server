@@ -6,4 +6,5 @@ import lombok.Value;
 public class CreateQuestionVo {
     String content;
     Integer properSize;
+    QuestionType questionType;
 }

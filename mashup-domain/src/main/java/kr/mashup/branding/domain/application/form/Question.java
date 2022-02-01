@@ -1,14 +1,22 @@
 package kr.mashup.branding.domain.application.form;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -31,6 +39,12 @@ public class Question {
      */
     private Integer properSize;
 
+    /**
+     * 질문 종류 (단답형, 장문형)
+     */
+    @Enumerated(EnumType.STRING)
+    private QuestionType questionType;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -41,6 +55,7 @@ public class Question {
         Question question = new Question();
         question.content = createQuestionVo.getContent();
         question.properSize = createQuestionVo.getProperSize();
+        question.questionType = createQuestionVo.getQuestionType();
         return question;
     }
 }
