@@ -20,7 +20,8 @@ public class ApplicationFormAssembler {
             teamAssembler.toTeamResponse(applicationForm.getTeam()),
             applicationForm.getQuestions().stream()
                 .map(this::toQuestionResponse)
-                .collect(Collectors.toList())
+                .collect(Collectors.toList()),
+            applicationForm.getName()
         );
     }
 
@@ -28,7 +29,9 @@ public class ApplicationFormAssembler {
         return new QuestionResponse(
             question.getQuestionId(),
             question.getContent(),
-            question.getProperSize()
+            question.getProperSize(),
+            question.getRequired(),
+            question.getQuestionType().name()
         );
     }
 }

@@ -10,4 +10,5 @@ public class ApplicationFormResponse {
     private final Long applicationFormId;
     private final TeamResponse team;
     private final List<QuestionResponse> questions;
+    private final String name;
 }
