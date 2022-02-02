@@ -31,7 +31,7 @@ public class ApplicationFormController {
     @GetMapping
     public List<ApplicationFormResponse> getApplicationForms(
         @PathVariable Long teamId,
-        @RequestParam String name,
+        @RequestParam(required = false) String name,
         Pageable pageable
     ) {
         return applicationFormFacadeService.getApplicationForms(teamId, name, pageable)

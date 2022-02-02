@@ -3,6 +3,7 @@ package kr.mashup.branding.domain.application.form;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,7 +66,12 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     }
 
     @Override
-    public List<ApplicationForm> getApplicationForms(Long teamId, String keyword, Pageable pageable) {
+    public Page<ApplicationForm> getApplicationForms(Long teamId, String keyword, Pageable pageable) {
         return applicationFormRepository.findByTeam_teamIdAndNameLike(teamId, keyword, pageable);
+    }
+
+    @Override
+    public Page<ApplicationForm> getApplicationForms(Long teamId, Pageable pageable) {
+        return applicationFormRepository.findByTeam_teamId(teamId, pageable);
     }
 }

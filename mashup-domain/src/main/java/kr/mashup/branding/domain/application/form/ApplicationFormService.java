@@ -2,6 +2,7 @@ package kr.mashup.branding.domain.application.form;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ApplicationFormService {
@@ -15,5 +16,7 @@ public interface ApplicationFormService {
 
     List<ApplicationForm> getApplicationFormsByTeamId(Long teamId);
 
-    List<ApplicationForm> getApplicationForms(Long teamId, String keyword, Pageable pageable);
+    Page<ApplicationForm> getApplicationForms(Long teamId, String keyword, Pageable pageable);
+
+    Page<ApplicationForm> getApplicationForms(Long teamId, Pageable pageable);
 }

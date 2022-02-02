@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
@@ -32,7 +33,10 @@ public class ApplicationFormFacadeServiceImpl implements ApplicationFormFacadeSe
 
     @Override
     public List<ApplicationForm> getApplicationForms(Long teamId, String name, Pageable pageable) {
-        return applicationFormService.getApplicationForms(teamId, name, pageable);
+        if (StringUtils.hasText(name)) {
+            return applicationFormService.getApplicationForms(teamId, name, pageable).getContent();
+        }
+        return applicationFormService.getApplicationForms(teamId, pageable).getContent();
     }
 
     @Override
