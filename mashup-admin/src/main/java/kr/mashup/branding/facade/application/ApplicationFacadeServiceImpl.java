@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationService;
-import kr.mashup.branding.domain.application.result.ApplicationResultStatus;
+import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
@@ -28,12 +30,13 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
     }
 
     @Override
-    public List<Application> update(List<Long> applicationIds, ApplicationResultStatus status) {
-        return applicationIds.stream()
+    public List<Application> updateResult(List<UpdateApplicationResultVo> updateApplicationResultVoList) {
+        return updateApplicationResultVoList.stream()
             .map(it -> {
                 try {
-                    return applicationService.updateResult(it, status);
+                    return applicationService.updateResult(it);
                 } catch (Exception e) {
+                    log.warn("Failed to update result. applicationId: {}", it.getApplicationId(), e);
                     return null;
                 }
             })

@@ -11,7 +11,7 @@ import org.springframework.util.Assert;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
-import kr.mashup.branding.domain.application.result.ApplicationResultStatus;
+import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.domain.team.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -91,10 +91,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public Application updateResult(Long applicationId, ApplicationResultStatus status) {
-        Application application = applicationRepository.findById(applicationId)
+    public Application updateResult(UpdateApplicationResultVo updateApplicationResultVo) {
+        Application application = applicationRepository.findById(updateApplicationResultVo.getApplicationId())
             .orElseThrow(ApplicationNotFoundException::new);
-        application.updateResult(status);
+        application.updateResult(updateApplicationResultVo.getStatus());
         return application;
     }
 
