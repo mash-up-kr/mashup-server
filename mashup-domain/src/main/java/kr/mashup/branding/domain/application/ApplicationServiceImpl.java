@@ -2,6 +2,8 @@ package kr.mashup.branding.domain.application;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -70,7 +72,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         // TODO: applicant 이름, 연락처 저장
         Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(ApplicationNotFoundException::new);
+            .orElseThrow(ApplicationNotFoundException::new);
         application.update(updateApplicationVo);
         return application;
     }
@@ -99,6 +101,18 @@ public class ApplicationServiceImpl implements ApplicationService {
         Assert.notNull(applicationId, "'applicationId' must not be null");
         // TODO: applicant
         return applicationRepository.findById(applicationId)
-                .orElseThrow(ApplicationNotFoundException::new);
+            .orElseThrow(ApplicationNotFoundException::new);
+    }
+
+    @Override
+    public Application getApplication(Long applicationId) {
+        Assert.notNull(applicationId, "'applicationId' must not be null");
+        return applicationRepository.findById(applicationId)
+            .orElseThrow(ApplicationNotFoundException::new);
+    }
+
+    @Override
+    public Page<Application> getApplications(String searchWord, Pageable pageable) {
+        return applicationRepository.findAll(pageable);
     }
 }
