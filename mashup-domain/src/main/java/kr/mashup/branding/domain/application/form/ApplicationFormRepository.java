@@ -14,5 +14,5 @@ public interface ApplicationFormRepository extends JpaRepository<ApplicationForm
 
     Optional<ApplicationForm> findByTeam_teamIdAndApplicationFormId(Long teamId, Long applicationFormId);
 
-    Page<ApplicationForm> findByTeam_teamIdAndNameLike(Long teamId, String name, Pageable pageable);
+    Page<ApplicationForm> findByTeam_teamIdAndNameContaining(Long teamId, String name, Pageable pageable);
 }
