@@ -1,10 +1,11 @@
 package kr.mashup.branding.domain.team;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true)
@@ -14,7 +15,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     @Transactional
-    public Team createTeam(CreateTeamVo createTeamVo) {
+    public Team create(CreateTeamVo createTeamVo) {
         return teamRepository.save(Team.of(createTeamVo));
     }
 

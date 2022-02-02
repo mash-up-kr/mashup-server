@@ -1,4 +1,9 @@
 spring:
+  profiles:
+    group:
+      local: swagger
+      develop: swagger
+      production:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

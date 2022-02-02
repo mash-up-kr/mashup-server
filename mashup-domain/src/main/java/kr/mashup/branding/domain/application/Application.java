@@ -89,10 +89,10 @@ public class Application {
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
         Map<Long, AnswerRequestVo> questionAnswerMap = updateApplicationVo.getAnswerRequestVoList()
             .stream()
-            .collect(Collectors.toMap(AnswerRequestVo::getQuestionId, Function.identity()));
+            .collect(Collectors.toMap(AnswerRequestVo::getAnswerId, Function.identity()));
         answers.forEach(it -> {
-            Long questionId = it.getQuestion().getQuestionId();
-            AnswerRequestVo answerRequestVo = questionAnswerMap.get(questionId);
+            Long answerId = it.getAnswerId();
+            AnswerRequestVo answerRequestVo = questionAnswerMap.get(answerId);
             it.update(answerRequestVo.getContent());
         });
         status = status.update();

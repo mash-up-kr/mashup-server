@@ -1,13 +1,15 @@
 package kr.mashup.branding.ui.application;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
+@Getter
+@ToString
 public class AnswerRequest {
     /**
-     * 질문 식별자
+     * 답변 식별자
      */
-    private Long questionId;
+    private Long answerId;
     /**
      * 답변 내용
      */

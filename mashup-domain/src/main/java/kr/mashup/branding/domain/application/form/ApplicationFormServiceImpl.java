@@ -26,7 +26,8 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
             createApplicationFormVo.getCreateQuestionVoList()
                 .stream()
                 .map(questionService::createQuestion)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()),
+            createApplicationFormVo.getName());
         return applicationFormRepository.save(applicationForm);
     }
 
