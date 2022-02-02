@@ -5,12 +5,16 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import kr.mashup.branding.domain.application.result.ApplicationResultStatus;
+
 public interface ApplicationService {
     Application create(CreateApplicationVo createApplicationVo);
 
     Application update(Long applicationId, UpdateApplicationVo updateApplicationVo);
 
     Application submit(Long applicationId);
+
+    Application updateResult(Long applicationId, ApplicationResultStatus status);
 
     List<Application> getApplications(Long applicantId);
 

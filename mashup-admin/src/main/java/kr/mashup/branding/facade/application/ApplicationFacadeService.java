@@ -5,9 +5,12 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.domain.application.result.ApplicationResultStatus;
 
 public interface ApplicationFacadeService {
     List<Application> getApplications(String searchWord, Pageable pageable);
 
     Application getApplication(Long applicationId);
+
+    List<Application> update(List<Long> applicationIds, ApplicationResultStatus status);
 }
