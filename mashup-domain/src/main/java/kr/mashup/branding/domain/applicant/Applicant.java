@@ -2,7 +2,6 @@ package kr.mashup.branding.domain.applicant;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -32,10 +31,8 @@ public class Applicant {
 
     private String googleUserId;
 
-    @Column(nullable = true)
     private String name;
 
-    @Column(nullable = true)
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
