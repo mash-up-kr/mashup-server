@@ -2,6 +2,8 @@ package kr.mashup.branding.domain.application;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -9,6 +11,7 @@ import org.springframework.util.Assert;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
+import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.domain.team.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +73,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         // TODO: applicant 이름, 연락처 저장
         Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(ApplicationNotFoundException::new);
+            .orElseThrow(ApplicationNotFoundException::new);
         application.update(updateApplicationVo);
         return application;
     }
@@ -87,6 +90,15 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    @Transactional
+    public Application updateResult(UpdateApplicationResultVo updateApplicationResultVo) {
+        Application application = applicationRepository.findById(updateApplicationResultVo.getApplicationId())
+            .orElseThrow(ApplicationNotFoundException::new);
+        application.updateResult(updateApplicationResultVo.getStatus());
+        return application;
+    }
+
+    @Override
     public List<Application> getApplications(Long applicantId) {
         // TODO: applicant
         return applicationRepository.findByStatusIn(ApplicationStatus.validSet());
@@ -99,6 +111,18 @@ public class ApplicationServiceImpl implements ApplicationService {
         Assert.notNull(applicationId, "'applicationId' must not be null");
         // TODO: applicant
         return applicationRepository.findById(applicationId)
-                .orElseThrow(ApplicationNotFoundException::new);
+            .orElseThrow(ApplicationNotFoundException::new);
+    }
+
+    @Override
+    public Application getApplication(Long applicationId) {
+        Assert.notNull(applicationId, "'applicationId' must not be null");
+        return applicationRepository.findById(applicationId)
+            .orElseThrow(ApplicationNotFoundException::new);
+    }
+
+    @Override
+    public Page<Application> getApplications(String searchWord, Pageable pageable) {
+        return applicationRepository.findAll(pageable);
     }
 }

@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -24,8 +25,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
 
 import kr.mashup.branding.domain.application.form.ApplicationForm;
+import kr.mashup.branding.domain.application.result.ApplicationResult;
+import kr.mashup.branding.domain.application.result.ApplicationResultStatus;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 // TODO: applicant
@@ -34,6 +39,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode(of = "applicationId")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Application {
     @Id
@@ -42,6 +48,9 @@ public class Application {
 
     @ManyToOne
     private ApplicationForm applicationForm;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private ApplicationResult applicationResult;
 
     /**
      * 지원자가 지원서 작성중인 상태
@@ -73,6 +82,7 @@ public class Application {
         // TODO: applicant
         Application application = new Application();
         application.applicationForm = applicationForm;
+        application.applicationResult = ApplicationResult.of(application);
         application.status = ApplicationStatus.CREATED;
         List<Answer> answers = applicationForm.getQuestions()
             .stream()
@@ -98,6 +108,9 @@ public class Application {
         status = status.update();
     }
 
+    /**
+     * 지원서 제출
+     */
     void submit() {
         try {
             status = status.submit();
@@ -105,6 +118,13 @@ public class Application {
         } catch (ApplicationAlreadySubmittedException e) {
             // 이미 제출한 지원서를 다시 제출 시도하는 경우 성공으로 응답
         }
+    }
+
+    /**
+     * 지원서 결과 수정
+     */
+    void updateResult(ApplicationResultStatus status) {
+        applicationResult.update(status);
     }
 
     boolean isSubmitted() {
