@@ -3,6 +3,8 @@ package kr.mashup.branding.domain.application.form;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,15 +22,36 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
 
     @Override
     @Transactional
-    public ApplicationForm createApplicationForm(CreateApplicationFormVo createApplicationFormVo) {
+    public ApplicationForm create(CreateApplicationFormVo createApplicationFormVo) {
         Team team = teamService.getTeam(createApplicationFormVo.getTeamId());
         ApplicationForm applicationForm = ApplicationForm.of(team,
-            createApplicationFormVo.getCreateQuestionVoList()
+            createApplicationFormVo.getQuestionRequestVoList()
                 .stream()
                 .map(questionService::createQuestion)
                 .collect(Collectors.toList()),
             createApplicationFormVo.getName());
         return applicationFormRepository.save(applicationForm);
+    }
+
+    @Override
+    @Transactional
+    public ApplicationForm update(
+        Long teamId,
+        Long applicationFormId,
+        UpdateApplicationFormVo updateApplicationFormVo
+    ) {
+        ApplicationForm applicationForm = applicationFormRepository.findByTeam_teamIdAndApplicationFormId(
+            teamId, applicationFormId)
+            .orElseThrow(ApplicationFormNotFoundException::new);
+        applicationForm.update(updateApplicationFormVo);
+        return applicationForm;
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long teamId, Long applicationFormId) {
+        applicationFormRepository.findByTeam_teamIdAndApplicationFormId(teamId, applicationFormId)
+            .ifPresent(applicationFormRepository::delete);
     }
 
     @Override
@@ -40,5 +63,15 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Override
     public List<ApplicationForm> getApplicationFormsByTeamId(Long teamId) {
         return applicationFormRepository.findByTeam_teamId(teamId);
+    }
+
+    @Override
+    public Page<ApplicationForm> getApplicationForms(Long teamId, String keyword, Pageable pageable) {
+        return applicationFormRepository.findByTeam_teamIdAndNameContaining(teamId, keyword, pageable);
+    }
+
+    @Override
+    public Page<ApplicationForm> getApplicationForms(Long teamId, Pageable pageable) {
+        return applicationFormRepository.findByTeam_teamId(teamId, pageable);
     }
 }
