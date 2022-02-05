@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import kr.mashup.branding.domain.applicant.Applicant;
+import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
+import kr.mashup.branding.domain.applicant.ApplicantService;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
@@ -25,13 +28,23 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final ApplicationFormService applicationFormService;
     private final TeamService teamService;
+    private final ApplicantService applicantService;
 
     // get or create
     // TODO: 모르겠고 teamId 줄테니 다내놔! 에 대해서 고민해보기
     @Override
     @Transactional
-    public Application create(CreateApplicationVo createApplicationVo) {
+    public Application create(Long applicantId, CreateApplicationVo createApplicationVo) {
+        Assert.notNull(applicantId, "'applicantId' must not be null");
         Assert.notNull(createApplicationVo, "'createApplicationVo' must not be null");
+
+        final Applicant applicant;
+        try {
+            applicant = applicantService.getApplicant(applicantId);
+        } catch (ApplicantNotFoundException e) {
+            // TODO: 적절한 예외 만들기
+            throw new IllegalArgumentException("Applicant not found. applicantId: " + applicantId);
+        }
 
         try {
             teamService.getTeam(createApplicationVo.getTeamId());
@@ -39,6 +52,9 @@ public class ApplicationServiceImpl implements ApplicationService {
             // TODO: 적절한 예외 만들기
             throw new IllegalArgumentException("Team not found. teamId: " + createApplicationVo.getTeamId());
         }
+
+        // TODO: 이미 다른팀에 임시저장/제출완료한 다른 지원서가 있는지 검사
+
         final ApplicationForm applicationForm;
         try {
             applicationForm = applicationFormService.getApplicationFormsByTeamId(createApplicationVo.getTeamId())
@@ -50,8 +66,8 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new IllegalArgumentException("ApplicationForm not found. teamId: " + createApplicationVo.getTeamId());
         }
 
-        // TODO: applicant 쿼리 조건에 applicant 추가
-        List<Application> applications = applicationRepository.findByApplicationForm(applicationForm);
+        List<Application> applications = applicationRepository.findByApplicantAndApplicationForm(applicant,
+            applicationForm);
         // TODO: unique index (applicantId, applicationFormId)
         if (!applications.isEmpty()) {
             Application application = applications.get(0);
@@ -61,8 +77,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             return application;
         }
 
-        // TODO: applicant 지원서 생성시 applicant 추가
-        return applicationRepository.save(Application.from(applicationForm));
+        return applicationRepository.save(Application.of(applicant, applicationForm));
     }
 
     @Override
@@ -100,8 +115,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<Application> getApplications(Long applicantId) {
-        // TODO: applicant
-        return applicationRepository.findByStatusIn(ApplicationStatus.validSet());
+        return applicationRepository.findByApplicant_applicantIdAndStatusIn(applicantId, ApplicationStatus.validSet());
     }
 
     // TODO: 상세 조회시 form 도 같이 조합해서 내려주어야할듯 (teamId, memberId 요청하면 해당팀 쓰던 지원서 질문, 내용 다 합쳐서)
@@ -117,6 +131,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Application getApplication(Long applicationId) {
         Assert.notNull(applicationId, "'applicationId' must not be null");
+        // TODO: staff 권한 검사 (같은 팀만 볼수있어야함, 회장, 부회장, 브랜딩팀은 모든 팀 볼수있음)
         return applicationRepository.findById(applicationId)
             .orElseThrow(ApplicationNotFoundException::new);
     }

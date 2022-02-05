@@ -19,15 +19,15 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
      * 각 팀의 지원서 상세페이지 접근시 빈 지원서 생성
      */
     @Override
-    public Application create(CreateApplicationVo createApplicationVo) {
-        return applicationService.create(createApplicationVo);
+    public Application create(Long applicantId, CreateApplicationVo createApplicationVo) {
+        return applicationService.create(applicantId, createApplicationVo);
     }
 
     /**
      * 지원서 임시저장
      */
     @Override
-    public Application update(Long applicationId, UpdateApplicationVo updateApplicationVo) {
+    public Application update(Long applicantId, Long applicationId, UpdateApplicationVo updateApplicationVo) {
         return applicationService.update(applicationId, updateApplicationVo);
     }
 
@@ -35,7 +35,7 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
      * 지원서 제출
      */
     @Override
-    public Application submit(Long applicationId) {
+    public Application submit(Long applicantId, Long applicationId) {
         return applicationService.submit(applicationId);
     }
 
