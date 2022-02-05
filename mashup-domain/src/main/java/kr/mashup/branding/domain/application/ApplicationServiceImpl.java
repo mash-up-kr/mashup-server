@@ -1,5 +1,6 @@
 package kr.mashup.branding.domain.application;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.util.Assert;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
 import kr.mashup.branding.domain.applicant.ApplicantService;
+import kr.mashup.branding.domain.MashupSchedule;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
@@ -37,6 +39,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     public Application create(Long applicantId, CreateApplicationVo createApplicationVo) {
         Assert.notNull(applicantId, "'applicantId' must not be null");
         Assert.notNull(createApplicationVo, "'createApplicationVo' must not be null");
+
+        validateDate(LocalDateTime.now());
 
         final Applicant applicant;
         try {
@@ -86,6 +90,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         Assert.notNull(applicationId, "'applicationId' must not be null");
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
 
+        validateDate(LocalDateTime.now());
+
         // TODO: applicant 이름, 연락처 저장
         Application application = applicationRepository.findById(applicationId)
             .orElseThrow(ApplicationNotFoundException::new);
@@ -98,10 +104,21 @@ public class ApplicationServiceImpl implements ApplicationService {
     public Application submit(Long applicationId) {
         Assert.notNull(applicationId, "'applicationId' must not be null");
 
+        validateDate(LocalDateTime.now());
+
         Application application = applicationRepository.findById(applicationId)
             .orElseThrow(ApplicationNotFoundException::new);
         application.submit();
         return application;
+    }
+
+    /**
+     * 지원서 생성, 수정, 제출 가능한 시각인지 검증
+     */
+    private void validateDate(LocalDateTime localDateTime) {
+        if (!MashupSchedule.isRecruitAvailable(localDateTime)) {
+            throw new IllegalArgumentException("지원서 제출 기간이 아닙니다. ");
+        }
     }
 
     @Override
