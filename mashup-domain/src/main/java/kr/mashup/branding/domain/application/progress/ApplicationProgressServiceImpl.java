@@ -15,7 +15,7 @@ public class ApplicationProgressServiceImpl implements ApplicationProgressServic
 
     @Override
     public ApplicationProgress getByApplicationId(Long applicationId) {
-        return applicationProgressRepository.findByApplicationProgress_applicationProgressId(applicationId)
+        return applicationProgressRepository.findByApplication_applicationId(applicationId)
             .orElseThrow(ApplicationProgressNotFoundException::new);
     }
 }
