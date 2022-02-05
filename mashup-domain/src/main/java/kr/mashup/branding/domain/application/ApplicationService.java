@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 
 public interface ApplicationService {
-    Application create(CreateApplicationVo createApplicationVo);
+    Application create(Long applicantId, CreateApplicationVo createApplicationVo);
 
     Application update(Long applicationId, UpdateApplicationVo updateApplicationVo);
 

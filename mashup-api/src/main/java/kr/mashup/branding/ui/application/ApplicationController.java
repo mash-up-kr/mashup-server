@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
+import kr.mashup.branding.domain.applicant.ApplicantService;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.facade.application.ApplicationFacadeService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class ApplicationController {
     private final ApplicationFacadeService applicationFacadeService;
     private final ApplicationAssembler applicationAssembler;
+    private final ApplicantService applicantService;
 
     /**
      * 팀 id(or name) 받아서 만들기
@@ -31,7 +33,9 @@ public class ApplicationController {
     public ApplicationResponse create(
         @RequestBody CreateApplicationRequest createApplicationRequest
     ) {
+        Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService.create(
+            applicantId,
             applicationAssembler.toCreateApplicationVo(createApplicationRequest)
         );
         return applicationAssembler.toApplicationResponse(application);
@@ -48,10 +52,11 @@ public class ApplicationController {
         @PathVariable Long applicationId,
         @RequestBody UpdateApplicationRequest updateApplicationRequest
     ) {
+        Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService.update(
+            applicantId,
             applicationId,
-            applicationAssembler.toUpdateApplicationVo(updateApplicationRequest)
-        );
+            applicationAssembler.toUpdateApplicationVo(updateApplicationRequest));
         return applicationAssembler.toApplicationResponse(application);
     }
 
@@ -65,17 +70,15 @@ public class ApplicationController {
     public ApplicationResponse submit(
         @PathVariable Long applicationId
     ) {
-        // TODO: applicant
-        Long applicantId = 0L;
-        Application application = applicationFacadeService.submit(applicationId);
+        Long applicantId = getTesterApplicantId();
+        Application application = applicationFacadeService.submit(applicantId, applicationId);
         return applicationAssembler.toApplicationResponse(application);
     }
 
     @ApiOperation("내 지원서 목록 조회")
     @GetMapping
     public List<ApplicationResponse> getApplications() {
-        // TODO: applicant
-        Long applicantId = 0L;
+        Long applicantId = getTesterApplicantId();
         List<Application> applications = applicationFacadeService.getApplications(applicantId);
         return applications.stream()
             .map(applicationAssembler::toApplicationResponse)
@@ -87,9 +90,13 @@ public class ApplicationController {
     public ApplicationResponse getApplication(
         @PathVariable Long applicationId
     ) {
-        // TODO: applicant
-        Long applicantId = 0L;
+        Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService.getApplication(applicantId, applicationId);
         return applicationAssembler.toApplicationResponse(application);
+    }
+
+    // TODO: 로그인 완성되면 삭제해야함
+    private Long getTesterApplicantId() {
+        return applicantService.getTester().getApplicantId();
     }
 }
