@@ -11,6 +11,9 @@ import org.springframework.util.Assert;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
+import kr.mashup.branding.domain.application.progress.ApplicationProgress;
+import kr.mashup.branding.domain.application.progress.ApplicationProgressService;
+import kr.mashup.branding.domain.application.progress.UpdateApplicationProgressVo;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.domain.team.TeamService;
@@ -24,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final ApplicationFormService applicationFormService;
+    private final ApplicationProgressService applicationProgressService;
     private final TeamService teamService;
 
     // get or create
@@ -96,6 +100,15 @@ public class ApplicationServiceImpl implements ApplicationService {
             .orElseThrow(ApplicationNotFoundException::new);
         application.updateResult(updateApplicationResultVo.getStatus());
         return application;
+    }
+
+    @Override
+    @Transactional
+    public ApplicationProgress updateProgressFromApplicant(UpdateApplicationProgressVo updateApplicationProgressVo) {
+        Application application = applicationRepository.findById(updateApplicationProgressVo.getApplicationId())
+            .orElseThrow(ApplicationNotFoundException::new);
+        application.updateProgressFromApplicant(updateApplicationProgressVo.getStatus());
+        return application.getApplicationProgress();
     }
 
     @Override

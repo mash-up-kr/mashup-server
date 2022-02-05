@@ -25,6 +25,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
 
 import kr.mashup.branding.domain.application.form.ApplicationForm;
+import kr.mashup.branding.domain.application.progress.ApplicationProgress;
+import kr.mashup.branding.domain.application.progress.ApplicationProgressStatus;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.domain.application.result.ApplicationResultStatus;
 import lombok.AccessLevel;
@@ -51,6 +53,9 @@ public class Application {
 
     @OneToOne(cascade = CascadeType.ALL)
     private ApplicationResult applicationResult;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private ApplicationProgress applicationProgress;
 
     /**
      * 지원자가 지원서 작성중인 상태
@@ -83,6 +88,7 @@ public class Application {
         Application application = new Application();
         application.applicationForm = applicationForm;
         application.applicationResult = ApplicationResult.of(application);
+        application.applicationProgress = ApplicationProgress.of(application);
         application.status = ApplicationStatus.CREATED;
         List<Answer> answers = applicationForm.getQuestions()
             .stream()
@@ -125,6 +131,10 @@ public class Application {
      */
     void updateResult(ApplicationResultStatus status) {
         applicationResult.update(status);
+    }
+
+    void updateProgressFromApplicant(ApplicationProgressStatus status) {
+        applicationProgress.updateFromApplicant(status);
     }
 
     boolean isSubmitted() {
