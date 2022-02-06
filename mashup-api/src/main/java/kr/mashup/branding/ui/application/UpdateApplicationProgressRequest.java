@@ -8,6 +8,6 @@ import lombok.ToString;
 @Getter
 @ToString
 public class UpdateApplicationProgressRequest {
-    @ApiModelProperty(value = "지원서 진행 상태", example = "WAIT_CONFIRM_INTERVIEW")
+    @ApiModelProperty(value = "지원자 확인 여부", example = "INTERVIEW_CONFIRM_WAITING")
     private ApplicationProgressStatus status;
 }
