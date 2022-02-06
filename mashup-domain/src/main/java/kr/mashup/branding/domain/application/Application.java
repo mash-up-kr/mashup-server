@@ -24,6 +24,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
 
+import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.progress.ApplicationProgress;
 import kr.mashup.branding.domain.application.progress.ApplicationProgressStatus;
@@ -47,6 +48,9 @@ public class Application {
     @Id
     @GeneratedValue
     private Long applicationId;
+
+    @ManyToOne
+    private Applicant applicant;
 
     @ManyToOne
     private ApplicationForm applicationForm;
@@ -81,11 +85,13 @@ public class Application {
     /**
      * 빈 지원서 생성
      */
-    static Application from(
+    static Application of(
+        Applicant applicant,
         ApplicationForm applicationForm
     ) {
         // TODO: applicant
         Application application = new Application();
+        application.applicant = applicant;
         application.applicationForm = applicationForm;
         application.applicationResult = ApplicationResult.of(application);
         application.applicationProgress = ApplicationProgress.of(application);

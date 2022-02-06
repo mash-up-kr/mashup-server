@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import kr.mashup.branding.domain.applicant.Applicant;
+import kr.mashup.branding.domain.applicant.ApplicantRepository;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
@@ -26,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TestDataInitializer {
     private final TeamService teamService;
     private final ApplicationFormService applicationFormService;
+    private final ApplicantRepository applicantRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void initialize() {
@@ -38,6 +41,9 @@ public class TestDataInitializer {
             .get()
         );
         log.info("ApplicationForm is created. applicationForm: {}", applicationForm);
+
+        Applicant applicant = createApplicant();
+        log.info("Applicant is created. applicant: {}", applicant);
     }
 
     private List<Team> createTeams() {
@@ -94,5 +100,10 @@ public class TestDataInitializer {
             ),
             "스프링팀 11기 지원서"
         ));
+    }
+
+    private Applicant createApplicant() {
+        Applicant tester = Applicant.tester();
+        return applicantRepository.save(tester);
     }
 }

@@ -10,9 +10,14 @@ import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
+import kr.mashup.branding.ui.applicant.ApplicantAssembler;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class ApplicationAssembler {
+    private final ApplicantAssembler applicantAssembler;
+
     CreateApplicationVo toCreateApplicationVo(CreateApplicationRequest createApplicationRequest) {
         Assert.notNull(createApplicationRequest, "'createApplicationRequest' must not be null");
         return new CreateApplicationVo(createApplicationRequest.getTeamId());
@@ -21,15 +26,9 @@ public class ApplicationAssembler {
     ApplicationResponse toApplicationResponse(Application application) {
         Assert.notNull(application, "'application' must not be null");
 
-        String applicantName = "applicantName";
-        String phoneNumber = "01000000000";
-        String email = "localpart@mash-up.kr";
-
         return new ApplicationResponse(
             application.getApplicationId(),
-            applicantName,
-            phoneNumber,
-            email,
+            applicantAssembler.toApplicationResponse(application.getApplicant()),
             application.getStatus().name(),
             application.getAnswers().stream()
                 .map(this::toAnswerResponse)

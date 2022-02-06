@@ -7,13 +7,12 @@ import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.ui.application.UpdateApplicationProgressRequest;
 
-// TODO: applicant
 public interface ApplicationFacadeService {
-    Application create(CreateApplicationVo createApplicationVo);
+    Application create(Long applicantId, CreateApplicationVo createApplicationVo);
 
-    Application update(Long applicationId, UpdateApplicationVo updateApplicationVo);
+    Application update(Long applicantId, Long applicationId, UpdateApplicationVo updateApplicationVo);
 
-    Application submit(Long applicationId);
+    Application submit(Long applicantId, Long applicationId);
 
     List<Application> getApplications(Long applicantId);
 
