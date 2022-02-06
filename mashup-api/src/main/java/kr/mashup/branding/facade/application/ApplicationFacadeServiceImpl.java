@@ -8,6 +8,8 @@ import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationService;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
+import kr.mashup.branding.domain.application.progress.UpdateApplicationProgressVo;
+import kr.mashup.branding.ui.application.UpdateApplicationProgressRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -53,5 +55,15 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
     @Override
     public Application getApplication(Long applicantId, Long applicationId) {
         return applicationService.getApplication(applicantId, applicationId);
+    }
+
+    /**
+     * 지원자 진행 상태  업데이트
+     */
+    @Override
+    public Application updateApplicationProgress(Long applicationId,
+        UpdateApplicationProgressRequest updateRequest) {
+        return applicationService.updateProgressFromApplicant(
+            UpdateApplicationProgressVo.of(applicationId, updateRequest.getStatus()));
     }
 }

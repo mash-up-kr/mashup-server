@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import kr.mashup.branding.domain.application.progress.ApplicationProgress;
 import kr.mashup.branding.domain.application.progress.UpdateApplicationProgressVo;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 
@@ -18,7 +17,7 @@ public interface ApplicationService {
 
     Application updateResult(UpdateApplicationResultVo updateApplicationResultVo);
 
-    ApplicationProgress updateProgressFromApplicant(UpdateApplicationProgressVo updateApplicationProgressVo);
+    Application updateProgressFromApplicant(UpdateApplicationProgressVo updateApplicationProgressVo);
 
     List<Application> getApplications(Long applicantId);
 

@@ -5,6 +5,7 @@ import java.util.List;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
+import kr.mashup.branding.ui.application.UpdateApplicationProgressRequest;
 
 // TODO: applicant
 public interface ApplicationFacadeService {
@@ -17,4 +18,6 @@ public interface ApplicationFacadeService {
     List<Application> getApplications(Long applicantId);
 
     Application getApplication(Long applicantId, Long applicationId);
+
+    Application updateApplicationProgress(Long applicationId, UpdateApplicationProgressRequest updateRequest);
 }

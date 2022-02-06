@@ -11,7 +11,6 @@ import org.springframework.util.Assert;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
-import kr.mashup.branding.domain.application.progress.ApplicationProgress;
 import kr.mashup.branding.domain.application.progress.ApplicationProgressService;
 import kr.mashup.branding.domain.application.progress.UpdateApplicationProgressVo;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
@@ -104,11 +103,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public ApplicationProgress updateProgressFromApplicant(UpdateApplicationProgressVo updateApplicationProgressVo) {
+    public Application updateProgressFromApplicant(UpdateApplicationProgressVo updateApplicationProgressVo) {
         Application application = applicationRepository.findById(updateApplicationProgressVo.getApplicationId())
             .orElseThrow(ApplicationNotFoundException::new);
         application.updateProgressFromApplicant(updateApplicationProgressVo.getStatus());
-        return application.getApplicationProgress();
+        return application;
     }
 
     @Override

@@ -92,4 +92,15 @@ public class ApplicationController {
         Application application = applicationFacadeService.getApplication(applicantId, applicationId);
         return applicationAssembler.toApplicationResponse(application);
     }
+
+    @ApiOperation("진행 상태 업데이트")
+    @PutMapping("/{applicationId}/progress")
+    public ApplicationResponse updateApplicationProgress(
+        @PathVariable Long applicationId,
+        @RequestBody UpdateApplicationProgressRequest updateApplicationProgressRequest
+    ) {
+        Application application = applicationFacadeService
+            .updateApplicationProgress(applicationId, updateApplicationProgressRequest);
+        return applicationAssembler.toApplicationResponse(application);
+    }
 }

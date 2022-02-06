@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.application.progress;
+package kr.mashup.branding.ui.application;
 
 import io.swagger.annotations.ApiModelProperty;
 import kr.mashup.branding.domain.application.progress.ApplicationProgressStatus;
