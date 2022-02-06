@@ -24,26 +24,20 @@ public enum ApplicationProgressStatus {
                 if (status == INTERVIEW_CONFIRM_ACCEPTED || status == INTERVIEW_CONFIRM_REJECTED) {
                     return status;
                 }
+                break;
             case FINAL_CONFIRM_WAITING:
                 if (status == FINAL_CONFIRM_ACCEPTED || status == FINAL_CONFIRM_REJECTED) {
                     return status;
                 }
+                break;
             case INTERVIEW_CONFIRM_ACCEPTED:
-                if (status == INTERVIEW_CONFIRM_ACCEPTED) {
-                    return status;
-                }
             case INTERVIEW_CONFIRM_REJECTED:
-                if (status == INTERVIEW_CONFIRM_REJECTED) {
-                    return status;
-                }
             case FINAL_CONFIRM_ACCEPTED:
-                if (status == FINAL_CONFIRM_ACCEPTED) {
-                    return status;
-                }
             case FINAL_CONFIRM_REJECTED:
-                if (status == FINAL_CONFIRM_REJECTED) {
+                if (status == this) {
                     return status;
                 }
+                break;
             case TBD:
             case NOT_APPLICABLE:
                 throw new ApplicationProgressUpdateInvalidException();
