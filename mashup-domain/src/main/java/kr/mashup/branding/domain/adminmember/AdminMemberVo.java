@@ -7,6 +7,7 @@ public class AdminMemberVo {
     String username;
     String password;
     AdminMemberPosition position;
+    String phoneNumber;
     Long teamId;
     String description;
 }

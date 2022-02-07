@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import kr.mashup.branding.domain.adminmember.AdminMember;
+import kr.mashup.branding.domain.adminmember.AdminMemberPosition;
+import kr.mashup.branding.domain.adminmember.AdminMemberRepository;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantRepository;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
@@ -29,6 +32,7 @@ public class TestDataInitializer {
     private final TeamService teamService;
     private final ApplicationFormService applicationFormService;
     private final ApplicantRepository applicantRepository;
+    private final AdminMemberRepository adminMemberRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void initialize() {
@@ -44,6 +48,9 @@ public class TestDataInitializer {
 
         Applicant applicant = createApplicant();
         log.info("Applicant is created. applicant: {}", applicant);
+
+        AdminMember adminMember = createAdminMember();
+        log.info("Applicant is created. applicant: {}", adminMember);
     }
 
     private List<Team> createTeams() {
@@ -105,5 +112,18 @@ public class TestDataInitializer {
     private Applicant createApplicant() {
         Applicant tester = Applicant.tester();
         return applicantRepository.save(tester);
+    }
+
+    private AdminMember createAdminMember() {
+        Team team = teamService.findAllTeams().stream().findFirst().get();
+        AdminMember testadmin = AdminMember.of(
+            "testadmin",
+            "1234",
+            AdminMemberPosition.LEADER,
+            "01097944578",
+            team,
+            "테스트 유저임다."
+        );
+        return adminMemberRepository.save(testadmin);
     }
 }

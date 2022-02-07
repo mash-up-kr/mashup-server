@@ -56,6 +56,7 @@ public class AdminMember {
         String username,
         String password,
         AdminMemberPosition position,
+        String phoneNumber,
         Team team,
         String description) {
         AdminMember adminMember = new AdminMember();
@@ -63,6 +64,7 @@ public class AdminMember {
         adminMember.password = password;
         adminMember.position = position;
         adminMember.team = team;
+        adminMember.phoneNumber = phoneNumber;
         adminMember.description = description;
         return adminMember;
     }
