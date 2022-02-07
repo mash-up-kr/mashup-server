@@ -4,8 +4,9 @@ import lombok.Value;
 
 @Value(staticConstructor = "of")
 public class AdminMemberVo {
-    String providerUserId;
-    String name;
+    String username;
+    String password;
+    AdminMemberPosition position;
     Long teamId;
     String description;
 }
