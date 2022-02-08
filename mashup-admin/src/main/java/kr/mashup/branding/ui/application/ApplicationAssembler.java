@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.result.ApplicationResultStatus;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
+import kr.mashup.branding.domain.application.result.UpdateApplicationResultsVo;
 
 @Component
 public class ApplicationAssembler {
@@ -17,11 +18,16 @@ public class ApplicationAssembler {
         );
     }
 
-    public List<UpdateApplicationResultVo> toUpdateApplicationResultVoList(UpdateApplicationResultRequest request) {
+    public List<UpdateApplicationResultsVo> toUpdateApplicationResultsVoList(UpdateApplicationResultsRequest request) {
         ApplicationResultStatus status = ApplicationResultStatus.valueOf(request.getApplicationResultStatus());
         return request.getApplicationIds()
             .stream()
-            .map(it -> UpdateApplicationResultVo.of(it, status))
+            .map(it -> UpdateApplicationResultsVo.of(it, status))
             .collect(Collectors.toList());
+    }
+
+    UpdateApplicationResultVo toUpdateApplicationResultVo(UpdateApplicationResultRequest request) {
+        ApplicationResultStatus status = ApplicationResultStatus.valueOf(request.getApplicationResultStatus());
+        return UpdateApplicationResultVo.of(status, request.getInterviewStartedAt(), request.getInterviewEndedAt());
     }
 }

@@ -28,6 +28,7 @@ import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.domain.application.result.ApplicationResultStatus;
+import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -131,6 +132,13 @@ public class Application {
      */
     void updateResult(ApplicationResultStatus status) {
         applicationResult.update(status);
+    }
+
+    /**
+     * 지원서 결과 및 면접시간 수정
+     */
+    void updateResult(UpdateApplicationResultVo updateApplicationResultVo) {
+        applicationResult.update(updateApplicationResultVo);
     }
 
     boolean isSubmitted() {

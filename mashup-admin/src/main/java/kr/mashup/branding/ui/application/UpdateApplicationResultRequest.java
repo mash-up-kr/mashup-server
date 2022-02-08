@@ -1,6 +1,6 @@
 package kr.mashup.branding.ui.application;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.ToString;
@@ -8,6 +8,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class UpdateApplicationResultRequest {
-    private List<Long> applicationIds;
     private String applicationResultStatus;
+    private LocalDateTime interviewStartedAt;
+    private LocalDateTime interviewEndedAt;
 }
