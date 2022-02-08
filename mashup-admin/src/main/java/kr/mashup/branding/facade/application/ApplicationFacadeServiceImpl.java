@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationService;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
-import kr.mashup.branding.domain.application.result.UpdateApplicationResultsVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,11 +30,14 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
     }
 
     @Override
-    public List<Application> updateResults(List<UpdateApplicationResultsVo> updateApplicationResultsVoList) {
-        return updateApplicationResultsVoList.stream()
+    public List<Application> updateResults(
+        Long adminMemberId,
+        List<UpdateApplicationResultVo> updateApplicationResultVoList
+    ) {
+        return updateApplicationResultVoList.stream()
             .map(it -> {
                 try {
-                    return applicationService.updateResult(it);
+                    return applicationService.updateResult(adminMemberId, it);
                 } catch (Exception e) {
                     log.warn("Failed to update result. applicationId: {}", it.getApplicationId(), e);
                     return null;
@@ -46,11 +48,7 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
     }
 
     @Override
-    public Application updateResult(
-        Long adminMemberId,
-        Long applicationId,
-        UpdateApplicationResultVo updateApplicationResultVo
-    ) {
-        return applicationService.updateResult(adminMemberId, applicationId, updateApplicationResultVo);
+    public Application updateResult(Long adminMemberId, UpdateApplicationResultVo updateApplicationResultVo) {
+        return applicationService.updateResult(adminMemberId, updateApplicationResultVo);
     }
 }

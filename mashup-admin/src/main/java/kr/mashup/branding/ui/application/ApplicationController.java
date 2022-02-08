@@ -49,7 +49,9 @@ public class ApplicationController {
     public List<ApplicationResponse> updateResult(
         @RequestBody UpdateApplicationResultsRequest updateApplicationResultsRequest
     ) {
+        Long adminMemberId = 0L;
         return applicationFacadeService.updateResults(
+            adminMemberId,
             applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
         ).stream()
             .map(applicationAssembler::toApplicationResponse)
@@ -67,8 +69,7 @@ public class ApplicationController {
         Long adminMemberId = 0L;
         Application application = applicationFacadeService.updateResult(
             adminMemberId,
-            applicationId,
-            applicationAssembler.toUpdateApplicationResultVo(updateApplicationResultRequest)
+            applicationAssembler.toUpdateApplicationResultVo(applicationId, updateApplicationResultRequest)
         );
         return applicationAssembler.toApplicationResponse(application);
     }

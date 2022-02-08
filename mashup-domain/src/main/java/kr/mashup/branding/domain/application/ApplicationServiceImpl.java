@@ -17,7 +17,6 @@ import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
-import kr.mashup.branding.domain.application.result.UpdateApplicationResultsVo;
 import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.domain.team.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -123,30 +122,19 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     /**
-     * 지원서 여러개를 선택해서 결과를 변경한다.
-     */
-    @Override
-    @Transactional
-    public Application updateResult(UpdateApplicationResultsVo updateApplicationResultsVo) {
-        Application application = applicationRepository.findById(updateApplicationResultsVo.getApplicationId())
-            .orElseThrow(ApplicationNotFoundException::new);
-        application.updateResult(updateApplicationResultsVo.getStatus());
-        return application;
-    }
-
-    /**
      * 지원서 1개에 대해서 결과, 면접 일정을 변경한다.
      */
     @Override
     @Transactional
     public Application updateResult(
         Long adminMemberId,
-        Long applicationId,
         UpdateApplicationResultVo updateApplicationResultVo
     ) {
         Assert.notNull(adminMemberId, "'adminMemberId' must not be null");
-        Assert.notNull(applicationId, "'applicationId' must not be null");
         Assert.notNull(updateApplicationResultVo, "'updateApplicationResultVo' must not be null");
+
+        Long applicationId = updateApplicationResultVo.getApplicationId();
+        Assert.notNull(applicationId, "'applicationId' must not be null");
 
         // TODO: adminMemberId 조회 및 권한 검증
         Application application = applicationRepository.findById(applicationId)

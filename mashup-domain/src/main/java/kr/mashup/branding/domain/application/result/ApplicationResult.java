@@ -38,10 +38,16 @@ public class ApplicationResult {
     private Application application;
 
     /**
-     * 평가 결과
+     * 서류 평가 결과
      */
     @Enumerated(EnumType.STRING)
-    private ApplicationResultStatus status;
+    private ApplicationScreeningStatus screeningStatus;
+
+    /**
+     * 면접 평가 결과
+     */
+    @Enumerated(EnumType.STRING)
+    private ApplicationInterviewStatus interviewStatus;
 
     /**
      * 면접 시작 시각
@@ -64,12 +70,9 @@ public class ApplicationResult {
     public static ApplicationResult of(Application application) {
         ApplicationResult applicationResult = new ApplicationResult();
         applicationResult.application = application;
-        applicationResult.status = ApplicationResultStatus.NOT_RATED;
+        applicationResult.screeningStatus = ApplicationScreeningStatus.NOT_RATED;
+        applicationResult.interviewStatus = ApplicationInterviewStatus.NOT_RATED;
         return applicationResult;
-    }
-
-    public void update(ApplicationResultStatus status) {
-        this.status = status.update(status);
     }
 
     /**
@@ -77,13 +80,21 @@ public class ApplicationResult {
      * 면접 시작 시각은 항상 면접 종료 시각보다 이른 시각이어야 한다.
      * 면접 종료 시각만 입력할수는 없다. (시작, 종료시각 모두 null 이거나, 모두 not-null 은 가능. 시작시간만 not-null 인 경우도 가능)
      */
-    public void update(UpdateApplicationResultVo updateApplicationResultVo) {
-        this.status = status.update(updateApplicationResultVo.getStatus());
-        if (!status.isInterviewTimeAvailable()) {
-            throw new IllegalArgumentException("'status' is not available for interviewTime. status: " + status);
+    public void updateResult(UpdateApplicationResultVo updateApplicationResultVo) {
+        // 합격 상태 변경
+        if (updateApplicationResultVo.getScreeningStatus() != null) {
+            screeningStatus = screeningStatus.update(updateApplicationResultVo.getScreeningStatus());
         }
+        if (updateApplicationResultVo.getInterviewStatus() != null) {
+            interviewStatus = interviewStatus.update(updateApplicationResultVo.getInterviewStatus());
+        }
+        // 면접 일정 변경
         if (interviewStartedAt == null) {
             return;
+        }
+        if (screeningStatus != ApplicationScreeningStatus.PASSED) {
+            throw new IllegalArgumentException(
+                "'screeningStatus' is not available for interviewTime. screeningStatus: " + screeningStatus);
         }
         this.interviewStartedAt = updateApplicationResultVo.getInterviewStartedAt();
         if (!interviewEndedAt.isAfter(interviewStartedAt)) {
@@ -92,9 +103,5 @@ public class ApplicationResult {
                     + interviewStartedAt + ", interviewEndedAt: " + interviewEndedAt);
         }
         this.interviewEndedAt = updateApplicationResultVo.getInterviewEndedAt();
-    }
-
-    public void setInterviewStartedAt(LocalDateTime interviewStartedAt) {
-        this.interviewStartedAt = interviewStartedAt;
     }
 }

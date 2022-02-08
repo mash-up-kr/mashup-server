@@ -10,6 +10,7 @@ import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
+import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.ui.applicant.ApplicantAssembler;
 import lombok.RequiredArgsConstructor;
 
@@ -25,14 +26,26 @@ public class ApplicationAssembler {
 
     ApplicationResponse toApplicationResponse(Application application) {
         Assert.notNull(application, "'application' must not be null");
-
         return new ApplicationResponse(
             application.getApplicationId(),
             applicantAssembler.toApplicationResponse(application.getApplicant()),
             application.getStatus().name(),
             application.getAnswers().stream()
                 .map(this::toAnswerResponse)
-                .collect(Collectors.toList())
+                .collect(Collectors.toList()),
+            toApplicationResultResponse(application.getApplicationResult())
+        );
+    }
+
+    ApplicationResultResponse toApplicationResultResponse(ApplicationResult applicationResult) {
+        return new ApplicationResultResponse(
+            ApplicationStatusResponse.of(
+                applicationResult.getApplication().getStatus(),
+                applicationResult.getScreeningStatus(),
+                applicationResult.getInterviewStatus()
+            ),
+            applicationResult.getInterviewStartedAt(),
+            applicationResult.getInterviewEndedAt()
         );
     }
 

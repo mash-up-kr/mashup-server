@@ -6,15 +6,13 @@ import org.springframework.data.domain.Pageable;
 
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
-import kr.mashup.branding.domain.application.result.UpdateApplicationResultsVo;
 
 public interface ApplicationFacadeService {
     List<Application> getApplications(String searchWord, Pageable pageable);
 
     Application getApplication(Long applicationId);
 
-    List<Application> updateResults(List<UpdateApplicationResultsVo> updateApplicationResultsVoList);
+    List<Application> updateResults(Long adminMemberId, List<UpdateApplicationResultVo> updateApplicationResultVoList);
 
-    Application updateResult(Long adminMemberId, Long applicationId,
-        UpdateApplicationResultVo updateApplicationResultVo);
+    Application updateResult(Long adminMemberId, UpdateApplicationResultVo updateApplicationResultVo);
 }

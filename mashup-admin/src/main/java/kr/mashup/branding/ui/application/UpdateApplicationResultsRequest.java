@@ -9,5 +9,5 @@ import lombok.ToString;
 @ToString
 public class UpdateApplicationResultsRequest {
     private List<Long> applicationIds;
-    private String applicationResultStatus;
+    private ApplicationResultStatusRequest applicationResultStatus;
 }

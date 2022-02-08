@@ -27,7 +27,6 @@ import org.springframework.util.Assert;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
-import kr.mashup.branding.domain.application.result.ApplicationResultStatus;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -37,7 +36,7 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString
+@ToString(of = {"applicationId", "status", "submittedAt", "createdAt", "updatedAt"})
 @EqualsAndHashCode(of = "applicationId")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
@@ -126,17 +125,10 @@ public class Application {
     }
 
     /**
-     * 지원서 결과 수정
-     */
-    void updateResult(ApplicationResultStatus status) {
-        applicationResult.update(status);
-    }
-
-    /**
      * 지원서 결과 및 면접시간 수정
      */
     void updateResult(UpdateApplicationResultVo updateApplicationResultVo) {
-        applicationResult.update(updateApplicationResultVo);
+        applicationResult.updateResult(updateApplicationResultVo);
     }
 
     boolean isSubmitted() {

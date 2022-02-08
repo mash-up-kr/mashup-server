@@ -11,4 +11,5 @@ public class ApplicationResponse {
     private final ApplicantResponse applicant;
     private final String status;
     private final List<AnswerResponse> answers;
+    private final ApplicationResultResponse result;
 }
