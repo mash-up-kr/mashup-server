@@ -9,14 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import kr.mashup.branding.domain.MashupSchedule;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
 import kr.mashup.branding.domain.applicant.ApplicantService;
-import kr.mashup.branding.domain.MashupSchedule;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
-import kr.mashup.branding.domain.application.progress.ApplicationProgressService;
 import kr.mashup.branding.domain.application.progress.UpdateApplicationProgressVo;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import kr.mashup.branding.domain.team.TeamNotFoundException;
@@ -31,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final ApplicationFormService applicationFormService;
-    private final ApplicationProgressService applicationProgressService;
     private final TeamService teamService;
     private final ApplicantService applicantService;
 

@@ -63,6 +63,7 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
     @Override
     public Application updateApplicationProgress(Long applicationId,
         UpdateApplicationProgressRequest updateRequest) {
+        //TODO applicant 인증 도입 되면 applicationId, applicantId로 application 조회해서 validation
         return applicationService.updateProgressFromApplicant(
             UpdateApplicationProgressVo.of(applicationId, updateRequest.getStatus()));
     }
