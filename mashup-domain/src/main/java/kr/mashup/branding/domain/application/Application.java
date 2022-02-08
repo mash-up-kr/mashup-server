@@ -67,6 +67,11 @@ public class Application {
     private final List<Answer> answers = new ArrayList<>();
 
     /**
+     * 개인정보 처리방침 동의여부
+     */
+    private Boolean privacyPolicyAgreed;
+
+    /**
      * 제출 완료 시각
      */
     private LocalDateTime submittedAt;
@@ -95,6 +100,7 @@ public class Application {
             .map(Answer::empty)
             .collect(Collectors.toList());
         application.answers.addAll(answers);
+        application.privacyPolicyAgreed = false;
         return application;
     }
 
@@ -103,6 +109,10 @@ public class Application {
      */
     void update(UpdateApplicationVo updateApplicationVo) {
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
+        if (Boolean.TRUE != updateApplicationVo.getPrivacyPolicyAgreed()) {
+            throw new PrivacyPolicyNotAgreedException("'privacyPolicyAgreed' must be true. privacyPolicyAgreed: "
+                + updateApplicationVo.getPrivacyPolicyAgreed().toString());
+        }
         Map<Long, AnswerRequestVo> questionAnswerMap = updateApplicationVo.getAnswerRequestVoList()
             .stream()
             .collect(Collectors.toMap(AnswerRequestVo::getAnswerId, Function.identity()));
@@ -112,12 +122,17 @@ public class Application {
             it.update(answerRequestVo.getContent());
         });
         status = status.update();
+        privacyPolicyAgreed = true;
     }
 
     /**
      * 지원서 제출
      */
     void submit() {
+        if (this.getPrivacyPolicyAgreed()) {
+            throw new PrivacyPolicyNotAgreedException("'privacyPolicyAgreed' must be true. privacyPolicyAgreed: "
+                + this.privacyPolicyAgreed.toString());
+        }
         try {
             status = status.submit();
             submittedAt = LocalDateTime.now();
