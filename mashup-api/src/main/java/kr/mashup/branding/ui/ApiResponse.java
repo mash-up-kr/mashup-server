@@ -73,24 +73,21 @@ public class ApiResponse<T> {
     @Getter
     @ToString
     public static class PageResponse {
-        private final int page;
+        private final int number;
         private final int size;
         private final int totalCount;
-        private final boolean hasNext;
 
-        private PageResponse(int page, int size, int totalCount, boolean hasNext) {
-            this.page = page;
+        private PageResponse(int number, int size, int totalCount) {
+            this.number = number;
             this.size = size;
             this.totalCount = totalCount;
-            this.hasNext = hasNext;
         }
 
         public static PageResponse from(Page<?> page) {
             return new PageResponse(
                 page.getNumber(),
                 page.getSize(),
-                (int) page.getTotalElements(),
-                page.hasNext()
+                (int)page.getTotalElements()
             );
         }
     }
