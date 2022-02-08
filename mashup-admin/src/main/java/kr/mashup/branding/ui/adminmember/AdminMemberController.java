@@ -9,6 +9,7 @@ import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberSignInVo;
 import kr.mashup.branding.domain.adminmember.AdminMemberVo;
 import kr.mashup.branding.facade.adminmember.AdminMemberFacadeService;
+import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -20,19 +21,20 @@ public class AdminMemberController {
     private final AdminMemberFacadeService adminMemberFacadeService;
 
     @PostMapping("/signup")
-    void signup(
+    public ApiResponse<Long> signup(
         @RequestBody SignUpRequest signUpRequest
     ) {
         AdminMemberVo adminMemberVo = adminMemberAssembler.toAdminMemberVo(signUpRequest);
         AdminMember adminMember = adminMemberFacadeService.signUp(adminMemberVo);
+        return ApiResponse.success(adminMember.getAdminMemberId());
     }
 
     @PostMapping("/signin")
-    void signin(
+    public ApiResponse<String> signin(
         @RequestBody SignInRequest signInRequest
     ) {
         AdminMemberSignInVo adminMemberSignInVo = adminMemberAssembler.toAdminMemberSignInVo(signInRequest);
-        adminMemberFacadeService.signIn(adminMemberSignInVo);
+        return ApiResponse.success(adminMemberFacadeService.signIn(adminMemberSignInVo));
     }
 
 }
