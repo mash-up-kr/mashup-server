@@ -20,4 +20,8 @@ public class UpdateApplicationRequest {
      * 각 질문에 대한 답변
      */
     private List<AnswerRequest> answers;
+    /**
+     * 개인정보처리방침 동의여부
+     */
+    private Boolean privacyPolicyAgreed;
 }

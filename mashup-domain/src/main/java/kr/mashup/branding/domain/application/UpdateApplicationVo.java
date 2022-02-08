@@ -12,4 +12,5 @@ public class UpdateApplicationVo {
     String name;
     String phoneNumber;
     List<AnswerRequestVo> answerRequestVoList;
+    Boolean privacyPolicyAgreed;
 }

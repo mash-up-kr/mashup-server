@@ -2,9 +2,10 @@ package kr.mashup.branding.domain;
 
 import java.time.LocalDateTime;
 
-public class MashupSchedule {
-    private MashupSchedule() {
-    }
+import org.springframework.stereotype.Service;
+
+@Service
+public class MashupScheduleService {
 
     /**
      * 12기 모집 시작 시각 (inclusive)
@@ -32,21 +33,21 @@ public class MashupSchedule {
     /**
      * 서류 제출 가능한 시각인지
      */
-    public static boolean isRecruitAvailable(LocalDateTime localDateTime) {
+    public boolean isRecruitAvailable(LocalDateTime localDateTime) {
         return !localDateTime.isBefore(RECRUIT_STARTED_AT) && !localDateTime.isAfter(RECRUIT_ENDED_AT);
     }
 
     /**
      * 서류 결과 보여주어도 되는 시각인지
      */
-    public static boolean canAnnounceScreeningResult(LocalDateTime localDateTime) {
+    public boolean canAnnounceScreeningResult(LocalDateTime localDateTime) {
         return !localDateTime.isBefore(SCREENING_RESULT_ANNOUNCED_AT);
     }
 
     /**
      * 면접 결과 보여주어도 되는 시각인지
      */
-    public static boolean canAnnounceInterviewResult(LocalDateTime localDateTime) {
+    public boolean canAnnounceInterviewResult(LocalDateTime localDateTime) {
         return !localDateTime.isBefore(INTERVIEW_RESULT_ANNOUNCED_AT);
     }
 }
