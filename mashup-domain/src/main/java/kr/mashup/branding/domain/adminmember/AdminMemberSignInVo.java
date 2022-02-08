@@ -5,4 +5,5 @@ import lombok.Value;
 @Value(staticConstructor = "of")
 public class AdminMemberSignInVo {
     String username;
+    String password;
 }

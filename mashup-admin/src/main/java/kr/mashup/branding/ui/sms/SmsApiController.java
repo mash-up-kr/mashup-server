@@ -1,15 +1,21 @@
 package kr.mashup.branding.ui.sms;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import kr.mashup.branding.facade.SmsFacadeService;
+import kr.mashup.branding.facade.sms.SmsFacadeService;
 import kr.mashup.branding.ui.sms.dto.SmsRequestGroupResponse;
 import kr.mashup.branding.ui.sms.dto.SmsRequestResponse;
 import kr.mashup.branding.ui.sms.dto.SmsSendRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Api(tags = "문자 발송 관련 API (아직 구현되지 않음)")
 @RequiredArgsConstructor
@@ -22,44 +28,44 @@ public class SmsApiController {
     @ApiOperation("Sms 메세지 발송")
     @PostMapping("/send")
     public Boolean sendSms(
-            @RequestBody SmsSendRequest request
+        @RequestBody SmsSendRequest request
     ) {
-//        smsFacadeService.sendSms(request);
-//        return true;
+        //        smsFacadeService.sendSms(request);
+        //        return true;
         throw new RuntimeException("아직 구현되지 않음");
     }
 
     @ApiOperation("Sms 요청 그룹 리스트")
     @GetMapping("/request-group")
     public List<SmsRequestGroupResponse> getSmsRequestGroups() {
-//        return smsFacadeService.getAllRequestGroup();
+        //        return smsFacadeService.getAllRequestGroup();
         throw new RuntimeException("아직 구현되지 않음");
     }
 
     @ApiOperation("Sms 요청 그룹 조회")
     @GetMapping("/request-group/{requestGroupId}")
     public List<SmsRequestResponse> getSmsRequests(
-            @PathVariable Long requestGroupId
+        @PathVariable Long requestGroupId
     ) {
-//        return smsFacadeService.getSmsRequests(requestGroupId);
+        //        return smsFacadeService.getSmsRequests(requestGroupId);
         throw new RuntimeException("아직 구현되지 않음");
     }
 
     @ApiOperation("Sms 요청 그룹 새로고침")
     @PostMapping("/request-group/{requestGroupId}/refresh")
     public void refreshSmsRequestGroup(
-            @PathVariable Long requestGroupId
+        @PathVariable Long requestGroupId
     ) {
-//        smsFacadeService.refreshRequestGroup();
+        //        smsFacadeService.refreshRequestGroup();
         throw new RuntimeException("아직 구현되지 않음");
     }
 
     @ApiOperation("Sms 요청 그룹 실패한 유저 대상 재시도")
     @PostMapping("/request-group/{requestGroupId}/retry")
     public void retrySendSms(
-            @PathVariable Long requestGroupId
+        @PathVariable Long requestGroupId
     ) {
-//        smsFacadeService.retrySendSms();
+        //        smsFacadeService.retrySendSms();
         throw new RuntimeException("아직 구현되지 않음");
     }
 }

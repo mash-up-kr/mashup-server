@@ -34,8 +34,13 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
     @Override
     public AdminMember signIn(AdminMemberSignInVo adminMemberSignInVo) {
-        return adminMemberRepository.findByUsername(adminMemberSignInVo.getUsername())
+        AdminMember adminMember = adminMemberRepository.findByUsername(adminMemberSignInVo.getUsername())
             .orElseThrow(AdminMemberNotFoundException::new);
+
+        if (!adminMember.getPassword().equals(adminMemberSignInVo.getPassword())) {
+            throw new PasswordInvalidException();
+        }
+        return adminMember;
     }
 
     @Override
