@@ -35,8 +35,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-// TODO: applicant
-//  지원자 relation 추가
 @Entity
 @Getter
 @ToString
