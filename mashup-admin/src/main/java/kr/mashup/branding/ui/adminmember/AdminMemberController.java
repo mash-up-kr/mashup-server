@@ -26,6 +26,7 @@ public class AdminMemberController {
     ) {
         AdminMemberVo adminMemberVo = adminMemberAssembler.toAdminMemberVo(signUpRequest);
         AdminMember adminMember = adminMemberFacadeService.signUp(adminMemberVo);
+
         return ApiResponse.success(adminMember.getAdminMemberId());
     }
 

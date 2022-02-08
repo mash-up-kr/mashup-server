@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .formLogin().disable()
             .requestCache().disable()
             .authorizeRequests()
-            .antMatchers("/api/v1/signin", "/api/v1/signup", "/hello").permitAll()
+            .antMatchers("/api/v1/signin", "/api/v1/signup").permitAll()
             .anyRequest().authenticated()
             .and()
             .addFilterAt(tokenPreAuthFilter(), AbstractPreAuthenticatedProcessingFilter.class);

@@ -36,10 +36,6 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     public AdminMember signIn(AdminMemberSignInVo adminMemberSignInVo) {
         AdminMember adminMember = adminMemberRepository.findByUsername(adminMemberSignInVo.getUsername())
             .orElseThrow(AdminMemberNotFoundException::new);
-
-        if (!adminMember.getPassword().equals(adminMemberSignInVo.getPassword())) {
-            throw new PasswordInvalidException();
-        }
         return adminMember;
     }
 

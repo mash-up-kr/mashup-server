@@ -1,4 +1,4 @@
-package kr.mashup.branding.domain.adminmember;
+package kr.mashup.branding.config.security;
 
 public class PasswordInvalidException extends RuntimeException {
 }
