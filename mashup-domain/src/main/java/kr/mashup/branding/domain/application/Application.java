@@ -100,7 +100,6 @@ public class Application {
             .map(Answer::empty)
             .collect(Collectors.toList());
         application.answers.addAll(answers);
-        application.privacyPolicyAgreed = false;
         return application;
     }
 
@@ -111,7 +110,7 @@ public class Application {
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
         if (Boolean.TRUE != updateApplicationVo.getPrivacyPolicyAgreed()) {
             throw new PrivacyPolicyNotAgreedException("'privacyPolicyAgreed' must be true. privacyPolicyAgreed: "
-                + updateApplicationVo.getPrivacyPolicyAgreed().toString());
+                + updateApplicationVo.getPrivacyPolicyAgreed());
         }
         Map<Long, AnswerRequestVo> questionAnswerMap = updateApplicationVo.getAnswerRequestVoList()
             .stream()
@@ -129,9 +128,9 @@ public class Application {
      * 지원서 제출
      */
     void submit() {
-        if (this.getPrivacyPolicyAgreed()) {
+        if (Boolean.TRUE != this.privacyPolicyAgreed) {
             throw new PrivacyPolicyNotAgreedException("'privacyPolicyAgreed' must be true. privacyPolicyAgreed: "
-                + this.privacyPolicyAgreed.toString());
+                + this.privacyPolicyAgreed);
         }
         try {
             status = status.submit();
