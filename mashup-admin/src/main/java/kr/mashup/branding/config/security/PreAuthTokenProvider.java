@@ -32,7 +32,7 @@ public class PreAuthTokenProvider implements AuthenticationProvider {
             Long adminMemberId = jwtService.decode(token);
             AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
             SimpleGrantedAuthority adminAuthority = new SimpleGrantedAuthority(ROLE_NAME);
-            
+
             List<GrantedAuthority> authorities = new ArrayList<>();
             authorities.add(adminAuthority);
             return new UsernamePasswordAuthenticationToken(
@@ -41,7 +41,7 @@ public class PreAuthTokenProvider implements AuthenticationProvider {
                 authorities
             );
         }
-        throw new TokenMissingException();
+        throw new TokenMissingException("Invalid token");
     }
 
     @Override

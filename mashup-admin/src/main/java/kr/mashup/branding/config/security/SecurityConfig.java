@@ -2,36 +2,72 @@ package kr.mashup.branding.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final ObjectMapper objectMapper;
+    private final String ROLE_NAME = "adminMember";
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic().disable()
-            .csrf().disable()
-            .cors().disable()
-            .logout().disable()
-            .formLogin().disable()
-            .requestCache().disable()
+        http.antMatcher("/**")
             .authorizeRequests()
             .antMatchers("/api/v1/signin", "/api/v1/signup", "/hello").permitAll()
-            .anyRequest().authenticated()
+            .antMatchers("/api/v1/**").hasAuthority(ROLE_NAME)
             .and()
-            .addFilterAt(tokenPreAuthFilter(), AbstractPreAuthenticatedProcessingFilter.class);
+            .csrf().disable()
+            .logout().disable()
+            .formLogin().disable()
+            .httpBasic().disable()
+            .requestCache().disable()
+            .addFilterAt(tokenPreAuthFilter(), AbstractPreAuthenticatedProcessingFilter.class)
+            .sessionManagement().disable()
+            .cors().disable()
+            .exceptionHandling()
+            .authenticationEntryPoint((request, response, authException) -> {
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                objectMapper.writeValue(
+                    response.getOutputStream(),
+                    //TODO ReturnCode 관리 방법 논의
+                    ApiResponse.failure("Unauthorized", "인증에 실패하였습니다.")
+                );
+            })
+            .accessDeniedHandler((request, response, accessDeniedException) -> {
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                objectMapper.writeValue(
+                    response.getOutputStream(),
+                    //TODO ReturnCode 관리 방법 논의
+                    ApiResponse.failure("Forbidden", "허용되지 않은 접근입니다.")
+                );
+            });
     }
 
     @Override
     public void configure(WebSecurity webSecurity) {
-        webSecurity.ignoring().antMatchers("/swagger-ui.html");
+        webSecurity.ignoring().antMatchers(
+            "/error",
+            "/favicon.ico",
+            "/swagger-ui.html",
+            "/webjars/springfox-swagger-ui/**",
+            "/swagger-resources/**",
+            "/v2/api-docs"
+        );
     }
 
     @Bean
