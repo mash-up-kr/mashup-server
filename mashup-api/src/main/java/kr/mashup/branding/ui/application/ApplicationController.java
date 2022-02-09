@@ -101,8 +101,9 @@ public class ApplicationController {
         @PathVariable Long applicationId,
         @RequestBody UpdateApplicationProgressRequest updateApplicationProgressRequest
     ) {
+        Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService
-            .updateApplicationProgress(applicationId, updateApplicationProgressRequest);
+            .updateApplicationProgress(applicantId, applicationId, updateApplicationProgressRequest);
         return applicationAssembler.toApplicationResponse(application);
     }
 

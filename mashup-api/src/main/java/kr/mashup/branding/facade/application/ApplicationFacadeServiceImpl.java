@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import kr.mashup.branding.domain.applicant.ApplicantService;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationService;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
+    private final ApplicantService applicantService;
     private final ApplicationService applicationService;
 
     /**
@@ -61,10 +63,11 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
      * 지원자 진행 상태  업데이트
      */
     @Override
-    public Application updateApplicationProgress(Long applicationId,
+    public Application updateApplicationProgress(Long applicantId, Long applicationId,
         UpdateApplicationProgressRequest updateRequest) {
         //TODO applicant 인증 도입 되면 applicationId, applicantId로 application 조회해서 validation
         return applicationService.updateProgressFromApplicant(
+            applicantId,
             UpdateApplicationProgressVo.of(applicationId, updateRequest.getStatus()));
     }
 }

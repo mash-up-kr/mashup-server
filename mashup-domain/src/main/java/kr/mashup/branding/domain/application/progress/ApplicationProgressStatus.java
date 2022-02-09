@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum ApplicationProgressStatus {
-    TBD("미정"),
+    TBD("미검토"),
     INTERVIEW_CONFIRM_WAITING("면접 확인 대기중"),
     INTERVIEW_CONFIRM_ACCEPTED("면접 확인"),
     INTERVIEW_CONFIRM_REJECTED("면접 거절"),

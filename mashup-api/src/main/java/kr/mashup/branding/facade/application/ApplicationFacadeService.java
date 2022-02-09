@@ -18,5 +18,6 @@ public interface ApplicationFacadeService {
 
     Application getApplication(Long applicantId, Long applicationId);
 
-    Application updateApplicationProgress(Long applicationId, UpdateApplicationProgressRequest updateRequest);
+    Application updateApplicationProgress(Long applicantId, Long applicationId,
+        UpdateApplicationProgressRequest updateRequest);
 }

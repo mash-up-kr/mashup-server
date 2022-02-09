@@ -1,7 +1,7 @@
 package kr.mashup.branding.domain.application.result;
 
 public enum ApplicationResultStatus {
-    TBD("미검토"),
+    TBD("미정"),
     DOCUMENT_TBD("서류 미정"),
     DOCUMENT_PASSED("서류 합격"),
     DOCUMENT_FAILED("서류 불합격"),

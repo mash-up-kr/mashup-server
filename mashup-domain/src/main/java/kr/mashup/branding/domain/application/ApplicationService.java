@@ -17,7 +17,7 @@ public interface ApplicationService {
 
     Application updateResult(UpdateApplicationResultVo updateApplicationResultVo);
 
-    Application updateProgressFromApplicant(UpdateApplicationProgressVo updateApplicationProgressVo);
+    Application updateProgressFromApplicant(Long applicantId, UpdateApplicationProgressVo updateApplicationProgressVo);
 
     List<Application> getApplications(Long applicantId);
 

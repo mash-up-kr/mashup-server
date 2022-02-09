@@ -20,6 +20,7 @@ import kr.mashup.branding.domain.application.progress.UpdateApplicationProgressV
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.domain.team.TeamService;
+import kr.mashup.branding.util.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -117,6 +118,8 @@ public class ApplicationServiceImpl implements ApplicationService {
      * 지원서 생성, 수정, 제출 가능한 시각인지 검증
      */
     private void validateDate(LocalDateTime localDateTime) {
+        if (ProfileUtil.getProfile().equals("local"))
+            return;
         if (!MashupSchedule.isRecruitAvailable(localDateTime)) {
             throw new IllegalArgumentException("지원서 제출 기간이 아닙니다. ");
         }
@@ -133,9 +136,13 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public Application updateProgressFromApplicant(UpdateApplicationProgressVo updateApplicationProgressVo) {
+    public Application updateProgressFromApplicant(Long applicantId,
+        UpdateApplicationProgressVo updateApplicationProgressVo) {
         Application application = applicationRepository.findById(updateApplicationProgressVo.getApplicationId())
             .orElseThrow(ApplicationNotFoundException::new);
+        if (!application.getApplicant().getApplicantId().equals(applicantId)) {
+            throw new ApplicationNotAllowedException();
+        }
         application.updateProgressFromApplicant(updateApplicationProgressVo.getStatus());
         return application;
     }

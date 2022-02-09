@@ -54,6 +54,6 @@ public class ApplicationProgress {
     }
 
     public void updateFromApplicant(ApplicationProgressStatus status) {
-        this.status = status.updateFromApplicant(status);
+        this.status = this.status.updateFromApplicant(status);
     }
 }

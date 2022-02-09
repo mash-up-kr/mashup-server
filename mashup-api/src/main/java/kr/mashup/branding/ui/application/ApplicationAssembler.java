@@ -29,6 +29,7 @@ public class ApplicationAssembler {
         return new ApplicationResponse(
             application.getApplicationId(),
             applicantAssembler.toApplicationResponse(application.getApplicant()),
+            application.getApplicationProgress().getStatus(),
             application.getStatus().name(),
             application.getAnswers().stream()
                 .map(this::toAnswerResponse)
