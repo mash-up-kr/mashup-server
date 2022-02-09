@@ -9,8 +9,8 @@ import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationService;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
-import kr.mashup.branding.domain.application.progress.UpdateApplicationProgressVo;
-import kr.mashup.branding.ui.application.UpdateApplicationProgressRequest;
+import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
+import kr.mashup.branding.ui.application.UpdateConfirmationRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -63,11 +63,11 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
      * 지원자 진행 상태  업데이트
      */
     @Override
-    public Application updateApplicationProgress(Long applicantId, Long applicationId,
-        UpdateApplicationProgressRequest updateRequest) {
+    public Application updateConfirmation(Long applicantId, Long applicationId,
+        UpdateConfirmationRequest updateRequest) {
         //TODO applicant 인증 도입 되면 applicationId, applicantId로 application 조회해서 validation
-        return applicationService.updateProgressFromApplicant(
+        return applicationService.updateConfirmationFromApplicant(
             applicantId,
-            UpdateApplicationProgressVo.of(applicationId, updateRequest.getStatus()));
+            UpdateConfirmationVo.of(applicationId, updateRequest.getStatus()));
     }
 }

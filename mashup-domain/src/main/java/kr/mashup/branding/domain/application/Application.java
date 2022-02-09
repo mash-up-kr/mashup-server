@@ -25,9 +25,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
 
 import kr.mashup.branding.domain.applicant.Applicant;
+import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
+import kr.mashup.branding.domain.application.confirmation.Confirmation;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
-import kr.mashup.branding.domain.application.progress.ApplicationProgress;
-import kr.mashup.branding.domain.application.progress.ApplicationProgressStatus;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.domain.application.result.ApplicationResultStatus;
 import lombok.AccessLevel;
@@ -59,7 +59,7 @@ public class Application {
     private ApplicationResult applicationResult;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private ApplicationProgress applicationProgress;
+    private Confirmation confirmation;
 
     /**
      * 지원자가 지원서 작성중인 상태
@@ -94,7 +94,7 @@ public class Application {
         application.applicant = applicant;
         application.applicationForm = applicationForm;
         application.applicationResult = ApplicationResult.of(application);
-        application.applicationProgress = ApplicationProgress.of();
+        application.confirmation = Confirmation.of();
         application.status = ApplicationStatus.CREATED;
         List<Answer> answers = applicationForm.getQuestions()
             .stream()
@@ -139,8 +139,8 @@ public class Application {
         applicationResult.update(status);
     }
 
-    void updateProgressFromApplicant(ApplicationProgressStatus status) {
-        applicationProgress.updateFromApplicant(status);
+    void updateApplicantConfirmationStatus(ApplicantConfirmationStatus status) {
+        confirmation.updateFromApplicant(status);
     }
 
     boolean isSubmitted() {

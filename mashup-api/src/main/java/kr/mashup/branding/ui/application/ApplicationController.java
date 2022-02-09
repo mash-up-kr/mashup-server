@@ -95,15 +95,15 @@ public class ApplicationController {
         return applicationAssembler.toApplicationResponse(application);
     }
 
-    @ApiOperation("진행 상태 업데이트")
-    @PutMapping("/{applicationId}/progress")
-    public ApplicationResponse updateApplicationProgress(
+    @ApiOperation("지원자 응답")
+    @PostMapping("/{applicationId}/confirm")
+    public ApplicationResponse updateConfirmation(
         @PathVariable Long applicationId,
-        @RequestBody UpdateApplicationProgressRequest updateApplicationProgressRequest
+        @RequestBody UpdateConfirmationRequest updateConfirmationRequest
     ) {
         Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService
-            .updateApplicationProgress(applicantId, applicationId, updateApplicationProgressRequest);
+            .updateConfirmation(applicantId, applicationId, updateConfirmationRequest);
         return applicationAssembler.toApplicationResponse(application);
     }
 

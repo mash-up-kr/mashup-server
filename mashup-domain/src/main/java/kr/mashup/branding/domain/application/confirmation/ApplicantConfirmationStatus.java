@@ -1,11 +1,11 @@
-package kr.mashup.branding.domain.application.progress;
+package kr.mashup.branding.domain.application.confirmation;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum ApplicationProgressStatus {
+public enum ApplicantConfirmationStatus {
     TBD("미검토"),
     INTERVIEW_CONFIRM_WAITING("면접 확인 대기중"),
     INTERVIEW_CONFIRM_ACCEPTED("면접 확인"),
@@ -18,7 +18,7 @@ public enum ApplicationProgressStatus {
 
     private final String description;
 
-    public ApplicationProgressStatus updateFromApplicant(ApplicationProgressStatus status) {
+    public ApplicantConfirmationStatus updateFromApplicant(ApplicantConfirmationStatus status) {
         switch (this) {
             case INTERVIEW_CONFIRM_WAITING:
                 if (status == INTERVIEW_CONFIRM_ACCEPTED || status == INTERVIEW_CONFIRM_REJECTED) {
@@ -40,8 +40,8 @@ public enum ApplicationProgressStatus {
                 break;
             case TBD:
             case NOT_APPLICABLE:
-                throw new ApplicationProgressUpdateInvalidException();
+                throw new ConfirmationUpdateInvalidException();
         }
-        throw new ApplicationProgressUpdateInvalidException();
+        throw new ConfirmationUpdateInvalidException();
     }
 }

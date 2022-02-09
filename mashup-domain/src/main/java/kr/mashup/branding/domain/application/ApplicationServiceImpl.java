@@ -13,10 +13,10 @@ import kr.mashup.branding.domain.MashupSchedule;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
 import kr.mashup.branding.domain.applicant.ApplicantService;
+import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
-import kr.mashup.branding.domain.application.progress.UpdateApplicationProgressVo;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.domain.team.TeamService;
@@ -136,14 +136,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public Application updateProgressFromApplicant(Long applicantId,
-        UpdateApplicationProgressVo updateApplicationProgressVo) {
-        Application application = applicationRepository.findById(updateApplicationProgressVo.getApplicationId())
+    public Application updateConfirmationFromApplicant(Long applicantId,
+        UpdateConfirmationVo updateConfirmationVo) {
+        Application application = applicationRepository.findById(updateConfirmationVo.getApplicationId())
             .orElseThrow(ApplicationNotFoundException::new);
         if (!application.getApplicant().getApplicantId().equals(applicantId)) {
             throw new ApplicationNotAllowedException();
         }
-        application.updateProgressFromApplicant(updateApplicationProgressVo.getStatus());
+        application.updateApplicantConfirmationStatus(updateConfirmationVo.getStatus());
         return application;
     }
 
