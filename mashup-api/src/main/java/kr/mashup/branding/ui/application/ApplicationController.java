@@ -44,7 +44,6 @@ public class ApplicationController {
     /**
      * 임시저장
      * TODO: 이미 저장된 다른팀 지원서가 있으면 삭제
-     * TODO: 개인정보 동의여부 필드 필요한지, 저장은 어떻게 할지
      */
     @ApiOperation("내 지원서 임시 저장")
     @PutMapping("/{applicationId}")
