@@ -30,29 +30,35 @@ public enum ApplicationStatusResponse {
         // TODO: 13기 생기면 기수별로 일정 관리해야함
         LocalDateTime now = LocalDateTime.now();
         if (!MashupSchedule.canAnnounceScreeningResult(now)) {
-            return ApplicationStatusResponse.from(applicationStatus);
+            return ApplicationStatusResponse.submitted(applicationStatus);
         }
         if (!MashupSchedule.canAnnounceInterviewResult(now)) {
-            return ApplicationStatusResponse.fromScreening(screeningStatus);
+            return ApplicationStatusResponse.screeningResult(screeningStatus);
         }
-        return ApplicationStatusResponse.fromInterview(interviewStatus);
+        return ApplicationStatusResponse.interviewResult(screeningStatus, interviewStatus);
     }
 
-    private static ApplicationStatusResponse from(ApplicationStatus status) {
+    private static ApplicationStatusResponse submitted(ApplicationStatus status) {
         if (status.isSubmitted()) {
             return SUBMITTED;
         }
         return WRITING;
     }
 
-    private static ApplicationStatusResponse fromScreening(ApplicationScreeningStatus screeningStatus) {
+    private static ApplicationStatusResponse screeningResult(ApplicationScreeningStatus screeningStatus) {
         if (screeningStatus == ApplicationScreeningStatus.PASSED) {
             return SCREENING_PASSED;
         }
         return SCREENING_FAILED;
     }
 
-    private static ApplicationStatusResponse fromInterview(ApplicationInterviewStatus interviewStatus) {
+    private static ApplicationStatusResponse interviewResult(
+        ApplicationScreeningStatus screeningStatus,
+        ApplicationInterviewStatus interviewStatus
+    ) {
+        if (screeningStatus == ApplicationScreeningStatus.FAILED) {
+            return SCREENING_FAILED;
+        }
         if (interviewStatus == ApplicationInterviewStatus.PASSED) {
             return INTERVIEW_PASSED;
         }
