@@ -1,10 +1,12 @@
 package kr.mashup.branding.ui.application;
 
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import kr.mashup.branding.domain.MashupScheduleService;
 import kr.mashup.branding.domain.application.Answer;
 import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApplicationAssembler {
     private final ApplicantAssembler applicantAssembler;
+    private final MashupScheduleService mashupScheduleService;
 
     CreateApplicationVo toCreateApplicationVo(CreateApplicationRequest createApplicationRequest) {
         Assert.notNull(createApplicationRequest, "'createApplicationRequest' must not be null");
@@ -40,13 +43,24 @@ public class ApplicationAssembler {
 
     ApplicationResultResponse toApplicationResultResponse(ApplicationResult applicationResult) {
         return new ApplicationResultResponse(
-            ApplicationStatusResponse.of(
-                applicationResult.getApplication().getStatus(),
-                applicationResult.getScreeningStatus(),
-                applicationResult.getInterviewStatus()
-            ),
+            toApplicationStatusResponse(applicationResult),
             applicationResult.getInterviewStartedAt(),
             applicationResult.getInterviewEndedAt()
+        );
+    }
+
+    private ApplicationStatusResponse toApplicationStatusResponse(ApplicationResult applicationResult) {
+        // TODO: 13기 생기면 기수별로 일정 관리해야함
+        LocalDateTime now = LocalDateTime.now();
+        if (!mashupScheduleService.canAnnounceScreeningResult(now)) {
+            return ApplicationStatusResponse.submitted(applicationResult.getApplication().getStatus());
+        }
+        if (!mashupScheduleService.canAnnounceInterviewResult(now)) {
+            return ApplicationStatusResponse.screeningResult(applicationResult.getScreeningStatus());
+        }
+        return ApplicationStatusResponse.interviewResult(
+            applicationResult.getScreeningStatus(),
+            applicationResult.getInterviewStatus()
         );
     }
 

@@ -1,8 +1,5 @@
 package kr.mashup.branding.ui.application;
 
-import java.time.LocalDateTime;
-
-import kr.mashup.branding.domain.MashupSchedule;
 import kr.mashup.branding.domain.application.ApplicationStatus;
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
@@ -22,37 +19,30 @@ public enum ApplicationStatusResponse {
     ApplicationStatusResponse(String description) {
     }
 
-    public static ApplicationStatusResponse of(
-        ApplicationStatus applicationStatus,
-        ApplicationScreeningStatus screeningStatus,
-        ApplicationInterviewStatus interviewStatus
-    ) {
-        // TODO: 13기 생기면 기수별로 일정 관리해야함
-        LocalDateTime now = LocalDateTime.now();
-        if (!MashupSchedule.canAnnounceScreeningResult(now)) {
-            return ApplicationStatusResponse.submitted(applicationStatus);
-        }
-        if (!MashupSchedule.canAnnounceInterviewResult(now)) {
-            return ApplicationStatusResponse.screeningResult(screeningStatus);
-        }
-        return ApplicationStatusResponse.interviewResult(screeningStatus, interviewStatus);
-    }
-
-    private static ApplicationStatusResponse submitted(ApplicationStatus status) {
+    /**
+     * 서류 합격 발표 전 지원상태
+     */
+    static ApplicationStatusResponse submitted(ApplicationStatus status) {
         if (status.isSubmitted()) {
             return SUBMITTED;
         }
         return WRITING;
     }
 
-    private static ApplicationStatusResponse screeningResult(ApplicationScreeningStatus screeningStatus) {
+    /**
+     * 서류 합격 발표 후 ~ 면접 합격 발표 전 지원상태
+     */
+    static ApplicationStatusResponse screeningResult(ApplicationScreeningStatus screeningStatus) {
         if (screeningStatus == ApplicationScreeningStatus.PASSED) {
             return SCREENING_PASSED;
         }
         return SCREENING_FAILED;
     }
 
-    private static ApplicationStatusResponse interviewResult(
+    /**
+     * 면접 합격 발표 후 지원상태
+     */
+    static ApplicationStatusResponse interviewResult(
         ApplicationScreeningStatus screeningStatus,
         ApplicationInterviewStatus interviewStatus
     ) {
