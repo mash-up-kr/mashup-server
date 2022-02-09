@@ -33,7 +33,8 @@ public class ApplicationAssembler {
             application.getStatus().name(),
             application.getAnswers().stream()
                 .map(this::toAnswerResponse)
-                .collect(Collectors.toList())
+                .collect(Collectors.toList()),
+            application.getPrivacyPolicyAgreed()
         );
     }
 
@@ -45,7 +46,8 @@ public class ApplicationAssembler {
             updateApplicationRequest.getAnswers()
                 .stream()
                 .map(this::toAnswerRequestVo)
-                .collect(Collectors.toList())
+                .collect(Collectors.toList()),
+            updateApplicationRequest.getPrivacyPolicyAgreed()
         );
     }
 
