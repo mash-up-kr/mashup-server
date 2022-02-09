@@ -88,4 +88,17 @@ public class RecruitmentSchedule {
             INTERVIEW_RESULT_ANNOUNCED
         );
     }
+
+    public static RecruitmentSchedule from(RecruitmentEvent recruitmentEvent) {
+        RecruitmentSchedule recruitmentSchedule = new RecruitmentSchedule();
+        recruitmentSchedule.eventName = recruitmentEvent.getEventName();
+        recruitmentSchedule.eventOccurredAt = recruitmentEvent.getEventOccurredAt();
+        return recruitmentSchedule;
+    }
+
+    RecruitmentSchedule update(RecruitmentEvent recruitmentEvent) {
+        this.eventName = recruitmentEvent.getEventName();
+        this.eventOccurredAt = recruitmentEvent.getEventOccurredAt();
+        return this;
+    }
 }
