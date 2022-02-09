@@ -94,7 +94,7 @@ public class Application {
         application.applicant = applicant;
         application.applicationForm = applicationForm;
         application.applicationResult = ApplicationResult.of(application);
-        application.applicationProgress = ApplicationProgress.of(application);
+        application.applicationProgress = ApplicationProgress.of();
         application.status = ApplicationStatus.CREATED;
         List<Answer> answers = applicationForm.getQuestions()
             .stream()
