@@ -8,5 +8,5 @@ import lombok.ToString;
 @Getter
 @ToString
 public class RecruitmentScheduleUpdateRequest {
-    LocalDateTime eventOccurredAt;
+    private LocalDateTime eventOccurredAt;
 }

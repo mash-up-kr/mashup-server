@@ -8,6 +8,6 @@ import lombok.ToString;
 @Getter
 @ToString
 public class RecruitmentScheduleCreateRequest {
-    String eventName;
-    LocalDateTime eventOccurredAt;
+    private String eventName;
+    private LocalDateTime eventOccurredAt;
 }
