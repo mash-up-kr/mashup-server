@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class RecruitmentScheduleRequest {
-    private String eventName;
-    private LocalDateTime eventOccurredAt;
+public class RecruitmentScheduleCreateRequest {
+    String eventName;
+    LocalDateTime eventOccurredAt;
 }

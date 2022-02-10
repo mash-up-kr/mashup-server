@@ -10,9 +10,19 @@ public interface RecruitmentScheduleService {
     List<RecruitmentSchedule> getAll();
 
     /**
-     * 채용 일정 생성, 수정
+     * 채용 일정 생성
      */
-    RecruitmentSchedule createOrUpdate(RecruitmentEvent recruitmentEvent);
+    RecruitmentSchedule create(RecruitmentScheduleCreateVo recruitmentScheduleCreateVo);
+
+    /**
+     * 채용 일정 생성
+     */
+    RecruitmentSchedule update(Long recruitmentScheduleId, RecruitmentScheduleUpdateVo recruitmentScheduleUpdateVo);
+
+    /**
+     * 채용 일정 삭제
+     */
+    void delete(Long recruitmentScheduleId);
 
     /**
      * 서류 제출 가능한 시각인지

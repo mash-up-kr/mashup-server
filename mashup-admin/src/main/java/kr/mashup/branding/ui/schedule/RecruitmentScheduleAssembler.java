@@ -2,15 +2,22 @@ package kr.mashup.branding.ui.schedule;
 
 import org.springframework.stereotype.Component;
 
-import kr.mashup.branding.domain.schedule.RecruitmentEvent;
 import kr.mashup.branding.domain.schedule.RecruitmentSchedule;
+import kr.mashup.branding.domain.schedule.RecruitmentScheduleCreateVo;
+import kr.mashup.branding.domain.schedule.RecruitmentScheduleUpdateVo;
 
 @Component
 public class RecruitmentScheduleAssembler {
-    RecruitmentEvent toRecruitmentEvent(RecruitmentScheduleRequest recruitmentScheduleRequest) {
-        return RecruitmentEvent.of(
-            recruitmentScheduleRequest.getEventName(),
-            recruitmentScheduleRequest.getEventOccurredAt()
+    RecruitmentScheduleCreateVo toCreateRecruitmentScheduleVo(RecruitmentScheduleCreateRequest request) {
+        return RecruitmentScheduleCreateVo.of(
+            request.getEventName(),
+            request.getEventOccurredAt()
+        );
+    }
+
+    RecruitmentScheduleUpdateVo toUpdateRecruitmentScheduleVo(RecruitmentScheduleUpdateRequest request) {
+        return RecruitmentScheduleUpdateVo.of(
+            request.getEventOccurredAt()
         );
     }
 

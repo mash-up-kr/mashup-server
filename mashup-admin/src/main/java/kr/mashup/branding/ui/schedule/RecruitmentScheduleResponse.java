@@ -2,13 +2,20 @@ package kr.mashup.branding.ui.schedule;
 
 import java.time.LocalDateTime;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
+@Getter
+@ToString
+@EqualsAndHashCode
+@AllArgsConstructor
+@SuppressWarnings("FieldMayBeFinal")
 public class RecruitmentScheduleResponse {
-    private final Long recruitmentScheduleId;
-    private final String eventName;
-    private final LocalDateTime eventOccurredAt;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    private Long recruitmentScheduleId;
+    private String eventName;
+    private LocalDateTime eventOccurredAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

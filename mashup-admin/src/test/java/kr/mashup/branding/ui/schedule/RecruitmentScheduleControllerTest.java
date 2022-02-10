@@ -6,7 +6,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.mashup.branding.domain.schedule.RecruitmentSchedule;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleRepository;
+import kr.mashup.branding.ui.ApiResponse;
+import kr.mashup.branding.ui.api.RecruitmentScheduleApi;
 
 @AutoConfigureMockMvc
 @Transactional
@@ -35,6 +40,13 @@ class RecruitmentScheduleControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private RecruitmentScheduleApi recruitmentScheduleApi;
+
+    @BeforeEach
+    void setUp() {
+        recruitmentScheduleApi = new RecruitmentScheduleApi(mockMvc, objectMapper);
+    }
+
     @DisplayName("채용 일정 목록 조회")
     @Test
     void getAll() throws Exception {
@@ -46,70 +58,189 @@ class RecruitmentScheduleControllerTest {
             .andExpect(status().isOk())
             .andReturn();
 
-        List<RecruitmentScheduleResponse> actual = objectMapper.readValue(
+        ApiResponse<List<RecruitmentScheduleResponse>> actual = objectMapper.readValue(
             mvcResult.getResponse().getContentAsByteArray(),
-            new TypeReference<List<RecruitmentScheduleResponse>>() {
+            new TypeReference<ApiResponse<List<RecruitmentScheduleResponse>>>() {
             }
         );
         // then 2
-        assertEquals(4, actual.size());
+        assertEquals(4, actual.getData().size());
     }
 
-    @DisplayName("채용 일정 추가")
+    @DisplayName("채용 일정 생성 성공")
     @Test
     void create() throws Exception {
         // given
         String eventName = "NEW_EVENT";
         LocalDateTime now = LocalDateTime.now();
-        RecruitmentScheduleRequest request = createRecruitmentScheduleRequest(eventName, now);
+        RecruitmentScheduleCreateRequest request = createRecruitmentScheduleCreateRequest(eventName, now);
         // when
-        MvcResult mvcResult = mockMvc.perform(post("/api/v1/recruitment-schedules")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(request)))
+        MvcResult mvcResult = mockMvc.perform(
+            post("/api/v1/recruitment-schedules")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(request)))
             // then 1
             .andExpect(status().isOk())
             .andReturn();
-        RecruitmentScheduleResponse actual = objectMapper.readValue(
+        ApiResponse<RecruitmentScheduleResponse> actual = objectMapper.readValue(
             mvcResult.getResponse().getContentAsByteArray(),
-            new TypeReference<RecruitmentScheduleResponse>() {
+            new TypeReference<ApiResponse<RecruitmentScheduleResponse>>() {
             }
         );
         // then 2
-        assertEquals(eventName, actual.getEventName());
-        assertEquals(now, actual.getEventOccurredAt());
+        assertEquals("SUCCESS", actual.getCode());
+        assertEquals(eventName, actual.getData().getEventName());
+        assertEquals(now, actual.getData().getEventOccurredAt());
+
+        List<RecruitmentScheduleResponse> data = recruitmentScheduleApi.getAll().getData();
+        assertEquals(1, data.size());
+        assertEquals(actual.getData().getRecruitmentScheduleId(), data.get(0).getRecruitmentScheduleId());
     }
 
-    @DisplayName("채용 일정 수정")
+    @DisplayName("채용 일정 생성 실패: 이름이 이미 사용중인경우")
+    @Test
+    void create_failed_whenNameDuplicated() throws Exception {
+        // given
+        recruitmentScheduleRepository.saveAll(RecruitmentSchedule.get12thRecruitSchedules());
+        String eventName = "RECRUITMENT_STARTED";
+        LocalDateTime now = LocalDateTime.now();
+        RecruitmentScheduleCreateRequest request = createRecruitmentScheduleCreateRequest(eventName, now);
+        // when
+        MvcResult mvcResult = mockMvc.perform(
+            post("/api/v1/recruitment-schedules")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(request)))
+            // then 1
+            .andExpect(status().isBadRequest())
+            .andReturn();
+        ApiResponse<RecruitmentScheduleResponse> actual = objectMapper.readValue(
+            mvcResult.getResponse().getContentAsByteArray(),
+            new TypeReference<ApiResponse<RecruitmentScheduleResponse>>() {
+            }
+        );
+        // then 2
+        assertEquals("RECRUITMENT_SCHEDULE_NAME_DUPLICATED", actual.getCode());
+    }
+
+    @DisplayName("채용 일정 수정 성공")
     @Test
     void update() throws Exception {
         // given
-        recruitmentScheduleRepository.saveAll(RecruitmentSchedule.get12thRecruitSchedules());
-        String eventName = "RECRUIT_STARTED";
+        List<RecruitmentSchedule> recruitmentSchedules = recruitmentScheduleRepository.saveAll(
+            RecruitmentSchedule.get12thRecruitSchedules());
+        Long recruitmentScheduleId = recruitmentSchedules.get(0).getRecruitmentScheduleId();
         LocalDateTime now = LocalDateTime.now();
-        RecruitmentScheduleRequest request = createRecruitmentScheduleRequest(eventName, now);
+        RecruitmentScheduleUpdateRequest request = createRecruitmentScheduleUpdateRequest(now);
         // when
-        MvcResult mvcResult = mockMvc.perform(post("/api/v1/recruitment-schedules")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(request)))
+        MvcResult mvcResult = mockMvc.perform(
+            put("/api/v1/recruitment-schedules/{recruitmentScheduleId}", recruitmentScheduleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(request)))
             // then 1
             .andExpect(status().isOk())
             .andReturn();
-        RecruitmentScheduleResponse actual = objectMapper.readValue(
+        ApiResponse<RecruitmentScheduleResponse> actual = objectMapper.readValue(
             mvcResult.getResponse().getContentAsByteArray(),
-            new TypeReference<RecruitmentScheduleResponse>() {
+            new TypeReference<ApiResponse<RecruitmentScheduleResponse>>() {
             }
         );
         // then 2
-        assertEquals(eventName, actual.getEventName());
-        assertEquals(now, actual.getEventOccurredAt());
+        assertEquals(recruitmentScheduleId, actual.getData().getRecruitmentScheduleId());
+        assertEquals(now, actual.getData().getEventOccurredAt());
     }
 
-    private RecruitmentScheduleRequest createRecruitmentScheduleRequest(
+    @DisplayName("채용 일정 수정 실패: not found")
+    @Test
+    void update_failed_whenNotFound() throws Exception {
+        // given
+        Long recruitmentScheduleId = 0L;
+        LocalDateTime now = LocalDateTime.now();
+        RecruitmentScheduleUpdateRequest request = createRecruitmentScheduleUpdateRequest(now);
+        // when
+        MvcResult mvcResult = mockMvc.perform(
+            put("/api/v1/recruitment-schedules/{recruitmentScheduleId}", recruitmentScheduleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(request)))
+            // then 1
+            .andExpect(status().isNotFound())
+            .andReturn();
+        ApiResponse<RecruitmentScheduleResponse> actual = objectMapper.readValue(
+            mvcResult.getResponse().getContentAsByteArray(),
+            new TypeReference<ApiResponse<RecruitmentScheduleResponse>>() {
+            }
+        );
+        // then 2
+        assertEquals("RECRUITMENT_SCHEDULE_NOT_FOUND", actual.getCode());
+    }
+
+    @DisplayName("채용 일정 삭제 성공")
+    @Test
+    void remove() throws Exception {
+        // given
+        List<RecruitmentSchedule> recruitmentSchedules = recruitmentScheduleRepository.saveAll(
+            RecruitmentSchedule.get12thRecruitSchedules());
+        Long recruitmentScheduleId = recruitmentSchedules.get(0).getRecruitmentScheduleId();
+        // when
+        MvcResult mvcResult = mockMvc.perform(
+            delete("/api/v1/recruitment-schedules/{recruitmentScheduleId}", recruitmentScheduleId))
+            // then 1
+            .andExpect(status().isOk())
+            .andReturn();
+        ApiResponse<?> actual = objectMapper.readValue(
+            mvcResult.getResponse().getContentAsByteArray(),
+            new TypeReference<ApiResponse<?>>() {
+            }
+        );
+        // then 2
+        assertEquals("SUCCESS", actual.getCode());
+        Set<Long> recruitmentScheduleIds = recruitmentScheduleApi.getAll()
+            .getData()
+            .stream()
+            .map(RecruitmentScheduleResponse::getRecruitmentScheduleId)
+            .collect(Collectors.toSet());
+        assertFalse(recruitmentScheduleIds.contains(recruitmentScheduleId));
+    }
+
+    @DisplayName("채용 일정 삭제 성공")
+    @Test
+    void remove_returnSuccess_whenNotFound() throws Exception {
+        // given
+        Long recruitmentScheduleId = -1L;
+        // when
+        MvcResult mvcResult = mockMvc.perform(
+            delete("/api/v1/recruitment-schedules/{recruitmentScheduleId}", recruitmentScheduleId))
+            // then 1
+            .andExpect(status().isOk())
+            .andReturn();
+        ApiResponse<?> actual = objectMapper.readValue(
+            mvcResult.getResponse().getContentAsByteArray(),
+            new TypeReference<ApiResponse<?>>() {
+            }
+        );
+        // then 2
+        assertEquals("SUCCESS", actual.getCode());
+        Set<Long> recruitmentScheduleIds = recruitmentScheduleApi.getAll()
+            .getData()
+            .stream()
+            .map(RecruitmentScheduleResponse::getRecruitmentScheduleId)
+            .collect(Collectors.toSet());
+        assertFalse(recruitmentScheduleIds.contains(recruitmentScheduleId));
+    }
+
+    private RecruitmentScheduleCreateRequest createRecruitmentScheduleCreateRequest(
         String eventName,
         LocalDateTime eventOccurredAt
     ) {
-        RecruitmentScheduleRequest request = new RecruitmentScheduleRequest();
+        RecruitmentScheduleCreateRequest request = new RecruitmentScheduleCreateRequest();
         ReflectionTestUtils.setField(request, "eventName", eventName);
+        ReflectionTestUtils.setField(request, "eventOccurredAt", eventOccurredAt);
+        return request;
+    }
+
+    private RecruitmentScheduleUpdateRequest createRecruitmentScheduleUpdateRequest(
+        LocalDateTime eventOccurredAt
+    ) {
+        RecruitmentScheduleUpdateRequest request = new RecruitmentScheduleUpdateRequest();
         ReflectionTestUtils.setField(request, "eventOccurredAt", eventOccurredAt);
         return request;
     }

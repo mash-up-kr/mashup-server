@@ -89,16 +89,15 @@ public class RecruitmentSchedule {
         );
     }
 
-    public static RecruitmentSchedule from(RecruitmentEvent recruitmentEvent) {
+    public static RecruitmentSchedule from(RecruitmentScheduleCreateVo recruitmentScheduleCreateVo) {
         RecruitmentSchedule recruitmentSchedule = new RecruitmentSchedule();
-        recruitmentSchedule.eventName = recruitmentEvent.getEventName();
-        recruitmentSchedule.eventOccurredAt = recruitmentEvent.getEventOccurredAt();
+        recruitmentSchedule.eventName = recruitmentScheduleCreateVo.getEventName();
+        recruitmentSchedule.eventOccurredAt = recruitmentScheduleCreateVo.getEventOccurredAt();
         return recruitmentSchedule;
     }
 
-    RecruitmentSchedule update(RecruitmentEvent recruitmentEvent) {
-        this.eventName = recruitmentEvent.getEventName();
-        this.eventOccurredAt = recruitmentEvent.getEventOccurredAt();
+    RecruitmentSchedule update(RecruitmentScheduleUpdateVo recruitmentScheduleUpdateVo) {
+        this.eventOccurredAt = recruitmentScheduleUpdateVo.getEventOccurredAt();
         return this;
     }
 }

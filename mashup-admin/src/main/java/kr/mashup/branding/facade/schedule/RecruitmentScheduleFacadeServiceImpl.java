@@ -4,9 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import kr.mashup.branding.domain.schedule.RecruitmentEvent;
 import kr.mashup.branding.domain.schedule.RecruitmentSchedule;
+import kr.mashup.branding.domain.schedule.RecruitmentScheduleCreateVo;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
+import kr.mashup.branding.domain.schedule.RecruitmentScheduleUpdateVo;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -20,7 +21,20 @@ public class RecruitmentScheduleFacadeServiceImpl implements RecruitmentSchedule
     }
 
     @Override
-    public RecruitmentSchedule createOrUpdate(RecruitmentEvent recruitmentEvent) {
-        return recruitmentScheduleService.createOrUpdate(recruitmentEvent);
+    public RecruitmentSchedule create(RecruitmentScheduleCreateVo recruitmentScheduleCreateVo) {
+        return recruitmentScheduleService.create(recruitmentScheduleCreateVo);
+    }
+
+    @Override
+    public RecruitmentSchedule update(
+        Long recruitmentScheduleId,
+        RecruitmentScheduleUpdateVo recruitmentScheduleUpdateVo
+    ) {
+        return recruitmentScheduleService.update(recruitmentScheduleId, recruitmentScheduleUpdateVo);
+    }
+
+    @Override
+    public void delete(Long recruitmentScheduleId) {
+        recruitmentScheduleService.delete(recruitmentScheduleId);
     }
 }
