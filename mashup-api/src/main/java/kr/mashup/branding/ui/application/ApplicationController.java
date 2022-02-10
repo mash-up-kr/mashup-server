@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.domain.applicant.ApplicantService;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.facade.application.ApplicationFacadeService;
+import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,7 +31,7 @@ public class ApplicationController {
      */
     @ApiOperation("내 지원서 생성")
     @PostMapping
-    public ApplicationResponse create(
+    public ApiResponse<ApplicationResponse> create(
         @RequestBody CreateApplicationRequest createApplicationRequest
     ) {
         Long applicantId = getTesterApplicantId();
@@ -38,7 +39,9 @@ public class ApplicationController {
             applicantId,
             applicationAssembler.toCreateApplicationVo(createApplicationRequest)
         );
-        return applicationAssembler.toApplicationResponse(application);
+        return ApiResponse.success(
+            applicationAssembler.toApplicationResponse(application)
+        );
     }
 
     /**
@@ -47,7 +50,7 @@ public class ApplicationController {
      */
     @ApiOperation("내 지원서 임시 저장")
     @PutMapping("/{applicationId}")
-    public ApplicationResponse update(
+    public ApiResponse<ApplicationResponse> update(
         @PathVariable Long applicationId,
         @RequestBody UpdateApplicationRequest updateApplicationRequest
     ) {
@@ -56,7 +59,9 @@ public class ApplicationController {
             applicantId,
             applicationId,
             applicationAssembler.toUpdateApplicationVo(updateApplicationRequest));
-        return applicationAssembler.toApplicationResponse(application);
+        return ApiResponse.success(
+            applicationAssembler.toApplicationResponse(application)
+        );
     }
 
     /**
@@ -66,32 +71,38 @@ public class ApplicationController {
      */
     @ApiOperation("내 지원서 제출")
     @PostMapping("/{applicationId}/submit")
-    public ApplicationResponse submit(
+    public ApiResponse<ApplicationResponse> submit(
         @PathVariable Long applicationId
     ) {
         Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService.submit(applicantId, applicationId);
-        return applicationAssembler.toApplicationResponse(application);
+        return ApiResponse.success(
+            applicationAssembler.toApplicationResponse(application)
+        );
     }
 
     @ApiOperation("내 지원서 목록 조회")
     @GetMapping
-    public List<ApplicationResponse> getApplications() {
+    public ApiResponse<List<ApplicationResponse>> getApplications() {
         Long applicantId = getTesterApplicantId();
         List<Application> applications = applicationFacadeService.getApplications(applicantId);
-        return applications.stream()
-            .map(applicationAssembler::toApplicationResponse)
-            .collect(Collectors.toList());
+        return ApiResponse.success(
+            applications.stream()
+                .map(applicationAssembler::toApplicationResponse)
+                .collect(Collectors.toList())
+        );
     }
 
     @ApiOperation("내 지원서 상세 조회")
     @GetMapping("/{applicationId}")
-    public ApplicationResponse getApplication(
+    public ApiResponse<ApplicationResponse> getApplication(
         @PathVariable Long applicationId
     ) {
         Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService.getApplication(applicantId, applicationId);
-        return applicationAssembler.toApplicationResponse(application);
+        return ApiResponse.success(
+            applicationAssembler.toApplicationResponse(application)
+        );
     }
 
     // TODO: 로그인 완성되면 삭제해야함
