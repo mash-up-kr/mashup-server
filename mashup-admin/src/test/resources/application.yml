@@ -8,3 +8,6 @@ sms:
     url: test
     app-key: test
     secret-key: test
+
+jwt:
+  secret: test

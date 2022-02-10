@@ -20,10 +20,11 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     public AdminMember signUp(AdminMemberVo adminMemberVo) {
         Team team = teamService.getTeam(adminMemberVo.getTeamId());
 
-        //TODO: providerUserId 검증
+        //TODO: 아아디 중복 검증
         AdminMember adminMember = AdminMember.of(
-            adminMemberVo.getProviderUserId(),
-            adminMemberVo.getName(),
+            adminMemberVo.getUsername(),
+            adminMemberVo.getPassword(),
+            adminMemberVo.getPhoneNumber(),
             team,
             adminMemberVo.getDescription()
         );
@@ -33,9 +34,9 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
     @Override
     public AdminMember signIn(AdminMemberSignInVo adminMemberSignInVo) {
-        //TODO: providerUserId 검증
-        return adminMemberRepository.findByProviderUserId(adminMemberSignInVo.getProviderUserId())
+        AdminMember adminMember = adminMemberRepository.findByUsername(adminMemberSignInVo.getUsername())
             .orElseThrow(AdminMemberNotFoundException::new);
+        return adminMember;
     }
 
     @Override

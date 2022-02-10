@@ -1,15 +1,22 @@
 package kr.mashup.branding.domain.adminmember;
 
-import kr.mashup.branding.domain.team.Team;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import java.time.LocalDateTime;
+
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import kr.mashup.branding.domain.team.Team;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -21,11 +28,10 @@ public class AdminMember {
     @GeneratedValue
     private Long adminMemberId;
 
-    private String providerUserId;
+    private String username;
 
-    private String name;
+    private String password;
 
-    @Column(nullable = true)
     private String phoneNumber;
 
     private Boolean phoneNumberRegistered = false;
@@ -42,11 +48,17 @@ public class AdminMember {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public static AdminMember of(String providerUserId, String name, Team team, String description) {
+    public static AdminMember of(
+        String username,
+        String password,
+        String phoneNumber,
+        Team team,
+        String description) {
         AdminMember adminMember = new AdminMember();
-        adminMember.providerUserId = providerUserId;
-        adminMember.name = name;
+        adminMember.username = username;
+        adminMember.password = password;
         adminMember.team = team;
+        adminMember.phoneNumber = phoneNumber;
         adminMember.description = description;
         return adminMember;
     }
