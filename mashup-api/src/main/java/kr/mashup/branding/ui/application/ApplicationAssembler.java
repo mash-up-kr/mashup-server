@@ -6,13 +6,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import kr.mashup.branding.domain.MashupScheduleService;
 import kr.mashup.branding.domain.application.Answer;
 import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
+import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
 import kr.mashup.branding.ui.applicant.ApplicantAssembler;
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApplicationAssembler {
     private final ApplicantAssembler applicantAssembler;
-    private final MashupScheduleService mashupScheduleService;
+    private final RecruitmentScheduleService recruitmentScheduleService;
 
     CreateApplicationVo toCreateApplicationVo(CreateApplicationRequest createApplicationRequest) {
         Assert.notNull(createApplicationRequest, "'createApplicationRequest' must not be null");
@@ -52,10 +52,10 @@ public class ApplicationAssembler {
     private ApplicationStatusResponse toApplicationStatusResponse(ApplicationResult applicationResult) {
         // TODO: 13기 생기면 기수별로 일정 관리해야함
         LocalDateTime now = LocalDateTime.now();
-        if (!mashupScheduleService.canAnnounceScreeningResult(now)) {
+        if (!recruitmentScheduleService.canAnnounceScreeningResult(now)) {
             return ApplicationStatusResponse.submitted(applicationResult.getApplication().getStatus());
         }
-        if (!mashupScheduleService.canAnnounceInterviewResult(now)) {
+        if (!recruitmentScheduleService.canAnnounceInterviewResult(now)) {
             return ApplicationStatusResponse.screeningResult(applicationResult.getScreeningStatus());
         }
         return ApplicationStatusResponse.interviewResult(
