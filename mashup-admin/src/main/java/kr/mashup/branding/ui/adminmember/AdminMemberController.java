@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberSignInVo;
 import kr.mashup.branding.domain.adminmember.AdminMemberVo;
 import kr.mashup.branding.facade.adminmember.AdminMemberFacadeService;
@@ -21,12 +22,12 @@ public class AdminMemberController {
     private final AdminMemberFacadeService adminMemberFacadeService;
 
     @PostMapping("/sign-up")
-    public ApiResponse<Boolean> signup(
+    public ApiResponse<SignUpResponse> signup(
         @RequestBody SignUpRequest signUpRequest
     ) {
         AdminMemberVo adminMemberVo = adminMemberAssembler.toAdminMemberVo(signUpRequest);
-        adminMemberFacadeService.signUp(adminMemberVo);
-        return ApiResponse.success(true);
+        AdminMember adminMember = adminMemberFacadeService.signUp(adminMemberVo);
+        return ApiResponse.success(adminMemberAssembler.toSignUpResponse(adminMember));
     }
 
     @PostMapping("/sign-in")

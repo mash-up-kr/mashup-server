@@ -38,6 +38,10 @@ public class AdminMemberAssembler {
         return new SignInResponse(signInVo.getToken(), toAdminMemberResponse(signInVo.getAdminMember()));
     }
 
+    SignUpResponse toSignUpResponse(AdminMember adminMember) {
+        return new SignUpResponse(adminMember.getAdminMemberId());
+    }
+
     AdminMemberResponse toAdminMemberResponse(AdminMember adminMember) {
         return new AdminMemberResponse(
             adminMember.getAdminMemberId(),
