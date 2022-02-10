@@ -15,6 +15,8 @@ import kr.mashup.branding.domain.application.form.ApplicationFormService;
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
 import kr.mashup.branding.domain.application.form.QuestionRequestVo;
 import kr.mashup.branding.domain.application.form.QuestionType;
+import kr.mashup.branding.domain.schedule.RecruitmentSchedule;
+import kr.mashup.branding.domain.schedule.RecruitmentScheduleRepository;
 import kr.mashup.branding.domain.team.CreateTeamVo;
 import kr.mashup.branding.domain.team.Team;
 import kr.mashup.branding.domain.team.TeamService;
@@ -26,12 +28,16 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class TestDataInitializer {
+    private final RecruitmentScheduleRepository recruitmentScheduleRepository;
     private final TeamService teamService;
     private final ApplicationFormService applicationFormService;
     private final ApplicantRepository applicantRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void initialize() {
+        List<RecruitmentSchedule> recruitmentSchedules = createRecruitmentSchedules();
+        log.info("4 RecruitmentSchedules are created. recruitmentSchedules: {}", recruitmentSchedules);
+
         List<Team> teams = createTeams();
         log.info("6 Teams are created. teams: {}", teams);
 
@@ -44,6 +50,10 @@ public class TestDataInitializer {
 
         Applicant applicant = createApplicant();
         log.info("Applicant is created. applicant: {}", applicant);
+    }
+
+    private List<RecruitmentSchedule> createRecruitmentSchedules() {
+        return recruitmentScheduleRepository.saveAll(RecruitmentSchedule.get12thRecruitSchedules());
     }
 
     private List<Team> createTeams() {

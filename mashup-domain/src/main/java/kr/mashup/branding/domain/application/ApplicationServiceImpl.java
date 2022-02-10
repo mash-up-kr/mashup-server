@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import kr.mashup.branding.domain.MashupScheduleService;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
 import kr.mashup.branding.domain.applicant.ApplicantService;
@@ -17,6 +16,7 @@ import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
+import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
 import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.domain.team.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationFormService applicationFormService;
     private final TeamService teamService;
     private final ApplicantService applicantService;
-    private final MashupScheduleService mashupScheduleService;
+    private final RecruitmentScheduleService recruitmentScheduleService;
 
     // get or create
     // TODO: 모르겠고 teamId 줄테니 다내놔! 에 대해서 고민해보기
@@ -117,7 +117,7 @@ public class ApplicationServiceImpl implements ApplicationService {
      * 지원서 생성, 수정, 제출 가능한 시각인지 검증
      */
     private void validateDate(LocalDateTime localDateTime) {
-        if (!mashupScheduleService.isRecruitAvailable(localDateTime)) {
+        if (!recruitmentScheduleService.isRecruitAvailable(localDateTime)) {
             throw new IllegalArgumentException("지원서 제출 기간이 아닙니다. ");
         }
     }
