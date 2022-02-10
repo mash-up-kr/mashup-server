@@ -141,7 +141,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (!application.getApplicant().getApplicantId().equals(applicantId)) {
             throw new ApplicationNotAllowedException();
         }
-        application.updateApplicantConfirmationStatus(updateConfirmationVo.getStatus());
+        application.updateConfirm(updateConfirmationVo.getStatus());
         return application;
     }
 

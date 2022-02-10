@@ -153,7 +153,7 @@ public class Application {
         applicationResult.update(status);
     }
 
-    void updateApplicantConfirmationStatus(ApplicantConfirmationStatus status) {
+    void updateConfirm(ApplicantConfirmationStatus status) {
         confirmation.updateFromApplicant(status);
     }
 

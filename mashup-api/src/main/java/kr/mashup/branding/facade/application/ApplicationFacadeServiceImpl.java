@@ -60,12 +60,11 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
     }
 
     /**
-     * 지원자 진행 상태  업데이트
+     * 인터뷰, 최종합격에 대한 지원자 응답
      */
     @Override
-    public Application updateConfirmation(Long applicantId, Long applicationId,
+    public Application updateConfirm(Long applicantId, Long applicationId,
         UpdateConfirmationRequest updateRequest) {
-        //TODO applicant 인증 도입 되면 applicationId, applicantId로 application 조회해서 validation
         return applicationService.updateConfirmationFromApplicant(
             applicantId,
             UpdateConfirmationVo.of(applicationId, updateRequest.getStatus()));

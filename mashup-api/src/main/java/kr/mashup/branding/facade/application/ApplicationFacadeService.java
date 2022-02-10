@@ -18,6 +18,5 @@ public interface ApplicationFacadeService {
 
     Application getApplication(Long applicantId, Long applicationId);
 
-    Application updateConfirmation(Long applicantId, Long applicationId,
-        UpdateConfirmationRequest updateRequest);
+    Application updateConfirm(Long applicantId, Long applicationId, UpdateConfirmationRequest updateRequest);
 }

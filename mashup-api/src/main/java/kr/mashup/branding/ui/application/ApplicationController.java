@@ -103,7 +103,7 @@ public class ApplicationController {
     ) {
         Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService
-            .updateConfirmation(applicantId, applicationId, updateConfirmationRequest);
+            .updateConfirm(applicantId, applicationId, updateConfirmationRequest);
         return applicationAssembler.toApplicationResponse(application);
     }
 

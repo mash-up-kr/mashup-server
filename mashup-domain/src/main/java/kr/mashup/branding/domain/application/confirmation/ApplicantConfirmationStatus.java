@@ -42,6 +42,6 @@ public enum ApplicantConfirmationStatus {
             case NOT_APPLICABLE:
                 throw new ConfirmationUpdateInvalidException();
         }
-        throw new ConfirmationUpdateInvalidException();
+        throw new IllegalStateException();
     }
 }
