@@ -26,11 +26,12 @@ public class AdminMemberFacadeServiceImpl implements AdminMemberFacadeService {
     }
 
     @Override
-    public String signIn(AdminMemberSignInVo adminMemberSignInVo) {
+    public SignInVo signIn(AdminMemberSignInVo adminMemberSignInVo) {
         AdminMember adminMember = adminMemberService.signIn(adminMemberSignInVo);
         if (!passwordEncoder.matches(adminMemberSignInVo.getPassword(), adminMember.getPassword())) {
             throw new PasswordInvalidException();
         }
-        return jwtService.encode(adminMember.getAdminMemberId());
+        String token = jwtService.encode(adminMember.getAdminMemberId());
+        return SignInVo.of(token, adminMember);
     }
 }

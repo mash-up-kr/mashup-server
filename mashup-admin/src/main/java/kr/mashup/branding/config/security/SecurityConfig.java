@@ -26,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.antMatcher("/**")
             .authorizeRequests()
-            .antMatchers("/api/v1/signin", "/api/v1/signup", "/hello").permitAll()
+            .antMatchers("/api/v1/admin-members/sign-up", "/api/v1/admin-members/sign-in", "/hello").permitAll()
             .antMatchers("/api/v1/**").hasAuthority(ROLE_NAME)
             .and()
             .csrf().disable()

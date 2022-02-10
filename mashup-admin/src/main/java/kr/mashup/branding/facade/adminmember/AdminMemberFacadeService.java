@@ -7,5 +7,5 @@ import kr.mashup.branding.domain.adminmember.AdminMemberVo;
 public interface AdminMemberFacadeService {
     AdminMember signUp(AdminMemberVo adminMemberVo);
 
-    String signIn(AdminMemberSignInVo adminMemberSignInVo);
+    SignInVo signIn(AdminMemberSignInVo adminMemberSignInVo);
 }

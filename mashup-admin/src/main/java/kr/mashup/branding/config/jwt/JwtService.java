@@ -10,6 +10,9 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class JwtService {
 
@@ -30,6 +33,7 @@ public class JwtService {
         try {
             return jwtVerifier.verify(token).getClaim(CLAIM_ADMIN_MEMBER_ID).asLong();
         } catch (JWTVerificationException e) {
+            log.warn("Failed to decode jwt", e);
             return null;
         }
     }

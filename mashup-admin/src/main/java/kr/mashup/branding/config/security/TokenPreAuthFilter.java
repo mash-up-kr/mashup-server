@@ -14,7 +14,6 @@ public class TokenPreAuthFilter extends AbstractPreAuthenticatedProcessingFilter
     private final Pattern BEARER_TOKEN_PATTERN = Pattern.compile("[Bb]earer (.*)");
 
     @Override
-
     protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
         return resolveToken(request);
     }

@@ -3,8 +3,11 @@ package kr.mashup.branding.ui.adminmember;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberSignInVo;
 import kr.mashup.branding.domain.adminmember.AdminMemberVo;
+import kr.mashup.branding.facade.adminmember.SignInVo;
+import kr.mashup.branding.ui.team.TeamResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -18,7 +21,6 @@ public class AdminMemberAssembler {
         return AdminMemberVo.of(
             signUpRequest.getUsername(),
             encodedPassword,
-            signUpRequest.getPosition(),
             signUpRequest.getPhoneNumber(),
             signUpRequest.getTeamId(),
             signUpRequest.getDescription()
@@ -29,6 +31,19 @@ public class AdminMemberAssembler {
         return AdminMemberSignInVo.of(
             signInRequest.getUsername(),
             signInRequest.getPassword()
+        );
+    }
+
+    SignInResponse toSignInResponse(SignInVo signInVo) {
+        return new SignInResponse(signInVo.getToken(), toAdminMemberResponse(signInVo.getAdminMember()));
+    }
+
+    AdminMemberResponse toAdminMemberResponse(AdminMember adminMember) {
+        return new AdminMemberResponse(
+            adminMember.getAdminMemberId(),
+            adminMember.getUsername(),
+            new TeamResponse(adminMember.getTeam().getTeamId(), adminMember.getTeam().getName()),
+            adminMember.getDescription()
         );
     }
 }

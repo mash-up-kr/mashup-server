@@ -20,10 +20,10 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     public AdminMember signUp(AdminMemberVo adminMemberVo) {
         Team team = teamService.getTeam(adminMemberVo.getTeamId());
 
+        //TODO: 아아디 중복 검증
         AdminMember adminMember = AdminMember.of(
             adminMemberVo.getUsername(),
             adminMemberVo.getPassword(),
-            adminMemberVo.getPosition(),
             adminMemberVo.getPhoneNumber(),
             team,
             adminMemberVo.getDescription()

@@ -9,7 +9,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import kr.mashup.branding.domain.adminmember.AdminMember;
-import kr.mashup.branding.domain.adminmember.AdminMemberPosition;
 import kr.mashup.branding.domain.adminmember.AdminMemberRepository;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantRepository;
@@ -50,7 +49,7 @@ public class TestDataInitializer {
         log.info("Applicant is created. applicant: {}", applicant);
 
         AdminMember adminMember = createAdminMember();
-        log.info("Applicant is created. applicant: {}", adminMember);
+        log.info("AdminMember is created. applicant: {}", adminMember);
     }
 
     private List<Team> createTeams() {
@@ -119,7 +118,6 @@ public class TestDataInitializer {
         AdminMember testadmin = AdminMember.of(
             "testadmin",
             "1234",
-            AdminMemberPosition.LEADER,
             "01097944578",
             team,
             "테스트 유저임다."

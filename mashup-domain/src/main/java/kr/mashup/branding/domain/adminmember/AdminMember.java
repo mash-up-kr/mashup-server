@@ -2,7 +2,6 @@ package kr.mashup.branding.domain.adminmember;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -33,9 +32,6 @@ public class AdminMember {
 
     private String password;
 
-    private AdminMemberPosition position;
-
-    @Column(nullable = true)
     private String phoneNumber;
 
     private Boolean phoneNumberRegistered = false;
@@ -55,14 +51,12 @@ public class AdminMember {
     public static AdminMember of(
         String username,
         String password,
-        AdminMemberPosition position,
         String phoneNumber,
         Team team,
         String description) {
         AdminMember adminMember = new AdminMember();
         adminMember.username = username;
         adminMember.password = password;
-        adminMember.position = position;
         adminMember.team = team;
         adminMember.phoneNumber = phoneNumber;
         adminMember.description = description;
