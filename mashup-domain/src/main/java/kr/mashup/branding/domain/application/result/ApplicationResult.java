@@ -24,7 +24,7 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString(of = {"applicationResultId", "status", "createdAt", "updatedAt"})
+@ToString(of = {"applicationResultId", "screeningStatus", "interviewStatus", "createdAt", "updatedAt"})
 @EqualsAndHashCode(of = "applicationResultId")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
