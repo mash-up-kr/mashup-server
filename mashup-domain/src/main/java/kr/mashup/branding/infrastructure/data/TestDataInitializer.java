@@ -127,7 +127,7 @@ public class TestDataInitializer {
         Team team = teamService.findAllTeams().stream().findFirst().get();
         AdminMember testadmin = AdminMember.of(
             "testadmin",
-            "1234",
+            "$2a$10$ReFbOONqzqSbJmEOq9DC0ezs64sfLJumeqei96Ov4Fb8RhVc2Fmf6",
             "01097944578",
             team,
             "테스트 유저임다."
