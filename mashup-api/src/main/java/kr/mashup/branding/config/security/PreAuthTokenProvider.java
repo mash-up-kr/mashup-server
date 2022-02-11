@@ -18,7 +18,7 @@ import kr.mashup.branding.domain.applicant.ApplicantService;
 
 public class PreAuthTokenProvider implements AuthenticationProvider {
 
-    private final String ROLE_NAME = "APPLICANT";
+    private static final String ROLE_NAME = "APPLICANT";
 
     @Autowired
     private ApplicantService applicantService;

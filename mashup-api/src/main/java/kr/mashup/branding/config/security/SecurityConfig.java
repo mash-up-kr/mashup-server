@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final String ROLE_NAME = "APPLICANT";
+    private static final String ROLE_NAME = "APPLICANT";
     private final ObjectMapper objectMapper;
 
     @Override

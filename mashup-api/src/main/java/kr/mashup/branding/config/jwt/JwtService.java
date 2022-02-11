@@ -10,12 +10,15 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class JwtService {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    private final String CLAIM_NAME_APPLICANT_ID = "ApplicantId";
+    private static final String CLAIM_NAME_APPLICANT_ID = "ApplicantId";
     private Algorithm algorithm;
     private JWTVerifier jwtVerifier;
 
@@ -29,6 +32,7 @@ public class JwtService {
         try {
             return jwtVerifier.verify(token).getClaim(CLAIM_NAME_APPLICANT_ID).asLong();
         } catch (JWTVerificationException e) {
+            log.warn("Failed to decode jwt", e);
             return null;
         }
     }
