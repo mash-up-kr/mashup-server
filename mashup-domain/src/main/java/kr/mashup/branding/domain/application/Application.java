@@ -25,6 +25,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
 
 import kr.mashup.branding.domain.applicant.Applicant;
+import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
+import kr.mashup.branding.domain.application.confirmation.Confirmation;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.domain.application.result.ApplicationResultStatus;
@@ -55,6 +57,9 @@ public class Application {
 
     @OneToOne(cascade = CascadeType.ALL)
     private ApplicationResult applicationResult;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Confirmation confirmation;
 
     /**
      * 지원자가 지원서 작성중인 상태
@@ -94,6 +99,7 @@ public class Application {
         application.applicant = applicant;
         application.applicationForm = applicationForm;
         application.applicationResult = ApplicationResult.of(application);
+        application.confirmation = Confirmation.toBeDetermined();
         application.status = ApplicationStatus.CREATED;
         List<Answer> answers = applicationForm.getQuestions()
             .stream()
@@ -145,6 +151,10 @@ public class Application {
      */
     void updateResult(ApplicationResultStatus status) {
         applicationResult.update(status);
+    }
+
+    void updateConfirm(ApplicantConfirmationStatus status) {
+        confirmation.updateFromApplicant(status);
     }
 
     boolean isSubmitted() {

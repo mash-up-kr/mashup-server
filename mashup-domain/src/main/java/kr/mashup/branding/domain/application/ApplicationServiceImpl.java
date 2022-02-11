@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
 import kr.mashup.branding.domain.applicant.ApplicantService;
+import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
@@ -132,8 +133,20 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    @Transactional
+    public Application updateConfirmationFromApplicant(Long applicantId,
+        UpdateConfirmationVo updateConfirmationVo) {
+        Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(
+                updateConfirmationVo.getApplicationId(), applicantId)
+            .orElseThrow(ApplicationNotFoundException::new);
+        application.updateConfirm(updateConfirmationVo.getStatus());
+        return application;
+    }
+
+    @Override
     public List<Application> getApplications(Long applicantId) {
-        return applicationRepository.findByApplicant_applicantIdAndStatusIn(applicantId, ApplicationStatus.validSet());
+        return applicationRepository.findByApplicant_applicantIdAndStatusIn(applicantId,
+            ApplicationStatus.validSet());
     }
 
     // TODO: 상세 조회시 form 도 같이 조합해서 내려주어야할듯 (teamId, memberId 요청하면 해당팀 쓰던 지원서 질문, 내용 다 합쳐서)

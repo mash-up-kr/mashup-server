@@ -7,8 +7,7 @@ public enum ApplicationResultStatus {
     DOCUMENT_FAILED("서류 불합격"),
     INTERVIEW_TBD("면접 미정"),
     INTERVIEW_PASSED("면접 합격"),
-    INTERVIEW_FAILED("면접 불합격"),
-    ;
+    INTERVIEW_FAILED("면접 불합격");
 
     ApplicationResultStatus(String description) {
     }

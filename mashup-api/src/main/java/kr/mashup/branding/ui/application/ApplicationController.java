@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.domain.applicant.ApplicantService;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.facade.application.ApplicationFacadeService;
+import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -93,6 +94,18 @@ public class ApplicationController {
         Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService.getApplication(applicantId, applicationId);
         return applicationAssembler.toApplicationResponse(application);
+    }
+
+    @ApiOperation("지원자 응답")
+    @PostMapping("/{applicationId}/confirm")
+    public ApiResponse<ApplicationResponse> updateConfirmation(
+        @PathVariable Long applicationId,
+        @RequestBody UpdateConfirmationRequest updateConfirmationRequest
+    ) {
+        Long applicantId = getTesterApplicantId();
+        Application application = applicationFacadeService
+            .updateConfirm(applicantId, applicationId, updateConfirmationRequest);
+        return ApiResponse.success(applicationAssembler.toApplicationResponse(application));
     }
 
     // TODO: 로그인 완성되면 삭제해야함
