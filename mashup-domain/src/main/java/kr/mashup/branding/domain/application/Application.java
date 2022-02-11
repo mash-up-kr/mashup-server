@@ -99,7 +99,7 @@ public class Application {
         application.applicant = applicant;
         application.applicationForm = applicationForm;
         application.applicationResult = ApplicationResult.of(application);
-        application.confirmation = Confirmation.of();
+        application.confirmation = Confirmation.toBeDetermined();
         application.status = ApplicationStatus.CREATED;
         List<Answer> answers = applicationForm.getQuestions()
             .stream()

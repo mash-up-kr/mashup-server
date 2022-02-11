@@ -39,7 +39,7 @@ public class Confirmation {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public static Confirmation of() {
+    public static Confirmation toBeDetermined() {
         Confirmation confirmation = new Confirmation();
         confirmation.status = ApplicantConfirmationStatus.TBD;
         return confirmation;

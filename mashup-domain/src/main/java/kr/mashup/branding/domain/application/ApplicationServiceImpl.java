@@ -118,9 +118,9 @@ public class ApplicationServiceImpl implements ApplicationService {
      * 지원서 생성, 수정, 제출 가능한 시각인지 검증
      */
     private void validateDate(LocalDateTime localDateTime) {
-        if (!mashupScheduleService.isRecruitAvailable(localDateTime)) {
-            throw new IllegalArgumentException("지원서 제출 기간이 아닙니다. ");
-        }
+        // if (!mashupScheduleService.isRecruitAvailable(localDateTime)) {
+        //     throw new IllegalArgumentException("지원서 제출 기간이 아닙니다. ");
+        // }
     }
 
     @Override
@@ -136,11 +136,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public Application updateConfirmationFromApplicant(Long applicantId,
         UpdateConfirmationVo updateConfirmationVo) {
-        Application application = applicationRepository.findById(updateConfirmationVo.getApplicationId())
+        Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(
+                updateConfirmationVo.getApplicationId(), applicantId)
             .orElseThrow(ApplicationNotFoundException::new);
-        if (!application.getApplicant().getApplicantId().equals(applicantId)) {
-            throw new ApplicationNotAllowedException();
-        }
         application.updateConfirm(updateConfirmationVo.getStatus());
         return application;
     }
