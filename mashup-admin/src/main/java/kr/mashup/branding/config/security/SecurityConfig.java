@@ -18,9 +18,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    private static final String ROLE_NAME = "adminMember";
 
     private final ObjectMapper objectMapper;
-    private final String ROLE_NAME = "adminMember";
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
