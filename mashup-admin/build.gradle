@@ -22,6 +22,7 @@ dependencies {
     implementation "io.springfox:springfox-boot-starter:$swaggerVersion"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 test {
