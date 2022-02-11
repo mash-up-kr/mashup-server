@@ -30,11 +30,14 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
     }
 
     @Override
-    public List<Application> updateResult(List<UpdateApplicationResultVo> updateApplicationResultVoList) {
+    public List<Application> updateResults(
+        Long adminMemberId,
+        List<UpdateApplicationResultVo> updateApplicationResultVoList
+    ) {
         return updateApplicationResultVoList.stream()
             .map(it -> {
                 try {
-                    return applicationService.updateResult(it);
+                    return applicationService.updateResult(adminMemberId, it);
                 } catch (Exception e) {
                     log.warn("Failed to update result. applicationId: {}", it.getApplicationId(), e);
                     return null;
@@ -42,5 +45,10 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
             })
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public Application updateResult(Long adminMemberId, UpdateApplicationResultVo updateApplicationResultVo) {
+        return applicationService.updateResult(adminMemberId, updateApplicationResultVo);
     }
 }

@@ -13,5 +13,6 @@ public class ApplicationResponse {
     private final ApplicantConfirmationStatus confirmationStatus;
     private final String status;
     private final List<AnswerResponse> answers;
+    private final ApplicationResultResponse result;
     private final Boolean privacyPolicyAgreed;
 }

@@ -12,5 +12,7 @@ public interface ApplicationFacadeService {
 
     Application getApplication(Long applicationId);
 
-    List<Application> updateResult(List<UpdateApplicationResultVo> updateApplicationResultVoList);
+    List<Application> updateResults(Long adminMemberId, List<UpdateApplicationResultVo> updateApplicationResultVoList);
+
+    Application updateResult(Long adminMemberId, UpdateApplicationResultVo updateApplicationResultVo);
 }

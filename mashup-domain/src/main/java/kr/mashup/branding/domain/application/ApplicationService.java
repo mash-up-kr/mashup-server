@@ -15,7 +15,7 @@ public interface ApplicationService {
 
     Application submit(Long applicationId);
 
-    Application updateResult(UpdateApplicationResultVo updateApplicationResultVo);
+    Application updateResult(Long adminMemberId, UpdateApplicationResultVo updateApplicationResultVo);
 
     Application updateConfirmationFromApplicant(Long applicantId, UpdateConfirmationVo updateConfirmationVo);
 

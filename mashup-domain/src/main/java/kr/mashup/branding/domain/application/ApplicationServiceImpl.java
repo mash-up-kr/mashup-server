@@ -123,12 +123,25 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
     }
 
+    /**
+     * 지원서 1개에 대해서 결과, 면접 일정을 변경한다.
+     */
     @Override
     @Transactional
-    public Application updateResult(UpdateApplicationResultVo updateApplicationResultVo) {
-        Application application = applicationRepository.findById(updateApplicationResultVo.getApplicationId())
+    public Application updateResult(
+        Long adminMemberId,
+        UpdateApplicationResultVo updateApplicationResultVo
+    ) {
+        Assert.notNull(adminMemberId, "'adminMemberId' must not be null");
+        Assert.notNull(updateApplicationResultVo, "'updateApplicationResultVo' must not be null");
+
+        Long applicationId = updateApplicationResultVo.getApplicationId();
+        Assert.notNull(applicationId, "'applicationId' must not be null");
+
+        // TODO: adminMemberId 조회 및 권한 검증
+        Application application = applicationRepository.findById(applicationId)
             .orElseThrow(ApplicationNotFoundException::new);
-        application.updateResult(updateApplicationResultVo.getStatus());
+        application.updateResult(updateApplicationResultVo);
         return application;
     }
 
