@@ -105,6 +105,18 @@ public class ApplicationController {
         );
     }
 
+    @ApiOperation("지원자 응답")
+    @PostMapping("/{applicationId}/confirm")
+    public ApiResponse<ApplicationResponse> updateConfirmation(
+        @PathVariable Long applicationId,
+        @RequestBody UpdateConfirmationRequest updateConfirmationRequest
+    ) {
+        Long applicantId = getTesterApplicantId();
+        Application application = applicationFacadeService
+            .updateConfirm(applicantId, applicationId, updateConfirmationRequest);
+        return ApiResponse.success(applicationAssembler.toApplicationResponse(application));
+    }
+
     // TODO: 로그인 완성되면 삭제해야함
     private Long getTesterApplicantId() {
         return applicantService.getTester().getApplicantId();
