@@ -36,13 +36,23 @@ public class Applicant {
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
-    private ApplicantStatus status;
+    private ApplicantStatus status = ApplicantStatus.ACTIVE;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public Applicant() {
+    }
+
+    public static Applicant of(String email, String googleUserId) {
+        Applicant applicant = new Applicant();
+        applicant.email = email;
+        applicant.googleUserId = googleUserId;
+        return applicant;
+    }
 
     private static final Applicant TESTER;
 
