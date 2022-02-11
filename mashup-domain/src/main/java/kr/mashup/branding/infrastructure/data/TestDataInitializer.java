@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import kr.mashup.branding.domain.adminmember.AdminMember;
+import kr.mashup.branding.domain.adminmember.AdminMemberRepository;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantRepository;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
@@ -15,6 +17,8 @@ import kr.mashup.branding.domain.application.form.ApplicationFormService;
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
 import kr.mashup.branding.domain.application.form.QuestionRequestVo;
 import kr.mashup.branding.domain.application.form.QuestionType;
+import kr.mashup.branding.domain.schedule.RecruitmentSchedule;
+import kr.mashup.branding.domain.schedule.RecruitmentScheduleRepository;
 import kr.mashup.branding.domain.team.CreateTeamVo;
 import kr.mashup.branding.domain.team.Team;
 import kr.mashup.branding.domain.team.TeamService;
@@ -26,12 +30,17 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class TestDataInitializer {
+    private final RecruitmentScheduleRepository recruitmentScheduleRepository;
     private final TeamService teamService;
     private final ApplicationFormService applicationFormService;
     private final ApplicantRepository applicantRepository;
+    private final AdminMemberRepository adminMemberRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void initialize() {
+        List<RecruitmentSchedule> recruitmentSchedules = createRecruitmentSchedules();
+        log.info("4 RecruitmentSchedules are created. recruitmentSchedules: {}", recruitmentSchedules);
+
         List<Team> teams = createTeams();
         log.info("6 Teams are created. teams: {}", teams);
 
@@ -44,6 +53,13 @@ public class TestDataInitializer {
 
         Applicant applicant = createApplicant();
         log.info("Applicant is created. applicant: {}", applicant);
+
+        AdminMember adminMember = createAdminMember();
+        log.info("AdminMember is created. applicant: {}", adminMember);
+    }
+
+    private List<RecruitmentSchedule> createRecruitmentSchedules() {
+        return recruitmentScheduleRepository.saveAll(RecruitmentSchedule.get12thRecruitSchedules());
     }
 
     private List<Team> createTeams() {
@@ -105,5 +121,17 @@ public class TestDataInitializer {
     private Applicant createApplicant() {
         Applicant tester = Applicant.tester();
         return applicantRepository.save(tester);
+    }
+
+    private AdminMember createAdminMember() {
+        Team team = teamService.findAllTeams().stream().findFirst().get();
+        AdminMember testadmin = AdminMember.of(
+            "testadmin",
+            "1234",
+            "01097944578",
+            team,
+            "테스트 유저임다."
+        );
+        return adminMemberRepository.save(testadmin);
     }
 }
