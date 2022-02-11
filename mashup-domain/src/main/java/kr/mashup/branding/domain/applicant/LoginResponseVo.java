@@ -6,4 +6,6 @@ import lombok.Value;
 public class LoginResponseVo {
     String accessToken;
     Long applicantId;
+    String email;
+    String status;
 }

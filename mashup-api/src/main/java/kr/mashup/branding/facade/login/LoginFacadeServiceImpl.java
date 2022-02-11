@@ -14,15 +14,16 @@ import lombok.RequiredArgsConstructor;
 public class LoginFacadeServiceImpl implements LoginFacadeService {
 
     private final ApplicantService applicantService;
-    private final JwtService jwtService; // 수정
+    private final JwtService jwtService;
 
     @Override
     public LoginResponseVo login(LoginRequestVo loginRequestVo) {
         Applicant applicant = applicantService.join(loginRequestVo);
-        LoginResponseVo loginResponseVo = LoginResponseVo.of(
+        return LoginResponseVo.of(
             jwtService.encode(applicant.getApplicantId()),
-            applicant.getApplicantId()
+            applicant.getApplicantId(),
+            applicant.getEmail(),
+            applicant.getStatus().toString()
         );
-        return loginResponseVo;
     }
 }
