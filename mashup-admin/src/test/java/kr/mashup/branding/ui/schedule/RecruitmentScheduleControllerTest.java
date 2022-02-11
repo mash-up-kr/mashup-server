@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -33,6 +34,8 @@ import kr.mashup.branding.ui.api.RecruitmentScheduleApi;
 @Transactional
 @SpringBootTest
 class RecruitmentScheduleControllerTest {
+    private static final String AUTHORITY_NAME = "adminMember";
+
     @Autowired
     private RecruitmentScheduleRepository recruitmentScheduleRepository;
     @Autowired
@@ -47,6 +50,7 @@ class RecruitmentScheduleControllerTest {
         recruitmentScheduleApi = new RecruitmentScheduleApi(mockMvc, objectMapper);
     }
 
+    @WithMockUser(authorities = {AUTHORITY_NAME})
     @DisplayName("채용 일정 목록 조회")
     @Test
     void getAll() throws Exception {
@@ -67,6 +71,7 @@ class RecruitmentScheduleControllerTest {
         assertEquals(4, actual.getData().size());
     }
 
+    @WithMockUser(authorities = {AUTHORITY_NAME})
     @DisplayName("채용 일정 생성 성공")
     @Test
     void create() throws Exception {
@@ -97,6 +102,7 @@ class RecruitmentScheduleControllerTest {
         assertEquals(actual.getData().getRecruitmentScheduleId(), data.get(0).getRecruitmentScheduleId());
     }
 
+    @WithMockUser(authorities = {AUTHORITY_NAME})
     @DisplayName("채용 일정 생성 실패: 이름이 이미 사용중인경우")
     @Test
     void create_failed_whenNameDuplicated() throws Exception {
@@ -122,6 +128,7 @@ class RecruitmentScheduleControllerTest {
         assertEquals("RECRUITMENT_SCHEDULE_NAME_DUPLICATED", actual.getCode());
     }
 
+    @WithMockUser(authorities = {AUTHORITY_NAME})
     @DisplayName("채용 일정 수정 성공")
     @Test
     void update() throws Exception {
@@ -149,6 +156,7 @@ class RecruitmentScheduleControllerTest {
         assertEquals(now, actual.getData().getEventOccurredAt());
     }
 
+    @WithMockUser(authorities = {AUTHORITY_NAME})
     @DisplayName("채용 일정 수정 실패: not found")
     @Test
     void update_failed_whenNotFound() throws Exception {
@@ -173,6 +181,7 @@ class RecruitmentScheduleControllerTest {
         assertEquals("RECRUITMENT_SCHEDULE_NOT_FOUND", actual.getCode());
     }
 
+    @WithMockUser(authorities = {AUTHORITY_NAME})
     @DisplayName("채용 일정 삭제 성공")
     @Test
     void remove() throws Exception {
@@ -201,7 +210,8 @@ class RecruitmentScheduleControllerTest {
         assertFalse(recruitmentScheduleIds.contains(recruitmentScheduleId));
     }
 
-    @DisplayName("채용 일정 삭제 성공")
+    @WithMockUser(authorities = {AUTHORITY_NAME})
+    @DisplayName("채용 일정 삭제 성공: 삭제 대상이 없어도 성공으로 응답")
     @Test
     void remove_returnSuccess_whenNotFound() throws Exception {
         // given

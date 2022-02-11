@@ -1,9 +1,9 @@
 package kr.mashup.branding.domain.adminmember;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 public interface AdminMemberRepository extends JpaRepository<AdminMember, Long> {
-    Optional<AdminMember> findByProviderUserId(String providerUserId);
+    Optional<AdminMember> findByUsername(String username);
 }
