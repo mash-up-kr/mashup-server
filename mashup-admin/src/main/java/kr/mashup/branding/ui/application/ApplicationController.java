@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.facade.application.ApplicationFacadeService;
 import lombok.RequiredArgsConstructor;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping("/api/v1/applications")
@@ -25,10 +28,23 @@ public class ApplicationController {
 
     @GetMapping
     public List<ApplicationResponse> getApplications(
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @RequestParam(required = false) String searchWord,
+        @RequestParam(required = false) Long teamId,
+        @RequestParam(required = false) ApplicantConfirmationStatus confirmStatus,
+        @RequestParam(required = false) ApplicationResultStatusRequest resultStatus,
         Pageable pageable
     ) {
-        return applicationFacadeService.getApplications(searchWord, pageable)
+        return applicationFacadeService.getApplications(
+            adminMemberId,
+            applicationAssembler.toApplicationQueryVo(
+                searchWord,
+                teamId,
+                confirmStatus,
+                resultStatus,
+                pageable
+            )
+        )
             .stream()
             .map(applicationAssembler::toApplicationResponse)
             .collect(Collectors.toList());
