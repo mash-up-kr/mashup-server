@@ -55,7 +55,7 @@ public class TestDataInitializer {
         log.info("Applicant is created. applicant: {}", applicant);
 
         AdminMember adminMember = createAdminMember();
-        log.info("AdminMember is created. applicant: {}", adminMember);
+        log.info("AdminMember is created. adminMember: {}", adminMember);
     }
 
     private List<RecruitmentSchedule> createRecruitmentSchedules() {
