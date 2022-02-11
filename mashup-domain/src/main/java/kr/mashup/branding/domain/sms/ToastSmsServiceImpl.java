@@ -1,15 +1,20 @@
 package kr.mashup.branding.domain.sms;
 
-import kr.mashup.branding.domain.sms.dto.ToastSmsRequest;
-import kr.mashup.branding.domain.sms.dto.ToastSmsResponse;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import kr.mashup.branding.domain.sms.dto.ToastSmsRequest;
+import kr.mashup.branding.domain.sms.dto.ToastSmsResponse;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
@@ -30,7 +35,7 @@ public class ToastSmsServiceImpl implements ToastSmsService {
     public ToastSmsResponse send(SmsRequestGroup requestGroup, List<SmsRequest> requests) {
         HttpHeaders headers = buildHeader();
         ToastSmsRequest toastSmsRequest = buildBody(requestGroup, requests);
-        HttpEntity httpEntity = new HttpEntity(toastSmsRequest, headers);
+        HttpEntity<ToastSmsRequest> httpEntity = new HttpEntity<>(toastSmsRequest, headers);
 
         ResponseEntity<ToastSmsResponse> exchange = toastRestTemplate.exchange(
                 toastUrl + "/sms/v3.0/appKeys/" + appKey + "/sender/sms",

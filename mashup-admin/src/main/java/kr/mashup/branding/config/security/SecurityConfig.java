@@ -63,8 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         webSecurity.ignoring().antMatchers(
             "/error",
             "/favicon.ico",
-            "/swagger-ui.html",
-            "/webjars/springfox-swagger-ui/**",
+            "/swagger-ui/",
             "/swagger-resources/**",
             "/v2/api-docs"
         );
