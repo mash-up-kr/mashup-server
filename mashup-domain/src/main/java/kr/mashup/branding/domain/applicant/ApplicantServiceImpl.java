@@ -1,5 +1,7 @@
 package kr.mashup.branding.domain.applicant;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -26,5 +28,18 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Override
     public Applicant getTester() {
         return applicantRepository.findAll().stream().findFirst().orElseThrow(ApplicantNotFoundException::new);
+    }
+
+    @Transactional
+    @Override
+    public Applicant join(LoginRequestVo loginRequestVo) {
+        Optional<Applicant> applicant = applicantRepository.findByGoogleUserId(loginRequestVo.getGoogleUserId());
+        if (applicant.isPresent()) {
+            return applicant.get();
+        }
+        Applicant newApplicant = new Applicant(loginRequestVo.getEmail(), loginRequestVo.getGoogleUserId(),
+            ApplicantStatus.ACTIVE);
+        applicantRepository.save(newApplicant);
+        return newApplicant;
     }
 }

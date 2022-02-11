@@ -44,6 +44,15 @@ public class Applicant {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    public Applicant(String email, String googleUserId, ApplicantStatus status) {
+        this.email = email;
+        this.googleUserId = googleUserId;
+        this.status = status;
+    }
+
+    public Applicant() {
+    }
+
     private static final Applicant TESTER;
 
     static {
