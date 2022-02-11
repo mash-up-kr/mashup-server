@@ -33,13 +33,13 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Transactional
     @Override
     public Applicant join(LoginRequestVo loginRequestVo) {
+        Assert.notNull(loginRequestVo, "'loginRequestVo' must not be null");
         Optional<Applicant> applicant = applicantRepository.findByGoogleUserId(loginRequestVo.getGoogleUserId());
-        if (applicant.isPresent()) {
-            return applicant.get();
-        }
-        Applicant newApplicant = new Applicant(loginRequestVo.getEmail(), loginRequestVo.getGoogleUserId(),
-            ApplicantStatus.ACTIVE);
-        applicantRepository.save(newApplicant);
-        return newApplicant;
+        return applicant.orElseGet(
+            () -> {
+                return applicantRepository.save(
+                    Applicant.of(loginRequestVo.getEmail(), loginRequestVo.getGoogleUserId()));
+            }
+        );
     }
 }
