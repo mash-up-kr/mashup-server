@@ -65,6 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity webSecurity) {
         webSecurity.ignoring().antMatchers(
+            "/h2-console/**",
             "/error",
             "/favicon.ico",
             "/swagger-ui/**",

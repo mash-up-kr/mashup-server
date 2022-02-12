@@ -21,7 +21,9 @@ public class AdminMemberAssembler {
             signUpRequest.getUsername(),
             encodedPassword,
             signUpRequest.getPhoneNumber(),
-            signUpRequest.getDescription()
+            signUpRequest.getDescription(),
+            signUpRequest.getGroup(),
+            signUpRequest.getPosition()
         );
     }
 

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberRepository;
+import kr.mashup.branding.domain.adminmember.role.RoleGroup;
+import kr.mashup.branding.domain.adminmember.role.RolePosition;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantRepository;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
@@ -124,13 +126,13 @@ public class TestDataInitializer {
     }
 
     private AdminMember createAdminMember() {
-        Team team = teamService.findAllTeams().stream().findFirst().get();
         AdminMember testadmin = AdminMember.of(
             "testadmin",
             "$2a$10$ReFbOONqzqSbJmEOq9DC0ezs64sfLJumeqei96Ov4Fb8RhVc2Fmf6",
             "01097944578",
-            team,
-            "테스트 유저임다."
+            "테스트 유저임다.",
+            RoleGroup.SPRING,
+            RolePosition.LEADER
         );
         return adminMemberRepository.save(testadmin);
     }
