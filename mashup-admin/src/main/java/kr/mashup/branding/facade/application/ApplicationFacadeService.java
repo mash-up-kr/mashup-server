@@ -2,13 +2,14 @@ package kr.mashup.branding.facade.application;
 
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 
 import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 
 public interface ApplicationFacadeService {
-    List<Application> getApplications(String searchWord, Pageable pageable);
+    Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo);
 
     Application getApplication(Long applicationId);
 

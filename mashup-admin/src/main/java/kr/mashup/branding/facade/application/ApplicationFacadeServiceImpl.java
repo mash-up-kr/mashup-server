@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.ApplicationService;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,8 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
     private final ApplicationService applicationService;
 
     @Override
-    public List<Application> getApplications(String searchWord, Pageable pageable) {
-        return applicationService.getApplications(searchWord, pageable).getContent();
+    public Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo) {
+        return applicationService.getApplications(adminMemberId, applicationQueryVo);
     }
 
     @Override

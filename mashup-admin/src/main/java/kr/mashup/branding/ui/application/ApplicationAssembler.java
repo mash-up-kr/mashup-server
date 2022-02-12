@@ -4,9 +4,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.domain.application.ApplicationQueryVo;
+import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
+import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
+import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 
 @Component
@@ -68,5 +73,63 @@ public class ApplicationAssembler {
             request.getInterviewStartedAt(),
             request.getInterviewEndedAt()
         );
+    }
+
+    ApplicationQueryVo toApplicationQueryVo(
+        String searchWord,
+        Long teamId,
+        ApplicantConfirmationStatus confirmStatus,
+        ApplicationResultStatusRequest resultStatus,
+        Pageable pageable
+    ) {
+        return ApplicationQueryVo.of(
+            searchWord,
+            teamId,
+            confirmStatus,
+            toApplicationScreeningStatus(resultStatus),
+            toApplicationInterviewStatus(resultStatus),
+            pageable
+        );
+    }
+
+    private ApplicationScreeningStatus toApplicationScreeningStatus(ApplicationResultStatusRequest resultStatus) {
+        if (resultStatus == null) {
+            return null;
+        }
+        switch (resultStatus) {
+            case NOT_RATED:
+                return ApplicationScreeningStatus.NOT_RATED;
+            case SCREENING_FAILED:
+                return ApplicationScreeningStatus.FAILED;
+            case SCREENING_TBD:
+                return ApplicationScreeningStatus.TBD;
+            case SCREENING_PASSED:
+                return ApplicationScreeningStatus.PASSED;
+            case INTERVIEW_FAILED:
+            case INTERVIEW_TBD:
+            case INTERVIEW_PASSED:
+                return null;
+        }
+        throw new IllegalStateException();
+    }
+
+    private ApplicationInterviewStatus toApplicationInterviewStatus(ApplicationResultStatusRequest resultStatus) {
+        if (resultStatus == null) {
+            return null;
+        }
+        switch (resultStatus) {
+            case NOT_RATED:
+            case SCREENING_FAILED:
+            case SCREENING_TBD:
+            case SCREENING_PASSED:
+                return null;
+            case INTERVIEW_FAILED:
+                return ApplicationInterviewStatus.FAILED;
+            case INTERVIEW_TBD:
+                return ApplicationInterviewStatus.TBD;
+            case INTERVIEW_PASSED:
+                return ApplicationInterviewStatus.PASSED;
+        }
+        throw new IllegalStateException();
     }
 }
