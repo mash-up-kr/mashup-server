@@ -7,7 +7,6 @@ import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberSignInVo;
 import kr.mashup.branding.domain.adminmember.AdminMemberVo;
 import kr.mashup.branding.facade.adminmember.SignInVo;
-import kr.mashup.branding.ui.team.TeamResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -22,7 +21,6 @@ public class AdminMemberAssembler {
             signUpRequest.getUsername(),
             encodedPassword,
             signUpRequest.getPhoneNumber(),
-            signUpRequest.getTeamId(),
             signUpRequest.getDescription()
         );
     }
@@ -46,7 +44,6 @@ public class AdminMemberAssembler {
         return new AdminMemberResponse(
             adminMember.getAdminMemberId(),
             adminMember.getUsername(),
-            new TeamResponse(adminMember.getTeam().getTeamId(), adminMember.getTeam().getName()),
             adminMember.getDescription()
         );
     }
