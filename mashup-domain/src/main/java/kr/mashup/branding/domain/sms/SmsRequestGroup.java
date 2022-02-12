@@ -11,8 +11,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -48,11 +48,11 @@ public class SmsRequestGroup {
     private String content;
 
     @CreatedBy
-    @OneToOne
+    @ManyToOne
     private AdminMember createdBy;
 
     @LastModifiedBy
-    @OneToOne
+    @ManyToOne
     private AdminMember updatedBy;
 
     @CreatedDate

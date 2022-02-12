@@ -10,8 +10,18 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import kr.mashup.branding.domain.adminmember.AdminMember;
+import kr.mashup.branding.domain.adminmember.AdminMemberService;
 
 public class SpringSecurityAuditorAware implements AuditorAware<AdminMember> {
+
+    private AdminMemberService adminMemberService;
+
+    private SpringSecurityAuditorAware() {
+    }
+
+    public SpringSecurityAuditorAware(AdminMemberService adminMemberService) {
+        this.adminMemberService = adminMemberService;
+    }
 
     //TODO 향후 role 테이블로 관리
     private static final String ROLE_NAME = "adminMember";
@@ -23,9 +33,7 @@ public class SpringSecurityAuditorAware implements AuditorAware<AdminMember> {
             .map(authentication -> {
                 Collection<? extends GrantedAuthority> auth = authentication.getAuthorities();
                 if (auth.contains(new SimpleGrantedAuthority(ROLE_NAME))) {
-                    if (authentication.getPrincipal() instanceof AdminMember) {
-                        return (AdminMember)authentication.getPrincipal();
-                    }
+                    return adminMemberService.getByAdminMemberId((Long)authentication.getPrincipal());
                 }
                 return null;
             });

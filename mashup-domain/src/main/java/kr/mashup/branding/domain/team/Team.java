@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -32,13 +32,13 @@ public class Team {
     private String name;
 
     @CreatedBy
-    @OneToOne
+    @ManyToOne
     private AdminMember createdBy;
 
     @LastModifiedBy
-    @OneToOne
+    @ManyToOne
     private AdminMember updatedBy;
-    
+
     @CreatedDate
     private LocalDateTime createdAt;
 

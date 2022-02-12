@@ -9,7 +9,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -55,11 +55,11 @@ public class Question {
     private QuestionType questionType;
 
     @CreatedBy
-    @OneToOne
+    @ManyToOne
     private AdminMember createdBy;
 
     @LastModifiedBy
-    @OneToOne
+    @ManyToOne
     private AdminMember updatedBy;
 
     @CreatedDate

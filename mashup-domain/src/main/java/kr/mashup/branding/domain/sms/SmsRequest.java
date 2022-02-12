@@ -12,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -52,11 +51,11 @@ public class SmsRequest {
     private String phoneNumber;
 
     @CreatedBy
-    @OneToOne
+    @ManyToOne
     private AdminMember createdBy;
 
     @LastModifiedBy
-    @OneToOne
+    @ManyToOne
     private AdminMember updatedBy;
 
     @CreatedDate
