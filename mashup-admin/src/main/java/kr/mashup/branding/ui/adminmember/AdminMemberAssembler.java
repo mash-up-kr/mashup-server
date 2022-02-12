@@ -46,7 +46,9 @@ public class AdminMemberAssembler {
         return new AdminMemberResponse(
             adminMember.getAdminMemberId(),
             adminMember.getUsername(),
-            adminMember.getDescription()
+            adminMember.getDescription(),
+            adminMember.getRole().getRoleGroup(),
+            adminMember.getRole().getRolePosition()
         );
     }
 }
