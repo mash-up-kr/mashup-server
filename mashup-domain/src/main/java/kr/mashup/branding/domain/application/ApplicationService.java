@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 
 public interface ApplicationService {
@@ -14,7 +15,9 @@ public interface ApplicationService {
 
     Application submit(Long applicationId);
 
-    Application updateResult(UpdateApplicationResultVo updateApplicationResultVo);
+    Application updateResult(Long adminMemberId, UpdateApplicationResultVo updateApplicationResultVo);
+
+    Application updateConfirmationFromApplicant(Long applicantId, UpdateConfirmationVo updateConfirmationVo);
 
     List<Application> getApplications(Long applicantId);
 

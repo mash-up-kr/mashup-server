@@ -42,14 +42,35 @@ public class ApplicationController {
         return applicationAssembler.toApplicationResponse(application);
     }
 
+    /**
+     * 여러개의 지원서에 대해서 결과 변경
+     */
     @PostMapping("/update-result")
     public List<ApplicationResponse> updateResult(
-        @RequestBody UpdateApplicationResultRequest updateApplicationResultRequest
+        @RequestBody UpdateApplicationResultsRequest updateApplicationResultsRequest
     ) {
-        return applicationFacadeService.updateResult(
-            applicationAssembler.toUpdateApplicationResultVoList(updateApplicationResultRequest)
+        Long adminMemberId = 0L;
+        return applicationFacadeService.updateResults(
+            adminMemberId,
+            applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
         ).stream()
             .map(applicationAssembler::toApplicationResponse)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * 지원서의 결과 및 면접일정 변경
+     */
+    @PostMapping("/{applicationId}/update-result")
+    public ApplicationResponse updateResult(
+        @PathVariable Long applicationId,
+        @RequestBody UpdateApplicationResultRequest updateApplicationResultRequest
+    ) {
+        Long adminMemberId = 0L;
+        Application application = applicationFacadeService.updateResult(
+            adminMemberId,
+            applicationAssembler.toUpdateApplicationResultVo(applicationId, updateApplicationResultRequest)
+        );
+        return applicationAssembler.toApplicationResponse(application);
     }
 }

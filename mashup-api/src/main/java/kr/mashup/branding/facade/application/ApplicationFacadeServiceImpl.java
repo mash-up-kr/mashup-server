@@ -4,15 +4,19 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import kr.mashup.branding.domain.applicant.ApplicantService;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationService;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
+import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
+import kr.mashup.branding.ui.application.UpdateConfirmationRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
+    private final ApplicantService applicantService;
     private final ApplicationService applicationService;
 
     /**
@@ -53,5 +57,16 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
     @Override
     public Application getApplication(Long applicantId, Long applicationId) {
         return applicationService.getApplication(applicantId, applicationId);
+    }
+
+    /**
+     * 인터뷰, 최종합격에 대한 지원자 응답
+     */
+    @Override
+    public Application updateConfirm(Long applicantId, Long applicationId,
+        UpdateConfirmationRequest updateRequest) {
+        return applicationService.updateConfirmationFromApplicant(
+            applicantId,
+            UpdateConfirmationVo.of(applicationId, updateRequest.getStatus()));
     }
 }

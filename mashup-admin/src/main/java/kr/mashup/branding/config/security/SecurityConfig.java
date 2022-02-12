@@ -65,7 +65,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/error",
             "/favicon.ico",
             "/swagger-ui/**",
-            "/webjars/springfox-swagger-ui/**",
             "/swagger-resources/**",
             "/v2/api-docs"
         );

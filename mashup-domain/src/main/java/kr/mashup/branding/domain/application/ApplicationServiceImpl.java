@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
 import kr.mashup.branding.domain.applicant.ApplicantService;
+import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
@@ -122,18 +123,43 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
     }
 
+    /**
+     * 지원서 1개에 대해서 결과, 면접 일정을 변경한다.
+     */
     @Override
     @Transactional
-    public Application updateResult(UpdateApplicationResultVo updateApplicationResultVo) {
-        Application application = applicationRepository.findById(updateApplicationResultVo.getApplicationId())
+    public Application updateResult(
+        Long adminMemberId,
+        UpdateApplicationResultVo updateApplicationResultVo
+    ) {
+        Assert.notNull(adminMemberId, "'adminMemberId' must not be null");
+        Assert.notNull(updateApplicationResultVo, "'updateApplicationResultVo' must not be null");
+
+        Long applicationId = updateApplicationResultVo.getApplicationId();
+        Assert.notNull(applicationId, "'applicationId' must not be null");
+
+        // TODO: adminMemberId 조회 및 권한 검증
+        Application application = applicationRepository.findById(applicationId)
             .orElseThrow(ApplicationNotFoundException::new);
-        application.updateResult(updateApplicationResultVo.getStatus());
+        application.updateResult(updateApplicationResultVo);
+        return application;
+    }
+
+    @Override
+    @Transactional
+    public Application updateConfirmationFromApplicant(Long applicantId,
+        UpdateConfirmationVo updateConfirmationVo) {
+        Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(
+                updateConfirmationVo.getApplicationId(), applicantId)
+            .orElseThrow(ApplicationNotFoundException::new);
+        application.updateConfirm(updateConfirmationVo.getStatus());
         return application;
     }
 
     @Override
     public List<Application> getApplications(Long applicantId) {
-        return applicationRepository.findByApplicant_applicantIdAndStatusIn(applicantId, ApplicationStatus.validSet());
+        return applicationRepository.findByApplicant_applicantIdAndStatusIn(applicantId,
+            ApplicationStatus.validSet());
     }
 
     // TODO: 상세 조회시 form 도 같이 조합해서 내려주어야할듯 (teamId, memberId 요청하면 해당팀 쓰던 지원서 질문, 내용 다 합쳐서)

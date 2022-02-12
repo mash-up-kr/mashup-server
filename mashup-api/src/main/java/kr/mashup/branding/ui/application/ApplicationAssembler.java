@@ -1,5 +1,6 @@
 package kr.mashup.branding.ui.application;
 
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -10,6 +11,8 @@ import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
+import kr.mashup.branding.domain.application.result.ApplicationResult;
+import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
 import kr.mashup.branding.ui.applicant.ApplicantAssembler;
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApplicationAssembler {
     private final ApplicantAssembler applicantAssembler;
+    private final RecruitmentScheduleService recruitmentScheduleService;
 
     CreateApplicationVo toCreateApplicationVo(CreateApplicationRequest createApplicationRequest) {
         Assert.notNull(createApplicationRequest, "'createApplicationRequest' must not be null");
@@ -25,15 +29,39 @@ public class ApplicationAssembler {
 
     ApplicationResponse toApplicationResponse(Application application) {
         Assert.notNull(application, "'application' must not be null");
-
         return new ApplicationResponse(
             application.getApplicationId(),
             applicantAssembler.toApplicationResponse(application.getApplicant()),
+            application.getConfirmation().getStatus(),
             application.getStatus().name(),
             application.getAnswers().stream()
                 .map(this::toAnswerResponse)
                 .collect(Collectors.toList()),
+            toApplicationResultResponse(application.getApplicationResult()),
             application.getPrivacyPolicyAgreed()
+        );
+    }
+
+    ApplicationResultResponse toApplicationResultResponse(ApplicationResult applicationResult) {
+        return new ApplicationResultResponse(
+            toApplicationStatusResponse(applicationResult),
+            applicationResult.getInterviewStartedAt(),
+            applicationResult.getInterviewEndedAt()
+        );
+    }
+
+    private ApplicationStatusResponse toApplicationStatusResponse(ApplicationResult applicationResult) {
+        // TODO: 13기 생기면 기수별로 일정 관리해야함
+        LocalDateTime now = LocalDateTime.now();
+        if (!recruitmentScheduleService.canAnnounceScreeningResult(now)) {
+            return ApplicationStatusResponse.submitted(applicationResult.getApplication().getStatus());
+        }
+        if (!recruitmentScheduleService.canAnnounceInterviewResult(now)) {
+            return ApplicationStatusResponse.screeningResult(applicationResult.getScreeningStatus());
+        }
+        return ApplicationStatusResponse.interviewResult(
+            applicationResult.getScreeningStatus(),
+            applicationResult.getInterviewStatus()
         );
     }
 
