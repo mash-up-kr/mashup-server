@@ -1,5 +1,8 @@
 package kr.mashup.branding.config.security;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -14,13 +17,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.mashup.branding.config.jwt.JwtService;
 import kr.mashup.branding.domain.adminmember.AdminMemberService;
+import kr.mashup.branding.domain.adminmember.role.RolePosition;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    public static final String ADMIN_MEMBER_ROLE_NAME = "adminMember";
+    public static final String[] ADMIN_MEMBER_ROLE_NAMES = Arrays.stream(RolePosition.values()).map(Enum::name)
+        .collect(Collectors.toList()).toArray(new String[RolePosition.values().length]);
 
     private final ObjectMapper objectMapper;
     private final AdminMemberService adminMemberService;
@@ -31,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.antMatcher("/**")
             .authorizeRequests()
             .antMatchers("/api/v1/admin-members/sign-up", "/api/v1/admin-members/sign-in", "/hello").permitAll()
-            .anyRequest().hasAuthority(ADMIN_MEMBER_ROLE_NAME)
+            .anyRequest().hasAnyAuthority(ADMIN_MEMBER_ROLE_NAMES)
             .and()
             .csrf().disable()
             .logout().disable()
