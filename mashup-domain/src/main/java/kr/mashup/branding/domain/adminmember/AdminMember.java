@@ -53,7 +53,8 @@ public class AdminMember {
         String password,
         String phoneNumber,
         Team team,
-        String description) {
+        String description
+    ) {
         AdminMember adminMember = new AdminMember();
         adminMember.username = username;
         adminMember.password = password;

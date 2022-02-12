@@ -3,7 +3,6 @@ package kr.mashup.branding.domain.application;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
@@ -25,5 +24,5 @@ public interface ApplicationService {
 
     Application getApplication(Long applicationId);
 
-    Page<Application> getApplications(String searchWord, Pageable pageable);
+    Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo);
 }

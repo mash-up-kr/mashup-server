@@ -12,22 +12,26 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kr.mashup.branding.config.jwt.JwtService;
+import kr.mashup.branding.domain.adminmember.AdminMemberService;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    public static final String ADMIN_MEMBER_ROLE_NAME = "adminMember";
 
     private final ObjectMapper objectMapper;
-    private final String ROLE_NAME = "adminMember";
+    private final AdminMemberService adminMemberService;
+    private final JwtService jwtService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.antMatcher("/**")
             .authorizeRequests()
             .antMatchers("/api/v1/admin-members/sign-up", "/api/v1/admin-members/sign-in", "/hello").permitAll()
-            .anyRequest().hasAuthority(ROLE_NAME)
+            .anyRequest().hasAuthority(ADMIN_MEMBER_ROLE_NAME)
             .and()
             .csrf().disable()
             .logout().disable()
@@ -63,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         webSecurity.ignoring().antMatchers(
             "/error",
             "/favicon.ico",
-            "/swagger-ui/",
+            "/swagger-ui/**",
             "/swagger-resources/**",
             "/v2/api-docs"
         );
@@ -78,6 +82,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     PreAuthTokenProvider preAuthTokenProvider() {
-        return new PreAuthTokenProvider();
+        return new PreAuthTokenProvider(
+            adminMemberService,
+            jwtService
+        );
     }
 }

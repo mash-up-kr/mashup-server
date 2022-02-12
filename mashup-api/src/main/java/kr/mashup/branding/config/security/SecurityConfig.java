@@ -13,6 +13,8 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kr.mashup.branding.config.jwt.JwtService;
+import kr.mashup.branding.domain.applicant.ApplicantService;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -20,9 +22,11 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    public static final String APPLICANT_ROLE_NAME = "APPLICANT";
 
-    private static final String ROLE_NAME = "APPLICANT";
     private final ObjectMapper objectMapper;
+    private final ApplicantService applicantService;
+    private final JwtService jwtService;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -46,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/hello").permitAll()
             .antMatchers("/api/v1/test/**").permitAll()
             .antMatchers("/api/v1/applicants/login").permitAll()
-            .antMatchers("/api/v1/**").hasAuthority(ROLE_NAME);
+            .antMatchers("/api/v1/**").hasAuthority(APPLICANT_ROLE_NAME);
         http.csrf().disable();
         http.logout().disable();
         http.formLogin().disable();
@@ -83,7 +87,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     PreAuthTokenProvider preAuthTokenProvider() {
-        return new PreAuthTokenProvider();
+        return new PreAuthTokenProvider(
+            applicantService,
+            jwtService
+        );
     }
 }
 
