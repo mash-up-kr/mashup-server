@@ -3,15 +3,13 @@ package kr.mashup.branding.ui;
 import java.security.Principal;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import kr.mashup.branding.domain.UnauthorizedException;
-import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleDuplicatedException;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -26,13 +24,8 @@ public class AdminControllerAdvice {
         if (principal == null) {
             return null;
         }
-        if (principal instanceof UsernamePasswordAuthenticationToken) {
-            if (((UsernamePasswordAuthenticationToken)principal).getPrincipal() instanceof User) {
-                return Long.valueOf(
-                    ((User)(((UsernamePasswordAuthenticationToken)principal).getPrincipal())).getUsername());
-            }
-            AdminMember adminMember = (AdminMember)((UsernamePasswordAuthenticationToken)principal).getPrincipal();
-            return adminMember.getAdminMemberId();
+        if (principal instanceof PreAuthenticatedAuthenticationToken) {
+            return (Long)((PreAuthenticatedAuthenticationToken)principal).getPrincipal();
         }
         return null;
     }

@@ -33,7 +33,7 @@ public class JwtService {
         try {
             return jwtVerifier.verify(token).getClaim(CLAIM_ADMIN_MEMBER_ID).asLong();
         } catch (JWTVerificationException e) {
-            log.warn("Failed to decode jwt", e);
+            log.warn("Failed to decode jwt. token: {}", token, e);
             return null;
         }
     }
