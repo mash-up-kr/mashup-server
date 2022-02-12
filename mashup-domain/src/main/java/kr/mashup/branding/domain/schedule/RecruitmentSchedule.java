@@ -9,11 +9,15 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import kr.mashup.branding.domain.adminmember.AdminMember;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,6 +39,14 @@ public class RecruitmentSchedule {
     private String eventName;
 
     private LocalDateTime eventOccurredAt;
+
+    @CreatedBy
+    @OneToOne
+    private AdminMember createdBy;
+
+    @LastModifiedBy
+    @OneToOne
+    private AdminMember updatedBy;
 
     @CreatedDate
     private LocalDateTime createdAt;

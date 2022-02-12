@@ -13,11 +13,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.team.Team;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -41,6 +45,14 @@ public class ApplicationForm {
     private final List<Question> questions = new ArrayList<>();
 
     private String name;
+
+    @CreatedBy
+    @OneToOne
+    private AdminMember createdBy;
+
+    @LastModifiedBy
+    @OneToOne
+    private AdminMember updatedBy;
 
     @CreatedDate
     private LocalDateTime createdAt;

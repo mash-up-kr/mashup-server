@@ -1,12 +1,29 @@
 package kr.mashup.branding.domain.sms;
 
-import lombok.*;
+import java.time.LocalDateTime;
+
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import kr.mashup.branding.domain.adminmember.AdminMember;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @EqualsAndHashCode(of = "smsRequestId")
 @NoArgsConstructor
@@ -34,13 +51,22 @@ public class SmsRequest {
 
     private String phoneNumber;
 
+    @CreatedBy
+    @OneToOne
+    private AdminMember createdBy;
+
+    @LastModifiedBy
+    @OneToOne
+    private AdminMember updatedBy;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public static SmsRequest of(SmsRequestGroup smsRequestGroup, Long applicantId, String applicantName, String phoneNumber){
+    public static SmsRequest of(SmsRequestGroup smsRequestGroup, Long applicantId, String applicantName,
+        String phoneNumber) {
         SmsRequest smsRequest = new SmsRequest();
         smsRequest.smsRequestGroup = smsRequestGroup;
         smsRequest.applicantId = applicantId;
@@ -52,12 +78,15 @@ public class SmsRequest {
     public void markAsSuccess() {
         setStatus(SmsRequestStatus.SUCCESS);
     }
+
     public void markAsFail() {
         setStatus(SmsRequestStatus.FAIL);
     }
+
     public void updateSmsSendKey(String smsSendKey) {
         this.smsSendKey = smsSendKey;
     }
+
     private void setStatus(SmsRequestStatus status) {
         this.status = status;
     }
