@@ -13,8 +13,8 @@ public enum Position {
     SPRING_SUBLEADER(Team.SPRING),
     NODE_LEADER(Team.NODE),
     NODE_SUBLEADER(Team.NODE),
-    IOS_LEADER(Team.IOS),
-    IOS_SUBLEADER(Team.IOS),
+    IOS_LEADER(Team.iOS),
+    IOS_SUBLEADER(Team.iOS),
     ANDROID_LEADER(Team.ANDROID),
     ANDROID_SUBLEADER(Team.ANDROID),
     WEB_LEADER(Team.WEB),
@@ -22,13 +22,13 @@ public enum Position {
     DESIGN_LEADER(Team.DESIGN),
     DESIGN_SUBLEADER(Team.DESIGN);
 
-    private Team[] authorities;
+    private final Team[] authorities;
 
     Position(Team... authorities) {
         this.authorities = authorities;
     }
 
     public enum Team {
-        SPRING, NODE, IOS, ANDROID, WEB, DESIGN,
+        SPRING, NODE, iOS, ANDROID, WEB, DESIGN,
     }
 }
