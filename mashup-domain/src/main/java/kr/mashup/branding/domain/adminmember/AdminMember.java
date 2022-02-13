@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
@@ -33,6 +35,7 @@ public class AdminMember {
 
     private Boolean phoneNumberRegistered = false;
 
+    @Enumerated(EnumType.STRING)
     private Position position;
 
     @CreatedDate
