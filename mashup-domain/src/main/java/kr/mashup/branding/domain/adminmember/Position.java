@@ -24,8 +24,8 @@ public enum Position {
 
     private Team[] authorities;
 
-    Position(Team... Teams) {
-        this.authorities = Teams;
+    Position(Team... authorities) {
+        this.authorities = authorities;
     }
 
     public enum Team {
