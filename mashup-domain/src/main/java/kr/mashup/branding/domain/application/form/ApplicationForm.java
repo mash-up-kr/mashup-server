@@ -47,11 +47,11 @@ public class ApplicationForm {
     @CreatedBy
     private String createdBy;
 
-    @LastModifiedBy
-    private String updatedBy;
-
     @CreatedDate
     private LocalDateTime createdAt;
+
+    @LastModifiedBy
+    private String updatedBy;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
