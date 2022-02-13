@@ -26,7 +26,8 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString
+@ToString(of = {"smsRequestId", "status", "recipientPhoneNumber", "messageId", "resultId", "resultCode",
+    "resultMessage", "createdAt", "updatedAt"})
 @EqualsAndHashCode(of = "smsRequestId")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)

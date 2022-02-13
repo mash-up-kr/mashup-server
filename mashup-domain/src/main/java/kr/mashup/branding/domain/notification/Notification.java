@@ -33,8 +33,9 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString
-@EqualsAndHashCode
+@ToString(of = {"notificationId", "senderValue", "sentAt", "name", "content", "status", "type", "messageId", "resultId",
+    "resultCode", "resultMessage", "createdAt", "updatedAt"})
+@EqualsAndHashCode(of = "notificationId")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Notification {
