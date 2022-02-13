@@ -2,4 +2,5 @@ rootProject.name = 'mashup-server'
 include 'mashup-domain'
 include 'mashup-api'
 include 'mashup-admin'
+include 'mashup-batch'
 
