@@ -6,13 +6,16 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import kr.mashup.branding.domain.UnauthorizedException;
 import kr.mashup.branding.domain.adminmember.AdminMember;
+import kr.mashup.branding.domain.adminmember.AdminMemberNotFoundException;
 import kr.mashup.branding.domain.adminmember.AdminMemberService;
 import kr.mashup.branding.domain.notification.sms.SmsRequest;
 import kr.mashup.branding.domain.notification.sms.SmsRequestService;
@@ -96,8 +99,17 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Page<Notification> getNotifications(Pageable pageable) {
-        return notificationRepository.findAll(pageable);
+    public Page<Notification> getNotifications(Long adminMemberId, @Nullable String searchWord, Pageable pageable) {
+        Assert.notNull(pageable, "'pageable' must not be null");
+        try {
+            adminMemberService.getByAdminMemberId(adminMemberId);
+        } catch (AdminMemberNotFoundException e) {
+            throw new UnauthorizedException();
+        }
+        if (searchWord == null) {
+            return notificationRepository.findAll(pageable);
+        }
+        return notificationRepository.findByNameContainsOrSenderValueContains(searchWord, searchWord, pageable);
     }
 
     @Override

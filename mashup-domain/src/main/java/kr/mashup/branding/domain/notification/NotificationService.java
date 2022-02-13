@@ -11,7 +11,7 @@ public interface NotificationService {
 
     NotificationDetailVo update(Long notificationId, SmsSendResultVo smsSendResultVo);
 
-    Page<Notification> getNotifications(Pageable pageable);
+    Page<Notification> getNotifications(Long adminMemberId, String searchWord, Pageable pageable);
 
     Notification getNotification(Long notificationId);
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -48,10 +49,11 @@ public class NotificationController {
     @GetMapping
     public ApiResponse<List<NotificationSimpleResponse>> getNotifications(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
+        @RequestParam(required = false) String searchWord,
         Pageable pageable
     ) {
         return ApiResponse.success(
-            notificationFacadeService.getNotifications(adminMemberId, pageable)
+            notificationFacadeService.getNotifications(adminMemberId, searchWord, pageable)
                 .stream()
                 .map(notificationAssembler::toNotificationResponse)
                 .collect(Collectors.toList())

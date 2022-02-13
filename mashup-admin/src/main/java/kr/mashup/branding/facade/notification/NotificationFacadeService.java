@@ -10,7 +10,7 @@ import kr.mashup.branding.domain.notification.sms.SmsSendRequestVo;
 public interface NotificationFacadeService {
     NotificationDetailVo sendSms(Long adminMemberId, SmsSendRequestVo smsSendRequestVo);
 
-    Page<Notification> getNotifications(Long adminMemberId, Pageable pageable);
+    Page<Notification> getNotifications(Long adminMemberId, String searchWord, Pageable pageable);
 
     NotificationDetailVo getNotificationDetail(Long adminMemberId, Long getNotification);
 }

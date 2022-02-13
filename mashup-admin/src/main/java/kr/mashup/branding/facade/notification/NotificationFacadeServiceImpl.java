@@ -65,8 +65,8 @@ public class NotificationFacadeServiceImpl implements NotificationFacadeService 
     }
 
     @Override
-    public Page<Notification> getNotifications(Long adminMemberId, Pageable pageable) {
-        return notificationService.getNotifications(pageable);
+    public Page<Notification> getNotifications(Long adminMemberId, String searchWord, Pageable pageable) {
+        return notificationService.getNotifications(adminMemberId, searchWord, pageable);
     }
 
     @Override
