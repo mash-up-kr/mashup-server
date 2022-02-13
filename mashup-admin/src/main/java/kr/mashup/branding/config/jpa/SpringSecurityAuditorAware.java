@@ -16,6 +16,8 @@ import kr.mashup.branding.domain.adminmember.Position;
 
 public class SpringSecurityAuditorAware implements AuditorAware<String> {
 
+    private static final String ANONYMOUS_USER = "anonymousUser";
+
     private AdminMemberService adminMemberService;
     private List<SimpleGrantedAuthority> authoritySet;
 
@@ -39,7 +41,10 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
                         (Long)authentication.getPrincipal());
                     return adminMember.getPosition().name();
                 }
-                return null;
+                if (authentication.getPrincipal() != null) {
+                    return authentication.getPrincipal().toString();
+                }
+                return ANONYMOUS_USER;
             });
     }
 }
