@@ -49,8 +49,24 @@ public class NotificationAssembler {
     }
 
     public NotificationDetailResponse toNotificationDetailResponse(NotificationDetailVo notificationDetailVo) {
+        Notification notification = notificationDetailVo.getNotification();
+        Map<SmsNotificationStatus, Integer> statusCountMap = notification.getSmsRequests()
+            .stream()
+            .collect(Collectors.toMap(
+                SmsRequest::getStatus,
+                it -> 1,
+                Integer::sum
+            ));
         return new NotificationDetailResponse(
-            notificationDetailVo.getNotification().getNotificationId(),
+            notification.getNotificationId(),
+            notification.getStatus(),
+            notification.getName(),
+            notification.getContent(),
+            notification.getSenderPhoneNumber(),
+            notification.getSentAt(),
+            statusCountMap.getOrDefault(SmsNotificationStatus.SUCCESS, 0),
+            statusCountMap.getOrDefault(SmsNotificationStatus.FAILURE, 0),
+            statusCountMap.values().stream().mapToInt(it -> it).sum(),
             notificationDetailVo.getSmsRequests().stream()
                 .map(this::toSmsRequestResponse)
                 .collect(Collectors.toList())
@@ -65,7 +81,6 @@ public class NotificationAssembler {
             .orElse(null);
         return new SmsRequestResponse(
             smsRequest.getSmsRequestId(),
-            smsRequest.getNotification().getNotificationId(),
             smsRequest.getStatus(),
             smsRequest.getRecipientApplicant().getName(),
             smsRequest.getRecipientPhoneNumber(),
