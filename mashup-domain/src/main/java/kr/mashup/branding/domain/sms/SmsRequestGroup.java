@@ -11,7 +11,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.springframework.data.annotation.CreatedBy;
@@ -20,7 +19,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import kr.mashup.branding.domain.adminmember.AdminMember;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -48,12 +46,10 @@ public class SmsRequestGroup {
     private String content;
 
     @CreatedBy
-    @ManyToOne
-    private AdminMember createdBy;
+    private String createdBy;
 
     @LastModifiedBy
-    @ManyToOne
-    private AdminMember updatedBy;
+    private String updatedBy;
 
     @CreatedDate
     private LocalDateTime createdAt;

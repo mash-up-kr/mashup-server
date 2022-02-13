@@ -19,7 +19,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import kr.mashup.branding.domain.adminmember.AdminMember;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,12 +50,10 @@ public class SmsRequest {
     private String phoneNumber;
 
     @CreatedBy
-    @ManyToOne
-    private AdminMember createdBy;
+    private String createdBy;
 
     @LastModifiedBy
-    @ManyToOne
-    private AdminMember updatedBy;
+    private String updatedBy;
 
     @CreatedDate
     private LocalDateTime createdAt;
