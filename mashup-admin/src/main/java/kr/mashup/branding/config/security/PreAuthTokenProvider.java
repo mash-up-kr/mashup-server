@@ -9,7 +9,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import kr.mashup.branding.config.jwt.JwtService;
-import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -24,9 +23,8 @@ public class PreAuthTokenProvider implements AuthenticationProvider {
             String token = authentication.getPrincipal().toString();
             Long adminMemberId = jwtService.decode(token);
             // TODO: adminMember 조회 실패하는 경우, AuthenticationException 으로 예외번역
-            AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
             return new PreAuthenticatedAuthenticationToken(
-                adminMember.getAdminMemberId(),
+                adminMemberId,
                 "",
                 Collections.singletonList(new SimpleGrantedAuthority(SecurityConfig.ADMIN_MEMBER_ROLE_NAME))
             );

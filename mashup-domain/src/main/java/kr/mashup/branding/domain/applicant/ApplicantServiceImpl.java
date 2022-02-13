@@ -1,5 +1,7 @@
 package kr.mashup.branding.domain.applicant;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -41,5 +43,10 @@ public class ApplicantServiceImpl implements ApplicantService {
                     Applicant.of(loginRequestVo.getEmail(), loginRequestVo.getGoogleUserId()));
             }
         );
+    }
+
+    @Override
+    public List<Applicant> getApplicants(Collection<Long> applicantIds) {
+        return applicantRepository.findByApplicantIdIn(applicantIds);
     }
 }
