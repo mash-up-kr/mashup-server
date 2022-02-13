@@ -34,7 +34,7 @@ import kr.mashup.branding.ui.api.RecruitmentScheduleApi;
 @Transactional
 @SpringBootTest
 class RecruitmentScheduleControllerTest {
-    private static final String AUTHORITY_NAME = "adminMember";
+    private static final String AUTHORITY_NAME = "MASHUP_LEADER";
 
     @Autowired
     private RecruitmentScheduleRepository recruitmentScheduleRepository;
@@ -81,9 +81,9 @@ class RecruitmentScheduleControllerTest {
         RecruitmentScheduleCreateRequest request = createRecruitmentScheduleCreateRequest(eventName, now);
         // when
         MvcResult mvcResult = mockMvc.perform(
-            post("/api/v1/recruitment-schedules")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(request)))
+                post("/api/v1/recruitment-schedules")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request)))
             // then 1
             .andExpect(status().isOk())
             .andReturn();
@@ -113,9 +113,9 @@ class RecruitmentScheduleControllerTest {
         RecruitmentScheduleCreateRequest request = createRecruitmentScheduleCreateRequest(eventName, now);
         // when
         MvcResult mvcResult = mockMvc.perform(
-            post("/api/v1/recruitment-schedules")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(request)))
+                post("/api/v1/recruitment-schedules")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request)))
             // then 1
             .andExpect(status().isBadRequest())
             .andReturn();
@@ -140,9 +140,9 @@ class RecruitmentScheduleControllerTest {
         RecruitmentScheduleUpdateRequest request = createRecruitmentScheduleUpdateRequest(now);
         // when
         MvcResult mvcResult = mockMvc.perform(
-            put("/api/v1/recruitment-schedules/{recruitmentScheduleId}", recruitmentScheduleId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(request)))
+                put("/api/v1/recruitment-schedules/{recruitmentScheduleId}", recruitmentScheduleId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request)))
             // then 1
             .andExpect(status().isOk())
             .andReturn();
@@ -166,9 +166,9 @@ class RecruitmentScheduleControllerTest {
         RecruitmentScheduleUpdateRequest request = createRecruitmentScheduleUpdateRequest(now);
         // when
         MvcResult mvcResult = mockMvc.perform(
-            put("/api/v1/recruitment-schedules/{recruitmentScheduleId}", recruitmentScheduleId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(request)))
+                put("/api/v1/recruitment-schedules/{recruitmentScheduleId}", recruitmentScheduleId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request)))
             // then 1
             .andExpect(status().isNotFound())
             .andReturn();
@@ -191,7 +191,7 @@ class RecruitmentScheduleControllerTest {
         Long recruitmentScheduleId = recruitmentSchedules.get(0).getRecruitmentScheduleId();
         // when
         MvcResult mvcResult = mockMvc.perform(
-            delete("/api/v1/recruitment-schedules/{recruitmentScheduleId}", recruitmentScheduleId))
+                delete("/api/v1/recruitment-schedules/{recruitmentScheduleId}", recruitmentScheduleId))
             // then 1
             .andExpect(status().isOk())
             .andReturn();
@@ -218,7 +218,7 @@ class RecruitmentScheduleControllerTest {
         Long recruitmentScheduleId = -1L;
         // when
         MvcResult mvcResult = mockMvc.perform(
-            delete("/api/v1/recruitment-schedules/{recruitmentScheduleId}", recruitmentScheduleId))
+                delete("/api/v1/recruitment-schedules/{recruitmentScheduleId}", recruitmentScheduleId))
             // then 1
             .andExpect(status().isOk())
             .andReturn();
