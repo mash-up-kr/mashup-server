@@ -85,7 +85,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
         // API 결과 받은 경우
         notification.markResult(
-            notification.getStatus(),
+            smsSendResultVo.getStatus(),
             smsSendResultVo.getResultId(),
             smsSendResultVo.getResultCode(),
             smsSendResultVo.getResultMessage()
