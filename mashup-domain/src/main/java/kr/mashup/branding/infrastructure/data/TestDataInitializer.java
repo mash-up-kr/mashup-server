@@ -10,8 +10,7 @@ import org.springframework.stereotype.Component;
 
 import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberRepository;
-import kr.mashup.branding.domain.adminmember.role.RoleGroup;
-import kr.mashup.branding.domain.adminmember.role.RolePosition;
+import kr.mashup.branding.domain.adminmember.Position;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantRepository;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
@@ -130,8 +129,7 @@ public class TestDataInitializer {
             "testadmin",
             "$2a$10$ReFbOONqzqSbJmEOq9DC0ezs64sfLJumeqei96Ov4Fb8RhVc2Fmf6",
             "01097944578",
-            RoleGroup.SPRING,
-            RolePosition.LEADER
+            Position.SPRING_LEADER
         );
         return adminMemberRepository.save(testadmin);
     }

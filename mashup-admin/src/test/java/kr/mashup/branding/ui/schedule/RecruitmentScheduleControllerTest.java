@@ -34,7 +34,7 @@ import kr.mashup.branding.ui.api.RecruitmentScheduleApi;
 @Transactional
 @SpringBootTest
 class RecruitmentScheduleControllerTest {
-    private static final String AUTHORITY_NAME = "LEADER";
+    private static final String AUTHORITY_NAME = "MASHUP_LEADER";
 
     @Autowired
     private RecruitmentScheduleRepository recruitmentScheduleRepository;

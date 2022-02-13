@@ -1,7 +1,6 @@
 package kr.mashup.branding.ui.adminmember;
 
-import kr.mashup.branding.domain.adminmember.role.RoleGroup;
-import kr.mashup.branding.domain.adminmember.role.RolePosition;
+import kr.mashup.branding.domain.adminmember.Position;
 import lombok.Data;
 
 @Data
@@ -10,6 +9,5 @@ public class SignUpRequest {
     private String password;
     private String phoneNumber;
     private String description;
-    private RoleGroup group;
-    private RolePosition position;
+    private Position position;
 }

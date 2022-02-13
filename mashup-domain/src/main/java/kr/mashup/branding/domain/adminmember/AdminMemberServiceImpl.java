@@ -21,7 +21,6 @@ public class AdminMemberServiceImpl implements AdminMemberService {
             adminMemberVo.getUsername(),
             adminMemberVo.getPassword(),
             adminMemberVo.getPhoneNumber(),
-            adminMemberVo.getGroup(),
             adminMemberVo.getPosition()
         );
 

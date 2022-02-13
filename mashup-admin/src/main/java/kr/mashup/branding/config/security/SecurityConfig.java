@@ -17,15 +17,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.mashup.branding.config.jwt.JwtService;
 import kr.mashup.branding.domain.adminmember.AdminMemberService;
-import kr.mashup.branding.domain.adminmember.role.RolePosition;
+import kr.mashup.branding.domain.adminmember.Position;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    public static final String[] ADMIN_MEMBER_ROLE_NAMES = Arrays.stream(RolePosition.values()).map(Enum::name)
-        .collect(Collectors.toList()).toArray(new String[RolePosition.values().length]);
+    public static final String[] AUTHORITY_NAMES = Arrays.stream(Position.values()).map(Enum::name)
+        .collect(Collectors.toList()).toArray(new String[Position.values().length]);
 
     private final ObjectMapper objectMapper;
     private final AdminMemberService adminMemberService;
@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.antMatcher("/**")
             .authorizeRequests()
             .antMatchers("/api/v1/admin-members/sign-up", "/api/v1/admin-members/sign-in", "/hello").permitAll()
-            .anyRequest().hasAnyAuthority(ADMIN_MEMBER_ROLE_NAMES)
+            .anyRequest().hasAnyAuthority(AUTHORITY_NAMES)
             .and()
             .csrf().disable()
             .logout().disable()
