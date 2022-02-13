@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SmsRequestResponse {
+public class SmsRequestSimpleResponse {
     @ApiModelProperty(value = "발송 상세 정보 ID", example = "1")
     private Long smsRequestId;
 

@@ -8,4 +8,6 @@ interface SmsRequestRepository extends JpaRepository<SmsRequest, Long> {
     List<SmsRequest> findByNotification_notificationIdAndStatus(Long notificationId, SmsNotificationStatus status);
 
     List<SmsRequest> findByNotification_notificationId(Long notificationId);
+
+    List<SmsRequest> findByRecipientApplicant_applicantId(Long applicantId);
 }

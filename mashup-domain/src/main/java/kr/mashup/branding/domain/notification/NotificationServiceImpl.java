@@ -93,7 +93,7 @@ public class NotificationServiceImpl implements NotificationService {
         Map<String, SmsSendResultRecipientVo> resultRecipientVoMap = smsSendResultVo.getRecipientResultVos()
             .stream()
             .collect(Collectors.toMap(SmsSendResultRecipientVo::getMessageId, it -> it));
-        List<SmsRequest> smsRequests = smsRequestService.getSmsRequests(notificationId);
+        List<SmsRequest> smsRequests = notification.getSmsRequests();
         smsRequests.forEach(it -> it.setResult(resultRecipientVoMap.get(it.getMessageId())));
         return NotificationDetailVo.of(notification, smsRequests);
     }

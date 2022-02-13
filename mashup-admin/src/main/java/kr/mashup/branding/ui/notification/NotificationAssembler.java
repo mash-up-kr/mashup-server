@@ -11,7 +11,7 @@ import kr.mashup.branding.domain.notification.NotificationDetailVo;
 import kr.mashup.branding.domain.notification.sms.SmsNotificationStatus;
 import kr.mashup.branding.domain.notification.sms.SmsRequest;
 import kr.mashup.branding.domain.notification.sms.SmsSendRequestVo;
-import kr.mashup.branding.ui.notification.sms.SmsRequestResponse;
+import kr.mashup.branding.ui.notification.sms.SmsRequestAssembler;
 import kr.mashup.branding.ui.notification.sms.SmsSendRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NotificationAssembler {
     private final ApplicationService applicationService;
+    private final SmsRequestAssembler smsRequestAssembler;
 
     SmsSendRequestVo toSmsSendVo(SmsSendRequest smsSendRequest) {
         return SmsSendRequestVo.of(
@@ -68,23 +69,8 @@ public class NotificationAssembler {
             statusCountMap.getOrDefault(SmsNotificationStatus.FAILURE, 0),
             statusCountMap.values().stream().mapToInt(it -> it).sum(),
             notificationDetailVo.getSmsRequests().stream()
-                .map(this::toSmsRequestResponse)
+                .map(smsRequestAssembler::toSmsRequestResponse)
                 .collect(Collectors.toList())
-        );
-    }
-
-    public SmsRequestResponse toSmsRequestResponse(SmsRequest smsRequest) {
-        String teamName = applicationService.getApplications(smsRequest.getRecipientApplicant().getApplicantId())
-            .stream()
-            .findFirst()
-            .map(it -> it.getApplicationForm().getTeam().getName())
-            .orElse(null);
-        return new SmsRequestResponse(
-            smsRequest.getSmsRequestId(),
-            smsRequest.getStatus(),
-            smsRequest.getRecipientApplicant().getName(),
-            smsRequest.getRecipientPhoneNumber(),
-            teamName
         );
     }
 }

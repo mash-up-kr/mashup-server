@@ -1,6 +1,5 @@
 package kr.mashup.branding.facade.notification;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -11,7 +10,6 @@ import kr.mashup.branding.domain.notification.Notification;
 import kr.mashup.branding.domain.notification.NotificationDetailVo;
 import kr.mashup.branding.domain.notification.NotificationService;
 import kr.mashup.branding.domain.notification.sms.SmsRecipientRequestVo;
-import kr.mashup.branding.domain.notification.sms.SmsRequest;
 import kr.mashup.branding.domain.notification.sms.SmsRequestService;
 import kr.mashup.branding.domain.notification.sms.SmsRequestVo;
 import kr.mashup.branding.domain.notification.sms.SmsSendRequestVo;
@@ -72,7 +70,6 @@ public class NotificationFacadeServiceImpl implements NotificationFacadeService 
     @Override
     public NotificationDetailVo getNotificationDetail(Long adminMemberId, Long notificationId) {
         Notification notification = notificationService.getNotification(notificationId);
-        List<SmsRequest> smsRequests = smsRequestService.getSmsRequests(notificationId);
-        return NotificationDetailVo.of(notification, smsRequests);
+        return NotificationDetailVo.of(notification, notification.getSmsRequests());
     }
 }

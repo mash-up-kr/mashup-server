@@ -5,7 +5,7 @@ import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
 import kr.mashup.branding.domain.notification.NotificationStatus;
-import kr.mashup.branding.ui.notification.sms.SmsRequestResponse;
+import kr.mashup.branding.ui.notification.sms.SmsRequestSimpleResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -41,5 +41,5 @@ public class NotificationDetailResponse {
     @ApiModelProperty(value = "전체 수신자 수", example = "220")
     private Integer totalCount;
 
-    private List<SmsRequestResponse> smsRequests;
+    private List<SmsRequestSimpleResponse> smsRequests;
 }

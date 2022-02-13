@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantService;
@@ -30,7 +31,8 @@ class SmsRequestServiceImpl implements SmsRequestService {
     }
 
     @Override
-    public List<SmsRequest> getSmsRequests(Long notificationId) {
-        return smsRequestRepository.findByNotification_notificationId(notificationId);
+    public List<SmsRequest> getSmsRequestsByApplicantId(Long applicantId) {
+        Assert.notNull(applicantId, "'applicantId' must not be null");
+        return smsRequestRepository.findByRecipientApplicant_applicantId(applicantId);
     }
 }
