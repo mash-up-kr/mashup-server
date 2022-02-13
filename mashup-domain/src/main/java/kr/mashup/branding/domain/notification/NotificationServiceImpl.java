@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
-    public static final Charset CHARSET_EUC_KR = Charset.forName("euc-kr");
+    private static final Charset CHARSET_EUC_KR = Charset.forName("euc-kr");
     private static final int SMS_MAX_LENGTH = 90;
 
     private final NotificationRepository notificationRepository;
