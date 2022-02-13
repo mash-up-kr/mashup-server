@@ -22,7 +22,7 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString(of = {"adminMemberId", "username", "phoneNumber", "description", "createdAt", "updatedAt"})
+@ToString(of = {"adminMemberId", "username", "phoneNumber", "createdAt", "updatedAt"})
 @EqualsAndHashCode(of = "adminMemberId")
 @EntityListeners(AuditingEntityListener.class)
 public class AdminMember {
@@ -41,8 +41,6 @@ public class AdminMember {
     @OneToOne(cascade = CascadeType.ALL)
     private AdminMemberRole role;
 
-    private String description;
-
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -53,7 +51,6 @@ public class AdminMember {
         String username,
         String password,
         String phoneNumber,
-        String description,
         RoleGroup group,
         RolePosition position
     ) {
@@ -61,7 +58,6 @@ public class AdminMember {
         adminMember.username = username;
         adminMember.password = password;
         adminMember.phoneNumber = phoneNumber;
-        adminMember.description = description;
         adminMember.role = AdminMemberRole.of(adminMember, group, position);
         return adminMember;
     }

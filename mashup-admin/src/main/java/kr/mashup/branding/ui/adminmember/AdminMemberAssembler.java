@@ -21,7 +21,6 @@ public class AdminMemberAssembler {
             signUpRequest.getUsername(),
             encodedPassword,
             signUpRequest.getPhoneNumber(),
-            signUpRequest.getDescription(),
             signUpRequest.getGroup(),
             signUpRequest.getPosition()
         );
@@ -46,7 +45,6 @@ public class AdminMemberAssembler {
         return new AdminMemberResponse(
             adminMember.getAdminMemberId(),
             adminMember.getUsername(),
-            adminMember.getDescription(),
             adminMember.getRole().getRoleGroup(),
             adminMember.getRole().getRolePosition()
         );

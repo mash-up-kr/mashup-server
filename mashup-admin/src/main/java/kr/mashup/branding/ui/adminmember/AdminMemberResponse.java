@@ -8,7 +8,6 @@ import lombok.Data;
 public class AdminMemberResponse {
     private final Long adminMemberId;
     private final String username;
-    private final String description;
     private final RoleGroup group;
     private final RolePosition position;
 }

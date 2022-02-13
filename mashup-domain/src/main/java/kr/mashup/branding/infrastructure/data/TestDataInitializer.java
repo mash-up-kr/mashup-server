@@ -130,7 +130,6 @@ public class TestDataInitializer {
             "testadmin",
             "$2a$10$ReFbOONqzqSbJmEOq9DC0ezs64sfLJumeqei96Ov4Fb8RhVc2Fmf6",
             "01097944578",
-            "테스트 유저임다.",
             RoleGroup.SPRING,
             RolePosition.LEADER
         );

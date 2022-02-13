@@ -9,7 +9,6 @@ public class AdminMemberVo {
     String username;
     String password;
     String phoneNumber;
-    String description;
     RoleGroup group;
     RolePosition position;
 }
