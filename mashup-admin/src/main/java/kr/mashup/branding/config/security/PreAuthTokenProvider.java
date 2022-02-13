@@ -22,7 +22,6 @@ public class PreAuthTokenProvider implements AuthenticationProvider {
         if (authentication instanceof PreAuthenticatedAuthenticationToken) {
             String token = authentication.getPrincipal().toString();
             Long adminMemberId = jwtService.decode(token);
-            // TODO: adminMember 조회 실패하는 경우, AuthenticationException 으로 예외번역
             return new PreAuthenticatedAuthenticationToken(
                 adminMemberId,
                 "",
