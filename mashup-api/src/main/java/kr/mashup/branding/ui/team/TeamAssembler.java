@@ -9,9 +9,7 @@ public class TeamAssembler {
     public TeamResponse toTeamResponse(Team team) {
         return new TeamResponse(
             team.getTeamId(),
-            team.getName(),
-            team.getCreatedAt(),
-            team.getUpdatedAt()
+            team.getName()
         );
     }
 }

@@ -6,7 +6,7 @@ package kr.mashup.branding.domain.application.result;
 public enum ApplicationScreeningStatus {
     NOT_RATED("미검토"),
     FAILED("불합격"),
-    TBD("미정"),
+    TO_BE_DETERMINED("미정"),
     PASSED("합격"),
     ;
 
@@ -17,7 +17,7 @@ public enum ApplicationScreeningStatus {
         switch (this) {
             case NOT_RATED:
             case FAILED:
-            case TBD:
+            case TO_BE_DETERMINED:
             case PASSED:
                 return status;
         }

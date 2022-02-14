@@ -41,8 +41,8 @@ public class ApplicationAssembler {
                 return UpdateApplicationResultVo.notRated(applicationId);
             case SCREENING_FAILED:
                 return UpdateApplicationResultVo.screeningFailed(applicationId);
-            case SCREENING_TBD:
-                return UpdateApplicationResultVo.screeningTBD(applicationId);
+            case SCREENING_TO_BE_DETERMINED:
+                return UpdateApplicationResultVo.screeningToBeDetermined(applicationId);
             case SCREENING_PASSED:
                 return UpdateApplicationResultVo.screeningPassed(
                     applicationId,
@@ -51,8 +51,8 @@ public class ApplicationAssembler {
                 );
             case INTERVIEW_FAILED:
                 return UpdateApplicationResultVo.interviewFailed(applicationId);
-            case INTERVIEW_TBD:
-                return UpdateApplicationResultVo.interviewTBD(
+            case INTERVIEW_TO_BE_DETERMINED:
+                return UpdateApplicationResultVo.interviewToBeDetermined(
                     applicationId,
                     interviewStartedAt,
                     interviewEndedAt
@@ -101,12 +101,12 @@ public class ApplicationAssembler {
                 return ApplicationScreeningStatus.NOT_RATED;
             case SCREENING_FAILED:
                 return ApplicationScreeningStatus.FAILED;
-            case SCREENING_TBD:
-                return ApplicationScreeningStatus.TBD;
+            case SCREENING_TO_BE_DETERMINED:
+                return ApplicationScreeningStatus.TO_BE_DETERMINED;
             case SCREENING_PASSED:
                 return ApplicationScreeningStatus.PASSED;
             case INTERVIEW_FAILED:
-            case INTERVIEW_TBD:
+            case INTERVIEW_TO_BE_DETERMINED:
             case INTERVIEW_PASSED:
                 return null;
         }
@@ -120,13 +120,13 @@ public class ApplicationAssembler {
         switch (resultStatus) {
             case NOT_RATED:
             case SCREENING_FAILED:
-            case SCREENING_TBD:
+            case SCREENING_TO_BE_DETERMINED:
             case SCREENING_PASSED:
                 return null;
             case INTERVIEW_FAILED:
                 return ApplicationInterviewStatus.FAILED;
-            case INTERVIEW_TBD:
-                return ApplicationInterviewStatus.TBD;
+            case INTERVIEW_TO_BE_DETERMINED:
+                return ApplicationInterviewStatus.TO_BE_DETERMINED;
             case INTERVIEW_PASSED:
                 return ApplicationInterviewStatus.PASSED;
         }

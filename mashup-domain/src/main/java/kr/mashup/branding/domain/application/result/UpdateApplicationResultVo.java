@@ -32,10 +32,10 @@ public class UpdateApplicationResultVo {
         );
     }
 
-    public static UpdateApplicationResultVo screeningTBD(Long applicationId) {
+    public static UpdateApplicationResultVo screeningToBeDetermined(Long applicationId) {
         return UpdateApplicationResultVo.of(
             applicationId,
-            ApplicationScreeningStatus.TBD,
+            ApplicationScreeningStatus.TO_BE_DETERMINED,
             ApplicationInterviewStatus.NOT_RATED,
             null,
             null
@@ -66,7 +66,7 @@ public class UpdateApplicationResultVo {
         );
     }
 
-    public static UpdateApplicationResultVo interviewTBD(
+    public static UpdateApplicationResultVo interviewToBeDetermined(
         Long applicationId,
         LocalDateTime interviewStartedAt,
         LocalDateTime interviewEndedAt
@@ -74,7 +74,7 @@ public class UpdateApplicationResultVo {
         return UpdateApplicationResultVo.of(
             applicationId,
             ApplicationScreeningStatus.PASSED,
-            ApplicationInterviewStatus.TBD,
+            ApplicationInterviewStatus.TO_BE_DETERMINED,
             interviewStartedAt,
             interviewEndedAt
         );

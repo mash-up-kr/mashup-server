@@ -15,12 +15,14 @@ import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
 import kr.mashup.branding.ui.applicant.ApplicantAssembler;
+import kr.mashup.branding.ui.team.TeamAssembler;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class ApplicationAssembler {
     private final ApplicantAssembler applicantAssembler;
+    private final TeamAssembler teamAssembler;
     private final RecruitmentScheduleService recruitmentScheduleService;
 
     CreateApplicationVo toCreateApplicationVo(CreateApplicationRequest createApplicationRequest) {
@@ -33,9 +35,15 @@ public class ApplicationAssembler {
         return new ApplicationResponse(
             application.getApplicationId(),
             applicantAssembler.toApplicantResponse(application.getApplicant()),
+            teamAssembler.toTeamResponse(application.getApplicationForm().getTeam()),
             application.getConfirmation().getStatus(),
-            application.getStatus().name(),
-            application.getAnswers().stream()
+            application.getStatus(),
+            application.getApplicationForm().getQuestions()
+                .stream()
+                .map(this::toQuestionResponse)
+                .collect(Collectors.toList()),
+            application.getAnswers()
+                .stream()
                 .map(this::toAnswerResponse)
                 .collect(Collectors.toList()),
             toApplicationResultResponse(application.getApplicationResult()),
@@ -90,11 +98,12 @@ public class ApplicationAssembler {
     private AnswerResponse toAnswerResponse(Answer answer) {
         return new AnswerResponse(
             answer.getAnswerId(),
+            answer.getQuestion().getQuestionId(),
             answer.getContent()
         );
     }
 
-    QuestionResponse toQuestionResponse(Question question) {
+    private QuestionResponse toQuestionResponse(Question question) {
         return new QuestionResponse(
             question.getQuestionId(),
             question.getContent(),

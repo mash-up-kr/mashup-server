@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.facade.application.ApplicationFacadeService;
+import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -27,7 +28,7 @@ public class ApplicationController {
     private final ApplicationAssembler applicationAssembler;
 
     @GetMapping
-    public List<ApplicationResponse> getApplications(
+    public ApiResponse<List<ApplicationResponse>> getApplications(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @RequestParam(required = false) String searchWord,
         @RequestParam(required = false) Long teamId,
@@ -35,58 +36,65 @@ public class ApplicationController {
         @RequestParam(required = false) ApplicationResultStatusRequest resultStatus,
         Pageable pageable
     ) {
-        return applicationFacadeService.getApplications(
-            adminMemberId,
-            applicationAssembler.toApplicationQueryVo(
-                searchWord,
-                teamId,
-                confirmStatus,
-                resultStatus,
-                pageable
-            )
-        )
-            .stream()
-            .map(applicationAssembler::toApplicationResponse)
-            .collect(Collectors.toList());
+        return ApiResponse.success(
+            applicationFacadeService.getApplications(
+                adminMemberId,
+                applicationAssembler.toApplicationQueryVo(
+                    searchWord,
+                    teamId,
+                    confirmStatus,
+                    resultStatus,
+                    pageable
+                )
+            ).stream()
+                .map(applicationAssembler::toApplicationResponse)
+                .collect(Collectors.toList())
+        );
     }
 
     @GetMapping("/{applicationId}")
-    public ApplicationResponse getApplication(
+    public ApiResponse<ApplicationResponse> getApplication(
         @PathVariable Long applicationId
     ) {
         Application application = applicationFacadeService.getApplication(applicationId);
-        return applicationAssembler.toApplicationResponse(application);
+        return ApiResponse.success(
+            applicationAssembler.toApplicationResponse(application)
+        );
     }
 
     /**
      * 여러개의 지원서에 대해서 결과 변경
      */
     @PostMapping("/update-result")
-    public List<ApplicationResponse> updateResult(
+    public ApiResponse<List<ApplicationResponse>> updateResult(
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @RequestBody UpdateApplicationResultsRequest updateApplicationResultsRequest
     ) {
-        Long adminMemberId = 0L;
-        return applicationFacadeService.updateResults(
-            adminMemberId,
-            applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
-        ).stream()
-            .map(applicationAssembler::toApplicationResponse)
-            .collect(Collectors.toList());
+        return ApiResponse.success(
+            applicationFacadeService.updateResults(
+                adminMemberId,
+                applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
+            ).stream()
+                .map(applicationAssembler::toApplicationResponse)
+                .collect(Collectors.toList())
+        );
     }
 
     /**
      * 지원서의 결과 및 면접일정 변경
      */
     @PostMapping("/{applicationId}/update-result")
-    public ApplicationResponse updateResult(
+    public ApiResponse<ApplicationResponse> updateResult(
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long applicationId,
         @RequestBody UpdateApplicationResultRequest updateApplicationResultRequest
     ) {
-        Long adminMemberId = 0L;
         Application application = applicationFacadeService.updateResult(
             adminMemberId,
             applicationAssembler.toUpdateApplicationResultVo(applicationId, updateApplicationResultRequest)
         );
-        return applicationAssembler.toApplicationResponse(application);
+        return ApiResponse.success(
+            applicationAssembler.toApplicationResponse(application)
+        );
     }
 }
