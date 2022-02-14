@@ -1,13 +1,11 @@
 package kr.mashup.branding.ui.team;
 
-import java.time.LocalDateTime;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class TeamResponse {
-    private final Long teamId;
-    private final String name;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    private Long teamId;
+    private String name;
 }

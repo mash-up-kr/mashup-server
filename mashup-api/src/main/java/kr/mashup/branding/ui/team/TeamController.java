@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.team.TeamFacadeService;
+import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -20,9 +21,11 @@ public class TeamController {
 
     @ApiOperation("팀 목록 조회")
     @GetMapping
-    public List<TeamResponse> getTeams() {
-        return teamFacadeService.getTeams().stream()
-            .map(teamAssembler::toTeamResponse)
-            .collect(Collectors.toList());
+    public ApiResponse<List<TeamResponse>> getTeams() {
+        return ApiResponse.success(
+            teamFacadeService.getTeams().stream()
+                .map(teamAssembler::toTeamResponse)
+                .collect(Collectors.toList())
+        );
     }
 }
