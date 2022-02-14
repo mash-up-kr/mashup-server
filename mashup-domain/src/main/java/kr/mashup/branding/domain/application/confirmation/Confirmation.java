@@ -41,7 +41,7 @@ public class Confirmation {
 
     public static Confirmation toBeDetermined() {
         Confirmation confirmation = new Confirmation();
-        confirmation.status = ApplicantConfirmationStatus.TBD;
+        confirmation.status = ApplicantConfirmationStatus.TO_BE_DETERMINED;
         return confirmation;
     }
 

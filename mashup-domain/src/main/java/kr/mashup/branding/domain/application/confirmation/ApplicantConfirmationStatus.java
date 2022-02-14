@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum ApplicantConfirmationStatus {
-    TBD("미검토"),
+    TO_BE_DETERMINED("미검토"),
     INTERVIEW_CONFIRM_WAITING("면접 확인 대기중"),
     INTERVIEW_CONFIRM_ACCEPTED("면접 확인"),
     INTERVIEW_CONFIRM_REJECTED("면접 거절"),
@@ -38,7 +38,7 @@ public enum ApplicantConfirmationStatus {
                     return status;
                 }
                 break;
-            case TBD:
+            case TO_BE_DETERMINED:
             case NOT_APPLICABLE:
                 throw new ConfirmationUpdateInvalidException();
         }
