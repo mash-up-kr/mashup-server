@@ -4,23 +4,24 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import kr.mashup.branding.domain.team.Team;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 @Entity
 @Getter
-@ToString
+@ToString(of = {"adminMemberId", "username", "phoneNumber", "position", "createdAt", "updatedAt"})
 @EqualsAndHashCode(of = "adminMemberId")
 @EntityListeners(AuditingEntityListener.class)
 public class AdminMember {
@@ -36,14 +37,17 @@ public class AdminMember {
 
     private Boolean phoneNumberRegistered = false;
 
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
+    @Enumerated(EnumType.STRING)
+    private Position position;
 
-    private String description;
+    @CreatedBy
+    private String createdBy;
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    @LastModifiedBy
+    private String updatedBy;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
@@ -52,15 +56,13 @@ public class AdminMember {
         String username,
         String password,
         String phoneNumber,
-        Team team,
-        String description
+        Position position
     ) {
         AdminMember adminMember = new AdminMember();
         adminMember.username = username;
         adminMember.password = password;
-        adminMember.team = team;
         adminMember.phoneNumber = phoneNumber;
-        adminMember.description = description;
+        adminMember.position = position;
         return adminMember;
     }
 }

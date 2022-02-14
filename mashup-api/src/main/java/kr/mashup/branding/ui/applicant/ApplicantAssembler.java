@@ -8,7 +8,7 @@ import kr.mashup.branding.domain.applicant.LoginResponseVo;
 
 @Component
 public class ApplicantAssembler {
-    public ApplicantResponse toApplicationResponse(Applicant applicant) {
+    public ApplicantResponse toApplicantResponse(Applicant applicant) {
         return new ApplicantResponse(
             applicant.getApplicantId(),
             applicant.getName(),
