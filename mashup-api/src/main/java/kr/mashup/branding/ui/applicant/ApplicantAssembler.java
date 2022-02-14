@@ -14,7 +14,7 @@ public class ApplicantAssembler {
             applicant.getName(),
             applicant.getPhoneNumber(),
             applicant.getEmail(),
-            applicant.getStatus().name()
+            applicant.getStatus()
         );
     }
 
