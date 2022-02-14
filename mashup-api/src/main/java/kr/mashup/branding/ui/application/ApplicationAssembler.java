@@ -11,6 +11,7 @@ import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
+import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
 import kr.mashup.branding.ui.applicant.ApplicantAssembler;
@@ -90,6 +91,16 @@ public class ApplicationAssembler {
         return new AnswerResponse(
             answer.getAnswerId(),
             answer.getContent()
+        );
+    }
+
+    QuestionResponse toQuestionResponse(Question question) {
+        return new QuestionResponse(
+            question.getQuestionId(),
+            question.getContent(),
+            question.getProperSize(),
+            question.getRequired(),
+            question.getQuestionType().name()
         );
     }
 }
