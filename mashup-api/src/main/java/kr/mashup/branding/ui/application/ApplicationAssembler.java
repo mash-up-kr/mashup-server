@@ -31,7 +31,7 @@ public class ApplicationAssembler {
         Assert.notNull(application, "'application' must not be null");
         return new ApplicationResponse(
             application.getApplicationId(),
-            applicantAssembler.toApplicationResponse(application.getApplicant()),
+            applicantAssembler.toApplicantResponse(application.getApplicant()),
             application.getConfirmation().getStatus(),
             application.getStatus().name(),
             application.getAnswers().stream()
