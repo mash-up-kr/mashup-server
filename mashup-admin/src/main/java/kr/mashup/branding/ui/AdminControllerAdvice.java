@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import kr.mashup.branding.domain.UnauthorizedException;
+import kr.mashup.branding.domain.notification.NotificationRequestInvalidException;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleDuplicatedException;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,15 @@ public class AdminControllerAdvice {
     public ApiResponse<?> handleRecruitmentScheduleDuplicatedException(
         RecruitmentScheduleDuplicatedException e
     ) {
+        log.info("handleRecruitmentScheduleDuplicatedException", e);
         return ApiResponse.failure("RECRUITMENT_SCHEDULE_NAME_DUPLICATED", e.getMessage());
+    }
+
+    @ExceptionHandler(NotificationRequestInvalidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<?> handleNotificationInvalidException(NotificationRequestInvalidException e) {
+        log.info("handleNotificationInvalidException", e);
+        return ApiResponse.failure("NOTIFICATION_REQUEST_INVALID", e.getMessage());
     }
 
     @ExceptionHandler(UnauthorizedException.class)
