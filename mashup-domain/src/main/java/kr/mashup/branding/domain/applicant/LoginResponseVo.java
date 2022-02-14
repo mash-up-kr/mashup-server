@@ -7,5 +7,5 @@ public class LoginResponseVo {
     String accessToken;
     Long applicantId;
     String email;
-    String status;
+    ApplicantStatus status;
 }

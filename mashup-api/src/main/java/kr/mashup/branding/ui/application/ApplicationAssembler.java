@@ -33,7 +33,7 @@ public class ApplicationAssembler {
             application.getApplicationId(),
             applicantAssembler.toApplicantResponse(application.getApplicant()),
             application.getConfirmation().getStatus(),
-            application.getStatus().name(),
+            application.getStatus(),
             application.getAnswers().stream()
                 .map(this::toAnswerResponse)
                 .collect(Collectors.toList()),

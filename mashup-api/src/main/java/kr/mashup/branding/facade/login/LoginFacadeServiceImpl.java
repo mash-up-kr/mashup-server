@@ -23,7 +23,7 @@ public class LoginFacadeServiceImpl implements LoginFacadeService {
             jwtService.encode(applicant.getApplicantId()),
             applicant.getApplicantId(),
             applicant.getEmail(),
-            applicant.getStatus().toString()
+            applicant.getStatus()
         );
     }
 }

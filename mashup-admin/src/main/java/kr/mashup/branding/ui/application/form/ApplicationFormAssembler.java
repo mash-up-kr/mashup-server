@@ -29,7 +29,8 @@ public class ApplicationFormAssembler {
             question.getQuestionId(),
             question.getContent(),
             question.getProperSize(),
-            question.getRequired()
+            question.getRequired(),
+            question.getQuestionType()
         );
     }
 
