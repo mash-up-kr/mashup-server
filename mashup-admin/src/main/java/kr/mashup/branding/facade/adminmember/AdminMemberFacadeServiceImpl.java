@@ -8,7 +8,6 @@ import kr.mashup.branding.config.security.PasswordInvalidException;
 import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberService;
 import kr.mashup.branding.domain.adminmember.AdminMemberSignInVo;
-import kr.mashup.branding.domain.adminmember.AdminMemberVo;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -19,11 +18,6 @@ public class AdminMemberFacadeServiceImpl implements AdminMemberFacadeService {
 
     private final JwtService jwtService;
     private final AdminMemberService adminMemberService;
-
-    @Override
-    public AdminMember signUp(AdminMemberVo adminMemberVo) {
-        return adminMemberService.signUp(adminMemberVo);
-    }
 
     @Override
     public SignInVo signIn(AdminMemberSignInVo adminMemberSignInVo) {
