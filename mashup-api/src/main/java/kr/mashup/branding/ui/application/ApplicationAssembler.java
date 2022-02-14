@@ -14,12 +14,16 @@ import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
 import kr.mashup.branding.ui.applicant.ApplicantAssembler;
+import kr.mashup.branding.ui.application.form.ApplicationFormAssembler;
+import kr.mashup.branding.ui.team.TeamAssembler;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class ApplicationAssembler {
     private final ApplicantAssembler applicantAssembler;
+    private final TeamAssembler teamAssembler;
+    private final ApplicationFormAssembler applicationFormAssembler;
     private final RecruitmentScheduleService recruitmentScheduleService;
 
     CreateApplicationVo toCreateApplicationVo(CreateApplicationRequest createApplicationRequest) {
@@ -32,9 +36,15 @@ public class ApplicationAssembler {
         return new ApplicationResponse(
             application.getApplicationId(),
             applicantAssembler.toApplicantResponse(application.getApplicant()),
+            teamAssembler.toTeamResponse(application.getApplicationForm().getTeam()),
             application.getConfirmation().getStatus(),
             application.getStatus(),
-            application.getAnswers().stream()
+            application.getApplicationForm().getQuestions()
+                .stream()
+                .map(applicationFormAssembler::toQuestionResponse)
+                .collect(Collectors.toList()),
+            application.getAnswers()
+                .stream()
                 .map(this::toAnswerResponse)
                 .collect(Collectors.toList()),
             toApplicationResultResponse(application.getApplicationResult()),

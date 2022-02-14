@@ -25,7 +25,7 @@ public class ApplicationFormAssembler {
         );
     }
 
-    private QuestionResponse toQuestionResponse(Question question) {
+    public QuestionResponse toQuestionResponse(Question question) {
         return new QuestionResponse(
             question.getQuestionId(),
             question.getContent(),
