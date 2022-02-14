@@ -89,6 +89,7 @@ public class ApplicationAssembler {
     private AnswerResponse toAnswerResponse(Answer answer) {
         return new AnswerResponse(
             answer.getAnswerId(),
+            answer.getQuestion().getQuestionId(),
             answer.getContent()
         );
     }
