@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import kr.mashup.branding.config.jwt.JwtService;
+import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +23,7 @@ public class PreAuthTokenProvider implements AuthenticationProvider {
         if (authentication instanceof PreAuthenticatedAuthenticationToken) {
             String token = authentication.getPrincipal().toString();
             Long adminMemberId = jwtService.decode(token);
+            AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
             return new PreAuthenticatedAuthenticationToken(
                 adminMemberId,
                 "",
