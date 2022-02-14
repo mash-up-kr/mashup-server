@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kr.mashup.branding.config.jpa.SpringSecurityAuditorAware;
 import kr.mashup.branding.domain.schedule.RecruitmentSchedule;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleRepository;
 import kr.mashup.branding.ui.ApiResponse;
@@ -42,6 +44,9 @@ class RecruitmentScheduleControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean(name = "auditorAware")
+    private SpringSecurityAuditorAware springSecurityAuditorAware;
 
     private RecruitmentScheduleApi recruitmentScheduleApi;
 
