@@ -11,10 +11,10 @@ import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
+import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
 import kr.mashup.branding.ui.applicant.ApplicantAssembler;
-import kr.mashup.branding.ui.application.form.ApplicationFormAssembler;
 import kr.mashup.branding.ui.team.TeamAssembler;
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 public class ApplicationAssembler {
     private final ApplicantAssembler applicantAssembler;
     private final TeamAssembler teamAssembler;
-    private final ApplicationFormAssembler applicationFormAssembler;
     private final RecruitmentScheduleService recruitmentScheduleService;
 
     CreateApplicationVo toCreateApplicationVo(CreateApplicationRequest createApplicationRequest) {
@@ -41,7 +40,7 @@ public class ApplicationAssembler {
             application.getStatus(),
             application.getApplicationForm().getQuestions()
                 .stream()
-                .map(applicationFormAssembler::toQuestionResponse)
+                .map(this::toQuestionResponse)
                 .collect(Collectors.toList()),
             application.getAnswers()
                 .stream()
@@ -101,6 +100,16 @@ public class ApplicationAssembler {
             answer.getAnswerId(),
             answer.getQuestion().getQuestionId(),
             answer.getContent()
+        );
+    }
+
+    private QuestionResponse toQuestionResponse(Question question) {
+        return new QuestionResponse(
+            question.getQuestionId(),
+            question.getContent(),
+            question.getProperSize(),
+            question.getRequired(),
+            question.getQuestionType().name()
         );
     }
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import kr.mashup.branding.domain.application.ApplicationStatus;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.ui.applicant.ApplicantResponse;
-import kr.mashup.branding.ui.application.form.QuestionResponse;
 import kr.mashup.branding.ui.team.TeamResponse;
 import lombok.Data;
 
