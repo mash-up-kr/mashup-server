@@ -21,7 +21,8 @@ public class TeamController {
     @ApiOperation("팀 목록 조회")
     @GetMapping
     public List<TeamResponse> getTeams() {
-        return teamFacadeService.getTeams().stream()
+        return teamFacadeService.getTeams()
+            .stream()
             .map(teamAssembler::toTeamResponse)
             .collect(Collectors.toList());
     }

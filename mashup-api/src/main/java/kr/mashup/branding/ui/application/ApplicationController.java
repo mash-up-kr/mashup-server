@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
-import kr.mashup.branding.domain.applicant.ApplicantService;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.facade.application.ApplicationFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping("/api/v1/applications")
@@ -24,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 public class ApplicationController {
     private final ApplicationFacadeService applicationFacadeService;
     private final ApplicationAssembler applicationAssembler;
-    private final ApplicantService applicantService;
 
     /**
      * 팀 id(or name) 받아서 만들기
@@ -32,9 +32,9 @@ public class ApplicationController {
     @ApiOperation("내 지원서 생성")
     @PostMapping
     public ApiResponse<ApplicationResponse> create(
+        @ApiIgnore @ModelAttribute("applicantId") Long applicantId,
         @RequestBody CreateApplicationRequest createApplicationRequest
     ) {
-        Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService.create(
             applicantId,
             applicationAssembler.toCreateApplicationVo(createApplicationRequest)
@@ -51,10 +51,10 @@ public class ApplicationController {
     @ApiOperation("내 지원서 임시 저장")
     @PutMapping("/{applicationId}")
     public ApiResponse<ApplicationResponse> update(
+        @ApiIgnore @ModelAttribute("applicantId") Long applicantId,
         @PathVariable Long applicationId,
         @RequestBody UpdateApplicationRequest updateApplicationRequest
     ) {
-        Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService.update(
             applicantId,
             applicationId,
@@ -72,9 +72,9 @@ public class ApplicationController {
     @ApiOperation("내 지원서 제출")
     @PostMapping("/{applicationId}/submit")
     public ApiResponse<ApplicationResponse> submit(
+        @ApiIgnore @ModelAttribute("applicantId") Long applicantId,
         @PathVariable Long applicationId
     ) {
-        Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService.submit(applicantId, applicationId);
         return ApiResponse.success(
             applicationAssembler.toApplicationResponse(application)
@@ -83,8 +83,9 @@ public class ApplicationController {
 
     @ApiOperation("내 지원서 목록 조회")
     @GetMapping
-    public ApiResponse<List<ApplicationResponse>> getApplications() {
-        Long applicantId = getTesterApplicantId();
+    public ApiResponse<List<ApplicationResponse>> getApplications(
+        @ApiIgnore @ModelAttribute("applicantId") Long applicantId
+    ) {
         List<Application> applications = applicationFacadeService.getApplications(applicantId);
         return ApiResponse.success(
             applications.stream()
@@ -96,9 +97,9 @@ public class ApplicationController {
     @ApiOperation("내 지원서 상세 조회")
     @GetMapping("/{applicationId}")
     public ApiResponse<ApplicationResponse> getApplication(
+        @ApiIgnore @ModelAttribute("applicantId") Long applicantId,
         @PathVariable Long applicationId
     ) {
-        Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService.getApplication(applicantId, applicationId);
         return ApiResponse.success(
             applicationAssembler.toApplicationResponse(application)
@@ -108,17 +109,12 @@ public class ApplicationController {
     @ApiOperation("지원자 응답")
     @PostMapping("/{applicationId}/confirm")
     public ApiResponse<ApplicationResponse> updateConfirmation(
+        @ApiIgnore @ModelAttribute("applicantId") Long applicantId,
         @PathVariable Long applicationId,
         @RequestBody UpdateConfirmationRequest updateConfirmationRequest
     ) {
-        Long applicantId = getTesterApplicantId();
         Application application = applicationFacadeService
             .updateConfirm(applicantId, applicationId, updateConfirmationRequest);
         return ApiResponse.success(applicationAssembler.toApplicationResponse(application));
-    }
-
-    // TODO: 로그인 완성되면 삭제해야함
-    private Long getTesterApplicantId() {
-        return applicantService.getTester().getApplicantId();
     }
 }
