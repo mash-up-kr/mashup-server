@@ -4,7 +4,7 @@ import kr.mashup.branding.domain.adminmember.AdminMember;
 import lombok.Value;
 
 @Value(staticConstructor = "of")
-public class SignInVo {
+public class LoginResponseVo {
     String token;
     AdminMember adminMember;
 }

@@ -51,8 +51,8 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     }
 
     @Override
-    public AdminMember signIn(AdminMemberSignInVo adminMemberSignInVo) {
-        return adminMemberRepository.findByUsername(adminMemberSignInVo.getUsername())
+    public AdminMember signIn(AdminMemberLoginVo adminMemberLoginVo) {
+        return adminMemberRepository.findByUsername(adminMemberLoginVo.getUsername())
             .orElseThrow(AdminMemberNotFoundException::new);
     }
 
