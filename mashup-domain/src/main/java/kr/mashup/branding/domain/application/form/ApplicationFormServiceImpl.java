@@ -36,12 +36,11 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Override
     @Transactional
     public ApplicationForm update(
-        Long teamId,
         Long applicationFormId,
         UpdateApplicationFormVo updateApplicationFormVo
     ) {
-        ApplicationForm applicationForm = applicationFormRepository.findByTeam_teamIdAndApplicationFormId(
-            teamId, applicationFormId)
+        ApplicationForm applicationForm = applicationFormRepository.findByApplicationFormId(
+            applicationFormId)
             .orElseThrow(ApplicationFormNotFoundException::new);
         applicationForm.update(updateApplicationFormVo);
         return applicationForm;
@@ -49,8 +48,8 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
 
     @Override
     @Transactional
-    public void delete(Long teamId, Long applicationFormId) {
-        applicationFormRepository.findByTeam_teamIdAndApplicationFormId(teamId, applicationFormId)
+    public void delete(Long applicationFormId) {
+        applicationFormRepository.findByApplicationFormId(applicationFormId)
             .ifPresent(applicationFormRepository::delete);
     }
 
@@ -66,8 +65,8 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     }
 
     @Override
-    public Page<ApplicationForm> getApplicationForms(Long teamId, String keyword, Pageable pageable) {
-        return applicationFormRepository.findByTeam_teamIdAndNameContaining(teamId, keyword, pageable);
+    public Page<ApplicationForm> getApplicationForms(ApplicationFormQueryVo applicationFormQueryVo) {
+        return applicationFormRepository.findByApplicationFormQueryVo(applicationFormQueryVo);
     }
 
     @Override

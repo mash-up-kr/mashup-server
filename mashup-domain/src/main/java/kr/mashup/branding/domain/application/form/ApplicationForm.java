@@ -25,6 +25,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * 설문지
+ */
 @Entity
 @Getter
 @ToString

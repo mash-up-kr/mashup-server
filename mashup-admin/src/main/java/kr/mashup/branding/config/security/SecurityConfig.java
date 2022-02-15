@@ -33,9 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.antMatcher("/**")
+        http.antMatcher("/api/v1/**")
             .authorizeRequests()
-            .antMatchers("/api/v1/admin-members/sign-up", "/api/v1/admin-members/sign-in", "/hello").permitAll()
+            .antMatchers("/api/v1/admin-members/login").permitAll()
             .anyRequest().hasAnyAuthority(AUTHORITY_NAMES)
             .and()
             .csrf().disable()
@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 objectMapper.writeValue(
                     response.getOutputStream(),
                     //TODO ReturnCode 관리 방법 논의
-                    ApiResponse.failure("Unauthorized", "인증에 실패하였습니다.")
+                    ApiResponse.failure("Unauthorized", "인증에 필요한 요청입니다")
                 );
             })
             .accessDeniedHandler((request, response, accessDeniedException) -> {
@@ -75,7 +75,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/favicon.ico",
             "/swagger-ui/**",
             "/swagger-resources/**",
-            "/v2/api-docs"
+            "/v2/api-docs",
+            "/hello"
         );
     }
 

@@ -32,8 +32,6 @@ public class SmsRequestAssembler {
             smsRequest.getNotification().getName(),
             smsRequest.getNotification().getContent(),
             smsRequest.getStatus(),
-            smsRequest.getRecipientApplicant().getName(),
-            smsRequest.getRecipientPhoneNumber(),
             teamAssembler.toTeamResponse(team)
         );
     }

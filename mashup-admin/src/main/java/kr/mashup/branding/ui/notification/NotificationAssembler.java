@@ -65,6 +65,7 @@ public class NotificationAssembler {
             notification.getContent(),
             notification.getSenderPhoneNumber(),
             notification.getSentAt(),
+            notification.getSender().getPosition().name(),
             statusCountMap.getOrDefault(SmsNotificationStatus.SUCCESS, 0),
             statusCountMap.getOrDefault(SmsNotificationStatus.FAILURE, 0),
             statusCountMap.values().stream().mapToInt(it -> it).sum(),

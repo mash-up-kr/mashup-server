@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class UpdateApplicationResultRequest {
-    private ApplicationResultStatusRequest applicationResultStatus;
+    private ApplicationResultStatus applicationResultStatus;
     private LocalDateTime interviewStartedAt;
     private LocalDateTime interviewEndedAt;
 }

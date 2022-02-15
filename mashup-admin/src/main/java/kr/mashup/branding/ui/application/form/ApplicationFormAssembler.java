@@ -20,7 +20,11 @@ public class ApplicationFormAssembler {
             applicationForm.getQuestions()
                 .stream()
                 .map(this::toQuestionResponse)
-                .collect(Collectors.toList())
+                .collect(Collectors.toList()),
+            applicationForm.getCreatedAt(),
+            applicationForm.getCreatedBy(),
+            applicationForm.getUpdatedAt(),
+            applicationForm.getUpdatedBy()
         );
     }
 
@@ -35,11 +39,10 @@ public class ApplicationFormAssembler {
     }
 
     CreateApplicationFormVo toCreateApplicationFormVo(
-        Long teamId,
         CreateApplicationFormRequest createApplicationFormRequest
     ) {
         return CreateApplicationFormVo.of(
-            teamId,
+            createApplicationFormRequest.getTeamId(),
             createApplicationFormRequest.getQuestions()
                 .stream()
                 .map(this::toQuestionRequestVo)

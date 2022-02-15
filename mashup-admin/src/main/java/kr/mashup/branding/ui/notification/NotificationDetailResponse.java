@@ -30,7 +30,8 @@ public class NotificationDetailResponse {
     @ApiModelProperty(value = "발송 시각")
     private LocalDateTime sentAt;
 
-    // TODO: 발송자 (DESIGN, LEADER)
+    @ApiModelProperty(value = "발송자")
+    private String sender;
 
     @ApiModelProperty(value = "발송 성공한 수신자 수", example = "209")
     private Integer successCount;
@@ -41,5 +42,6 @@ public class NotificationDetailResponse {
     @ApiModelProperty(value = "전체 수신자 수", example = "220")
     private Integer totalCount;
 
+    @ApiModelProperty(value = "발신 문자 목록")
     private List<SmsRequestSimpleResponse> smsRequests;
 }

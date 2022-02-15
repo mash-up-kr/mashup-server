@@ -12,6 +12,7 @@ import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
+import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import kr.mashup.branding.facade.application.ApplicationDetailVo;
@@ -51,6 +52,8 @@ public class ApplicationAssembler {
                 .map(this::toAnswerResponse)
                 .collect(Collectors.toList()),
             application.getConfirmation().getStatus(),
+            toApplicationResultResponse(application.getApplicationResult()),
+            application.getSubmittedAt(),
             application.getCreatedAt(),
             application.getUpdatedAt(),
             applicationDetailVo.getSmsRequests()
@@ -62,20 +65,20 @@ public class ApplicationAssembler {
     }
 
     public List<UpdateApplicationResultVo> toUpdateApplicationResultsVoList(UpdateApplicationResultsRequest request) {
-        ApplicationResultStatusRequest applicationResultStatusRequest = request.getApplicationResultStatus();
+        ApplicationResultStatus applicationResultStatus = request.getApplicationResultStatus();
         return request.getApplicationIds()
             .stream()
-            .map(it -> toUpdateApplicationResultVo(it, applicationResultStatusRequest, null, null))
+            .map(it -> toUpdateApplicationResultVo(it, applicationResultStatus, null, null))
             .collect(Collectors.toList());
     }
 
     private UpdateApplicationResultVo toUpdateApplicationResultVo(
         Long applicationId,
-        ApplicationResultStatusRequest applicationResultStatusRequest,
+        ApplicationResultStatus applicationResultStatus,
         LocalDateTime interviewStartedAt,
         LocalDateTime interviewEndedAt
     ) {
-        switch (applicationResultStatusRequest) {
+        switch (applicationResultStatus) {
             case NOT_RATED:
                 return UpdateApplicationResultVo.notRated(applicationId);
             case SCREENING_FAILED:
@@ -118,7 +121,7 @@ public class ApplicationAssembler {
         String searchWord,
         Long teamId,
         ApplicantConfirmationStatus confirmStatus,
-        ApplicationResultStatusRequest resultStatus,
+        ApplicationResultStatus resultStatus,
         Pageable pageable
     ) {
         return ApplicationQueryVo.of(
@@ -131,7 +134,7 @@ public class ApplicationAssembler {
         );
     }
 
-    private ApplicationScreeningStatus toApplicationScreeningStatus(ApplicationResultStatusRequest resultStatus) {
+    private ApplicationScreeningStatus toApplicationScreeningStatus(ApplicationResultStatus resultStatus) {
         if (resultStatus == null) {
             return null;
         }
@@ -152,7 +155,7 @@ public class ApplicationAssembler {
         throw new IllegalStateException();
     }
 
-    private ApplicationInterviewStatus toApplicationInterviewStatus(ApplicationResultStatusRequest resultStatus) {
+    private ApplicationInterviewStatus toApplicationInterviewStatus(ApplicationResultStatus resultStatus) {
         if (resultStatus == null) {
             return null;
         }
@@ -177,6 +180,17 @@ public class ApplicationAssembler {
             answer.getAnswerId(),
             answer.getQuestion().getQuestionId(),
             answer.getContent()
+        );
+    }
+
+    private ApplicationResultResponse toApplicationResultResponse(ApplicationResult applicationResult) {
+        return new ApplicationResultResponse(
+            ApplicationResultStatus.of(
+                applicationResult.getScreeningStatus(),
+                applicationResult.getInterviewStatus()
+            ),
+            applicationResult.getInterviewStartedAt(),
+            applicationResult.getInterviewEndedAt()
         );
     }
 }

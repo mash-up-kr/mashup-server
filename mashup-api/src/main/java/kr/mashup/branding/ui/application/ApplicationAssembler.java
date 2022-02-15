@@ -38,6 +38,7 @@ public class ApplicationAssembler {
             teamAssembler.toTeamResponse(application.getApplicationForm().getTeam()),
             application.getConfirmation().getStatus(),
             application.getStatus(),
+            application.getSubmittedAt(),
             application.getApplicationForm().getQuestions()
                 .stream()
                 .map(this::toQuestionResponse)
