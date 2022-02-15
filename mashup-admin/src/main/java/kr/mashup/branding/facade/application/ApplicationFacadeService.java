@@ -11,7 +11,7 @@ import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 public interface ApplicationFacadeService {
     Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo);
 
-    Application getApplication(Long applicationId);
+    ApplicationDetailVo getApplicationDetail(Long applicationId);
 
     List<Application> updateResults(Long adminMemberId, List<UpdateApplicationResultVo> updateApplicationResultVoList);
 

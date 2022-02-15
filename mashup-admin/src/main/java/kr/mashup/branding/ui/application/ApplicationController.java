@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
+import kr.mashup.branding.facade.application.ApplicationDetailVo;
 import kr.mashup.branding.facade.application.ApplicationFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class ApplicationController {
     private final ApplicationAssembler applicationAssembler;
 
     @GetMapping
-    public ApiResponse<List<ApplicationResponse>> getApplications(
+    public ApiResponse<List<ApplicationSimpleResponse>> getApplications(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @RequestParam(required = false) String searchWord,
         @RequestParam(required = false) Long teamId,
@@ -47,18 +48,18 @@ public class ApplicationController {
                     pageable
                 )
             ).stream()
-                .map(applicationAssembler::toApplicationResponse)
+                .map(applicationAssembler::toApplicationSimpleResponse)
                 .collect(Collectors.toList())
         );
     }
 
     @GetMapping("/{applicationId}")
-    public ApiResponse<ApplicationResponse> getApplication(
+    public ApiResponse<ApplicationDetailResponse> getApplication(
         @PathVariable Long applicationId
     ) {
-        Application application = applicationFacadeService.getApplication(applicationId);
+        ApplicationDetailVo applicationDetailVo = applicationFacadeService.getApplicationDetail(applicationId);
         return ApiResponse.success(
-            applicationAssembler.toApplicationResponse(application)
+            applicationAssembler.toApplicationDetailResponse(applicationDetailVo)
         );
     }
 
@@ -66,7 +67,7 @@ public class ApplicationController {
      * 여러개의 지원서에 대해서 결과 변경
      */
     @PostMapping("/update-result")
-    public ApiResponse<List<ApplicationResponse>> updateResult(
+    public ApiResponse<List<ApplicationSimpleResponse>> updateResult(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @RequestBody UpdateApplicationResultsRequest updateApplicationResultsRequest
     ) {
@@ -75,7 +76,7 @@ public class ApplicationController {
                 adminMemberId,
                 applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
             ).stream()
-                .map(applicationAssembler::toApplicationResponse)
+                .map(applicationAssembler::toApplicationSimpleResponse)
                 .collect(Collectors.toList())
         );
     }
@@ -84,7 +85,7 @@ public class ApplicationController {
      * 지원서의 결과 및 면접일정 변경
      */
     @PostMapping("/{applicationId}/update-result")
-    public ApiResponse<ApplicationResponse> updateResult(
+    public ApiResponse<ApplicationSimpleResponse> updateResult(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long applicationId,
         @RequestBody UpdateApplicationResultRequest updateApplicationResultRequest
@@ -94,7 +95,7 @@ public class ApplicationController {
             applicationAssembler.toUpdateApplicationResultVo(applicationId, updateApplicationResultRequest)
         );
         return ApiResponse.success(
-            applicationAssembler.toApplicationResponse(application)
+            applicationAssembler.toApplicationSimpleResponse(application)
         );
     }
 }

@@ -7,18 +7,57 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import kr.mashup.branding.domain.application.Answer;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
+import kr.mashup.branding.facade.application.ApplicationDetailVo;
+import kr.mashup.branding.ui.applicant.ApplicantAssembler;
+import kr.mashup.branding.ui.application.form.ApplicationFormAssembler;
+import kr.mashup.branding.ui.notification.sms.SmsRequestAssembler;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class ApplicationAssembler {
-    ApplicationResponse toApplicationResponse(Application application) {
-        return new ApplicationResponse(
-            application.getApplicationId()
+    private final ApplicantAssembler applicantAssembler;
+    private final ApplicationFormAssembler applicationFormAssembler;
+    private final SmsRequestAssembler smsRequestAssembler;
+
+    ApplicationSimpleResponse toApplicationSimpleResponse(Application application) {
+        return new ApplicationSimpleResponse(
+            application.getApplicationId(),
+            applicantAssembler.toApplicantResponse(application.getApplicant()),
+            application.getConfirmation().getStatus(),
+            application.getCreatedAt(),
+            application.getUpdatedAt()
+        );
+    }
+
+    ApplicationDetailResponse toApplicationDetailResponse(ApplicationDetailVo applicationDetailVo) {
+        Application application = applicationDetailVo.getApplication();
+        return new ApplicationDetailResponse(
+            application.getApplicationId(),
+            applicantAssembler.toApplicantResponse(application.getApplicant()),
+            application.getApplicationForm().getQuestions()
+                .stream()
+                .map(applicationFormAssembler::toQuestionResponse)
+                .collect(Collectors.toList()),
+            application.getAnswers()
+                .stream()
+                .map(this::toAnswerResponse)
+                .collect(Collectors.toList()),
+            application.getConfirmation().getStatus(),
+            application.getCreatedAt(),
+            application.getUpdatedAt(),
+            applicationDetailVo.getSmsRequests()
+                .stream()
+                .map(it -> smsRequestAssembler.toSmsRequestDetailResponse(it,
+                    application.getApplicationForm().getTeam()))
+                .collect(Collectors.toList())
         );
     }
 
@@ -131,5 +170,13 @@ public class ApplicationAssembler {
                 return ApplicationInterviewStatus.PASSED;
         }
         throw new IllegalStateException();
+    }
+
+    private AnswerResponse toAnswerResponse(Answer answer) {
+        return new AnswerResponse(
+            answer.getAnswerId(),
+            answer.getQuestion().getQuestionId(),
+            answer.getContent()
+        );
     }
 }

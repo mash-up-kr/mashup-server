@@ -11,6 +11,8 @@ import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.ApplicationService;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
+import kr.mashup.branding.domain.notification.sms.SmsRequest;
+import kr.mashup.branding.domain.notification.sms.SmsRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
     private final ApplicationService applicationService;
+    private final SmsRequestService smsRequestService;
 
     @Override
     public Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo) {
@@ -26,8 +29,11 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
     }
 
     @Override
-    public Application getApplication(Long applicationId) {
-        return applicationService.getApplication(applicationId);
+    public ApplicationDetailVo getApplicationDetail(Long applicationId) {
+        Application application = applicationService.getApplication(applicationId);
+        List<SmsRequest> smsRequests = smsRequestService.getSmsRequestsByApplicantId(
+            application.getApplicant().getApplicantId());
+        return ApplicationDetailVo.of(application, smsRequests);
     }
 
     @Override
