@@ -28,4 +28,9 @@ public class AdminMemberFacadeServiceImpl implements AdminMemberFacadeService {
         String token = jwtService.encode(adminMember.getAdminMemberId());
         return LoginResponseVo.of(token, adminMember);
     }
+
+    @Override
+    public AdminMember getAdminMember(Long adminMemberId) {
+        return adminMemberService.getByAdminMemberId(adminMemberId);
+    }
 }
