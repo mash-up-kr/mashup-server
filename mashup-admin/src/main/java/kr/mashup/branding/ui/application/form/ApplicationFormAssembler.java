@@ -35,11 +35,10 @@ public class ApplicationFormAssembler {
     }
 
     CreateApplicationFormVo toCreateApplicationFormVo(
-        Long teamId,
         CreateApplicationFormRequest createApplicationFormRequest
     ) {
         return CreateApplicationFormVo.of(
-            teamId,
+            createApplicationFormRequest.getTeamId(),
             createApplicationFormRequest.getQuestions()
                 .stream()
                 .map(this::toQuestionRequestVo)

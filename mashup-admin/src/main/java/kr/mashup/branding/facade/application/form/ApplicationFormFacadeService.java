@@ -10,9 +10,9 @@ import kr.mashup.branding.domain.application.form.UpdateApplicationFormVo;
 public interface ApplicationFormFacadeService {
     ApplicationForm create(CreateApplicationFormVo createApplicationFormVo);
 
-    ApplicationForm update(Long teamId, Long applicationFormId, UpdateApplicationFormVo updateApplicationFormVo);
+    ApplicationForm update(Long applicationFormId, UpdateApplicationFormVo updateApplicationFormVo);
 
     Page<ApplicationForm> getApplicationForms(ApplicationFormQueryVo applicationFormQueryVo);
 
-    void delete(Long teamId, Long applicationFormId);
+    void delete(Long applicationFormId);
 }

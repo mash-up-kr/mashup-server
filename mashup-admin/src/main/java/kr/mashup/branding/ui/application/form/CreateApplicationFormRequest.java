@@ -8,6 +8,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class CreateApplicationFormRequest {
+    private Long teamId;
     private List<QuestionRequest> questions;
     private String name;
 }

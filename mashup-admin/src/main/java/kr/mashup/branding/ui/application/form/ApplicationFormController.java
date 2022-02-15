@@ -52,16 +52,14 @@ public class ApplicationFormController {
 
     /**
      * 설문지 생성
-     * @param teamId 팀 식별자
      * @param createApplicationFormRequest 설문지 생성 요청 정보
      * @return 새로 생성된 설문지
      */
     @PostMapping
     public ApiResponse<ApplicationFormResponse> create(
-        @PathVariable Long teamId,
         @RequestBody CreateApplicationFormRequest createApplicationFormRequest
     ) {
-        CreateApplicationFormVo createApplicationFormVo = applicationFormAssembler.toCreateApplicationFormVo(teamId,
+        CreateApplicationFormVo createApplicationFormVo = applicationFormAssembler.toCreateApplicationFormVo(
             createApplicationFormRequest);
         ApplicationForm applicationForm = applicationFormFacadeService.create(createApplicationFormVo);
         return ApiResponse.success(
@@ -71,19 +69,16 @@ public class ApplicationFormController {
 
     /**
      * 설문지 수정
-     * @param teamId 팀 식별자
      * @param applicationFormId 설문지 식별자
      * @param updateApplicationFormRequest 설문지 수정 요청 정보
      * @return 수정된 설문지
      */
     @PutMapping("/{applicationFormId}")
     public ApiResponse<ApplicationFormResponse> update(
-        @PathVariable Long teamId,
         @PathVariable Long applicationFormId,
         @RequestBody UpdateApplicationFormRequest updateApplicationFormRequest
     ) {
         ApplicationForm applicationForm = applicationFormFacadeService.update(
-            teamId,
             applicationFormId,
             applicationFormAssembler.toUpdateApplicationFormVo(updateApplicationFormRequest)
         );
@@ -94,16 +89,14 @@ public class ApplicationFormController {
 
     /**
      * 설문지 삭제 요청
-     * @param teamId 팀 식별자
      * @param applicationFormId 설문지 식별자
      */
     @DeleteMapping("/{applicationFormId}")
     public ApiResponse<?> delete(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
-        @PathVariable Long teamId,
         @PathVariable Long applicationFormId
     ) {
-        applicationFormFacadeService.delete(teamId, applicationFormId);
+        applicationFormFacadeService.delete(applicationFormId);
         return ApiResponse.success();
     }
 }

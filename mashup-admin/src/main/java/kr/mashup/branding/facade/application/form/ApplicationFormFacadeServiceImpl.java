@@ -22,11 +22,10 @@ public class ApplicationFormFacadeServiceImpl implements ApplicationFormFacadeSe
 
     @Override
     public ApplicationForm update(
-        Long teamId,
         Long applicationFormId,
         UpdateApplicationFormVo updateApplicationFormVo
     ) {
-        return applicationFormService.update(teamId, applicationFormId, updateApplicationFormVo);
+        return applicationFormService.update(applicationFormId, updateApplicationFormVo);
     }
 
     @Override
@@ -35,7 +34,7 @@ public class ApplicationFormFacadeServiceImpl implements ApplicationFormFacadeSe
     }
 
     @Override
-    public void delete(Long teamId, Long applicationFormId) {
-        applicationFormService.delete(teamId, applicationFormId);
+    public void delete(Long applicationFormId) {
+        applicationFormService.delete(applicationFormId);
     }
 }
