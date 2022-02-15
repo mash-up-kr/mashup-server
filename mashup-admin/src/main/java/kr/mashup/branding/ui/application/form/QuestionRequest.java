@@ -7,7 +7,7 @@ import lombok.ToString;
 @ToString
 public class QuestionRequest {
     private String content;
-    private Integer properSize;
+    private Integer maxContentSize;
     private Boolean required;
     private String questionType;
 }

@@ -5,7 +5,7 @@ import lombok.Value;
 @Value(staticConstructor = "of")
 public class QuestionRequestVo {
     String content;
-    Integer properSize;
+    Integer maxContentSize;
     Boolean required;
     QuestionType questionType;
 }
