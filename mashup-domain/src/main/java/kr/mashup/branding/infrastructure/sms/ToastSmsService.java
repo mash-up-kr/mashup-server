@@ -39,7 +39,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class ToastSmsService implements SmsService {
-    public static final Charset CHARSET_EUC_KR = Charset.forName("euc-kr");
+    private static final Charset CHARSET_EUC_KR = Charset.forName("euc-kr");
+    private static final int SMS_MAX_LENGTH = 90;
+
     private final String toastUrl;
     private final String appKey;
     private final RestTemplate toastRestTemplate;
@@ -83,7 +85,7 @@ public class ToastSmsService implements SmsService {
      * @return sms or mms
      */
     private String resolveRequestType(String content) {
-        return content.getBytes(CHARSET_EUC_KR).length > 90 ? "mms" : "sms";
+        return content.getBytes(CHARSET_EUC_KR).length > SMS_MAX_LENGTH ? "mms" : "sms";
     }
 
     private ToastSmsRequest toToastSmsRequest(SmsRequestVo smsRequestVo) {
