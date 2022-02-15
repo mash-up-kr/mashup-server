@@ -51,6 +51,7 @@ public class ApplicationAssembler {
                 .map(this::toAnswerResponse)
                 .collect(Collectors.toList()),
             application.getConfirmation().getStatus(),
+            application.getSubmittedAt(),
             application.getCreatedAt(),
             application.getUpdatedAt(),
             applicationDetailVo.getSmsRequests()
