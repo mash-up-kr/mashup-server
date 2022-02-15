@@ -27,14 +27,12 @@ public class TokenPreAuthFilter extends AbstractPreAuthenticatedProcessingFilter
     }
 
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER_NAME);
-        if (!StringUtils.hasText(bearerToken)) {
-            log.warn("Failed to get bearerToken");
+        String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER_NAME);
+        if (!StringUtils.hasText(authorizationHeader)) {
             return null;
         }
-        Matcher matcher = BEARER_TOKEN_PATTERN.matcher(bearerToken);
+        Matcher matcher = BEARER_TOKEN_PATTERN.matcher(authorizationHeader);
         if (!matcher.matches()) {
-            log.warn("Failed to get bearerToken");
             return null;
         } else {
             return matcher.group(1);
