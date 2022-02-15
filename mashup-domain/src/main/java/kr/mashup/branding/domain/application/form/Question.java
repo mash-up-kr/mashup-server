@@ -33,13 +33,13 @@ public class Question {
     /**
      * 내용
      */
-    @Column(columnDefinition = "TEXT", length = 4000)
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     /**
-     * 권장하는 길이
+     * 최대 길이 (n글자 이하)
      */
-    private Integer properSize;
+    private Integer maxContentSize;
 
     /**
      * 필수 질문 여부
@@ -67,7 +67,7 @@ public class Question {
     public static Question of(QuestionRequestVo questionRequestVo) {
         Question question = new Question();
         question.content = questionRequestVo.getContent();
-        question.properSize = questionRequestVo.getProperSize();
+        question.maxContentSize = questionRequestVo.getMaxContentSize();
         question.required = questionRequestVo.getRequired();
         question.questionType = questionRequestVo.getQuestionType();
         return question;

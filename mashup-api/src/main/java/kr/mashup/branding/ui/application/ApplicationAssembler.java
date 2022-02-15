@@ -108,9 +108,9 @@ public class ApplicationAssembler {
         return new QuestionResponse(
             question.getQuestionId(),
             question.getContent(),
-            question.getProperSize(),
+            question.getMaxContentSize(),
             question.getRequired(),
-            question.getQuestionType().name()
+            question.getQuestionType()
         );
     }
 }
