@@ -25,7 +25,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Entity
 @Getter
 @ToString(of = {"smsRequestId", "status", "recipientPhoneNumber", "messageId", "resultId", "resultCode",
@@ -95,6 +97,10 @@ public class SmsRequest {
     }
 
     public void setResult(SmsSendResultRecipientVo smsSendResultRecipientVo) {
+        if (smsSendResultRecipientVo == null) {
+            log.error("'smsSendResultRecipientVo' must not be null");
+            return;
+        }
         this.status = smsSendResultRecipientVo.getStatus();
         this.resultId = smsSendResultRecipientVo.getRequestId();
         this.resultCode = smsSendResultRecipientVo.getResultCode();

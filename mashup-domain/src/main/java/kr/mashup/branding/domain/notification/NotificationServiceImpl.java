@@ -56,10 +56,6 @@ public class NotificationServiceImpl implements NotificationService {
         if (!StringUtils.hasText(smsSendRequestVo.getContent())) {
             throw new NotificationRequestInvalidException("'content' must not be null, empty or blank");
         }
-        if (smsSendRequestVo.getContent().getBytes(CHARSET_EUC_KR).length > SMS_MAX_LENGTH) {
-            throw new NotificationRequestInvalidException(
-                "'content' length must be less than or equal to " + SMS_MAX_LENGTH);
-        }
         if (CollectionUtils.isEmpty(smsSendRequestVo.getRecipientApplicantIds())) {
             throw new NotificationRequestInvalidException("'recipientApplicantIds' must not be empty or null");
         }
