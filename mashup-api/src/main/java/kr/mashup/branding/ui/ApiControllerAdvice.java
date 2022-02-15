@@ -4,10 +4,12 @@ import java.security.Principal;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import kr.mashup.branding.domain.UnauthorizedException;
 import kr.mashup.branding.domain.application.ApplicationAlreadySubmittedException;
@@ -29,17 +31,31 @@ public class ApiControllerAdvice {
         return null;
     }
 
+    @ExceptionHandler(HttpMediaTypeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<?> handleHttpMediaTypeException(HttpMediaTypeException e) {
+        log.info("handleHttpMediaTypeException: {}", e.getMessage(), e);
+        return ApiResponse.failure("BAD_REQUEST", e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<?> handleBadRequest(MethodArgumentTypeMismatchException e) {
+        log.info("handleMethodArgumentTypeMismatchException: {}", e.getMessage(), e);
+        return ApiResponse.failure("BAD_REQUEST", e.getMessage());
+    }
+
     @ExceptionHandler(PrivacyPolicyNotAgreedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<?> handlePrivacyPolicyNotAgreedException(PrivacyPolicyNotAgreedException e) {
-        log.info("handlePrivacyPolicyNotAgreedException", e);
+        log.info("handlePrivacyPolicyNotAgreedException: {}", e.getMessage(), e);
         return ApiResponse.failure("PRIVACY_POLICY_NOT_AGREED", "개인정보 처리방침에 동의해야합니다");
     }
 
     @ExceptionHandler(ApplicationAlreadySubmittedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<?> handleApplicationAlreadySubmittedException(ApplicationAlreadySubmittedException e) {
-        log.info("ApplicationAlreadySubmittedException", e);
+        log.info("ApplicationAlreadySubmittedException: {}", e.getMessage(), e);
         return ApiResponse.failure(
             "APPLICATION_ALREADY_SUBMITTED",
             "이미 제출한 지원서는 다시 수정하거나 제출할 수 없습니다. "
@@ -49,14 +65,14 @@ public class ApiControllerAdvice {
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiResponse<?> handleUnauthorizedException(UnauthorizedException e) {
-        log.info("handleUnauthorizedException", e);
+        log.info("handleUnauthorizedException: {}", e.getMessage(), e);
         return ApiResponse.failure("UNAUTHORIZED", "인증이 필요한 요청입니다");
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResponse<?> handleException(Exception e) {
-        log.error("handleException", e);
+        log.error("handleException: {}", e.getMessage(), e);
         return ApiResponse.failure("FAILURE", "실패");
     }
 }

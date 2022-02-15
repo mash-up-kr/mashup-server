@@ -39,18 +39,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/webjars/springfox-swagger-ui/**",
                 "/swagger-resources/**",
                 "/v1/api-docs",
-                "/h2-console/**"
+                "/h2-console/**",
+                "/hello"
             );
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.antMatcher("/**")
+        http.antMatcher("/api/v1/**")
             .authorizeRequests()
-            .antMatchers("/hello").permitAll()
             .antMatchers("/api/v1/teams/**").permitAll()
             .antMatchers("/api/v1/applicants/login").permitAll()
-            .antMatchers("/api/v1/**").hasAuthority(APPLICANT_ROLE_NAME);
+            .anyRequest().hasAuthority(APPLICANT_ROLE_NAME);
         http.csrf().disable();
         http.logout().disable();
         http.formLogin().disable();
@@ -65,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 objectMapper.writeValue(
                     response.getOutputStream(),
-                    ApiResponse.failure("Unauthorized", "인증에 실패하였습니다.")
+                    ApiResponse.failure("UNAUTHORIZED", "인증이 필요한 요청입니다.")
                 );
             })
             .accessDeniedHandler((request, response, accessDeniedException) -> {
@@ -73,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 objectMapper.writeValue(
                     response.getOutputStream(),
-                    ApiResponse.failure("Forbidden", "허용되지 않은 접근입니다.")
+                    ApiResponse.failure("FORBIDDEN", "허용되지 않은 접근입니다.")
                 );
             });
     }
