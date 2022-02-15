@@ -34,7 +34,7 @@ public class ApplicationController {
         @RequestParam(required = false) String searchWord,
         @RequestParam(required = false) Long teamId,
         @RequestParam(required = false) ApplicantConfirmationStatus confirmStatus,
-        @RequestParam(required = false) ApplicationResultStatusRequest resultStatus,
+        @RequestParam(required = false) ApplicationResultStatus resultStatus,
         Pageable pageable
     ) {
         return ApiResponse.success(
