@@ -96,11 +96,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
 
         validateDate(LocalDateTime.now());
-
-        // TODO: applicant 이름, 연락처 저장
         Application application = applicationRepository.findById(applicationId)
             .orElseThrow(ApplicationNotFoundException::new);
         application.update(updateApplicationVo);
+        application.getApplicant().update(
+            updateApplicationVo.getName(),
+            updateApplicationVo.getPhoneNumber()
+        );
         return application;
     }
 
