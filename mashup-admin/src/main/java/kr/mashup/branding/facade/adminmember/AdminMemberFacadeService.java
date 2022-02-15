@@ -1,7 +1,7 @@
 package kr.mashup.branding.facade.adminmember;
 
-import kr.mashup.branding.domain.adminmember.AdminMemberSignInVo;
+import kr.mashup.branding.domain.adminmember.AdminMemberLoginVo;
 
 public interface AdminMemberFacadeService {
-    SignInVo signIn(AdminMemberSignInVo adminMemberSignInVo);
+    LoginResponseVo login(AdminMemberLoginVo adminMemberLoginVo);
 }
