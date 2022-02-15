@@ -1,6 +1,7 @@
 package kr.mashup.branding.domain.applicant;
 
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -23,6 +24,8 @@ import lombok.ToString;
 @EqualsAndHashCode(of = "applicantId")
 @EntityListeners(AuditingEntityListener.class)
 public class Applicant {
+    private static final Pattern PATTERN_NUMBER = Pattern.compile("\\d+");
+
     @Id
     @GeneratedValue
     private Long applicantId;
@@ -67,5 +70,13 @@ public class Applicant {
 
     public static Applicant tester() {
         return TESTER;
+    }
+
+    public void update(String name, String phoneNumber) {
+        this.name = name;
+        this.phoneNumber = phoneNumber.replaceAll("-", "").trim();
+        if (!PATTERN_NUMBER.matcher(this.phoneNumber).matches()) {
+            throw new IllegalArgumentException("'phoneNumber' must be include number and hyphen only");
+        }
     }
 }
