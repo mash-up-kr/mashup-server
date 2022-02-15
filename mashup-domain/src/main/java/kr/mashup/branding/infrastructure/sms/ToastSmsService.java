@@ -1,5 +1,6 @@
 package kr.mashup.branding.infrastructure.sms;
 
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,6 +39,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class ToastSmsService implements SmsService {
+    private static final Charset CHARSET_EUC_KR = Charset.forName("euc-kr");
+    private static final int SMS_MAX_LENGTH = 90;
+
     private final String toastUrl;
     private final String appKey;
     private final RestTemplate toastRestTemplate;
@@ -53,7 +57,7 @@ public class ToastSmsService implements SmsService {
         final ResponseEntity<ToastSmsResponse> responseEntity;
         try {
             responseEntity = toastRestTemplate.exchange(
-                toastUrl + "/sms/v3.0/appKeys/" + appKey + "/sender/sms",
+                toastUrl + "/sms/v3.0/appKeys/" + appKey + "/sender/" + resolveRequestType(smsRequestVo.getContent()),
                 HttpMethod.POST,
                 httpEntity,
                 ToastSmsResponse.class
@@ -69,10 +73,19 @@ public class ToastSmsService implements SmsService {
         // 응답 잘 받았고, 내용이 실패
         ToastSmsResponse toastSmsResponse = responseEntity.getBody();
         if (toastSmsResponse == null || !toastSmsResponse.isSuccess()) {
-            log.error("Failed to send SMS. toastSmsResponse: " + toastSmsResponse + ", toastSmsRequest: " + toastSmsRequest);
+            log.error(
+                "Failed to send SMS. toastSmsResponse: " + toastSmsResponse + ", toastSmsRequest: " + toastSmsRequest);
             return toSmsResultVo(toastSmsResponse);
         }
         return toSmsResultVo(toastSmsResponse);
+    }
+
+    /**
+     * 글자수에 따라 SMS, MMS 를 구분한다.
+     * @return sms or mms
+     */
+    private String resolveRequestType(String content) {
+        return content.getBytes(CHARSET_EUC_KR).length > SMS_MAX_LENGTH ? "mms" : "sms";
     }
 
     private ToastSmsRequest toToastSmsRequest(SmsRequestVo smsRequestVo) {

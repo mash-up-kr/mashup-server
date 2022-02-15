@@ -1,6 +1,5 @@
 package kr.mashup.branding.domain.notification;
 
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,9 +28,6 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
-    private static final Charset CHARSET_EUC_KR = Charset.forName("euc-kr");
-    private static final int SMS_MAX_LENGTH = 90;
-
     private final NotificationRepository notificationRepository;
     private final AdminMemberService adminMemberService;
     private final SmsRequestService smsRequestService;
@@ -55,10 +51,6 @@ public class NotificationServiceImpl implements NotificationService {
         }
         if (!StringUtils.hasText(smsSendRequestVo.getContent())) {
             throw new NotificationRequestInvalidException("'content' must not be null, empty or blank");
-        }
-        if (smsSendRequestVo.getContent().getBytes(CHARSET_EUC_KR).length > SMS_MAX_LENGTH) {
-            throw new NotificationRequestInvalidException(
-                "'content' length must be less than or equal to " + SMS_MAX_LENGTH);
         }
         if (CollectionUtils.isEmpty(smsSendRequestVo.getRecipientApplicantIds())) {
             throw new NotificationRequestInvalidException("'recipientApplicantIds' must not be empty or null");

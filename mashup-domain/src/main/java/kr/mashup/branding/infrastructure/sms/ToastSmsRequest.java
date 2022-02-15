@@ -9,6 +9,10 @@ import lombok.Value;
 @Value(staticConstructor = "of")
 public class ToastSmsRequest {
     /**
+     * 발신 제목 (LMS, MMS 에서만 사용)
+     */
+    String title = "Mash-Up";
+    /**
      * 발신 내용
      */
     @JsonProperty("body")
