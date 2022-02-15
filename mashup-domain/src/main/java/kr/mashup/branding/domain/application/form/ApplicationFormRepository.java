@@ -7,7 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ApplicationFormRepository extends JpaRepository<ApplicationForm, Long> {
+public interface ApplicationFormRepository
+    extends JpaRepository<ApplicationForm, Long>, ApplicationFormRepositoryCustom {
+
     List<ApplicationForm> findByTeam_teamId(Long teamId);
 
     Page<ApplicationForm> findByTeam_teamId(Long teamId, Pageable pageable);

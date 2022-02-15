@@ -16,7 +16,7 @@ public interface ApplicationFormService {
 
     List<ApplicationForm> getApplicationFormsByTeamId(Long teamId);
 
-    Page<ApplicationForm> getApplicationForms(Long teamId, String keyword, Pageable pageable);
+    Page<ApplicationForm> getApplicationForms(ApplicationFormQueryVo applicationFormQueryVo);
 
     Page<ApplicationForm> getApplicationForms(Long teamId, Pageable pageable);
 }

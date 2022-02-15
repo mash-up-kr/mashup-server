@@ -66,8 +66,8 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     }
 
     @Override
-    public Page<ApplicationForm> getApplicationForms(Long teamId, String keyword, Pageable pageable) {
-        return applicationFormRepository.findByTeam_teamIdAndNameContaining(teamId, keyword, pageable);
+    public Page<ApplicationForm> getApplicationForms(ApplicationFormQueryVo applicationFormQueryVo) {
+        return applicationFormRepository.findByApplicationFormQueryVo(applicationFormQueryVo);
     }
 
     @Override
