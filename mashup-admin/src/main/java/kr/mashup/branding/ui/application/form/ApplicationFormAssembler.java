@@ -20,7 +20,11 @@ public class ApplicationFormAssembler {
             applicationForm.getQuestions()
                 .stream()
                 .map(this::toQuestionResponse)
-                .collect(Collectors.toList())
+                .collect(Collectors.toList()),
+            applicationForm.getCreatedAt(),
+            applicationForm.getCreatedBy(),
+            applicationForm.getUpdatedAt(),
+            applicationForm.getUpdatedBy()
         );
     }
 
