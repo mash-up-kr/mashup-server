@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import kr.mashup.branding.domain.UnauthorizedException;
+import kr.mashup.branding.domain.application.form.ApplicationFormAlreadyExistException;
+import kr.mashup.branding.domain.application.form.ApplicationFormModificationNotAllowedException;
 import kr.mashup.branding.domain.notification.NotificationRequestInvalidException;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleDuplicatedException;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleNotFoundException;
@@ -29,6 +31,24 @@ public class AdminControllerAdvice {
             return (Long)((PreAuthenticatedAuthenticationToken)principal).getPrincipal();
         }
         return null;
+    }
+
+    @ExceptionHandler(ApplicationFormAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<?> handleApplicationFormAlreadyExistException(ApplicationFormAlreadyExistException e) {
+        log.info("handleApplicationFormAlreadyExistException: {}", e.getMessage(), e);
+        return ApiResponse.failure("APPLICATION_FORM_ALREADY_EXIST", "해당 팀에 이미 다른 설문지가 존재합니다. ");
+    }
+
+    @ExceptionHandler(ApplicationFormModificationNotAllowedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<?> handleApplicationFormModificationNotAllowedException(
+        ApplicationFormModificationNotAllowedException e) {
+        log.info("handleApplicationFormModificationNotAllowedException: {}", e.getMessage(), e);
+        return ApiResponse.failure(
+            "APPLICATION_FORM_MODIFICATION_NOT_ALLOWED",
+            "모집 시작시각 이후에는 설문지를 수정하거나 삭제할 수 없습니다"
+        );
     }
 
     @ExceptionHandler(RecruitmentScheduleDuplicatedException.class)

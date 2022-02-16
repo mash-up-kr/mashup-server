@@ -25,6 +25,11 @@ public interface RecruitmentScheduleService {
     void delete(Long recruitmentScheduleId);
 
     /**
+     * 모집 시작했는지
+     */
+    boolean isRecruitStarted(LocalDateTime localDateTime);
+
+    /**
      * 서류 제출 가능한 시각인지
      */
     boolean isRecruitAvailable(LocalDateTime localDateTime);

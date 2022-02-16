@@ -61,6 +61,14 @@ public class RecruitmentScheduleServiceImpl implements RecruitmentScheduleServic
     }
 
     @Override
+    public boolean isRecruitStarted(LocalDateTime localDateTime) {
+        LocalDateTime recruitStartedAt = recruitmentScheduleRepository.findByEventName(RECRUITMENT_STARTED)
+            .map(RecruitmentSchedule::getEventOccurredAt)
+            .orElseThrow(RecruitmentScheduleNotFoundException::new);
+        return !localDateTime.isBefore(recruitStartedAt);
+    }
+
+    @Override
     public boolean isRecruitAvailable(LocalDateTime localDateTime) {
         LocalDateTime recruitStartedAt = recruitmentScheduleRepository.findByEventName(RECRUITMENT_STARTED)
             .map(RecruitmentSchedule::getEventOccurredAt)
