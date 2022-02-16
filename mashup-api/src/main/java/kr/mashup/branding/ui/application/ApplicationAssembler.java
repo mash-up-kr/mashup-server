@@ -108,7 +108,7 @@ public class ApplicationAssembler {
         return new QuestionResponse(
             question.getQuestionId(),
             question.getContent(),
-            question.getMaxContentSize(),
+            question.getMaxContentLength(),
             question.getRequired(),
             question.getQuestionType()
         );

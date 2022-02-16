@@ -32,7 +32,7 @@ public class ApplicationFormAssembler {
         return new QuestionResponse(
             question.getQuestionId(),
             question.getContent(),
-            question.getMaxContentSize(),
+            question.getMaxContentLength(),
             question.getRequired(),
             question.getQuestionType()
         );
@@ -54,7 +54,7 @@ public class ApplicationFormAssembler {
     QuestionRequestVo toQuestionRequestVo(QuestionRequest questionRequest) {
         return QuestionRequestVo.of(
             questionRequest.getContent(),
-            questionRequest.getMaxContentSize(),
+            questionRequest.getMaxContentLength(),
             questionRequest.getRequired(),
             QuestionType.valueOf(questionRequest.getQuestionType())
         );
