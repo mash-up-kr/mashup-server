@@ -41,4 +41,3 @@ public class ApplicantController {
         return ApiResponse.success(applicantAssembler.toApplicantResponse(applicantService.getApplicant(applicantId)));
     }
 }
-
