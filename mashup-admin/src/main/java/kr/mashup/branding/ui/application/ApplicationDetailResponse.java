@@ -7,6 +7,7 @@ import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationS
 import kr.mashup.branding.ui.applicant.ApplicantResponse;
 import kr.mashup.branding.ui.application.form.QuestionResponse;
 import kr.mashup.branding.ui.notification.sms.SmsRequestDetailResponse;
+import kr.mashup.branding.ui.team.TeamResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ import lombok.Data;
 public class ApplicationDetailResponse {
     private Long applicationId;
     private ApplicantResponse applicant;
+    private TeamResponse team;
     private List<QuestionResponse> questions;
     private List<AnswerResponse> answers;
     private ApplicantConfirmationStatus confirmationStatus;

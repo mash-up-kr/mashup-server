@@ -19,6 +19,7 @@ import kr.mashup.branding.facade.application.ApplicationDetailVo;
 import kr.mashup.branding.ui.applicant.ApplicantAssembler;
 import kr.mashup.branding.ui.application.form.ApplicationFormAssembler;
 import kr.mashup.branding.ui.notification.sms.SmsRequestAssembler;
+import kr.mashup.branding.ui.team.TeamAssembler;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -27,12 +28,15 @@ public class ApplicationAssembler {
     private final ApplicantAssembler applicantAssembler;
     private final ApplicationFormAssembler applicationFormAssembler;
     private final SmsRequestAssembler smsRequestAssembler;
+    private final TeamAssembler teamAssembler;
 
     ApplicationSimpleResponse toApplicationSimpleResponse(Application application) {
         return new ApplicationSimpleResponse(
             application.getApplicationId(),
             applicantAssembler.toApplicantResponse(application.getApplicant()),
+            teamAssembler.toTeamResponse(application.getApplicationForm().getTeam()),
             application.getConfirmation().getStatus(),
+            toApplicationResultResponse(application.getApplicationResult()),
             application.getCreatedAt(),
             application.getUpdatedAt()
         );
@@ -43,6 +47,7 @@ public class ApplicationAssembler {
         return new ApplicationDetailResponse(
             application.getApplicationId(),
             applicantAssembler.toApplicantResponse(application.getApplicant()),
+            teamAssembler.toTeamResponse(application.getApplicationForm().getTeam()),
             application.getApplicationForm().getQuestions()
                 .stream()
                 .map(applicationFormAssembler::toQuestionResponse)
