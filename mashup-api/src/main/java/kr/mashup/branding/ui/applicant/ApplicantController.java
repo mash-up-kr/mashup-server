@@ -26,10 +26,10 @@ public class ApplicantController {
     @ApiOperation("로그인")
     @PostMapping("/login")
     public ApiResponse<LoginResponse> login(
-        @RequestBody GoogleLoginRequest googleLoginRequest
+        @RequestBody LoginRequest loginRequest
     ) {
         LoginResponseVo loginResponseVo = loginFacadeService.login(
-            applicantAssembler.toGoogleLoginRequestVo(googleLoginRequest));
+            applicantAssembler.toLoginRequestVo(loginRequest));
         return ApiResponse.success(applicantAssembler.toLoginResponse(loginResponseVo));
     }
 

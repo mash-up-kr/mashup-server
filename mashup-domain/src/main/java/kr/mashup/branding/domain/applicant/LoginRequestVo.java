@@ -4,6 +4,5 @@ import lombok.Value;
 
 @Value(staticConstructor = "of")
 public class LoginRequestVo {
-    String email;
-    String googleUserId;
+    String googleIdToken;
 }

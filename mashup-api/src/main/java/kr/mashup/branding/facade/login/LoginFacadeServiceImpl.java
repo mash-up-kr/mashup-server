@@ -17,7 +17,7 @@ import kr.mashup.branding.config.jwt.JwtService;
 import kr.mashup.branding.domain.UnauthorizedException;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantService;
-import kr.mashup.branding.domain.applicant.GoogleLoginRequestVo;
+import kr.mashup.branding.domain.applicant.JoinRequestVo;
 import kr.mashup.branding.domain.applicant.LoginRequestVo;
 import kr.mashup.branding.domain.applicant.LoginResponseVo;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +35,9 @@ public class LoginFacadeServiceImpl implements LoginFacadeService {
     private String clientId;
 
     @Override
-    public LoginResponseVo login(GoogleLoginRequestVo googleLoginRequestVo) {
+    public LoginResponseVo login(LoginRequestVo loginRequestVo) {
         GoogleIdToken googleIdToken = verifyToken(
-            googleLoginRequestVo.getGoogleIdToken()
+            loginRequestVo.getGoogleIdToken()
         );
         Applicant applicant = getOrCreateApplicant(googleIdToken);
         return LoginResponseVo.of(
@@ -62,7 +62,7 @@ public class LoginFacadeServiceImpl implements LoginFacadeService {
     private Applicant getOrCreateApplicant(GoogleIdToken googleIdToken) {
         Assert.notNull(googleIdToken, "'googleIdToken' must not be null");
         Assert.notNull(googleIdToken.getPayload(), "'googleIdToken.payload' must not be null");
-        return applicantService.join(LoginRequestVo.of(
+        return applicantService.join(JoinRequestVo.of(
             googleIdToken.getPayload().getEmail(),
             googleIdToken.getPayload().getSubject()));
     }
