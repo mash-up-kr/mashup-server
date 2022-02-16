@@ -36,7 +36,9 @@ public class LoginFacadeServiceImpl implements LoginFacadeService {
 
     @Override
     public LoginResponseVo login(GoogleLoginRequestVo googleLoginRequestVo) {
-        GoogleIdToken googleIdToken = verifyToken(googleLoginRequestVo.getGoogleIdToken());
+        GoogleIdToken googleIdToken = verifyToken(
+            googleLoginRequestVo.getGoogleIdToken()
+        );
         Applicant applicant = getOrCreateApplicant(googleIdToken);
         return LoginResponseVo.of(
             jwtService.encode(applicant.getApplicantId()),
@@ -44,7 +46,7 @@ public class LoginFacadeServiceImpl implements LoginFacadeService {
         );
     }
 
-    public GoogleIdToken verifyToken(String googleIdToken) {
+    private GoogleIdToken verifyToken(String googleIdToken) {
         GoogleIdTokenVerifier googleIdTokenVerifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
             JacksonFactory.getDefaultInstance())
             .setAudience(Collections.singletonList(clientId))
@@ -57,8 +59,9 @@ public class LoginFacadeServiceImpl implements LoginFacadeService {
         }
     }
 
-    public Applicant getOrCreateApplicant(GoogleIdToken googleIdToken) {
+    private Applicant getOrCreateApplicant(GoogleIdToken googleIdToken) {
         Assert.notNull(googleIdToken, "'googleIdToken' must not be null");
+        Assert.notNull(googleIdToken.getPayload(), "'googleIdToken.payload' must not be null");
         return applicantService.join(LoginRequestVo.of(
             googleIdToken.getPayload().getEmail(),
             googleIdToken.getPayload().getSubject()));
