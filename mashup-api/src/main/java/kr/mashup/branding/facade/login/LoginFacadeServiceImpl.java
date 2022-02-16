@@ -6,6 +6,7 @@ import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -13,13 +14,16 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 
 import kr.mashup.branding.config.jwt.JwtService;
+import kr.mashup.branding.domain.UnauthorizedException;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantService;
 import kr.mashup.branding.domain.applicant.GoogleLoginRequestVo;
 import kr.mashup.branding.domain.applicant.LoginRequestVo;
 import kr.mashup.branding.domain.applicant.LoginResponseVo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LoginFacadeServiceImpl implements LoginFacadeService {
@@ -47,15 +51,14 @@ public class LoginFacadeServiceImpl implements LoginFacadeService {
             .build();
         try {
             return googleIdTokenVerifier.verify(googleIdToken);
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (GeneralSecurityException | IOException e) {
+            log.error("Failed to verify token", e);
+            throw new UnauthorizedException("Failed to verify google id token", e);
         }
-        return null;
     }
 
     public Applicant getOrCreateApplicant(GoogleIdToken googleIdToken) {
+        Assert.notNull(googleIdToken, "'googleIdToken' must not be null");
         return applicantService.join(LoginRequestVo.of(
             googleIdToken.getPayload().getEmail(),
             googleIdToken.getPayload().getSubject()));
