@@ -17,7 +17,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation "com.auth0:java-jwt:$javaJwtVersion"
     implementation "com.google.api-client:google-api-client:$googleApiClientVersion"
-    implementation "com.google.api-client:google-api-client-jackson2:$googleApiClientJacksonVersion"
+    implementation "com.google.api-client:google-api-client-jackson2:$googleApiClientVersion"
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

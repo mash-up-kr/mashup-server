@@ -11,7 +11,7 @@ import org.springframework.util.Assert;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 
 import kr.mashup.branding.config.jwt.JwtService;
 import kr.mashup.branding.domain.UnauthorizedException;
@@ -48,7 +48,7 @@ public class LoginFacadeServiceImpl implements LoginFacadeService {
 
     private GoogleIdToken verifyToken(String googleIdToken) {
         GoogleIdTokenVerifier googleIdTokenVerifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
-            JacksonFactory.getDefaultInstance())
+            GsonFactory.getDefaultInstance())
             .setAudience(Collections.singletonList(clientId))
             .build();
         try {
