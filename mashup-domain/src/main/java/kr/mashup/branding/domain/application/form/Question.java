@@ -39,7 +39,7 @@ public class Question {
     /**
      * 최대 길이 (n글자 이하)
      */
-    private Integer maxContentSize;
+    private Integer maxContentLength;
 
     /**
      * 필수 질문 여부
@@ -67,7 +67,7 @@ public class Question {
     public static Question of(QuestionRequestVo questionRequestVo) {
         Question question = new Question();
         question.content = questionRequestVo.getContent();
-        question.maxContentSize = questionRequestVo.getMaxContentSize();
+        question.maxContentLength = questionRequestVo.getMaxContentLength();
         question.required = questionRequestVo.getRequired();
         question.questionType = questionRequestVo.getQuestionType();
         return question;

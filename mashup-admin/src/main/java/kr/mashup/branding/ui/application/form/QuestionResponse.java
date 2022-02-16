@@ -9,7 +9,7 @@ import lombok.Data;
 public class QuestionResponse {
     private Long questionId;
     private String content;
-    private Integer maxContentSize;
+    private Integer maxContentLength;
     private Boolean required;
     private QuestionType questionType;
 }
