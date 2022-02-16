@@ -5,7 +5,5 @@ import lombok.Value;
 @Value(staticConstructor = "of")
 public class LoginResponseVo {
     String accessToken;
-    Long applicantId;
-    String email;
-    ApplicantStatus status;
+    Applicant applicant;
 }

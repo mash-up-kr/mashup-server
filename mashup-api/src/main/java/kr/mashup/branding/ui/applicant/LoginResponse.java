@@ -1,12 +1,10 @@
 package kr.mashup.branding.ui.applicant;
 
-import kr.mashup.branding.domain.applicant.ApplicantStatus;
+import kr.mashup.branding.domain.applicant.Applicant;
 import lombok.Data;
 
 @Data
 public class LoginResponse {
     private final String accessToken;
-    private final Long applicantId;
-    private final String email;
-    private final ApplicantStatus status;
+    private final Applicant applicant;
 }

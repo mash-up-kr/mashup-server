@@ -5,7 +5,6 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class LoginRequest {
-    private String email;
-    private String googleUserId;
+public class GoogleLoginRequest {
+    private String googleIdToken;
 }
