@@ -20,17 +20,14 @@ public class ApplicantAssembler {
 
     LoginRequestVo toLoginRequestVo(LoginRequest loginRequest) {
         return LoginRequestVo.of(
-            loginRequest.getEmail(),
-            loginRequest.getGoogleUserId()
+            loginRequest.getGoogleIdToken()
         );
     }
 
     LoginResponse toLoginResponse(LoginResponseVo loginResponseVo) {
         return new LoginResponse(
             loginResponseVo.getAccessToken(),
-            loginResponseVo.getApplicantId(),
-            loginResponseVo.getEmail(),
-            loginResponseVo.getStatus()
+            toApplicantResponse(loginResponseVo.getApplicant())
         );
     }
 }

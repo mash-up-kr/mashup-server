@@ -28,7 +28,8 @@ public class ApplicantController {
     public ApiResponse<LoginResponse> login(
         @RequestBody LoginRequest loginRequest
     ) {
-        LoginResponseVo loginResponseVo = loginFacadeService.login(applicantAssembler.toLoginRequestVo(loginRequest));
+        LoginResponseVo loginResponseVo = loginFacadeService.login(
+            applicantAssembler.toLoginRequestVo(loginRequest));
         return ApiResponse.success(applicantAssembler.toLoginResponse(loginResponseVo));
     }
 
@@ -40,4 +41,3 @@ public class ApplicantController {
         return ApiResponse.success(applicantAssembler.toApplicantResponse(applicantService.getApplicant(applicantId)));
     }
 }
-

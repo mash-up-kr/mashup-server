@@ -1,2 +1,7 @@
 jwt:
   secretKey: ENC(EXfj1mGmsws/YLOc87IZoiHu0l+vKqtao+CrUR843UD0xWM9asYfSMWkYLI8CYQHlEeHwAh51Kt+/Zn8tS7n0g==)
+---
+oauth:
+  google:
+    client:
+      id: 907915937305-ga5eatp50orm2pjrt5bdhriacf0ckho6.apps.googleusercontent.com

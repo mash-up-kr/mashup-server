@@ -9,3 +9,7 @@ sms:
     secret-key: test
 jwt:
   secretKey:
+oauth:
+  google:
+    client:
+      id:

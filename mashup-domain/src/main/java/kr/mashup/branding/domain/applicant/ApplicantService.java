@@ -8,7 +8,7 @@ public interface ApplicantService {
 
     Applicant getTester();
 
-    Applicant join(LoginRequestVo loginRequestVo);
+    Applicant join(JoinRequestVo joinRequestVo);
 
     List<Applicant> getApplicants(Collection<Long> applicantIds);
 }
