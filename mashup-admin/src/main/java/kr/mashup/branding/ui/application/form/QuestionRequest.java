@@ -8,6 +8,7 @@ import lombok.ToString;
 public class QuestionRequest {
     private String content;
     private Integer maxContentLength;
+    private String description;
     private Boolean required;
     private String questionType;
 }

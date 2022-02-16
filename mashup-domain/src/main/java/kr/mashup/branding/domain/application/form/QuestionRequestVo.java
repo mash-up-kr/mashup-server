@@ -6,6 +6,7 @@ import lombok.Value;
 public class QuestionRequestVo {
     String content;
     Integer maxContentLength;
+    String description;
     Boolean required;
     QuestionType questionType;
 }

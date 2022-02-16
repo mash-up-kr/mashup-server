@@ -33,6 +33,7 @@ public class ApplicationFormAssembler {
             question.getQuestionId(),
             question.getContent(),
             question.getMaxContentLength(),
+            question.getDescription(),
             question.getRequired(),
             question.getQuestionType()
         );
@@ -55,6 +56,7 @@ public class ApplicationFormAssembler {
         return QuestionRequestVo.of(
             questionRequest.getContent(),
             questionRequest.getMaxContentLength(),
+            questionRequest.getDescription(),
             questionRequest.getRequired(),
             QuestionType.valueOf(questionRequest.getQuestionType())
         );
