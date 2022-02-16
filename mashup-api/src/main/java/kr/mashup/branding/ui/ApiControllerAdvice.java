@@ -14,6 +14,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import kr.mashup.branding.domain.UnauthorizedException;
 import kr.mashup.branding.domain.application.ApplicationAlreadySubmittedException;
 import kr.mashup.branding.domain.application.PrivacyPolicyNotAgreedException;
+import kr.mashup.branding.domain.application.form.ApplicationFormAlreadyExistException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -43,6 +44,13 @@ public class ApiControllerAdvice {
     public ApiResponse<?> handleBadRequest(MethodArgumentTypeMismatchException e) {
         log.info("handleMethodArgumentTypeMismatchException: {}", e.getMessage(), e);
         return ApiResponse.failure("BAD_REQUEST", e.getMessage());
+    }
+
+    @ExceptionHandler(ApplicationFormAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<?> handleApplicationFormAlreadyExistException(ApplicationFormAlreadyExistException e) {
+        log.info("handleApplicationFormAlreadyExistException: {}", e.getMessage(), e);
+        return ApiResponse.failure("APPLICATION_FORM_ALREADY_EXIST", "해당 팀에 이미 다른 설문지가 존재합니다. ");
     }
 
     @ExceptionHandler(PrivacyPolicyNotAgreedException.class)

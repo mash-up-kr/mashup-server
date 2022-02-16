@@ -24,6 +24,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Transactional
     public ApplicationForm create(CreateApplicationFormVo createApplicationFormVo) {
         Team team = teamService.getTeam(createApplicationFormVo.getTeamId());
+        if (applicationFormRepository.existsByTeam_teamId(team.getTeamId())) {
+            throw new ApplicationFormAlreadyExistException("해당 팀에 다른 설문지가 이미 존재합니다. teamId: " + team.getTeamId());
+        }
         ApplicationForm applicationForm = ApplicationForm.of(team,
             createApplicationFormVo.getQuestionRequestVoList()
                 .stream()
