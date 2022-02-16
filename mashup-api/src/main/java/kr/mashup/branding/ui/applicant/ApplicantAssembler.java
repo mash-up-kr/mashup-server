@@ -27,7 +27,7 @@ public class ApplicantAssembler {
     LoginResponse toLoginResponse(LoginResponseVo loginResponseVo) {
         return new LoginResponse(
             loginResponseVo.getAccessToken(),
-            loginResponseVo.getApplicant()
+            toApplicantResponse(loginResponseVo.getApplicant())
         );
     }
 }

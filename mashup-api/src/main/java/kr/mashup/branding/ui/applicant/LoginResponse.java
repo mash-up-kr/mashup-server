@@ -1,10 +1,12 @@
 package kr.mashup.branding.ui.applicant;
 
-import kr.mashup.branding.domain.applicant.Applicant;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 @Data
 public class LoginResponse {
     private final String accessToken;
-    private final Applicant applicant;
+    @JsonProperty("applicant")
+    private final ApplicantResponse applicantResponse;
 }
