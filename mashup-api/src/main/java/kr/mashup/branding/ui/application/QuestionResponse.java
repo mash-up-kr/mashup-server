@@ -10,6 +10,7 @@ public class QuestionResponse {
     private Long questionId;
     private String content;
     private Integer maxContentLength;
+    private String description;
     private Boolean required;
     private QuestionType questionType;
 }

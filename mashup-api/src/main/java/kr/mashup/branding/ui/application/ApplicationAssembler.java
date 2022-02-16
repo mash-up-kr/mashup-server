@@ -109,6 +109,7 @@ public class ApplicationAssembler {
             question.getQuestionId(),
             question.getContent(),
             question.getMaxContentLength(),
+            question.getDescription(),
             question.getRequired(),
             question.getQuestionType()
         );

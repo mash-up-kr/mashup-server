@@ -42,6 +42,11 @@ public class Question {
     private Integer maxContentLength;
 
     /**
+     * 질문 설명
+     */
+    private String description;
+
+    /**
      * 필수 질문 여부
      */
     private Boolean required;

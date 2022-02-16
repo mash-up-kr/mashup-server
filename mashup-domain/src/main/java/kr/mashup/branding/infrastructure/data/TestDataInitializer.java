@@ -81,36 +81,42 @@ public class TestDataInitializer {
                 QuestionRequestVo.of(
                     "\uD83D\uDCAC 경험을 바탕으로 자기 소개 및 지원 동기에 대해 말씀해주세요. (최소 300자)",
                     300,
+                    "",
                     true,
                     QuestionType.MULTI_LINE_TEXT
                 ),
                 QuestionRequestVo.of(
                     "🧐 경력 혹은 활동사항이나 프로젝트 경험이 있다면 자유롭게 말씀해주세요. (최소 400자)",
                     400,
+                    "",
                     true,
                     QuestionType.MULTI_LINE_TEXT
                 ),
                 QuestionRequestVo.of(
                     "\uD83D\uDC40 주변 사람들이 말하는 당신은 어떤 사람인지 말씀해주세요. (최소 300자)",
                     300,
+                    "",
                     true,
                     QuestionType.MULTI_LINE_TEXT
                 ),
                 QuestionRequestVo.of(
                     "✨ 동아리에 기여해줄 수 있는 부분이 있으면 말씀해주세요. (최소 200자)",
                     200,
+                    "",
                     true,
                     QuestionType.MULTI_LINE_TEXT
                 ),
                 QuestionRequestVo.of(
                     "\uD83E\uDD70 향후 Mash-Up에서 하고 싶은 활동이나 기대되는 것이 있다면 말씀해주세요. (최소 200자)",
                     200,
+                    "",
                     true,
                     QuestionType.MULTI_LINE_TEXT
                 ),
                 QuestionRequestVo.of(
                     "\uD83D\uDDA5 GitHub 혹은 블로그 주소가 있다면 알려주세요.",
                     null,
+                    "",
                     true,
                     QuestionType.SINGLE_LINE_TEXT
                 )
