@@ -1,0 +1,62 @@
+# setup
+setup.ilm.enabled: false
+setup.pack.security.enabled: false
+setup.xpack.graph.enabled: false
+setup.xpack.watcher.enabled: false
+setup.xpack.monitoring.enabled: false
+setup.xpack.reporting.enabled: false
+
+# input
+filebeat.inputs:
+  # nginx log
+  - type: log
+    paths:
+      - "${NGINX_ACCESS_LOG_PATH}"
+      - "${NGINX_ERROR_LOG_PATH}"
+    fields:
+      service.name: admin-nginx
+    fields_under_root: true
+  # spring-boot error log
+  - type: log
+    paths:
+      - "${SPRING_LOG_PATH}"
+    multiline:
+      pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+      negate: true
+      match: after
+    include_lines: ['ERROR']
+    fields:
+      service.name: admin-api
+      log.level: ERROR
+    fields_under_root: true
+  # spring-boot warn log
+  - type: log
+    paths:
+      - "${SPRING_BOOT_LOG_PATH}"
+    multiline:
+      pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+      negate: true
+      match: after
+    include_lines: ['WARN']
+    fields:
+      service.name: admin-api
+      log.level: WARN
+    fields_under_root: true
+  # spring-boot info log
+  - type: log
+    paths:
+      - "${SPRING_BOOT_LOG_PATH}"
+    multiline:
+      pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+      negate: true
+      match: after
+    include_lines: ['INFO']
+    fields:
+      log.level: INFO
+    fields_under_root: true
+
+# output
+output.elasticsearch:
+  hosts: "${ES_HOST}"
+  username: "${ES_USERNAME}"
+  password: "${ES_PASSWORD}"
