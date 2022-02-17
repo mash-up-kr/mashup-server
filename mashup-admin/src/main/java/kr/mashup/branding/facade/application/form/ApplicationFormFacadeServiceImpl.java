@@ -34,6 +34,11 @@ public class ApplicationFormFacadeServiceImpl implements ApplicationFormFacadeSe
     }
 
     @Override
+    public ApplicationForm getApplicationForm(Long applicationFormId) {
+        return applicationFormService.getApplicationFormById(applicationFormId);
+    }
+
+    @Override
     public void delete(Long applicationFormId) {
         applicationFormService.delete(applicationFormId);
     }

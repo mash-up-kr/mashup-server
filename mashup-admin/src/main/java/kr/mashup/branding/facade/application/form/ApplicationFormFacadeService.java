@@ -14,5 +14,7 @@ public interface ApplicationFormFacadeService {
 
     Page<ApplicationForm> getApplicationForms(ApplicationFormQueryVo applicationFormQueryVo);
 
+    ApplicationForm getApplicationForm(Long applicationFormId);
+
     void delete(Long applicationFormId);
 }
