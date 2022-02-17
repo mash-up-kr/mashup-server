@@ -39,7 +39,7 @@ class SwaggerConfig {
     private SecurityContext securityContext() {
         return SecurityContext.builder()
             .securityReferences(Collections.singletonList(securityReference()))
-            .forPaths(PathSelectors.regex("(?!/api/v1/applicants/login).*"))
+            .forPaths(PathSelectors.regex("(?!/api/v1/applicants/login|/api/v1/teams).*"))
             .build();
     }
 
