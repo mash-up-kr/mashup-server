@@ -47,9 +47,7 @@ public class ApplicationController {
                     resultStatus,
                     pageable
                 )
-            ).stream()
-                .map(applicationAssembler::toApplicationSimpleResponse)
-                .collect(Collectors.toList())
+            ).map(applicationAssembler::toApplicationSimpleResponse)
         );
     }
 
