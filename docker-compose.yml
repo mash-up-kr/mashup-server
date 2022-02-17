@@ -10,7 +10,7 @@ services:
     environment:
       - "JAVA_OPTS=${JAVA_OPTS}"
   filebeat:
-    build: "junhaesung/mashup-server-filebeat:${TAG:-latest}"
+    image: "junhaesung/mashup-server-filebeat:${TAG:-latest}"
     volumes:
       - "${NGINX_ACCESS_LOG_PATH}:${NGINX_ACCESS_LOG_PATH}"
       - "${NGINX_ERROR_LOG_PATH}:${NGINX_ERROR_LOG_PATH}"
