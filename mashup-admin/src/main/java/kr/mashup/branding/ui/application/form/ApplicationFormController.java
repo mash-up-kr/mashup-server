@@ -51,6 +51,19 @@ public class ApplicationFormController {
     }
 
     /**
+     * 설문지 상세 조회
+     * @param applicationFormId 설문지 식별자
+     * @return 설문지 정보
+     */
+    @GetMapping
+    public ApiResponse<ApplicationFormResponse> getApplicationForm(
+        @PathVariable Long applicationFormId
+    ) {
+        ApplicationForm applicationForm = applicationFormFacadeService.getApplicationForm(applicationFormId);
+        return ApiResponse.success(applicationFormAssembler.toApplicationFormResponse(applicationForm));
+    }
+
+    /**
      * 설문지 생성
      * @param createApplicationFormRequest 설문지 생성 요청 정보
      * @return 새로 생성된 설문지
