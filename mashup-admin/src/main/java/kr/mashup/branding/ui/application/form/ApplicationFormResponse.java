@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
+import kr.mashup.branding.ui.team.TeamResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ public class ApplicationFormResponse {
     private Long applicationFormId;
     @ApiModelProperty(name = "설문지 문서 이름")
     private String name;
+    private TeamResponse team;
     @ApiModelProperty(name = "질문 목록")
     private List<QuestionResponse> questions;
     @ApiModelProperty(name = "최초 생성 시각")

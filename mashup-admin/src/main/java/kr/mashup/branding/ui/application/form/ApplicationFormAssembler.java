@@ -9,13 +9,19 @@ import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
 import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.form.QuestionRequestVo;
 import kr.mashup.branding.domain.application.form.UpdateApplicationFormVo;
+import kr.mashup.branding.ui.team.TeamAssembler;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class ApplicationFormAssembler {
+    private final TeamAssembler teamAssembler;
+
     ApplicationFormResponse toApplicationFormResponse(ApplicationForm applicationForm) {
         return new ApplicationFormResponse(
             applicationForm.getApplicationFormId(),
             applicationForm.getName(),
+            teamAssembler.toTeamResponse(applicationForm.getTeam()),
             applicationForm.getQuestions()
                 .stream()
                 .map(this::toQuestionResponse)
