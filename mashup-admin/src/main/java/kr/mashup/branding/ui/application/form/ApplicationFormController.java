@@ -55,7 +55,7 @@ public class ApplicationFormController {
      * @param applicationFormId 설문지 식별자
      * @return 설문지 정보
      */
-    @GetMapping
+    @GetMapping("/{applicationFormId}")
     public ApiResponse<ApplicationFormResponse> getApplicationForm(
         @PathVariable Long applicationFormId
     ) {
