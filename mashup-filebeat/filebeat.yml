@@ -14,7 +14,7 @@ filebeat.inputs:
       - "${NGINX_ACCESS_LOG_PATH}"
       - "${NGINX_ERROR_LOG_PATH}"
     fields:
-      service.name: "${SERVICE_NAME}-nginx"
+      service_name: "${SERVICE_NAME}-nginx"
     fields_under_root: true
   # spring error log
   - type: log
@@ -26,8 +26,8 @@ filebeat.inputs:
       match: after
     include_lines: ['ERROR']
     fields:
-      service.name: "${SERVICE_NAME}-api"
-      log.level: ERROR
+      service_name: "${SERVICE_NAME}-api"
+      log_level: ERROR
     fields_under_root: true
   # spring warn log
   - type: log
@@ -39,8 +39,8 @@ filebeat.inputs:
       match: after
     include_lines: ['WARN']
     fields:
-      service.name: "${SERVICE_NAME}-api"
-      log.level: WARN
+      service_name: "${SERVICE_NAME}-api"
+      log_level: WARN
     fields_under_root: true
   # spring info log
   - type: log
@@ -52,7 +52,8 @@ filebeat.inputs:
       match: after
     include_lines: ['INFO']
     fields:
-      log.level: INFO
+      service_name: "${SERVICE_NAME}-api"
+      log_level: INFO
     fields_under_root: true
 
 # output
