@@ -52,6 +52,7 @@ filebeat.inputs:
       match: after
     include_lines: ['INFO']
     fields:
+      service.name: "${SERVICE_NAME}-api"
       log.level: INFO
     fields_under_root: true
 
