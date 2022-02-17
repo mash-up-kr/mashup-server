@@ -8,7 +8,6 @@ import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
 import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.form.QuestionRequestVo;
-import kr.mashup.branding.domain.application.form.QuestionType;
 import kr.mashup.branding.domain.application.form.UpdateApplicationFormVo;
 
 @Component
@@ -58,7 +57,7 @@ public class ApplicationFormAssembler {
             questionRequest.getMaxContentLength(),
             questionRequest.getDescription(),
             questionRequest.getRequired(),
-            QuestionType.valueOf(questionRequest.getQuestionType())
+            questionRequest.getQuestionType()
         );
     }
 

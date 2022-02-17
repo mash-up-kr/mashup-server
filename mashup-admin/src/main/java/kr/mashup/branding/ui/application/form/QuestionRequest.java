@@ -1,5 +1,6 @@
 package kr.mashup.branding.ui.application.form;
 
+import kr.mashup.branding.domain.application.form.QuestionType;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -10,5 +11,5 @@ public class QuestionRequest {
     private Integer maxContentLength;
     private String description;
     private Boolean required;
-    private String questionType;
+    private QuestionType questionType;
 }
