@@ -8,11 +8,14 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import kr.mashup.branding.domain.application.Application;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,6 +32,10 @@ public class Confirmation {
     @Id
     @GeneratedValue
     private Long confirmationId;
+
+    @OneToOne
+    @JoinColumn
+    private Application application;
 
     @Enumerated(EnumType.STRING)
     private ApplicantConfirmationStatus status;

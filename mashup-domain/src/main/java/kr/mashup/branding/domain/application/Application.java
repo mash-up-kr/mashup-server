@@ -53,10 +53,10 @@ public class Application {
     @ManyToOne
     private ApplicationForm applicationForm;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "application")
     private ApplicationResult applicationResult;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "application")
     private Confirmation confirmation;
 
     /**
