@@ -8,7 +8,7 @@ public enum Position {
     MASHUP_SUBLEADER(Team.values()),
     BRANDING_LEADER(Team.values()),
     BRANDING_SUBLEADER(Team.values()),
-    BRANDING_STAFF(Team.values()),
+    BRANDING_MEMBER(Team.values()),
     SPRING_LEADER(Team.SPRING),
     SPRING_SUBLEADER(Team.SPRING),
     NODE_LEADER(Team.NODE),
