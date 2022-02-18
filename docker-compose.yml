@@ -9,6 +9,8 @@ services:
       - "${SPRING_LOG_PATH}:${SPRING_LOG_PATH}"
     environment:
       - "JAVA_OPTS=${JAVA_OPTS}"
+      - "SCOUTER_HOST=${SCOUTER_HOST}"
+      - "SCOUTER_OBJECT_NAME=${SCOUTER_OBJECT_NAME}"
   filebeat:
     image: "junhaesung/mashup-server-filebeat:${TAG:-latest}"
     volumes:
