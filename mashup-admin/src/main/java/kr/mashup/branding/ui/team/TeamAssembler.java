@@ -16,7 +16,11 @@ public class TeamAssembler {
     public TeamResponse toTeamResponse(Team team) {
         return new TeamResponse(
             team.getTeamId(),
-            team.getName()
+            team.getName(),
+            team.getCreatedBy(),
+            team.getCreatedAt(),
+            team.getUpdatedBy(),
+            team.getUpdatedAt()
         );
     }
 }
