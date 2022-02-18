@@ -26,7 +26,9 @@ public class RecruitmentScheduleAssembler {
             recruitmentSchedule.getRecruitmentScheduleId(),
             recruitmentSchedule.getEventName(),
             recruitmentSchedule.getEventOccurredAt(),
+            recruitmentSchedule.getCreatedBy(),
             recruitmentSchedule.getCreatedAt(),
+            recruitmentSchedule.getUpdatedBy(),
             recruitmentSchedule.getUpdatedAt()
         );
     }
