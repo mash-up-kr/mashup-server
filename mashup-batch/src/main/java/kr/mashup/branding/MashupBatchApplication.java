@@ -14,6 +14,13 @@ public class MashupBatchApplication {
         System.setProperty("spring.config.name", "application,batch");
         List<String> argList = new ArrayList<>(Arrays.asList(args));
         argList.add("startTime=" + LocalDateTime.now());
-        SpringApplication.run(MashupBatchApplication.class, argList.toArray(new String[0]));
+        System.exit(
+            SpringApplication.exit(
+                SpringApplication.run(
+                    MashupBatchApplication.class,
+                    argList.toArray(new String[0])
+                )
+            )
+        );
     }
 }
