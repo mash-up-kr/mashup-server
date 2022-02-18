@@ -1,5 +1,6 @@
 package kr.mashup.branding.domain.application;
 
+import java.lang.reflect.Constructor;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Assertions;
@@ -16,9 +17,10 @@ import kr.mashup.branding.domain.team.Team;
 class ApplicationTest {
     @DisplayName("개인정보처리방침 동의여부가 false 이면 임시저장시 예외발생")
     @Test
-    void update_throwException_whenPrivacyPolicyIsNotAgreed() {
+    void update_throwException_whenPrivacyPolicyIsNotAgreed() throws Exception {
         // given
-        Application sut = Application.of(new Applicant(), createApplicationForm());
+
+        Application sut = Application.of(createApplicant(), createApplicationForm());
         // when, then
         Assertions.assertThrows(
             PrivacyPolicyNotAgreedException.class,
@@ -33,9 +35,9 @@ class ApplicationTest {
 
     @DisplayName("개인정보처리방침 동의여부가 null 이면 임시저장시 예외발생")
     @Test
-    void update_throwException_whenPrivacyPolicyIsNull() {
+    void update_throwException_whenPrivacyPolicyIsNull() throws Exception {
         // given
-        Application sut = Application.of(new Applicant(), createApplicationForm());
+        Application sut = Application.of(createApplicant(), createApplicationForm());
         // when
         Executable executable = () -> sut.update(UpdateApplicationVo.of(
             "applicantName",
@@ -49,9 +51,9 @@ class ApplicationTest {
 
     @DisplayName("개인정보처리방침 동의여부가 false 이면 제출시 예외발생")
     @Test
-    void submit_throwException_whenPrivacyPolicyIsNotAgreed() {
+    void submit_throwException_whenPrivacyPolicyIsNotAgreed() throws Exception {
         // given
-        Application sut = Application.of(new Applicant(), createApplicationForm());
+        Application sut = Application.of(createApplicant(), createApplicationForm());
         ReflectionTestUtils.setField(sut, "privacyPolicyAgreed", false);
         // when
         Executable executable = sut::submit;
@@ -61,9 +63,9 @@ class ApplicationTest {
 
     @DisplayName("개인정보처리방침 동의여부가 null 이면 제출시 예외발생")
     @Test
-    void submit_throwException_whenPrivacyPolicyIsNull() {
+    void submit_throwException_whenPrivacyPolicyIsNull() throws Exception {
         // given
-        Application sut = Application.of(new Applicant(), createApplicationForm());
+        Application sut = Application.of(createApplicant(), createApplicationForm());
         ReflectionTestUtils.setField(sut, "privacyPolicyAgreed", null);
         // when
         Executable executable = sut::submit;
@@ -74,5 +76,11 @@ class ApplicationTest {
     private ApplicationForm createApplicationForm() {
         Team team = Team.of(CreateTeamVo.of("teamName"));
         return ApplicationForm.of(team, Collections.emptyList(), "applicationFormName");
+    }
+
+    private Applicant createApplicant() throws Exception {
+        Constructor<Applicant> declaredConstructor = Applicant.class.getDeclaredConstructor();
+        declaredConstructor.setAccessible(true);
+        return declaredConstructor.newInstance();
     }
 }
