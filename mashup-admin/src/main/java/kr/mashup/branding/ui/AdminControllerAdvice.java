@@ -15,6 +15,7 @@ import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.ForbiddenException;
 import kr.mashup.branding.domain.exception.InternalServerErrorException;
+import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.exception.ServiceUnavailableException;
 import kr.mashup.branding.domain.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
@@ -70,8 +71,15 @@ public class AdminControllerAdvice {
         return ApiResponse.failure(e.getResultCode());
     }
 
-    @ExceptionHandler(InternalServerErrorException.class)
+    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse<?> handleNotFoundException(NotFoundException e) {
+        log.info("handleNotFoundException: {}", e.getMessage(), e);
+        return ApiResponse.failure(e.getResultCode());
+    }
+
+    @ExceptionHandler(InternalServerErrorException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResponse<?> handleInternalServerErrorException(InternalServerErrorException e) {
         log.info("handleInternalServerErrorException: {}", e.getMessage(), e);
         return ApiResponse.failure(e.getResultCode());
