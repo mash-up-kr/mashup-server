@@ -22,7 +22,8 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString
+@ToString(of = {"questionId", "maxContentLength", "description", "required", "questionType", "createdBy", "createdAt",
+    "updatedBy", "updatedAt"})
 @EqualsAndHashCode(of = "questionId")
 @EntityListeners(AuditingEntityListener.class)
 public class Question {
@@ -73,6 +74,7 @@ public class Question {
         Question question = new Question();
         question.content = questionRequestVo.getContent();
         question.maxContentLength = questionRequestVo.getMaxContentLength();
+        question.description = questionRequestVo.getDescription();
         question.required = questionRequestVo.getRequired();
         question.questionType = questionRequestVo.getQuestionType();
         return question;

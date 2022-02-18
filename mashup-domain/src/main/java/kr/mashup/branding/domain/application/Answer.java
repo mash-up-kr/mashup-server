@@ -2,6 +2,7 @@ package kr.mashup.branding.domain.application;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -20,7 +21,7 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString
+@ToString(of = {"answerId", "createdAt", "updatedAt"})
 @EqualsAndHashCode(of = "answerId")
 @EntityListeners(AuditingEntityListener.class)
 public class Answer {
@@ -28,6 +29,7 @@ public class Answer {
     @GeneratedValue
     private Long answerId;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @ManyToOne

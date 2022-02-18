@@ -11,7 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -24,7 +26,8 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString(of = {"applicationResultId", "screeningStatus", "interviewStatus", "createdAt", "updatedAt"})
+@ToString(of = {"applicationResultId", "screeningStatus", "interviewStatus", "createdBy", "createdAt", "updatedBy",
+    "updatedAt"})
 @EqualsAndHashCode(of = "applicationResultId")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,7 +37,7 @@ public class ApplicationResult {
     private Long applicationResultId;
 
     @OneToOne
-    @JoinColumn
+    @JoinColumn(name = "applicationId")
     private Application application;
 
     /**
@@ -59,13 +62,17 @@ public class ApplicationResult {
      */
     private LocalDateTime interviewEndedAt;
 
+    @CreatedBy
+    private String createdBy;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @LastModifiedBy
+    private String updatedBy;
+
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    // TODO: Add fields (createdBy, updatedBy)
 
     public static ApplicationResult of(Application application) {
         ApplicationResult applicationResult = new ApplicationResult();

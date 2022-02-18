@@ -20,7 +20,7 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString
+@ToString(of = {"applicantId", "name", "status", "createdAt", "updatedAt"})
 @EqualsAndHashCode(of = "applicantId")
 @EntityListeners(AuditingEntityListener.class)
 public class Applicant {
@@ -47,7 +47,7 @@ public class Applicant {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Applicant() {
+    protected Applicant() {
     }
 
     public static Applicant of(String email, String googleUserId) {

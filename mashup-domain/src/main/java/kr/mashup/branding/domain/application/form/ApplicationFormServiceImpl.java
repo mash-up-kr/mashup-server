@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApplicationFormServiceImpl implements ApplicationFormService {
     private final TeamService teamService;
-    private final QuestionService questionService;
     private final ApplicationFormRepository applicationFormRepository;
     private final RecruitmentScheduleService recruitmentScheduleService;
 
@@ -33,7 +32,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         ApplicationForm applicationForm = ApplicationForm.of(team,
             createApplicationFormVo.getQuestionRequestVoList()
                 .stream()
-                .map(questionService::createQuestion)
+                .map(Question::of)
                 .collect(Collectors.toList()),
             createApplicationFormVo.getName());
         return applicationFormRepository.save(applicationForm);
