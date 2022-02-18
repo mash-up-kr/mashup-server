@@ -15,6 +15,12 @@ public class SmsRequestDetailResponse {
     @ApiModelProperty(value = "발송 메모", example = "스프링팀 서류 합격 문자 안내")
     private String notificationName;
 
+    @ApiModelProperty(value = "발송 번호")
+    private String senderPhoneNumber;
+
+    @ApiModelProperty(value = "발송자")
+    private String sender;
+
     @ApiModelProperty(value = "발송 내용", example = "합격을 축하행~!")
     private String notificationContent;
 

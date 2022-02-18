@@ -25,7 +25,8 @@ public class NotificationSimpleResponse {
     @ApiModelProperty(value = "발송 시각")
     private LocalDateTime sentAt;
 
-    // TODO: 발송자 (DESIGN, LEADER)
+    @ApiModelProperty(value = "발송자")
+    private String sender;
 
     @ApiModelProperty(value = "발송 성공한 수신자 수", example = "209")
     private Integer successCount;
