@@ -30,6 +30,8 @@ public class SmsRequestAssembler {
         return new SmsRequestDetailResponse(
             smsRequest.getSmsRequestId(),
             smsRequest.getNotification().getName(),
+            smsRequest.getNotification().getSenderPhoneNumber(),
+            smsRequest.getNotification().getSender().getPosition().name(),
             smsRequest.getNotification().getContent(),
             smsRequest.getStatus(),
             teamAssembler.toTeamResponse(team)
