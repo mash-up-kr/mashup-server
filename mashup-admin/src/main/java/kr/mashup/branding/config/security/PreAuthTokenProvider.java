@@ -23,6 +23,9 @@ public class PreAuthTokenProvider implements AuthenticationProvider {
         if (authentication instanceof PreAuthenticatedAuthenticationToken) {
             String token = authentication.getPrincipal().toString();
             Long adminMemberId = jwtService.decode(token);
+            if (adminMemberId == null) {
+                throw new TokenMissingException("Invalid token");
+            }
             AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
             return new PreAuthenticatedAuthenticationToken(
                 adminMemberId,
@@ -30,7 +33,7 @@ public class PreAuthTokenProvider implements AuthenticationProvider {
                 Collections.singletonList(new SimpleGrantedAuthority(adminMember.getPosition().name()))
             );
         }
-        throw new TokenMissingException("Invalid token");
+        return null;
     }
 
     @Override

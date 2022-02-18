@@ -24,7 +24,7 @@ public enum ResultCode {
 
     // applicationForm (설문지)
     APPLICATION_FORM_ALREADY_EXIST("같은 팀에 이미 다른 설문지가 존재합니다."),
-    APPLICATION_FORM_MODIFICATION_NOT_ALLOWED("지원서를 수정하거나 삭제할 수 없습니다."),
+    APPLICATION_FORM_MODIFICATION_NOT_ALLOWED("모집 시작시각 이후에는 설문지를 수정하거나 삭제할 수 없습니다"),
     APPLICATION_FORM_NOT_FOUND("설문지가 존재하지 않습니다."),
 
     // SMS (문자 발송)
@@ -43,6 +43,7 @@ public enum ResultCode {
     ADMIN_MEMBER_NOT_FOUND("관리자 멤버가 존재하지 않습니다."),
     ADMIN_MEMBER_SIGN_UP_REQUEST_INVALID("회원 가입 요청에 오류가 있습니다."),
     ADMIN_MEMBER_USERNAME_DUPLICATED("이미 사용중인 username 입니다."),
+    ADMIN_MEMBER_LOGIN_FAILED("username 또는 password 가 올바르지 않습니다."),
     ;
 
     private final String message;

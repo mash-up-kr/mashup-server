@@ -4,7 +4,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.config.jwt.JwtService;
-import kr.mashup.branding.config.security.PasswordInvalidException;
 import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberLoginVo;
 import kr.mashup.branding.domain.adminmember.AdminMemberService;
@@ -23,7 +22,7 @@ public class AdminMemberFacadeServiceImpl implements AdminMemberFacadeService {
     public LoginResponseVo login(AdminMemberLoginVo adminMemberLoginVo) {
         AdminMember adminMember = adminMemberService.signIn(adminMemberLoginVo);
         if (!passwordEncoder.matches(adminMemberLoginVo.getPassword(), adminMember.getPassword())) {
-            throw new PasswordInvalidException();
+            throw new AdminMemberLoginFailedException();
         }
         String token = jwtService.encode(adminMember.getAdminMemberId());
         return LoginResponseVo.of(token, adminMember);

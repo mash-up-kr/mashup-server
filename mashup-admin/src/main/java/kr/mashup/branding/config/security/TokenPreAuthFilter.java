@@ -10,8 +10,8 @@ import org.springframework.util.StringUtils;
 
 public class TokenPreAuthFilter extends AbstractPreAuthenticatedProcessingFilter {
 
-    private final String AUTHORIZATION_HEADER_NAME = "Authorization";
-    private final Pattern BEARER_TOKEN_PATTERN = Pattern.compile("[Bb]earer (.*)");
+    private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
+    private static final Pattern BEARER_TOKEN_PATTERN = Pattern.compile("[Bb]earer (.*)");
 
     @Override
     protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
