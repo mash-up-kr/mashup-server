@@ -21,7 +21,7 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString
+@ToString(of = {"confirmationId", "status", "createdAt", "updatedAt"})
 @EqualsAndHashCode(of = "confirmationId")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

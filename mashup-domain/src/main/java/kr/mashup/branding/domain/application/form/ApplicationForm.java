@@ -30,7 +30,7 @@ import lombok.ToString;
  */
 @Entity
 @Getter
-@ToString
+@ToString(of = {"applicationFormId", "name", "createdBy", "createdAt", "updatedBy", "updatedAt"})
 @EqualsAndHashCode(of = "applicationFormId")
 @EntityListeners(AuditingEntityListener.class)
 public class ApplicationForm {

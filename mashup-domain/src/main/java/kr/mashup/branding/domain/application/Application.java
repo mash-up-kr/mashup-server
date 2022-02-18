@@ -38,7 +38,7 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString(of = {"applicationId", "status", "submittedAt", "createdAt", "updatedAt"})
+@ToString(of = {"applicationId", "status", "submittedAt", "privacyPolicyAgreed", "createdAt", "updatedAt"})
 @EqualsAndHashCode(of = "applicationId")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
@@ -92,7 +92,6 @@ public class Application {
         Applicant applicant,
         ApplicationForm applicationForm
     ) {
-        // TODO: applicant
         Application application = new Application();
         application.applicant = applicant;
         application.applicationForm = applicationForm;

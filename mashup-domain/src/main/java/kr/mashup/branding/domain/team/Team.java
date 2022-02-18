@@ -19,7 +19,7 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString
+@ToString(of = {"teamId", "name", "createdBy", "createdAt", "updatedBy", "updatedAt"})
 @EqualsAndHashCode(of = "teamId")
 @EntityListeners(AuditingEntityListener.class)
 public class Team {

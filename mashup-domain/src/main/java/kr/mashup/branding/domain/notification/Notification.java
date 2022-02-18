@@ -132,7 +132,7 @@ public class Notification {
         notification.messageId = UUID.randomUUID().toString();
         notification.name = smsSendRequestVo.getName();
         if (!StringUtils.hasText(notification.name)) {
-            throw new IllegalArgumentException("'name' must not be null, empty or blank");
+            throw new NotificationRequestInvalidException("'name' must not be null, empty or blank");
         }
         notification.content = smsSendRequestVo.getContent();
         notification.status = NotificationStatus.CREATED;

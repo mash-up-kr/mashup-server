@@ -24,7 +24,7 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString
+@ToString(of = {"recruitmentScheduleId", "eventName", "eventOccurredAt"})
 @EqualsAndHashCode(of = "recruitmentScheduleId")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
