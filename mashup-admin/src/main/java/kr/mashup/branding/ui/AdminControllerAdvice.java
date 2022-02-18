@@ -4,17 +4,20 @@ import java.security.Principal;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import kr.mashup.branding.domain.UnauthorizedException;
-import kr.mashup.branding.domain.application.form.ApplicationFormAlreadyExistException;
-import kr.mashup.branding.domain.application.form.ApplicationFormModificationNotAllowedException;
-import kr.mashup.branding.domain.notification.NotificationRequestInvalidException;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleDuplicatedException;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleNotFoundException;
+import kr.mashup.branding.domain.ResultCode;
+import kr.mashup.branding.domain.exception.BadRequestException;
+import kr.mashup.branding.domain.exception.ForbiddenException;
+import kr.mashup.branding.domain.exception.InternalServerErrorException;
+import kr.mashup.branding.domain.exception.NotFoundException;
+import kr.mashup.branding.domain.exception.ServiceUnavailableException;
+import kr.mashup.branding.domain.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -33,59 +36,66 @@ public class AdminControllerAdvice {
         return null;
     }
 
-    @ExceptionHandler(ApplicationFormAlreadyExistException.class)
+    @ExceptionHandler(HttpMediaTypeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponse<?> handleApplicationFormAlreadyExistException(ApplicationFormAlreadyExistException e) {
-        log.info("handleApplicationFormAlreadyExistException: {}", e.getMessage(), e);
-        return ApiResponse.failure("APPLICATION_FORM_ALREADY_EXIST", "해당 팀에 이미 다른 설문지가 존재합니다. ");
+    public ApiResponse<?> handleHttpMediaTypeException(HttpMediaTypeException e) {
+        log.info("handleHttpMediaTypeException: {}", e.getMessage(), e);
+        return ApiResponse.failure("BAD_REQUEST", e.getMessage());
     }
 
-    @ExceptionHandler(ApplicationFormModificationNotAllowedException.class)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponse<?> handleApplicationFormModificationNotAllowedException(
-        ApplicationFormModificationNotAllowedException e) {
-        log.info("handleApplicationFormModificationNotAllowedException: {}", e.getMessage(), e);
-        return ApiResponse.failure(
-            "APPLICATION_FORM_MODIFICATION_NOT_ALLOWED",
-            "모집 시작시각 이후에는 설문지를 수정하거나 삭제할 수 없습니다"
-        );
+    public ApiResponse<?> handleBadRequest(MethodArgumentTypeMismatchException e) {
+        log.info("handleMethodArgumentTypeMismatchException: {}", e.getMessage(), e);
+        return ApiResponse.failure("BAD_REQUEST", e.getMessage());
     }
 
-    @ExceptionHandler(RecruitmentScheduleDuplicatedException.class)
+    @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponse<?> handleRecruitmentScheduleDuplicatedException(
-        RecruitmentScheduleDuplicatedException e
-    ) {
-        log.info("handleRecruitmentScheduleDuplicatedException", e);
-        return ApiResponse.failure("RECRUITMENT_SCHEDULE_NAME_DUPLICATED", e.getMessage());
-    }
-
-    @ExceptionHandler(NotificationRequestInvalidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponse<?> handleNotificationInvalidException(NotificationRequestInvalidException e) {
-        log.info("handleNotificationInvalidException", e);
-        return ApiResponse.failure("NOTIFICATION_REQUEST_INVALID", e.getMessage());
+    public ApiResponse<?> handleBadRequestException(BadRequestException e) {
+        log.info("handleBadRequestException: {}", e.getMessage(), e);
+        return ApiResponse.failure(e.getResultCode());
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiResponse<?> handleUnauthorizedException(UnauthorizedException e) {
-        log.info("handleUnauthorizedException", e);
-        return ApiResponse.failure("UNAUTHORIZED", "인증이 필요한 요청입니다");
+        log.info("handleUnauthorizedException: {}", e.getMessage(), e);
+        return ApiResponse.failure(e.getResultCode());
     }
 
-    @ExceptionHandler(RecruitmentScheduleNotFoundException.class)
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiResponse<?> handleForbiddenException(ForbiddenException e) {
+        log.info("handleForbiddenException: {}", e.getMessage(), e);
+        return ApiResponse.failure(e.getResultCode());
+    }
+
+    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiResponse<?> handleRecruitmentScheduleNotFoundException(
-        RecruitmentScheduleNotFoundException e
-    ) {
-        return ApiResponse.failure("RECRUITMENT_SCHEDULE_NOT_FOUND", e.getMessage());
+    public ApiResponse<?> handleNotFoundException(NotFoundException e) {
+        log.info("handleNotFoundException: {}", e.getMessage(), e);
+        return ApiResponse.failure(e.getResultCode());
+    }
+
+    @ExceptionHandler(InternalServerErrorException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResponse<?> handleInternalServerErrorException(InternalServerErrorException e) {
+        log.info("handleInternalServerErrorException: {}", e.getMessage(), e);
+        return ApiResponse.failure(e.getResultCode());
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ApiResponse<?> handleServiceUnavailableException(ServiceUnavailableException e) {
+        log.info("handleServiceUnavailableException: {}", e.getMessage(), e);
+        return ApiResponse.failure(e.getResultCode());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResponse<?> handleException(Exception e) {
         log.error("handleException", e);
-        return ApiResponse.failure("FAILURE", "실패");
+        return ApiResponse.failure(ResultCode.INTERNAL_SERVER_ERROR);
     }
 }

@@ -27,6 +27,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.mashup.branding.config.jpa.SpringSecurityAuditorAware;
+import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.schedule.RecruitmentSchedule;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleRepository;
 import kr.mashup.branding.ui.ApiResponse;
@@ -98,7 +99,7 @@ class RecruitmentScheduleControllerTest {
             }
         );
         // then 2
-        assertEquals("SUCCESS", actual.getCode());
+        assertEquals(ResultCode.SUCCESS.name(), actual.getCode());
         assertEquals(eventName, actual.getData().getEventName());
         assertEquals(now, actual.getData().getEventOccurredAt());
 
@@ -130,7 +131,7 @@ class RecruitmentScheduleControllerTest {
             }
         );
         // then 2
-        assertEquals("RECRUITMENT_SCHEDULE_NAME_DUPLICATED", actual.getCode());
+        assertEquals(ResultCode.RECRUITMENT_SCHEDULE_DUPLICATED.name(), actual.getCode());
     }
 
     @WithMockUser(authorities = {AUTHORITY_NAME})
@@ -183,7 +184,7 @@ class RecruitmentScheduleControllerTest {
             }
         );
         // then 2
-        assertEquals("RECRUITMENT_SCHEDULE_NOT_FOUND", actual.getCode());
+        assertEquals(ResultCode.RECRUITMENT_SCHEDULE_NOT_FOUND.name(), actual.getCode());
     }
 
     @WithMockUser(authorities = {AUTHORITY_NAME})
@@ -233,7 +234,7 @@ class RecruitmentScheduleControllerTest {
             }
         );
         // then 2
-        assertEquals("SUCCESS", actual.getCode());
+        assertEquals(ResultCode.SUCCESS.name(), actual.getCode());
         Set<Long> recruitmentScheduleIds = recruitmentScheduleApi.getAll()
             .getData()
             .stream()

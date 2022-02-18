@@ -1,7 +1,10 @@
 package kr.mashup.branding.domain.application.form;
 
-public class ApplicationFormModificationNotAllowedException extends RuntimeException {
+import kr.mashup.branding.domain.ResultCode;
+import kr.mashup.branding.domain.exception.BadRequestException;
+
+public class ApplicationFormModificationNotAllowedException extends BadRequestException {
     public ApplicationFormModificationNotAllowedException(String message) {
-        super(message);
+        super(ResultCode.APPLICATION_FORM_MODIFICATION_NOT_ALLOWED, message);
     }
 }

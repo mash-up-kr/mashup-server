@@ -1,7 +1,10 @@
 package kr.mashup.branding.domain.application.form;
 
-public class ApplicationFormAlreadyExistException extends RuntimeException {
+import kr.mashup.branding.domain.ResultCode;
+import kr.mashup.branding.domain.exception.BadRequestException;
+
+public class ApplicationFormAlreadyExistException extends BadRequestException {
     public ApplicationFormAlreadyExistException(String message) {
-        super(message);
+        super(ResultCode.APPLICATION_FORM_ALREADY_EXIST, message);
     }
 }

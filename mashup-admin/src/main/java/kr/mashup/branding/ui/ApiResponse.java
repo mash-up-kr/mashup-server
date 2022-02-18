@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import kr.mashup.branding.domain.ResultCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -65,6 +66,15 @@ public class ApiResponse<T> {
         return new ApiResponse<>(
             code,
             message,
+            null,
+            null
+        );
+    }
+
+    public static <T> ApiResponse<T> failure(ResultCode resultCode) {
+        return new ApiResponse<>(
+            resultCode.name(),
+            resultCode.getMessage(),
             null,
             null
         );
