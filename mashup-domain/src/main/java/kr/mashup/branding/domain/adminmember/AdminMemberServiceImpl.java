@@ -1,5 +1,7 @@
 package kr.mashup.branding.domain.adminmember;
 
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +27,9 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         AdminMember adminMember = AdminMember.of(
             adminMemberVo.getUsername(),
             passwordEncoder.encode(adminMemberVo.getPassword()),
-            adminMemberVo.getPhoneNumber(),
+            Optional.ofNullable(adminMemberVo.getPhoneNumber())
+                .map(it -> it.replaceAll("-", "").trim())
+                .orElse(null),
             adminMemberVo.getPosition()
         );
         return adminMemberRepository.save(adminMember);
