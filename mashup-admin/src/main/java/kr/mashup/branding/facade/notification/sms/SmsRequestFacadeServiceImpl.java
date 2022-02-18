@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import kr.mashup.branding.domain.UnauthorizedException;
-import kr.mashup.branding.domain.adminmember.AdminMemberNotFoundException;
 import kr.mashup.branding.domain.adminmember.AdminMemberService;
 import kr.mashup.branding.domain.notification.sms.SmsRequest;
 import kr.mashup.branding.domain.notification.sms.SmsRequestService;
@@ -27,11 +25,6 @@ public class SmsRequestFacadeServiceImpl implements SmsRequestFacadeService {
     @Override
     public List<SmsRequest> getSmsRequests(Long adminMemberId, Long applicantId) {
         Assert.notNull(adminMemberId, "'adminMemberId' must not be null");
-        try {
-            adminMemberService.getByAdminMemberId(adminMemberId);
-        } catch (AdminMemberNotFoundException e) {
-            throw new UnauthorizedException();
-        }
         return smsRequestService.getSmsRequestsByApplicantId(applicantId);
     }
 }

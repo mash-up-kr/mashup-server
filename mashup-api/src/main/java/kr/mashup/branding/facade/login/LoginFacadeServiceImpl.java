@@ -14,12 +14,12 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 
 import kr.mashup.branding.config.jwt.JwtService;
-import kr.mashup.branding.domain.UnauthorizedException;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantService;
 import kr.mashup.branding.domain.applicant.JoinRequestVo;
 import kr.mashup.branding.domain.applicant.LoginRequestVo;
 import kr.mashup.branding.domain.applicant.LoginResponseVo;
+import kr.mashup.branding.domain.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -10,4 +10,8 @@ public class NotFoundException extends MashupServerException {
     public NotFoundException(ResultCode resultCode) {
         super(resultCode);
     }
+
+    public NotFoundException(ResultCode resultCode, String message) {
+        super(resultCode, message);
+    }
 }

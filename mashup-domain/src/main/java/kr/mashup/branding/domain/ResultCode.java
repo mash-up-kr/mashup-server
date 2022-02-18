@@ -16,7 +16,7 @@ public enum ResultCode {
     // application (지원서)
     APPLICATION_NOT_FOUND("지원서가 존재하지 않습니다."),
     APPLICATION_ALREADY_SUBMITTED("지원서가 이미 제출되었습니다."),
-    APPLICATION_PRIVACY_POLICY_NOT_AGREED("개인정보처리방침에 동의해야합니다."),
+    APPLICATION_PRIVACY_POLICY_NOT_AGREED("개인정보 처리방침에 동의해야합니다."),
     APPLICATION_CONFIRMATION_UPDATE_INVALID("올바르지 않은 지원결과 확인 요청 입니다."),
 
     // application result (지원서 결과)
@@ -34,6 +34,7 @@ public enum ResultCode {
 
     // Schedule (일정)
     RECRUITMENT_SCHEDULE_NOT_FOUND("채용 일정이 존재하지 않습니다."),
+    RECRUITMENT_SCHEDULE_DUPLICATED("이미 사용중인 일정 이름입니다."),
 
     // Team (팀)
     TEAM_NOT_FOUND("팀이 존재하지 않습니다."),
@@ -48,5 +49,9 @@ public enum ResultCode {
 
     ResultCode(String message) {
         this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

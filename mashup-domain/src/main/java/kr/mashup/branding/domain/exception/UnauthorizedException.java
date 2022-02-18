@@ -10,4 +10,8 @@ public class UnauthorizedException extends MashupServerException {
     public UnauthorizedException(ResultCode resultCode) {
         super(resultCode);
     }
+
+    public UnauthorizedException(String message, Throwable cause) {
+        super(ResultCode.UNAUTHORIZED, message, cause);
+    }
 }

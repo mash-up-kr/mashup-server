@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import kr.mashup.branding.domain.UnauthorizedException;
 import kr.mashup.branding.domain.application.form.ApplicationFormAlreadyExistException;
 import kr.mashup.branding.domain.application.form.ApplicationFormModificationNotAllowedException;
+import kr.mashup.branding.domain.exception.UnauthorizedException;
 import kr.mashup.branding.domain.notification.NotificationRequestInvalidException;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleDuplicatedException;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleNotFoundException;

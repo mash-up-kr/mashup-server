@@ -1,7 +1,10 @@
 package kr.mashup.branding.domain.schedule;
 
-public class RecruitmentScheduleDuplicatedException extends RuntimeException {
+import kr.mashup.branding.domain.ResultCode;
+import kr.mashup.branding.domain.exception.BadRequestException;
+
+public class RecruitmentScheduleDuplicatedException extends BadRequestException {
     public RecruitmentScheduleDuplicatedException(String message) {
-        super(message);
+        super(ResultCode.RECRUITMENT_SCHEDULE_DUPLICATED, message);
     }
 }
