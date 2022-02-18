@@ -116,7 +116,7 @@ public class Notification {
     private LocalDateTime createdAt;
 
     @LastModifiedBy
-    private String lastModifiedBy;
+    private String updatedBy;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
