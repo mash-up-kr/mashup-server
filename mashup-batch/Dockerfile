@@ -4,4 +4,5 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p /logs
 ARG JAR_FILE
 COPY ${JAR_FILE:-build/libs/mashup-batch.jar} app.jar
-ENTRYPOINT exec java ${JAVA_OPTS} -jar /app.jar
+ARG PARAM
+ENTRYPOINT exec java ${JAVA_OPTS} -jar /app.jar ${PARAM}
