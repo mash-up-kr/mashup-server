@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: sms
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+sms:
+  toast:
+    url: test
+    app-key: test
+    secret-key: test
+
+jwt:
+  secret: test

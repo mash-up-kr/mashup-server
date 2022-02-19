@@ -1,0 +1,7 @@
+jwt:
+  secretKey: ENC(EXfj1mGmsws/YLOc87IZoiHu0l+vKqtao+CrUR843UD0xWM9asYfSMWkYLI8CYQHlEeHwAh51Kt+/Zn8tS7n0g==)
+---
+oauth:
+  google:
+    client:
+      id: ENC(4FXHV4QqY76hintu8iDCJHGqNAszGJJ+xmym8/7WbE5Rgy4W5awtm+GSSlIImtW37sihxgXE2WJULaijqxOY2VPasPrLXdVM46SZeGfMhGsgIPgYPBcBZXZy2N9Jc84wMmGtprMwT7cGilOEyByzHg==)

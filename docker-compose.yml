@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  app:
+    image: "junhaesung/${IMAGE_NAME}:${TAG:-latest}"
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    volumes:
+      - "${SPRING_LOG_PATH}:${SPRING_LOG_PATH}"
+    environment:
+      - "JAVA_OPTS=${JAVA_OPTS}"
+      - "SCOUTER_HOST=${SCOUTER_HOST}"
+      - "SCOUTER_OBJECT_NAME=${SCOUTER_OBJECT_NAME}"
+  filebeat:
+    image: "junhaesung/mashup-server-filebeat:${TAG:-latest}"
+    volumes:
+      - "${NGINX_ACCESS_LOG_PATH}:${NGINX_ACCESS_LOG_PATH}"
+      - "${NGINX_ERROR_LOG_PATH}:${NGINX_ERROR_LOG_PATH}"
+    environment:
+      - "NGINX_ACCESS_LOG_PATH=${NGINX_ACCESS_LOG_PATH}"
+      - "NGINX_ERROR_LOG_PATH=${NGINX_ERROR_LOG_PATH}"
+      - "SPRING_LOG_PATH=${SPRING_LOG_PATH}"
+      - "SERVICE_NAME=${SERVICE_NAME}"
+      - "ES_HOST=${ES_HOST}"
+      - "ES_USERNAME=${ES_USERNAME}"
+      - "ES_PASSWORD=${ES_PASSWORD}"
