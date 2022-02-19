@@ -13,6 +13,7 @@ import kr.mashup.branding.domain.adminmember.AdminMemberRepository;
 import kr.mashup.branding.domain.adminmember.Position;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantRepository;
+import kr.mashup.branding.domain.application.ApplicationService;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
@@ -34,6 +35,7 @@ public class TestDataInitializer {
     private final RecruitmentScheduleRepository recruitmentScheduleRepository;
     private final TeamService teamService;
     private final ApplicationFormService applicationFormService;
+    private final ApplicationService applicationService;
     private final ApplicantRepository applicantRepository;
     private final AdminMemberRepository adminMemberRepository;
 
@@ -139,4 +141,20 @@ public class TestDataInitializer {
         );
         return adminMemberRepository.save(testadmin);
     }
+
+    // 테스트용 지원서 생성 (사용하려면 지원기간 validate 해제 해야함)
+    // private Application createApplication(Long applicantId, Long teamId) {
+    //     return applicationService.create(applicantId, new CreateApplicationVo(teamId));
+    // }
+    //
+    // private Application createAnswers(Application application) {
+    //     List<Long> answerIds = application.getAnswers().stream().map(Answer::getAnswerId).collect(Collectors.toList());
+    //     List<AnswerRequestVo> answerRequestVos = answerIds.stream()
+    //         .map(id -> AnswerRequestVo.of(id, "응답"))
+    //         .collect(Collectors.toList());
+    //
+    //     UpdateApplicationVo of = UpdateApplicationVo.of("이름", "01000000000", answerRequestVos, true);
+    //     applicationService.update(application.getApplicationId(), of);
+    //     return application;
+    // }
 }

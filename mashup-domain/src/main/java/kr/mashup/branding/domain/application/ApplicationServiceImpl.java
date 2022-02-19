@@ -2,6 +2,7 @@ package kr.mashup.branding.domain.application;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -165,6 +166,11 @@ public class ApplicationServiceImpl implements ApplicationService {
             ApplicationStatus.validSet());
     }
 
+    @Override
+    public List<Application> getApplicationsByFormId(Long applicationFormId) {
+        return applicationRepository.findByApplicationForm_ApplicationFormId(applicationFormId);
+    }
+
     // TODO: 상세 조회시 form 도 같이 조합해서 내려주어야할듯 (teamId, memberId 요청하면 해당팀 쓰던 지원서 질문, 내용 다 합쳐서)
     @Override
     public Application getApplication(Long applicantId, Long applicationId) {
@@ -186,5 +192,17 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo) {
         return applicationRepository.findBy(applicationQueryVo);
+    }
+
+    @Override
+    public void deleteByApplicationFormId(Long applicationFormId) {
+        List<Application> applications = applicationRepository
+            .findByApplicationForm_ApplicationFormId(applicationFormId);
+
+        List<Long> applicationIds = applications.stream()
+            .map(Application::getApplicationId)
+            .collect(Collectors.toList());
+
+        applicationRepository.deleteAllById(applicationIds);
     }
 }

@@ -15,4 +15,6 @@ interface ApplicationRepository extends JpaRepository<Application, Long>, Applic
     List<Application> findByApplicantAndApplicationForm(Applicant applicant, ApplicationForm applicationForm);
 
     Optional<Application> findByApplicationIdAndApplicant_applicantId(Long applicationId, Long applicantId);
+
+    List<Application> findByApplicationForm_ApplicationFormId(Long applicationFormId);
 }

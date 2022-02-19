@@ -20,9 +20,13 @@ public interface ApplicationService {
 
     List<Application> getApplications(Long applicantId);
 
+    List<Application> getApplicationsByFormId(Long applicationFormId);
+
     Application getApplication(Long applicantId, Long applicationId);
 
     Application getApplication(Long applicationId);
 
     Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo);
+
+    void deleteByApplicationFormId(Long applicationFormId);
 }
