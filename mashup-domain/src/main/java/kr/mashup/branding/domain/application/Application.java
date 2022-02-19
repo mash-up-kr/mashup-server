@@ -97,7 +97,7 @@ public class Application {
         application.applicant = applicant;
         application.applicationForm = applicationForm;
         application.applicationResult = ApplicationResult.of(application);
-        application.confirmation = Confirmation.toBeDetermined();
+        application.confirmation = Confirmation.of(application);
         application.status = ApplicationStatus.CREATED;
         List<Answer> answers = applicationForm.getQuestions()
             .stream()

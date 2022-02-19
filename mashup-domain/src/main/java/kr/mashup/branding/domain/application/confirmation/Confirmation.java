@@ -46,8 +46,9 @@ public class Confirmation {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public static Confirmation toBeDetermined() {
+    public static Confirmation of(Application application) {
         Confirmation confirmation = new Confirmation();
+        confirmation.application = application;
         confirmation.status = ApplicantConfirmationStatus.TO_BE_DETERMINED;
         return confirmation;
     }
