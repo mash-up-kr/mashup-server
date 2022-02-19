@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 
-interface ApplicationRepository extends JpaRepository<Application, Long>, ApplicationRepositoryCustom {
+public interface ApplicationRepository extends JpaRepository<Application, Long>, ApplicationRepositoryCustom {
     List<Application> findByApplicant_applicantIdAndStatusIn(Long applicantId, Collection<ApplicationStatus> statuses);
 
     List<Application> findByApplicantAndApplicationForm(Applicant applicant, ApplicationForm applicationForm);
@@ -17,4 +17,6 @@ interface ApplicationRepository extends JpaRepository<Application, Long>, Applic
     Optional<Application> findByApplicationIdAndApplicant_applicantId(Long applicationId, Long applicantId);
 
     List<Application> findByApplicationForm_ApplicationFormId(Long applicationFormId);
+
+    boolean existsByApplicationForm_ApplicationFormId(Long applicationFormId);
 }

@@ -1,11 +1,8 @@
 package kr.mashup.branding.facade.application.form;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationService;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormQueryVo;
@@ -50,13 +47,6 @@ public class ApplicationFormFacadeServiceImpl implements ApplicationFormFacadeSe
         // 개발 환경에서는 설문지 삭제 시도시 지원서를 모두 삭제 후 설문지까지 삭제 한다.
         if (profileFacadeService.isLocal() || profileFacadeService.isDevelop()) {
             applicationService.deleteByApplicationFormId(applicationFormId);
-            applicationFormService.delete(applicationFormId);
-            return;
-        }
-
-        List<Application> applications = applicationService.getApplicationsByFormId(applicationFormId);
-        if (!applications.isEmpty()) {
-            throw new ApplicationFormDeleteFailedException();
         }
         applicationFormService.delete(applicationFormId);
     }

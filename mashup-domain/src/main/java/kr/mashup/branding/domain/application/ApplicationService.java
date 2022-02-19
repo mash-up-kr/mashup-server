@@ -20,8 +20,6 @@ public interface ApplicationService {
 
     List<Application> getApplications(Long applicantId);
 
-    List<Application> getApplicationsByFormId(Long applicationFormId);
-
     Application getApplication(Long applicantId, Long applicationId);
 
     Application getApplication(Long applicationId);

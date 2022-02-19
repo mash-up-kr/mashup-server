@@ -1,4 +1,4 @@
-package kr.mashup.branding.facade.application.form;
+package kr.mashup.branding.domain.application.form;
 
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;

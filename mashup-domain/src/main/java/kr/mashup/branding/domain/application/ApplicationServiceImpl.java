@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import kr.mashup.branding.domain.adminmember.AdminMemberService;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
 import kr.mashup.branding.domain.applicant.ApplicantService;
@@ -34,7 +33,6 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final TeamService teamService;
     private final ApplicantService applicantService;
     private final RecruitmentScheduleService recruitmentScheduleService;
-    private final AdminMemberService adminMemberService;
 
     // get or create
     // TODO: 모르겠고 teamId 줄테니 다내놔! 에 대해서 고민해보기
@@ -166,11 +164,6 @@ public class ApplicationServiceImpl implements ApplicationService {
             ApplicationStatus.validSet());
     }
 
-    @Override
-    public List<Application> getApplicationsByFormId(Long applicationFormId) {
-        return applicationRepository.findByApplicationForm_ApplicationFormId(applicationFormId);
-    }
-
     // TODO: 상세 조회시 form 도 같이 조합해서 내려주어야할듯 (teamId, memberId 요청하면 해당팀 쓰던 지원서 질문, 내용 다 합쳐서)
     @Override
     public Application getApplication(Long applicantId, Long applicationId) {
@@ -195,6 +188,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    @Transactional
     public void deleteByApplicationFormId(Long applicationFormId) {
         List<Application> applications = applicationRepository
             .findByApplicationForm_ApplicationFormId(applicationFormId);

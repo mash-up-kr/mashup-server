@@ -2,6 +2,7 @@ package kr.mashup.branding.infrastructure.data;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
@@ -13,7 +14,12 @@ import kr.mashup.branding.domain.adminmember.AdminMemberRepository;
 import kr.mashup.branding.domain.adminmember.Position;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantRepository;
+import kr.mashup.branding.domain.application.Answer;
+import kr.mashup.branding.domain.application.AnswerRequestVo;
+import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationService;
+import kr.mashup.branding.domain.application.CreateApplicationVo;
+import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
@@ -59,6 +65,9 @@ public class TestDataInitializer {
 
         AdminMember adminMember = createAdminMember();
         log.info("AdminMember is created. adminMember: {}", adminMember);
+
+        // Application application = createApplication(applicant.getApplicantId(), applicationForm.getTeam().getTeamId());
+        // createAnswers(application);
     }
 
     private List<RecruitmentSchedule> createRecruitmentSchedules() {
@@ -143,18 +152,18 @@ public class TestDataInitializer {
     }
 
     // 테스트용 지원서 생성 (사용하려면 지원기간 validate 해제 해야함)
-    // private Application createApplication(Long applicantId, Long teamId) {
-    //     return applicationService.create(applicantId, new CreateApplicationVo(teamId));
-    // }
-    //
-    // private Application createAnswers(Application application) {
-    //     List<Long> answerIds = application.getAnswers().stream().map(Answer::getAnswerId).collect(Collectors.toList());
-    //     List<AnswerRequestVo> answerRequestVos = answerIds.stream()
-    //         .map(id -> AnswerRequestVo.of(id, "응답"))
-    //         .collect(Collectors.toList());
-    //
-    //     UpdateApplicationVo of = UpdateApplicationVo.of("이름", "01000000000", answerRequestVos, true);
-    //     applicationService.update(application.getApplicationId(), of);
-    //     return application;
-    // }
+    private Application createApplication(Long applicantId, Long teamId) {
+        return applicationService.create(applicantId, new CreateApplicationVo(teamId));
+    }
+
+    private Application createAnswers(Application application) {
+        List<Long> answerIds = application.getAnswers().stream().map(Answer::getAnswerId).collect(Collectors.toList());
+        List<AnswerRequestVo> answerRequestVos = answerIds.stream()
+            .map(id -> AnswerRequestVo.of(id, "응답"))
+            .collect(Collectors.toList());
+
+        UpdateApplicationVo of = UpdateApplicationVo.of("이름", "01000000000", answerRequestVos, true);
+        applicationService.update(application.getApplicationId(), of);
+        return application;
+    }
 }
