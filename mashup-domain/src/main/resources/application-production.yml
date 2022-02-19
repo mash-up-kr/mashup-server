@@ -1,4 +1,8 @@
 spring:
+  datasource:
+    url: ENC(edobcXMambEpeW4Q+F3pIPiuPpXqNeP6MT3q3bfqjqZI7leNJAI4AkXkM+v0s7ReCD3YVEJ8wNjliqce8QIAiQuM63Ypaul3OD48bnAeKSoNm6ik9SrxYWy6EL83IAPGJn5vBSHggu52qV9o2WsjwppkRMHKNoo8+2gHs50LeaATn9OaaC61GauAUfwVdnTB9wZO07LfaRhi0kDT4CyTy3jlowqONZ+HazWzU1J8boxRTgjvG/4st7L5xsvv+lwu0nT/oZ3RwM9ETL0uKBpUSXt15QpbYqiVYkbRBZGD+dEn8RqpAsyhwGYSEyCim0ST09Thq3lpkkGHRO15h5sbSmF/QuiAciu7EmzPKdjG/CIJcWBEW7vmSBnnlAUKp6Gi)
+    username: ENC(dmrMIvN+SdDAUKWNRCDk3gyqLIF8GGIa4auitiHRt0vl61nicmUx0Qamb3nWCJJA)
+    password: ENC(LdBTcIopyPOGoC8qwmeQlBM4WVI0ZcSR/U04qb2KEkfvqYEZC4fp4bN6gb37lbKY)
   jpa:
     hibernate:
       ddl-auto: none
