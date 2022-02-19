@@ -53,10 +53,10 @@ public class Application {
     @ManyToOne
     private ApplicationForm applicationForm;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "application")
     private ApplicationResult applicationResult;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "application")
     private Confirmation confirmation;
 
     /**
@@ -96,7 +96,7 @@ public class Application {
         application.applicant = applicant;
         application.applicationForm = applicationForm;
         application.applicationResult = ApplicationResult.of(application);
-        application.confirmation = Confirmation.toBeDetermined();
+        application.confirmation = Confirmation.of(application);
         application.status = ApplicationStatus.CREATED;
         List<Answer> answers = applicationForm.getQuestions()
             .stream()
