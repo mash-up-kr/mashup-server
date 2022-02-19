@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.mashup.branding.domain.application.ApplicationRepository;
 import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
 import kr.mashup.branding.domain.team.Team;
 import kr.mashup.branding.domain.team.TeamService;
@@ -21,6 +22,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     private final TeamService teamService;
     private final ApplicationFormRepository applicationFormRepository;
     private final RecruitmentScheduleService recruitmentScheduleService;
+    private final ApplicationRepository applicationRepository;
 
     @Override
     @Transactional
@@ -47,8 +49,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         if (recruitmentScheduleService.isRecruitStarted(LocalDateTime.now())) {
             throw new ApplicationFormModificationNotAllowedException("모집 시작시각 이후에는 지원서를 수정할 수 없습니다");
         }
-        ApplicationForm applicationForm = applicationFormRepository.findByApplicationFormId(
-            applicationFormId)
+        ApplicationForm applicationForm = applicationFormRepository.findByApplicationFormId(applicationFormId)
             .orElseThrow(ApplicationFormNotFoundException::new);
         applicationForm.update(updateApplicationFormVo);
         return applicationForm;
@@ -60,6 +61,11 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         if (recruitmentScheduleService.isRecruitStarted(LocalDateTime.now())) {
             throw new ApplicationFormModificationNotAllowedException("모집 시작시각 이후에는 지원서를 삭제할 수 없습니다");
         }
+
+        if (applicationRepository.existsByApplicationForm_ApplicationFormId(applicationFormId)) {
+            throw new ApplicationFormDeleteFailedException();
+        }
+
         applicationFormRepository.findByApplicationFormId(applicationFormId)
             .ifPresent(applicationFormRepository::delete);
     }

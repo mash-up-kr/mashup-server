@@ -2,13 +2,13 @@ package kr.mashup.branding.domain.application;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import kr.mashup.branding.domain.adminmember.AdminMemberService;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
 import kr.mashup.branding.domain.applicant.ApplicantService;
@@ -33,7 +33,6 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final TeamService teamService;
     private final ApplicantService applicantService;
     private final RecruitmentScheduleService recruitmentScheduleService;
-    private final AdminMemberService adminMemberService;
 
     // get or create
     // TODO: 모르겠고 teamId 줄테니 다내놔! 에 대해서 고민해보기
@@ -186,5 +185,18 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo) {
         return applicationRepository.findBy(applicationQueryVo);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByApplicationFormId(Long applicationFormId) {
+        List<Application> applications = applicationRepository
+            .findByApplicationForm_ApplicationFormId(applicationFormId);
+
+        List<Long> applicationIds = applications.stream()
+            .map(Application::getApplicationId)
+            .collect(Collectors.toList());
+
+        applicationRepository.deleteAllById(applicationIds);
     }
 }
