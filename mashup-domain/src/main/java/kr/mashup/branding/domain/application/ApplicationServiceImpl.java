@@ -120,9 +120,9 @@ public class ApplicationServiceImpl implements ApplicationService {
      * 지원서 생성, 수정, 제출 가능한 시각인지 검증
      */
     private void validateDate(LocalDateTime localDateTime) {
-        if (!recruitmentScheduleService.isRecruitAvailable(localDateTime)) {
-            throw new IllegalArgumentException("지원서 제출 기간이 아닙니다. ");
-        }
+        // if (!recruitmentScheduleService.isRecruitAvailable(localDateTime)) {
+        //     throw new IllegalArgumentException("지원서 제출 기간이 아닙니다. ");
+        // }
     }
 
     /**
