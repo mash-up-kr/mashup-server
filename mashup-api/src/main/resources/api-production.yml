@@ -1,3 +1,6 @@
+jwt:
+  secretKey: ENC(/I0kM9o0Ts8VIq+AiD3V8c+7EZHCK+kcmiBq53anVOb5PB/yZudYdQ4tvBQvRjvN)
+
 springfox:
   documentation:
     enabled: false
