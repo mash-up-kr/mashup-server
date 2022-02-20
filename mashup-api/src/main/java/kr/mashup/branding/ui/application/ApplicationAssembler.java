@@ -95,6 +95,7 @@ public class ApplicationAssembler {
         Assert.notNull(answerRequest, "'answerRequest' must not be null");
         return AnswerRequestVo.of(
             answerRequest.getAnswerId(),
+            answerRequest.getQuestionId(),
             answerRequest.getContent()
         );
     }

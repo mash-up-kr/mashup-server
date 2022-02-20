@@ -24,11 +24,13 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.confirmation.Confirmation;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
+import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import lombok.AccessLevel;
@@ -169,6 +171,35 @@ public class Application {
             applicationForm.getQuestions().size() == answerRequestVos.size(),
             "Size of 'answers' must be equal to size of 'questions'"
         );
+        Map<Long, Question> questionMap = applicationForm.getQuestions()
+            .stream()
+            .collect(Collectors.toMap(
+                Question::getQuestionId,
+                Function.identity()
+            ));
+        for (AnswerRequestVo answerRequestVo : answerRequestVos) {
+            Question question = questionMap.get(answerRequestVo.getQuestionId());
+            // 질문을 찾을 수 없는 경우
+            if (question == null) {
+                throw new IllegalArgumentException(
+                    "Question not found. questionId: " + answerRequestVo.getQuestionId() + ", answerId: "
+                        + answerRequestVo.getAnswerId());
+            }
+            // 필수 질문인데 응답이 비어있는 경우
+            if (Boolean.TRUE == question.getRequired()) {
+                if (!StringUtils.hasLength(answerRequestVo.getContent())) {
+                    throw new IllegalArgumentException(
+                        "Answer's content must not be null or empty because it's question is required");
+                }
+            }
+            // 질문 최대 글자수를 초과하는 경우
+            if (question.getMaxContentLength() != null && answerRequestVo.getContent() != null) {
+                if (question.getMaxContentLength() < answerRequestVo.getContent().length()) {
+                    throw new IllegalArgumentException("Answer's content must be less then or equal to " +
+                        question.getMaxContentLength());
+                }
+            }
+        }
     }
 
     private void validatePrivacyPolicyAgreed(Boolean privacyPolicyAgreed) {

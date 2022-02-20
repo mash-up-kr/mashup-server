@@ -18,7 +18,6 @@ import kr.mashup.branding.domain.adminmember.Position;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantRepository;
 import kr.mashup.branding.domain.applicant.ApplicantStatus;
-import kr.mashup.branding.domain.application.Answer;
 import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationService;
@@ -73,8 +72,7 @@ public class TestDataInitializer {
             Applicant applicant = createApplicant();
             log.info("Applicant is created. applicant: {}", applicant);
 
-            Application application = createApplication(applicant.getApplicantId(),
-                applicationForm.getTeam().getTeamId());
+            Application application = createApplication(applicant.getApplicantId(), applicationForm);
             log.info("Application is created. application: {}", application);
         } catch (Exception e) {
             log.info("Failed to created application for test data. message: {}", e.getMessage());
@@ -176,11 +174,11 @@ public class TestDataInitializer {
     }
 
     // 테스트용 지원서 생성 (사용하려면 지원기간 validate 해제 해야함)
-    private Application createApplication(Long applicantId, Long teamId) {
-        Application application = applicationService.create(applicantId, new CreateApplicationVo(teamId));
-        List<Long> answerIds = application.getAnswers().stream().map(Answer::getAnswerId).collect(Collectors.toList());
-        List<AnswerRequestVo> answerRequestVos = answerIds.stream()
-            .map(id -> AnswerRequestVo.of(id, "응답"))
+    private Application createApplication(Long applicantId, ApplicationForm applicationForm) {
+        Application application = applicationService.create(applicantId,
+            new CreateApplicationVo(applicationForm.getTeam().getTeamId()));
+        List<AnswerRequestVo> answerRequestVos = application.getAnswers().stream()
+            .map(it -> AnswerRequestVo.of(it.getAnswerId(), it.getQuestion().getQuestionId(), "응답"))
             .collect(Collectors.toList());
 
         UpdateApplicationVo updateApplicationVo = UpdateApplicationVo.of("이름", "01000000000", answerRequestVos, true);

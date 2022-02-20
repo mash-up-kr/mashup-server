@@ -38,7 +38,7 @@ class ApplicationTest {
             "01012341234",
             applicationForm.getQuestions()
                 .stream()
-                .map(it -> AnswerRequestVo.of(atomicLong.incrementAndGet(), "answerContent"))
+                .map(it -> AnswerRequestVo.of(atomicLong.incrementAndGet(), it.getQuestionId(), "answerContent"))
                 .collect(Collectors.toList()),
             privacyPolicyAgreed
         );
@@ -65,7 +65,7 @@ class ApplicationTest {
             "01012341234",
             applicationForm.getQuestions()
                 .stream()
-                .map(it -> AnswerRequestVo.of(atomicLong.incrementAndGet(), "answerContent"))
+                .map(it -> AnswerRequestVo.of(atomicLong.incrementAndGet(), it.getQuestionId(), "answerContent"))
                 .collect(Collectors.toList()),
             privacyPolicyAgreed
         );
@@ -100,6 +100,9 @@ class ApplicationTest {
                 QuestionType.SINGLE_LINE_TEXT
             ))
         );
+        ReflectionTestUtils.setField(questions.get(0), "questionId", 1L);
+        ReflectionTestUtils.setField(questions.get(1), "questionId", 2L);
+        ReflectionTestUtils.setField(questions.get(2), "questionId", 3L);
         return ApplicationForm.of(team, questions, "applicationFormName");
     }
 
