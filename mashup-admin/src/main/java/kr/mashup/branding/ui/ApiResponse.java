@@ -13,13 +13,13 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ApiResponse<T> {
-    private final String code;
+    private final ResultCode code;
     private final String message;
     private final T data;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final PageResponse page;
 
-    private ApiResponse(String code, String message, T data, PageResponse page) {
+    private ApiResponse(ResultCode code, String message, T data, PageResponse page) {
         this.code = code;
         this.message = message;
         this.data = data;
@@ -28,8 +28,8 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> success() {
         return new ApiResponse<>(
-            "SUCCESS",
-            "성공",
+            ResultCode.SUCCESS,
+            ResultCode.SUCCESS.getMessage(),
             null,
             null
         );
@@ -37,8 +37,8 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(
-            "SUCCESS",
-            "성공",
+            ResultCode.SUCCESS,
+            ResultCode.SUCCESS.getMessage(),
             data,
             null
         );
@@ -46,8 +46,8 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<List<T>> success(List<T> data) {
         return new ApiResponse<>(
-            "SUCCESS",
-            "성공",
+            ResultCode.SUCCESS,
+            ResultCode.SUCCESS.getMessage(),
             data,
             null
         );
@@ -55,26 +55,26 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<List<T>> success(Page<T> data) {
         return new ApiResponse<>(
-            "SUCCESS",
-            "성공",
+            ResultCode.SUCCESS,
+            ResultCode.SUCCESS.getMessage(),
             data.getContent(),
             PageResponse.from(data)
         );
     }
 
-    public static <T> ApiResponse<T> failure(String code, String message) {
+    public static <T> ApiResponse<T> failure(ResultCode resultCode) {
         return new ApiResponse<>(
-            code,
-            message,
+            resultCode,
+            resultCode.getMessage(),
             null,
             null
         );
     }
 
-    public static <T> ApiResponse<T> failure(ResultCode resultCode) {
+    public static <T> ApiResponse<T> failure(ResultCode resultCode, String message) {
         return new ApiResponse<>(
-            resultCode.name(),
-            resultCode.getMessage(),
+            resultCode,
+            message,
             null,
             null
         );

@@ -40,14 +40,14 @@ public class AdminControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<?> handleHttpMediaTypeException(HttpMediaTypeException e) {
         log.info("handleHttpMediaTypeException: {}", e.getMessage(), e);
-        return ApiResponse.failure("BAD_REQUEST", e.getMessage());
+        return ApiResponse.failure(ResultCode.BAD_REQUEST, e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<?> handleBadRequest(MethodArgumentTypeMismatchException e) {
         log.info("handleMethodArgumentTypeMismatchException: {}", e.getMessage(), e);
-        return ApiResponse.failure("BAD_REQUEST", e.getMessage());
+        return ApiResponse.failure(ResultCode.BAD_REQUEST, e.getMessage());
     }
 
     @ExceptionHandler(BadRequestException.class)
