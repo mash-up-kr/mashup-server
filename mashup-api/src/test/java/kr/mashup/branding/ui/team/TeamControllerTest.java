@@ -60,4 +60,24 @@ class TeamControllerTest {
         Set<String> teamNames = actual.getData().stream().map(it -> it.getName()).collect(Collectors.toSet());
         assertThat(teamNames).contains("Design", "Android", "iOS", "Web", "Node", "Spring");
     }
+
+    @DisplayName("데이터에 스크립트가 포함되었을 때 응답에 스크립트 인코딩")
+    @Test
+    void getTeamXss() throws Exception {
+        // given
+        teamService.create(CreateTeamVo.of("<script>alert()</script>"));
+        // when
+        MvcResult mvcResult = mockMvc.perform(get("/api/v1/teams"))
+            // then 1
+            .andExpect(status().isOk())
+            .andReturn();
+        ApiResponse<List<TeamResponse>> actual = objectMapper.readValue(
+            mvcResult.getResponse().getContentAsByteArray(),
+            new TypeReference<ApiResponse<List<TeamResponse>>>() {
+            }
+        );
+        // then2
+        String teamName = actual.getData().get(0).getName();
+        assertThat(teamName).isEqualTo("&lt;script&gt;alert()&lt;/script&gt;");
+    }
 }
