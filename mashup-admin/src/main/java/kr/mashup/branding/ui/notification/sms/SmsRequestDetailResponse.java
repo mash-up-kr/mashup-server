@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.notification.sms;
 
 import io.swagger.annotations.ApiModelProperty;
+import kr.mashup.branding.domain.adminmember.Position;
 import kr.mashup.branding.domain.notification.sms.SmsNotificationStatus;
 import kr.mashup.branding.ui.team.TeamResponse;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class SmsRequestDetailResponse {
     private String senderPhoneNumber;
 
     @ApiModelProperty(value = "발송자")
-    private String sender;
+    private Position sender;
 
     @ApiModelProperty(value = "발송 내용", example = "합격을 축하행~!")
     private String notificationContent;
