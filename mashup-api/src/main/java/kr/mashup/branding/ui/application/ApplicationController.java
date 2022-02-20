@@ -72,9 +72,14 @@ public class ApplicationController {
     @PostMapping("/{applicationId}/submit")
     public ApiResponse<ApplicationResponse> submit(
         @ApiIgnore @ModelAttribute("applicantId") Long applicantId,
-        @PathVariable Long applicationId
+        @PathVariable Long applicationId,
+        @RequestBody ApplicationSubmitRequest applicationSubmitRequest
     ) {
-        Application application = applicationFacadeService.submit(applicantId, applicationId);
+        Application application = applicationFacadeService.submit(
+            applicantId,
+            applicationId,
+            applicationAssembler.toApplicationSubmitRequestVo(applicationSubmitRequest)
+        );
         return ApiResponse.success(
             applicationAssembler.toApplicationResponse(application)
         );

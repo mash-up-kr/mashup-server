@@ -12,7 +12,8 @@ public interface ApplicationService {
 
     Application update(Long applicantId, Long applicationId, UpdateApplicationVo updateApplicationVo);
 
-    Application submit(Long applicantId, Long applicationId);
+    Application submit(Long applicantId, Long applicationId,
+        ApplicationSubmitRequestVo applicationSubmitRequestVo);
 
     Application updateResult(Long adminMemberId, UpdateApplicationResultVo updateApplicationResultVo);
 

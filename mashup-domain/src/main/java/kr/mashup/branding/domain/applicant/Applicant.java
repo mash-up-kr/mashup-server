@@ -1,6 +1,7 @@
 package kr.mashup.branding.domain.applicant;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import javax.persistence.Entity;
@@ -59,9 +60,19 @@ public class Applicant {
 
     public void update(String name, String phoneNumber) {
         this.name = name;
-        this.phoneNumber = phoneNumber.replaceAll("-", "").trim();
+        this.phoneNumber = Optional.ofNullable(phoneNumber)
+            .map(it -> it.replaceAll("-", "").trim())
+            .orElse(null);
+    }
+
+    public void submit(String name, String phoneNumber) {
+        this.update(name, phoneNumber);
+        validate();
+    }
+
+    private void validate() {
         if (!PATTERN_NUMBER.matcher(this.phoneNumber).matches()) {
-            throw new IllegalArgumentException("'phoneNumber' must be include number and hyphen only");
+            throw new IllegalArgumentException("'phoneNumber' must be include number only");
         }
     }
 }

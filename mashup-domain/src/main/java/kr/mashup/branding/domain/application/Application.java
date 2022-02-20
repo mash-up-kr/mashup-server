@@ -23,6 +23,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
@@ -111,33 +112,69 @@ public class Application {
      */
     void update(UpdateApplicationVo updateApplicationVo) {
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
+
+        applicant.update(
+            updateApplicationVo.getName(),
+            updateApplicationVo.getPhoneNumber()
+        );
         if (updateApplicationVo.getAnswerRequestVoList() != null) {
-            Map<Long, AnswerRequestVo> questionAnswerMap = updateApplicationVo.getAnswerRequestVoList()
-                .stream()
-                .collect(Collectors.toMap(AnswerRequestVo::getAnswerId, Function.identity()));
-            answers.forEach(it -> {
-                Long answerId = it.getAnswerId();
-                AnswerRequestVo answerRequestVo = questionAnswerMap.get(answerId);
-                it.update(answerRequestVo.getContent());
-            });
+            updateAnswers(updateApplicationVo.getAnswerRequestVoList());
         }
         status = status.update();
         privacyPolicyAgreed = updateApplicationVo.getPrivacyPolicyAgreed();
     }
 
+    private void updateAnswers(List<AnswerRequestVo> answerRequestVos) {
+        Map<Long, AnswerRequestVo> questionAnswerMap = answerRequestVos
+            .stream()
+            .collect(Collectors.toMap(AnswerRequestVo::getAnswerId, Function.identity()));
+        answers.forEach(it -> {
+            Long answerId = it.getAnswerId();
+            AnswerRequestVo answerRequestVo = questionAnswerMap.get(answerId);
+            it.update(answerRequestVo.getContent());
+        });
+    }
+
     /**
      * 지원서 제출
      */
-    void submit() {
-        if (Boolean.TRUE != this.privacyPolicyAgreed) {
-            throw new PrivacyPolicyNotAgreedException("'privacyPolicyAgreed' must be true. privacyPolicyAgreed: "
-                + this.privacyPolicyAgreed);
-        }
+    void submit(ApplicationSubmitRequestVo applicationSubmitRequestVo) {
+        applicant.submit(
+            applicationSubmitRequestVo.getApplicantName(),
+            applicationSubmitRequestVo.getPhoneNumber()
+        );
+
+        validateAnswerRequests(applicationSubmitRequestVo.getAnswerRequestVoList());
+        updateAnswers(applicationSubmitRequestVo.getAnswerRequestVoList());
+
+        validatePrivacyPolicyAgreed(applicationSubmitRequestVo.getPrivacyPolicyAgreed());
+        this.privacyPolicyAgreed = applicationSubmitRequestVo.getPrivacyPolicyAgreed();
+
         try {
             status = status.submit();
             submittedAt = LocalDateTime.now();
         } catch (ApplicationAlreadySubmittedException e) {
             // 이미 제출한 지원서를 다시 제출 시도하는 경우 성공으로 응답
+        }
+    }
+
+    private void validateAnswerRequests(List<AnswerRequestVo> answerRequestVos) {
+        if (CollectionUtils.isEmpty(answerRequestVos)) {
+            throw new IllegalArgumentException("'answers' must not be null or empty");
+        }
+        Assert.notNull(applicationForm.getQuestions(),
+            "'applicationForm.questions' must not be null. applicationFormId: "
+                + applicationForm.getApplicationFormId());
+        Assert.isTrue(
+            applicationForm.getQuestions().size() == answerRequestVos.size(),
+            "Size of 'answers' must be equal to size of 'questions'"
+        );
+    }
+
+    private void validatePrivacyPolicyAgreed(Boolean privacyPolicyAgreed) {
+        if (Boolean.TRUE != privacyPolicyAgreed) {
+            throw new PrivacyPolicyNotAgreedException("'privacyPolicyAgreed' must be true. privacyPolicyAgreed: "
+                + privacyPolicyAgreed);
         }
     }
 

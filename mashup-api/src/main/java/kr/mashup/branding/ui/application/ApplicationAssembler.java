@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 import kr.mashup.branding.domain.application.Answer;
 import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.domain.application.ApplicationSubmitRequestVo;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.domain.application.form.Question;
@@ -114,6 +115,19 @@ public class ApplicationAssembler {
             question.getDescription(),
             question.getRequired(),
             question.getQuestionType()
+        );
+    }
+
+    ApplicationSubmitRequestVo toApplicationSubmitRequestVo(ApplicationSubmitRequest applicationSubmitRequest) {
+        return ApplicationSubmitRequestVo.of(
+            applicationSubmitRequest.getApplicantName(),
+            applicationSubmitRequest.getPhoneNumber(),
+            Optional.ofNullable(applicationSubmitRequest.getAnswers())
+                .map(it -> it.stream()
+                    .map(this::toAnswerRequestVo)
+                    .collect(Collectors.toList()))
+                .orElse(null),
+            applicationSubmitRequest.getPrivacyPolicyAgreed()
         );
     }
 }
