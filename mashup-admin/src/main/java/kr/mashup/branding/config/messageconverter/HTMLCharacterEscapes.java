@@ -27,6 +27,7 @@ public class HTMLCharacterEscapes extends CharacterEscapes {
         return asciiEscapes;
     }
 
+    // https://hiphopddori.tistory.com/61 이모지 파싱 에러 처리
     @Override
     public SerializableString getEscapeSequence(int ch) {
         SerializedString serializedString;
