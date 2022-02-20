@@ -61,7 +61,7 @@ class TeamControllerTest {
         assertThat(teamNames).contains("Design", "Android", "iOS", "Web", "Node", "Spring");
     }
 
-    @DisplayName("팀 이름으로 XSS 방지 테스트")
+    @DisplayName("데이터에 스크립트가 포함되었을 때 응답에 스크립트 인코딩")
     @Test
     void getTeamXss() throws Exception {
         // given
