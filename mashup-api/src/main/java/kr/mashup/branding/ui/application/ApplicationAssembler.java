@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.application;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -80,10 +81,11 @@ public class ApplicationAssembler {
         return UpdateApplicationVo.of(
             updateApplicationRequest.getApplicantName(),
             updateApplicationRequest.getPhoneNumber(),
-            updateApplicationRequest.getAnswers()
-                .stream()
-                .map(this::toAnswerRequestVo)
-                .collect(Collectors.toList()),
+            Optional.ofNullable(updateApplicationRequest.getAnswers())
+                .map(it -> it.stream()
+                    .map(this::toAnswerRequestVo)
+                    .collect(Collectors.toList())
+                ).orElse(null),
             updateApplicationRequest.getPrivacyPolicyAgreed()
         );
     }

@@ -111,20 +111,18 @@ public class Application {
      */
     void update(UpdateApplicationVo updateApplicationVo) {
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
-        if (Boolean.TRUE != updateApplicationVo.getPrivacyPolicyAgreed()) {
-            throw new PrivacyPolicyNotAgreedException("'privacyPolicyAgreed' must be true. privacyPolicyAgreed: "
-                + updateApplicationVo.getPrivacyPolicyAgreed());
+        if (updateApplicationVo.getAnswerRequestVoList() != null) {
+            Map<Long, AnswerRequestVo> questionAnswerMap = updateApplicationVo.getAnswerRequestVoList()
+                .stream()
+                .collect(Collectors.toMap(AnswerRequestVo::getAnswerId, Function.identity()));
+            answers.forEach(it -> {
+                Long answerId = it.getAnswerId();
+                AnswerRequestVo answerRequestVo = questionAnswerMap.get(answerId);
+                it.update(answerRequestVo.getContent());
+            });
         }
-        Map<Long, AnswerRequestVo> questionAnswerMap = updateApplicationVo.getAnswerRequestVoList()
-            .stream()
-            .collect(Collectors.toMap(AnswerRequestVo::getAnswerId, Function.identity()));
-        answers.forEach(it -> {
-            Long answerId = it.getAnswerId();
-            AnswerRequestVo answerRequestVo = questionAnswerMap.get(answerId);
-            it.update(answerRequestVo.getContent());
-        });
         status = status.update();
-        privacyPolicyAgreed = true;
+        privacyPolicyAgreed = updateApplicationVo.getPrivacyPolicyAgreed();
     }
 
     /**

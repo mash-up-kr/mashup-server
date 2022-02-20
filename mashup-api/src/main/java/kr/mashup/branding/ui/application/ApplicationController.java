@@ -46,7 +46,6 @@ public class ApplicationController {
 
     /**
      * 임시저장
-     * TODO: 이미 저장된 다른팀 지원서가 있으면 삭제
      */
     @ApiOperation("내 지원서 임시 저장")
     @PutMapping("/{applicationId}")
