@@ -68,8 +68,13 @@ public class TestDataInitializer {
         Applicant applicant = createApplicant();
         log.info("Applicant is created. applicant: {}", applicant);
 
-        Application application = createApplication(applicant.getApplicantId(), applicationForm.getTeam().getTeamId());
-        log.info("Application is created. application: {}", application);
+        try {
+            Application application = createApplication(applicant.getApplicantId(),
+                applicationForm.getTeam().getTeamId());
+            log.info("Application is created. application: {}", application);
+        } catch (Exception e) {
+            log.info("Failed to created application for test data. message: {}", e.getMessage());
+        }
     }
 
     private List<RecruitmentSchedule> createRecruitmentSchedules() {
