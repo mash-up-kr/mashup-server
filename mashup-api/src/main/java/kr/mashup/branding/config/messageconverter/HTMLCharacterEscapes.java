@@ -27,8 +27,19 @@ public class HTMLCharacterEscapes extends CharacterEscapes {
         return asciiEscapes;
     }
 
+    // https://hiphopddori.tistory.com/61 이모지 파싱 에러 처리
     @Override
     public SerializableString getEscapeSequence(int ch) {
-        return new SerializedString(StringEscapeUtils.escapeHtml4(Character.toString((char)ch)));
+        SerializedString serializedString;
+        char charAt = (char)ch;
+        if (Character.isHighSurrogate(charAt) || Character.isLowSurrogate(charAt)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("\\u");
+            sb.append(String.format("%04x", ch));
+            serializedString = new SerializedString(sb.toString());
+        } else {
+            serializedString = new SerializedString(StringEscapeUtils.escapeHtml4(Character.toString(charAt)));
+        }
+        return serializedString;
     }
 }
