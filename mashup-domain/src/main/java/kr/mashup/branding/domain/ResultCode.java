@@ -15,6 +15,7 @@ public enum ResultCode {
 
     // application (지원서)
     APPLICATION_NOT_FOUND("지원서가 존재하지 않습니다."),
+    APPLICATION_CREATION_REQUEST_INVALID("지원서 생성 요청이 올바르지 않습니다."),
     APPLICATION_ALREADY_SUBMITTED("지원서가 이미 제출되었습니다."),
     APPLICATION_PRIVACY_POLICY_NOT_AGREED("개인정보 처리방침에 동의해야합니다."),
     APPLICATION_CONFIRMATION_UPDATE_INVALID("올바르지 않은 지원결과 확인 요청 입니다."),

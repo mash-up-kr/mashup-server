@@ -33,7 +33,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicantService applicantService;
     private final ApplicationScheduleValidator applicationScheduleValidator;
 
-    // get or create
+    /**
+     * 1. 해당 팀에 생성한 지원서가 없는 경우: CREATED 상태의 지원서 생성
+     * 2. 해당 팀에 이미 생성한 지원서가 있는 경우:
+     * - CREATED, WRITING: 성공
+     * - SUBMITTED: 실패
+     *
+     * @param applicantId 지원자 식별자
+     * @param createApplicationVo 지원서 생성 요청 정보
+     * @return 지원서
+     */
     @Override
     @Transactional
     public Application create(Long applicantId, CreateApplicationVo createApplicationVo) {
@@ -46,18 +55,15 @@ public class ApplicationServiceImpl implements ApplicationService {
         try {
             applicant = applicantService.getApplicant(applicantId);
         } catch (ApplicantNotFoundException e) {
-            // TODO: 적절한 예외 만들기
-            throw new IllegalArgumentException("Applicant not found. applicantId: " + applicantId);
+            throw new ApplicationCreationRequestInvalidException("Applicant not found. applicantId: " + applicantId, e);
         }
 
         try {
             teamService.getTeam(createApplicationVo.getTeamId());
         } catch (TeamNotFoundException e) {
-            // TODO: 적절한 예외 만들기
-            throw new IllegalArgumentException("Team not found. teamId: " + createApplicationVo.getTeamId());
+            throw new ApplicationCreationRequestInvalidException(
+                "Team not found. teamId: " + createApplicationVo.getTeamId(), e);
         }
-
-        // TODO: 이미 다른팀에 임시저장/제출완료한 다른 지원서가 있는지 검사
 
         final ApplicationForm applicationForm;
         try {
@@ -66,8 +72,8 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .findFirst()
                 .orElseThrow(ApplicationFormNotFoundException::new);
         } catch (ApplicationFormNotFoundException e) {
-            // TODO: 적절한 예외 만들기
-            throw new IllegalArgumentException("ApplicationForm not found. teamId: " + createApplicationVo.getTeamId());
+            throw new ApplicationCreationRequestInvalidException(
+                "ApplicationForm not found. teamId: " + createApplicationVo.getTeamId(), e);
         }
 
         List<Application> applications = applicationRepository.findByApplicantAndApplicationForm(applicant,
