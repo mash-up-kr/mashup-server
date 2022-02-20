@@ -35,7 +35,7 @@ class ApplicationTest {
         AtomicLong atomicLong = new AtomicLong();
         ApplicationSubmitRequestVo applicationSubmitRequestVo = ApplicationSubmitRequestVo.of(
             "applicantName",
-            "01012341234",
+            "010-1234-1234",
             applicationForm.getQuestions()
                 .stream()
                 .map(it -> AnswerRequestVo.of(atomicLong.incrementAndGet(), it.getQuestionId(), "answerContent"))
@@ -62,7 +62,7 @@ class ApplicationTest {
         AtomicLong atomicLong = new AtomicLong();
         ApplicationSubmitRequestVo applicationSubmitRequestVo = ApplicationSubmitRequestVo.of(
             "applicantName",
-            "01012341234",
+            "010-1234-1234",
             applicationForm.getQuestions()
                 .stream()
                 .map(it -> AnswerRequestVo.of(atomicLong.incrementAndGet(), it.getQuestionId(), "answerContent"))

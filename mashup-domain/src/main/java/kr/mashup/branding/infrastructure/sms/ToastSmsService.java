@@ -91,11 +91,15 @@ public class ToastSmsService implements SmsService {
     private ToastSmsRequest toToastSmsRequest(SmsRequestVo smsRequestVo) {
         return ToastSmsRequest.of(
             smsRequestVo.getContent(),
-            smsRequestVo.getSenderPhoneNumber(),
+            Optional.ofNullable(smsRequestVo.getSenderPhoneNumber())
+                .map(it -> it.replaceAll("-", ""))
+                .orElse(null),
             smsRequestVo.getMessageId(),
             smsRequestVo.getSmsRecipientRequestVos().stream()
                 .map(it -> ToastSmsRecipient.of(
-                    it.getPhoneNumber(),
+                    Optional.ofNullable(it.getPhoneNumber())
+                        .map(phoneNumber -> phoneNumber.replaceAll("-", ""))
+                        .orElse(null),
                     it.getMessageId()
                 ))
                 .collect(Collectors.toList())

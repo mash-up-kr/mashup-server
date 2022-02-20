@@ -19,11 +19,11 @@ import lombok.RequiredArgsConstructor;
 
 @ConditionalOnProperty(
     value = BatchConfig.SPRING_BATCH_JOB_NAMES,
-    havingValue = AdminMemberSignUpJobConfig.JOB_NAME
+    havingValue = AdminMemberSignupJobConfig.JOB_NAME
 )
 @Configuration
 @RequiredArgsConstructor
-public class AdminMemberSignUpJobConfig {
+public class AdminMemberSignupJobConfig {
     static final String JOB_NAME = "admin-member-sign-up";
     private static final String STEP_NAME = JOB_NAME + "-step";
 
