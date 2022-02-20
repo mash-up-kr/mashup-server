@@ -28,7 +28,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
             adminMemberVo.getUsername(),
             passwordEncoder.encode(adminMemberVo.getPassword()),
             Optional.ofNullable(adminMemberVo.getPhoneNumber())
-                .map(it -> it.replaceAll("-", "").trim())
+                .map(String::trim)
                 .orElse(null),
             adminMemberVo.getPosition()
         );

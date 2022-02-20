@@ -25,7 +25,7 @@ import lombok.ToString;
 @EqualsAndHashCode(of = "applicantId")
 @EntityListeners(AuditingEntityListener.class)
 public class Applicant {
-    private static final Pattern PATTERN_NUMBER = Pattern.compile("\\d+");
+    private static final Pattern PATTERN_NUMBER = Pattern.compile("\\d{3}-\\d{4}-\\d{4}");
 
     @Id
     @GeneratedValue
@@ -61,7 +61,7 @@ public class Applicant {
     public void update(String name, String phoneNumber) {
         this.name = name;
         this.phoneNumber = Optional.ofNullable(phoneNumber)
-            .map(it -> it.replaceAll("-", "").trim())
+            .map(String::trim)
             .orElse(null);
     }
 
