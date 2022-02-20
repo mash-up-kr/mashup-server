@@ -80,4 +80,24 @@ class TeamControllerTest {
         String teamName = actual.getData().get(0).getName();
         assertThat(teamName).isEqualTo("&lt;script&gt;alert()&lt;/script&gt;");
     }
+
+    @DisplayName("데이터에 이모지가 있을 때 응답에 이모지가 잘 내려옴")
+    @Test
+    void getEmojiXss() throws Exception {
+        // given
+        teamService.create(CreateTeamVo.of("✨스프링✨"));
+        // when
+        MvcResult mvcResult = mockMvc.perform(get("/api/v1/teams"))
+            // then 1
+            .andExpect(status().isOk())
+            .andReturn();
+        ApiResponse<List<TeamResponse>> actual = objectMapper.readValue(
+            mvcResult.getResponse().getContentAsByteArray(),
+            new TypeReference<ApiResponse<List<TeamResponse>>>() {
+            }
+        );
+        // then2
+        String teamName = actual.getData().get(0).getName();
+        assertThat(teamName).isEqualTo("✨스프링✨");
+    }
 }
