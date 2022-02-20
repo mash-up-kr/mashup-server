@@ -99,7 +99,7 @@ class RecruitmentScheduleControllerTest {
             }
         );
         // then 2
-        assertEquals(ResultCode.SUCCESS.name(), actual.getCode());
+        assertEquals(ResultCode.SUCCESS, actual.getCode());
         assertEquals(eventName, actual.getData().getEventName());
         assertEquals(now, actual.getData().getEventOccurredAt());
 
@@ -131,7 +131,7 @@ class RecruitmentScheduleControllerTest {
             }
         );
         // then 2
-        assertEquals(ResultCode.RECRUITMENT_SCHEDULE_DUPLICATED.name(), actual.getCode());
+        assertEquals(ResultCode.RECRUITMENT_SCHEDULE_DUPLICATED, actual.getCode());
     }
 
     @WithMockUser(authorities = {AUTHORITY_NAME})
@@ -184,7 +184,7 @@ class RecruitmentScheduleControllerTest {
             }
         );
         // then 2
-        assertEquals(ResultCode.RECRUITMENT_SCHEDULE_NOT_FOUND.name(), actual.getCode());
+        assertEquals(ResultCode.RECRUITMENT_SCHEDULE_NOT_FOUND, actual.getCode());
     }
 
     @WithMockUser(authorities = {AUTHORITY_NAME})
@@ -207,7 +207,7 @@ class RecruitmentScheduleControllerTest {
             }
         );
         // then 2
-        assertEquals("SUCCESS", actual.getCode());
+        assertEquals(ResultCode.SUCCESS, actual.getCode());
         Set<Long> recruitmentScheduleIds = recruitmentScheduleApi.getAll()
             .getData()
             .stream()
@@ -234,7 +234,7 @@ class RecruitmentScheduleControllerTest {
             }
         );
         // then 2
-        assertEquals(ResultCode.SUCCESS.name(), actual.getCode());
+        assertEquals(ResultCode.SUCCESS, actual.getCode());
         Set<Long> recruitmentScheduleIds = recruitmentScheduleApi.getAll()
             .getData()
             .stream()

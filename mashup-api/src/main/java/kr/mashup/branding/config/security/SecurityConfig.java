@@ -17,6 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.mashup.branding.config.jwt.JwtService;
+import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.applicant.ApplicantService;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 objectMapper.writeValue(
                     response.getOutputStream(),
-                    ApiResponse.failure("UNAUTHORIZED", "인증이 필요한 요청입니다.")
+                    ApiResponse.failure(ResultCode.UNAUTHORIZED)
                 );
             })
             .accessDeniedHandler((request, response, accessDeniedException) -> {
@@ -76,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 objectMapper.writeValue(
                     response.getOutputStream(),
-                    ApiResponse.failure("FORBIDDEN", "허용되지 않은 접근입니다.")
+                    ApiResponse.failure(ResultCode.FORBIDDEN)
                 );
             });
     }
