@@ -1,6 +1,7 @@
 package kr.mashup.branding.domain.application.form;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -73,10 +74,16 @@ public class Question {
     public static Question of(QuestionRequestVo questionRequestVo) {
         Question question = new Question();
         question.content = questionRequestVo.getContent();
-        question.maxContentLength = questionRequestVo.getMaxContentLength();
         question.description = questionRequestVo.getDescription();
-        question.required = questionRequestVo.getRequired();
-        question.questionType = questionRequestVo.getQuestionType();
+        question.required = Optional.ofNullable(questionRequestVo.getRequired()).orElse(false);
+        if (questionRequestVo.getQuestionType() == null ||
+            questionRequestVo.getQuestionType() == QuestionType.SINGLE_LINE_TEXT) {
+            question.questionType = QuestionType.SINGLE_LINE_TEXT;
+            question.maxContentLength = null;
+        } else {
+            question.questionType = questionRequestVo.getQuestionType();
+            question.maxContentLength = questionRequestVo.getMaxContentLength();
+        }
         return question;
     }
 }
