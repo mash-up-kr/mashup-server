@@ -57,21 +57,6 @@ public class Applicant {
         return applicant;
     }
 
-    private static final Applicant TESTER;
-
-    static {
-        TESTER = new Applicant();
-        TESTER.email = "mashup.12th.branding.server.dev@gmail.com";
-        TESTER.googleUserId = "googleUserId";
-        TESTER.name = "TESTER";
-        TESTER.phoneNumber = "01031280428";
-        TESTER.status = ApplicantStatus.ACTIVE;
-    }
-
-    public static Applicant tester() {
-        return TESTER;
-    }
-
     public void update(String name, String phoneNumber) {
         this.name = name;
         this.phoneNumber = phoneNumber.replaceAll("-", "").trim();
