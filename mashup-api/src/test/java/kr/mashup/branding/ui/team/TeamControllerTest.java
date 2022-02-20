@@ -85,7 +85,7 @@ class TeamControllerTest {
     @Test
     void getEmojiXss() throws Exception {
         // given
-        teamService.create(CreateTeamVo.of("✨스프링✨"));
+        teamService.create(CreateTeamVo.of("\uD83D\uDCAC스프링✨"));
         // when
         MvcResult mvcResult = mockMvc.perform(get("/api/v1/teams"))
             // then 1
@@ -98,6 +98,6 @@ class TeamControllerTest {
         );
         // then2
         String teamName = actual.getData().get(0).getName();
-        assertThat(teamName).isEqualTo("✨스프링✨");
+        assertThat(teamName).isEqualTo("\uD83D\uDCAC스프링✨");
     }
 }
