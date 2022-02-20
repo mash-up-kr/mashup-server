@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import kr.mashup.branding.domain.applicant.ApplicantService;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationService;
+import kr.mashup.branding.domain.application.ApplicationSubmitRequestVo;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
@@ -39,8 +40,12 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
      * 지원서 제출
      */
     @Override
-    public Application submit(Long applicantId, Long applicationId) {
-        return applicationService.submit(applicantId, applicationId);
+    public Application submit(
+        Long applicantId,
+        Long applicationId,
+        ApplicationSubmitRequestVo applicationSubmitRequestVo
+    ) {
+        return applicationService.submit(applicantId, applicationId, applicationSubmitRequestVo);
     }
 
     /**

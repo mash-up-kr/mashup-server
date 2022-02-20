@@ -41,9 +41,8 @@ public enum ApplicationStatus {
         switch (this) {
             case CREATED:
             case WRITING:
+            case SUBMITTED: // 이미 제출한 지원서인 경우, 성공으로 응답
                 return SUBMITTED;
-            case SUBMITTED:
-                throw new ApplicationAlreadySubmittedException();
         }
         // 컴파일 에러 방지
         throw new IllegalStateException();

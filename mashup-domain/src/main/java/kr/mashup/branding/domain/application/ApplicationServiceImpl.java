@@ -102,22 +102,27 @@ public class ApplicationServiceImpl implements ApplicationService {
             applicantId).orElseThrow(ApplicationNotFoundException::new);
 
         application.update(updateApplicationVo);
-        application.getApplicant().update(
-            updateApplicationVo.getName(),
-            updateApplicationVo.getPhoneNumber()
-        );
         return application;
     }
 
     @Override
     @Transactional
-    public Application submit(Long applicantId, Long applicationId) {
+    public Application submit(
+        Long applicantId,
+        Long applicationId,
+        ApplicationSubmitRequestVo applicationSubmitRequestVo
+    ) {
         Assert.notNull(applicationId, "'applicationId' must not be null");
 
         validateDate(applicantId);
         Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(applicationId,
             applicantId).orElseThrow(ApplicationNotFoundException::new);
-        application.submit();
+        try {
+            application.submit(applicationSubmitRequestVo);
+        } catch (IllegalArgumentException e) {
+            throw new ApplicationSubmitRequestInvalidException(
+                "Failed to update application. applicationId: " + applicationId, e);
+        }
         return application;
     }
 
@@ -129,6 +134,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             applicationScheduleValidator.validate(LocalDateTime.now());
         } catch (ApplicationModificationNotAllowedException e) {
             log.info("Failed to modify application. applicantId: {}", applicantId);
+            throw e;
         }
     }
 

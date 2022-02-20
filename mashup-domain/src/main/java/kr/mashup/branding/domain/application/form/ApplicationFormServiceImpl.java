@@ -50,6 +50,7 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
             applicationFormScheduleValidator.validate(LocalDateTime.now());
         } catch (ApplicationFormModificationNotAllowedException e) {
             log.info("Failed to modify applicationForm. adminMemberId: {}", adminMemberId);
+            throw e;
         }
     }
 
