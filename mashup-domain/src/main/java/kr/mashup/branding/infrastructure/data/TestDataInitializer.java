@@ -1,5 +1,7 @@
 package kr.mashup.branding.infrastructure.data;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,12 +10,14 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberRepository;
 import kr.mashup.branding.domain.adminmember.Position;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantRepository;
+import kr.mashup.branding.domain.applicant.ApplicantStatus;
 import kr.mashup.branding.domain.application.Answer;
 import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
@@ -65,10 +69,10 @@ public class TestDataInitializer {
         );
         log.info("ApplicationForm is created. applicationForm: {}", applicationForm);
 
-        Applicant applicant = createApplicant();
-        log.info("Applicant is created. applicant: {}", applicant);
-
         try {
+            Applicant applicant = createApplicant();
+            log.info("Applicant is created. applicant: {}", applicant);
+
             Application application = createApplication(applicant.getApplicantId(),
                 applicationForm.getTeam().getTeamId());
             log.info("Application is created. application: {}", application);
@@ -143,9 +147,22 @@ public class TestDataInitializer {
         ));
     }
 
-    private Applicant createApplicant() {
-        Applicant tester = Applicant.tester();
-        return applicantRepository.save(tester);
+    private Applicant createApplicant() throws Exception {
+        Constructor<Applicant> declaredConstructor = Applicant.class.getDeclaredConstructor();
+        declaredConstructor.setAccessible(true);
+        Applicant applicant = declaredConstructor.newInstance();
+        setApplicantField("email", applicant, "mashup.12th.branding.server.dev@gmail.com");
+        setApplicantField("googleUserId", applicant, "googleUserId");
+        setApplicantField("name", applicant, "TESTER");
+        setApplicantField("phoneNumber", applicant, "01031280428");
+        setApplicantField("status", applicant, ApplicantStatus.ACTIVE);
+        return applicantRepository.save(applicant);
+    }
+
+    private void setApplicantField(String fieldName, Applicant target, Object value) throws Exception {
+        Field field = Applicant.class.getField(fieldName);
+        field.setAccessible(true);
+        ReflectionUtils.setField(field, target, value);
     }
 
     private AdminMember createAdminMember() {

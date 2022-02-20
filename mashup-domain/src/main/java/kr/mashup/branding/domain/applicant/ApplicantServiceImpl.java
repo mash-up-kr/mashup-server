@@ -22,15 +22,6 @@ public class ApplicantServiceImpl implements ApplicantService {
             .orElseThrow(ApplicantNotFoundException::new);
     }
 
-    /**
-     * 테스터 조회
-     * FIXME: 로그인 기능 추가되면 삭제해야함
-     */
-    @Override
-    public Applicant getTester() {
-        return applicantRepository.findAll().stream().findFirst().orElseThrow(ApplicantNotFoundException::new);
-    }
-
     @Transactional
     @Override
     public Applicant join(JoinRequestVo joinRequestVo) {
