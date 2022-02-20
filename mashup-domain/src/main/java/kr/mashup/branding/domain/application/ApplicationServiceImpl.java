@@ -134,6 +134,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             applicationScheduleValidator.validate(LocalDateTime.now());
         } catch (ApplicationModificationNotAllowedException e) {
             log.info("Failed to modify application. applicantId: {}", applicantId);
+            throw e;
         }
     }
 
