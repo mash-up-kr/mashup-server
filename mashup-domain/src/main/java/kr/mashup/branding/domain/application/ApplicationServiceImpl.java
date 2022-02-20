@@ -40,7 +40,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Assert.notNull(applicantId, "'applicantId' must not be null");
         Assert.notNull(createApplicationVo, "'createApplicationVo' must not be null");
 
-        validateDate();
+        validateDate(applicantId);
 
         final Applicant applicant;
         try {
@@ -86,14 +86,15 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public Application update(Long applicationId, UpdateApplicationVo updateApplicationVo) {
+    public Application update(Long applicantId, Long applicationId, UpdateApplicationVo updateApplicationVo) {
         Assert.notNull(applicationId, "'applicationId' must not be null");
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
 
-        validateDate();
+        validateDate(applicantId);
 
-        Application application = applicationRepository.findById(applicationId)
-            .orElseThrow(ApplicationNotFoundException::new);
+        Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(applicationId,
+            applicantId).orElseThrow(ApplicationNotFoundException::new);
+
         application.update(updateApplicationVo);
         application.getApplicant().update(
             updateApplicationVo.getName(),
@@ -104,12 +105,12 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public Application submit(Long applicationId) {
+    public Application submit(Long applicantId, Long applicationId) {
         Assert.notNull(applicationId, "'applicationId' must not be null");
 
-        validateDate();
-        Application application = applicationRepository.findById(applicationId)
-            .orElseThrow(ApplicationNotFoundException::new);
+        validateDate(applicantId);
+        Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(applicationId,
+            applicantId).orElseThrow(ApplicationNotFoundException::new);
         application.submit();
         return application;
     }
@@ -117,8 +118,12 @@ public class ApplicationServiceImpl implements ApplicationService {
     /**
      * 지원서 생성, 수정, 제출 가능한 시각인지 검증
      */
-    private void validateDate() {
-        applicationScheduleValidator.validate(LocalDateTime.now());
+    private void validateDate(Long applicantId) {
+        try {
+            applicationScheduleValidator.validate(LocalDateTime.now());
+        } catch (ApplicationModificationNotAllowedException e) {
+            log.info("Failed to modify application. applicantId: {}", applicantId);
+        }
     }
 
     /**
@@ -148,7 +153,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     public Application updateConfirmationFromApplicant(Long applicantId,
         UpdateConfirmationVo updateConfirmationVo) {
         Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(
-                updateConfirmationVo.getApplicationId(), applicantId)
+            updateConfirmationVo.getApplicationId(), applicantId)
             .orElseThrow(ApplicationNotFoundException::new);
         application.updateConfirm(updateConfirmationVo.getStatus());
         return application;

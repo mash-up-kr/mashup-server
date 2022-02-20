@@ -32,7 +32,7 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
      */
     @Override
     public Application update(Long applicantId, Long applicationId, UpdateApplicationVo updateApplicationVo) {
-        return applicationService.update(applicationId, updateApplicationVo);
+        return applicationService.update(applicantId, applicationId, updateApplicationVo);
     }
 
     /**
@@ -40,7 +40,7 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
      */
     @Override
     public Application submit(Long applicantId, Long applicationId) {
-        return applicationService.submit(applicationId);
+        return applicationService.submit(applicantId, applicationId);
     }
 
     /**

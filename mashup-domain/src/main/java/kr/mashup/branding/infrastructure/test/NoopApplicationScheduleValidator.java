@@ -10,7 +10,7 @@ import kr.mashup.branding.domain.application.ApplicationScheduleValidator;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Profile("develop")
+@Profile({"local", "develop"})
 @Primary
 @Component
 public class NoopApplicationScheduleValidator implements ApplicationScheduleValidator {

@@ -10,9 +10,9 @@ import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 public interface ApplicationService {
     Application create(Long applicantId, CreateApplicationVo createApplicationVo);
 
-    Application update(Long applicationId, UpdateApplicationVo updateApplicationVo);
+    Application update(Long applicantId, Long applicationId, UpdateApplicationVo updateApplicationVo);
 
-    Application submit(Long applicationId);
+    Application submit(Long applicantId, Long applicationId);
 
     Application updateResult(Long adminMemberId, UpdateApplicationResultVo updateApplicationResultVo);
 
