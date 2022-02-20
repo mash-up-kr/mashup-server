@@ -20,16 +20,17 @@ public class ApplicationFormFacadeServiceImpl implements ApplicationFormFacadeSe
     private final ProfileFacadeService profileFacadeService;
 
     @Override
-    public ApplicationForm create(CreateApplicationFormVo createApplicationFormVo) {
-        return applicationFormService.create(createApplicationFormVo);
+    public ApplicationForm create(Long adminMemberId, CreateApplicationFormVo createApplicationFormVo) {
+        return applicationFormService.create(adminMemberId, createApplicationFormVo);
     }
 
     @Override
     public ApplicationForm update(
+        Long adminMemberId,
         Long applicationFormId,
         UpdateApplicationFormVo updateApplicationFormVo
     ) {
-        return applicationFormService.update(applicationFormId, updateApplicationFormVo);
+        return applicationFormService.update(adminMemberId, applicationFormId, updateApplicationFormVo);
     }
 
     @Override
@@ -43,11 +44,11 @@ public class ApplicationFormFacadeServiceImpl implements ApplicationFormFacadeSe
     }
 
     @Override
-    public void delete(Long applicationFormId) {
+    public void delete(Long adminMemberId, Long applicationFormId) {
         // 개발 환경에서는 설문지 삭제 시도시 지원서를 모두 삭제 후 설문지까지 삭제 한다.
         if (profileFacadeService.isLocal() || profileFacadeService.isDevelop()) {
             applicationService.deleteByApplicationFormId(applicationFormId);
         }
-        applicationFormService.delete(applicationFormId);
+        applicationFormService.delete(adminMemberId, applicationFormId);
     }
 }

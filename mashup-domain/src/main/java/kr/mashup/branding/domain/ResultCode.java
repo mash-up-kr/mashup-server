@@ -18,6 +18,7 @@ public enum ResultCode {
     APPLICATION_ALREADY_SUBMITTED("지원서가 이미 제출되었습니다."),
     APPLICATION_PRIVACY_POLICY_NOT_AGREED("개인정보 처리방침에 동의해야합니다."),
     APPLICATION_CONFIRMATION_UPDATE_INVALID("올바르지 않은 지원결과 확인 요청 입니다."),
+    APPLICATION_MODIFICATION_NOT_ALLOWED("지원서 제출 기간이 아닙니다."),
 
     // application result (지원서 결과)
     INTERVIEW_TIME_INVALID("면접시간이 올바르지 않습니다."),

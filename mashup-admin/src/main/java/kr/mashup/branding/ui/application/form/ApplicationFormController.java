@@ -70,11 +70,12 @@ public class ApplicationFormController {
      */
     @PostMapping
     public ApiResponse<ApplicationFormResponse> create(
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @RequestBody CreateApplicationFormRequest createApplicationFormRequest
     ) {
         CreateApplicationFormVo createApplicationFormVo = applicationFormAssembler.toCreateApplicationFormVo(
             createApplicationFormRequest);
-        ApplicationForm applicationForm = applicationFormFacadeService.create(createApplicationFormVo);
+        ApplicationForm applicationForm = applicationFormFacadeService.create(adminMemberId, createApplicationFormVo);
         return ApiResponse.success(
             applicationFormAssembler.toApplicationFormResponse(applicationForm)
         );
@@ -88,10 +89,12 @@ public class ApplicationFormController {
      */
     @PutMapping("/{applicationFormId}")
     public ApiResponse<ApplicationFormResponse> update(
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long applicationFormId,
         @RequestBody UpdateApplicationFormRequest updateApplicationFormRequest
     ) {
         ApplicationForm applicationForm = applicationFormFacadeService.update(
+            adminMemberId,
             applicationFormId,
             applicationFormAssembler.toUpdateApplicationFormVo(updateApplicationFormRequest)
         );
@@ -109,7 +112,7 @@ public class ApplicationFormController {
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long applicationFormId
     ) {
-        applicationFormFacadeService.delete(applicationFormId);
+        applicationFormFacadeService.delete(adminMemberId, applicationFormId);
         return ApiResponse.success();
     }
 }

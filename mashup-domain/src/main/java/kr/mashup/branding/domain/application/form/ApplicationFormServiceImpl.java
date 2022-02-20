@@ -13,7 +13,9 @@ import kr.mashup.branding.domain.application.ApplicationRepository;
 import kr.mashup.branding.domain.team.Team;
 import kr.mashup.branding.domain.team.TeamService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -25,8 +27,8 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
 
     @Override
     @Transactional
-    public ApplicationForm create(CreateApplicationFormVo createApplicationFormVo) {
-        validateDate();
+    public ApplicationForm create(Long adminMemberId, CreateApplicationFormVo createApplicationFormVo) {
+        validateDate(adminMemberId);
         Team team = teamService.getTeam(createApplicationFormVo.getTeamId());
         if (applicationFormRepository.existsByTeam_teamId(team.getTeamId())) {
             throw new ApplicationFormAlreadyExistException("해당 팀에 다른 설문지가 이미 존재합니다. teamId: " + team.getTeamId());
@@ -43,17 +45,22 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     /**
      * 설문지를 생성, 수정 및 삭제할 수 있는지 검증
      */
-    private void validateDate() {
-        applicationFormScheduleValidator.validate(LocalDateTime.now());
+    private void validateDate(Long adminMemberId) {
+        try {
+            applicationFormScheduleValidator.validate(LocalDateTime.now());
+        } catch (ApplicationFormModificationNotAllowedException e) {
+            log.info("Failed to modify applicationForm. adminMemberId: {}", adminMemberId);
+        }
     }
 
     @Override
     @Transactional
     public ApplicationForm update(
+        Long adminMemberId,
         Long applicationFormId,
         UpdateApplicationFormVo updateApplicationFormVo
     ) {
-        validateDate();
+        validateDate(adminMemberId);
         ApplicationForm applicationForm = applicationFormRepository.findByApplicationFormId(applicationFormId)
             .orElseThrow(ApplicationFormNotFoundException::new);
         applicationForm.update(updateApplicationFormVo);
@@ -62,8 +69,8 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
 
     @Override
     @Transactional
-    public void delete(Long applicationFormId) {
-        validateDate();
+    public void delete(Long adminMemberId, Long applicationFormId) {
+        validateDate(adminMemberId);
         if (applicationRepository.existsByApplicationForm_ApplicationFormId(applicationFormId)) {
             throw new ApplicationFormDeleteFailedException();
         }

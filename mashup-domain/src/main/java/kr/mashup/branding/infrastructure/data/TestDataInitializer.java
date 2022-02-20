@@ -47,27 +47,29 @@ public class TestDataInitializer {
 
     @EventListener(ApplicationReadyEvent.class)
     public void initialize() {
+        AdminMember adminMember = createAdminMember();
+        log.info("AdminMember is created. adminMember: {}", adminMember);
+
         List<RecruitmentSchedule> recruitmentSchedules = createRecruitmentSchedules();
         log.info("4 RecruitmentSchedules are created. recruitmentSchedules: {}", recruitmentSchedules);
 
         List<Team> teams = createTeams();
         log.info("6 Teams are created. teams: {}", teams);
 
-        ApplicationForm applicationForm = createApplicationForm(teams.stream()
-            .filter(it -> it.getName().equals("Spring"))
-            .findFirst()
-            .get()
+        ApplicationForm applicationForm = createApplicationForm(
+            adminMember.getAdminMemberId(),
+            teams.stream()
+                .filter(it -> it.getName().equals("Spring"))
+                .findFirst()
+                .get()
         );
         log.info("ApplicationForm is created. applicationForm: {}", applicationForm);
 
         Applicant applicant = createApplicant();
         log.info("Applicant is created. applicant: {}", applicant);
 
-        AdminMember adminMember = createAdminMember();
-        log.info("AdminMember is created. adminMember: {}", adminMember);
-
-        // Application application = createApplication(applicant.getApplicantId(), applicationForm.getTeam().getTeamId());
-        // createAnswers(application);
+        Application application = createApplication(applicant.getApplicantId(), applicationForm.getTeam().getTeamId());
+        log.info("Application is created. application: {}", application);
     }
 
     private List<RecruitmentSchedule> createRecruitmentSchedules() {
@@ -84,9 +86,9 @@ public class TestDataInitializer {
         return teamService.findAllTeams();
     }
 
-    private ApplicationForm createApplicationForm(Team team) {
+    private ApplicationForm createApplicationForm(Long adminMemberId, Team team) {
         // 스프링팀 11기 지원서
-        return applicationFormService.create(CreateApplicationFormVo.of(
+        return applicationFormService.create(adminMemberId, CreateApplicationFormVo.of(
             team.getTeamId(),
             Arrays.asList(
                 QuestionRequestVo.of(
@@ -146,24 +148,21 @@ public class TestDataInitializer {
             "testadmin",
             "$2a$10$ReFbOONqzqSbJmEOq9DC0ezs64sfLJumeqei96Ov4Fb8RhVc2Fmf6",
             "01097944578",
-            Position.SPRING_LEADER
+            Position.BRANDING_MEMBER
         );
         return adminMemberRepository.save(testadmin);
     }
 
     // 테스트용 지원서 생성 (사용하려면 지원기간 validate 해제 해야함)
     private Application createApplication(Long applicantId, Long teamId) {
-        return applicationService.create(applicantId, new CreateApplicationVo(teamId));
-    }
-
-    private Application createAnswers(Application application) {
+        Application application = applicationService.create(applicantId, new CreateApplicationVo(teamId));
         List<Long> answerIds = application.getAnswers().stream().map(Answer::getAnswerId).collect(Collectors.toList());
         List<AnswerRequestVo> answerRequestVos = answerIds.stream()
             .map(id -> AnswerRequestVo.of(id, "응답"))
             .collect(Collectors.toList());
 
-        UpdateApplicationVo of = UpdateApplicationVo.of("이름", "01000000000", answerRequestVos, true);
-        applicationService.update(application.getApplicationId(), of);
+        UpdateApplicationVo updateApplicationVo = UpdateApplicationVo.of("이름", "01000000000", answerRequestVos, true);
+        applicationService.update(applicantId, application.getApplicationId(), updateApplicationVo);
         return application;
     }
 }

@@ -6,11 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ApplicationFormService {
-    ApplicationForm create(CreateApplicationFormVo createApplicationFormVo);
+    ApplicationForm create(Long adminMemberId, CreateApplicationFormVo createApplicationFormVo);
 
-    ApplicationForm update(Long applicationFormId, UpdateApplicationFormVo updateApplicationFormVo);
+    ApplicationForm update(Long adminMemberId, Long applicationFormId,
+        UpdateApplicationFormVo updateApplicationFormVo);
 
-    void delete(Long applicationFormId);
+    void delete(Long adminMemberId, Long applicationFormId);
 
     ApplicationForm getApplicationFormById(Long applicationFormId);
 
