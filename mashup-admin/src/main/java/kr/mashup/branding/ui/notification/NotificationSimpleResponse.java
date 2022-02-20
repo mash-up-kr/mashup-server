@@ -3,6 +3,7 @@ package kr.mashup.branding.ui.notification;
 import java.time.LocalDateTime;
 
 import io.swagger.annotations.ApiModelProperty;
+import kr.mashup.branding.domain.adminmember.Position;
 import kr.mashup.branding.domain.notification.NotificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +27,7 @@ public class NotificationSimpleResponse {
     private LocalDateTime sentAt;
 
     @ApiModelProperty(value = "발송자")
-    private String sender;
+    private Position sender;
 
     @ApiModelProperty(value = "발송 성공한 수신자 수", example = "209")
     private Integer successCount;
