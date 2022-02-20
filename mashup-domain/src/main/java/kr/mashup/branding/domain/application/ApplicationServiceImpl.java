@@ -17,7 +17,6 @@ import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
 import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.domain.team.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -32,17 +31,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationFormService applicationFormService;
     private final TeamService teamService;
     private final ApplicantService applicantService;
-    private final RecruitmentScheduleService recruitmentScheduleService;
+    private final ApplicationScheduleValidator applicationScheduleValidator;
 
     // get or create
-    // TODO: 모르겠고 teamId 줄테니 다내놔! 에 대해서 고민해보기
     @Override
     @Transactional
     public Application create(Long applicantId, CreateApplicationVo createApplicationVo) {
         Assert.notNull(applicantId, "'applicantId' must not be null");
         Assert.notNull(createApplicationVo, "'createApplicationVo' must not be null");
 
-        validateDate(LocalDateTime.now());
+        validateDate();
 
         final Applicant applicant;
         try {
@@ -92,7 +90,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         Assert.notNull(applicationId, "'applicationId' must not be null");
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
 
-        validateDate(LocalDateTime.now());
+        validateDate();
+
         Application application = applicationRepository.findById(applicationId)
             .orElseThrow(ApplicationNotFoundException::new);
         application.update(updateApplicationVo);
@@ -108,8 +107,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     public Application submit(Long applicationId) {
         Assert.notNull(applicationId, "'applicationId' must not be null");
 
-        validateDate(LocalDateTime.now());
-
+        validateDate();
         Application application = applicationRepository.findById(applicationId)
             .orElseThrow(ApplicationNotFoundException::new);
         application.submit();
@@ -119,10 +117,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     /**
      * 지원서 생성, 수정, 제출 가능한 시각인지 검증
      */
-    private void validateDate(LocalDateTime localDateTime) {
-        // if (!recruitmentScheduleService.isRecruitAvailable(localDateTime)) {
-        //     throw new IllegalArgumentException("지원서 제출 기간이 아닙니다. ");
-        // }
+    private void validateDate() {
+        applicationScheduleValidator.validate(LocalDateTime.now());
     }
 
     /**
