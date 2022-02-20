@@ -14,8 +14,8 @@ public class ApplicationScheduleValidatorImpl implements ApplicationScheduleVali
 
     @Override
     public void validate(LocalDateTime localDateTime) {
-        // if (!recruitmentScheduleService.isRecruitAvailable(localDateTime)) {
-        //     throw new ApplicationModificationNotAllowedException("지원서 제출 기간이 아닙니다.");
-        // }
+        if (!recruitmentScheduleService.isRecruitAvailable(localDateTime)) {
+            throw new ApplicationModificationNotAllowedException("지원서 제출 기간이 아닙니다.");
+        }
     }
 }

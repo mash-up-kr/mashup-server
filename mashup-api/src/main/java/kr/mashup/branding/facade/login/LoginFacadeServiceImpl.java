@@ -6,6 +6,7 @@ import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -35,10 +36,10 @@ public class LoginFacadeServiceImpl implements LoginFacadeService {
 
     @Override
     public LoginResponseVo login(LoginRequestVo loginRequestVo) {
-        // GoogleIdToken googleIdToken = verifyToken(
-        //     loginRequestVo.getGoogleIdToken()
-        // );
-        Applicant applicant = getOrCreateApplicant();
+        GoogleIdToken googleIdToken = verifyToken(
+            loginRequestVo.getGoogleIdToken()
+        );
+        Applicant applicant = getOrCreateApplicant(googleIdToken);
         return LoginResponseVo.of(
             jwtService.encode(applicant.getApplicantId()),
             applicant
@@ -58,11 +59,11 @@ public class LoginFacadeServiceImpl implements LoginFacadeService {
         }
     }
 
-    private Applicant getOrCreateApplicant() {
-        // Assert.notNull(googleIdToken, "'googleIdToken' must not be null");
-        // Assert.notNull(googleIdToken.getPayload(), "'googleIdToken.payload' must not be null");
+    private Applicant getOrCreateApplicant(GoogleIdToken googleIdToken) {
+        Assert.notNull(googleIdToken, "'googleIdToken' must not be null");
+        Assert.notNull(googleIdToken.getPayload(), "'googleIdToken.payload' must not be null");
         return applicantService.join(JoinRequestVo.of(
-            "googleIdToken.getPayload().getEmail()",
-            "googleIdToken.getPayload().getSubject()"));
+            googleIdToken.getPayload().getEmail(),
+            googleIdToken.getPayload().getSubject()));
     }
 }
