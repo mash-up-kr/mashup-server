@@ -3,6 +3,7 @@ package kr.mashup.branding.ui.application.form;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,11 +43,14 @@ public class ApplicationFormController {
         @RequestParam(required = false) String searchWord,
         Pageable pageable
     ) {
+        Page<ApplicationForm> applicationFormsPage = applicationFormFacadeService.getApplicationForms(
+            ApplicationFormQueryVo.of(teamId, searchWord, pageable));
         return ApiResponse.success(
-            applicationFormFacadeService.getApplicationForms(ApplicationFormQueryVo.of(teamId, searchWord, pageable))
+            applicationFormsPage
                 .stream()
                 .map(applicationFormAssembler::toApplicationFormResponse)
-                .collect(Collectors.toList())
+                .collect(Collectors.toList()),
+            ApiResponse.PageResponse.from(applicationFormsPage)
         );
     }
 
