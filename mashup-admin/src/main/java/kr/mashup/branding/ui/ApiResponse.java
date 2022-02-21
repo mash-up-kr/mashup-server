@@ -62,6 +62,15 @@ public class ApiResponse<T> {
         );
     }
 
+    public static <T> ApiResponse<List<T>> success(List<T> data, PageResponse page) {
+        return new ApiResponse<>(
+            ResultCode.SUCCESS,
+            ResultCode.SUCCESS.getMessage(),
+            data,
+            page
+        );
+    }
+
     public static <T> ApiResponse<T> failure(ResultCode resultCode) {
         return new ApiResponse<>(
             resultCode,
