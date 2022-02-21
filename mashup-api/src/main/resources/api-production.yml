@@ -4,3 +4,8 @@ jwt:
 springfox:
   documentation:
     enabled: false
+
+oauth:
+  google:
+    client:
+      id: ENC(JtdsGBDYpuam4Evo5nqwZ27VZPkPCoaiJ1WEadKFk73vtBeqABgpES/U3ER7QSxlUXz70rHysjCw31clrpHfCLU0zzNvf6BiwNXsqf8KRO9CdSx3JtxT/DfnTJbfiPu72xL23kzvp6fiRXa1FtEvtw==)
