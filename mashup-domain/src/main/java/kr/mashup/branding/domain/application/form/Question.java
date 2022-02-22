@@ -10,6 +10,10 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -20,7 +24,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Entity
 @Getter
 @ToString(of = {"questionId", "maxContentLength", "description", "required", "questionType", "createdBy", "createdAt",
@@ -59,6 +65,10 @@ public class Question {
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
 
+    @ManyToOne
+    @JoinColumn(name = "application_form_id")
+    private ApplicationForm applicationForm;
+
     @CreatedBy
     private String createdBy;
 
@@ -71,8 +81,9 @@ public class Question {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public static Question of(QuestionRequestVo questionRequestVo) {
+    public static Question of(ApplicationForm applicationForm, QuestionRequestVo questionRequestVo) {
         Question question = new Question();
+        question.applicationForm = applicationForm;
         question.content = questionRequestVo.getContent();
         question.description = questionRequestVo.getDescription();
         question.required = Optional.ofNullable(questionRequestVo.getRequired()).orElse(false);
@@ -85,5 +96,11 @@ public class Question {
             question.maxContentLength = questionRequestVo.getMaxContentLength();
         }
         return question;
+    }
+
+    @PostUpdate
+    @PostPersist
+    public void updateApplicationFormModifyInfo() {
+        this.applicationForm.setModifyInfo(this.getUpdatedBy(), this.getUpdatedAt());
     }
 }

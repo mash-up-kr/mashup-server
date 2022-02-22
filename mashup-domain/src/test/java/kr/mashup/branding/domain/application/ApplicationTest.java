@@ -77,22 +77,23 @@ class ApplicationTest {
 
     private ApplicationForm createApplicationForm() {
         Team team = Team.of(CreateTeamVo.of("teamName"));
+        ApplicationForm applicationForm = ApplicationForm.of(team, "applicationFormName");
         List<Question> questions = Arrays.asList(
-            Question.of(QuestionRequestVo.of(
+            Question.of(applicationForm, QuestionRequestVo.of(
                 "이름을 입력해 주세요",
                 null,
                 "ex) 홍길동",
                 true,
                 QuestionType.SINGLE_LINE_TEXT
             )),
-            Question.of(QuestionRequestVo.of(
+            Question.of(applicationForm, QuestionRequestVo.of(
                 "나이를 입력해 주세요",
                 null,
                 "ex) 25세",
                 true,
                 QuestionType.SINGLE_LINE_TEXT
             )),
-            Question.of(QuestionRequestVo.of(
+            Question.of(applicationForm, QuestionRequestVo.of(
                 "매쉬업에서 이루고자 하는 목표가 있다면 말씀해주세요",
                 500,
                 "ex) 앱스토어 1등하는 앱 배포하기",
@@ -100,10 +101,11 @@ class ApplicationTest {
                 QuestionType.SINGLE_LINE_TEXT
             ))
         );
+        applicationForm.addQuestions(questions);
         ReflectionTestUtils.setField(questions.get(0), "questionId", 1L);
         ReflectionTestUtils.setField(questions.get(1), "questionId", 2L);
         ReflectionTestUtils.setField(questions.get(2), "questionId", 3L);
-        return ApplicationForm.of(team, questions, "applicationFormName");
+        return applicationForm;
     }
 
     private Applicant createApplicant() throws Exception {
