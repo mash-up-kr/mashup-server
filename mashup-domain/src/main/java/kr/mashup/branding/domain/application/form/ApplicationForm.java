@@ -40,7 +40,7 @@ public class ApplicationForm {
     @ManyToOne
     private Team team;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "applicationForm")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "applicationForm", orphanRemoval = true)
     private final List<Question> questions = new ArrayList<>();
 
     private String name;
