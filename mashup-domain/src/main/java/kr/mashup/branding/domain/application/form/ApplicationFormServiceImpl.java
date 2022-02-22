@@ -33,6 +33,10 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         if (applicationFormRepository.existsByTeam_teamId(team.getTeamId())) {
             throw new ApplicationFormAlreadyExistException("해당 팀에 다른 설문지가 이미 존재합니다. teamId: " + team.getTeamId());
         }
+        if (applicationFormRepository.existsByNameLike(createApplicationFormVo.getName())) {
+            throw new ApplicationFormNameDuplicatedException(
+                "Failed to create applicationForm. 'name' is duplicated. name: " + createApplicationFormVo.getName());
+        }
         ApplicationForm applicationForm = ApplicationForm.of(team, createApplicationFormVo.getName());
         List<Question> questions = createApplicationFormVo.getQuestionRequestVoList()
             .stream()
@@ -83,11 +87,11 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
     @Override
     public ApplicationForm getApplicationFormById(Long applicationFormId) {
         return applicationFormRepository.findById(applicationFormId).map(
-                it -> {
-                    log.info("ApplicationForm {}", it);
-                    return it;
-                }
-            )
+            it -> {
+                log.info("ApplicationForm {}", it);
+                return it;
+            }
+        )
             .orElseThrow(ApplicationFormNotFoundException::new);
     }
 

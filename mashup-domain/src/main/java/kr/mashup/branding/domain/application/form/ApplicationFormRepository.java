@@ -17,4 +17,6 @@ public interface ApplicationFormRepository
     Page<ApplicationForm> findByTeam_teamId(Long teamId, Pageable pageable);
 
     Optional<ApplicationForm> findByApplicationFormId(Long applicationFormId);
+
+    boolean existsByNameLike(String name);
 }
