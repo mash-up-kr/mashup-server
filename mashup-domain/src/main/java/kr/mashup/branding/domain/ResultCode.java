@@ -30,6 +30,7 @@ public enum ResultCode {
     APPLICATION_FORM_MODIFICATION_NOT_ALLOWED("모집 시작시각 이후에는 설문지를 수정하거나 삭제할 수 없습니다"),
     APPLICATION_FORM_NOT_FOUND("설문지가 존재하지 않습니다."),
     APPLICATION_FORM_DELETE_NOT_ALLOWED("생성된 지원서가 있어 설문지를 삭제 할 수 없습니다."),
+    APPLICATION_FORM_NAME_DUPLICATED("설문지 이름이 이미 사용중입니다."),
 
     // SMS (문자 발송)
     NOTIFICATION_NOT_FOUND("통지 정보가 없습니다."),
