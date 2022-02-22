@@ -97,6 +97,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
 
         validateDate(applicantId);
+        validateSubmittedApplicationExists(applicantId, applicationId);
 
         Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(applicationId,
             applicantId).orElseThrow(ApplicationNotFoundException::new);
@@ -115,11 +116,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Assert.notNull(applicationId, "'applicationId' must not be null");
 
         validateDate(applicantId);
-
-        if (applicationRepository.existsByApplicant_applicantIdAndStatus(applicantId, ApplicationStatus.SUBMITTED)) {
-            throw new ApplicationAlreadySubmittedException(
-                "Failed to submit application. applicationId: " + applicationId);
-        }
+        validateSubmittedApplicationExists(applicantId, applicationId);
 
         Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(applicationId,
             applicantId).orElseThrow(ApplicationNotFoundException::new);
@@ -141,6 +138,18 @@ public class ApplicationServiceImpl implements ApplicationService {
         } catch (ApplicationModificationNotAllowedException e) {
             log.info("Failed to modify application. applicantId: {}", applicantId);
             throw e;
+        }
+    }
+
+    /**
+     * 이미 제출한 지원서가 존재하는지 검증
+     * @param applicantId 지원자 식별자
+     * @param applicationId 지원서 식별자
+     */
+    private void validateSubmittedApplicationExists(Long applicantId, Long applicationId) {
+        if (applicationRepository.existsByApplicant_applicantIdAndStatus(applicantId, ApplicationStatus.SUBMITTED)) {
+            throw new ApplicationAlreadySubmittedException(
+                "Failed to submit application. applicationId: " + applicationId);
         }
     }
 
