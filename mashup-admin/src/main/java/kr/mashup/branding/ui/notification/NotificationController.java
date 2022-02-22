@@ -1,7 +1,6 @@
 package kr.mashup.branding.ui.notification;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,9 +53,7 @@ public class NotificationController {
     ) {
         return ApiResponse.success(
             notificationFacadeService.getNotifications(adminMemberId, searchWord, pageable)
-                .stream()
                 .map(notificationAssembler::toNotificationResponse)
-                .collect(Collectors.toList())
         );
     }
 
