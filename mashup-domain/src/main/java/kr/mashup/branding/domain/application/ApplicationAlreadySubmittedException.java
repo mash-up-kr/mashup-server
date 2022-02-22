@@ -7,4 +7,8 @@ public class ApplicationAlreadySubmittedException extends BadRequestException {
     public ApplicationAlreadySubmittedException() {
         super(ResultCode.APPLICATION_ALREADY_SUBMITTED);
     }
+
+    public ApplicationAlreadySubmittedException(String message) {
+        super(ResultCode.APPLICATION_ALREADY_SUBMITTED, message);
+    }
 }
