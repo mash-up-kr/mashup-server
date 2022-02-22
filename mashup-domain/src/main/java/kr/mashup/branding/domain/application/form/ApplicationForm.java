@@ -84,11 +84,10 @@ public class ApplicationForm {
         name = updateApplicationFormVo.getName();
     }
 
-    void setModifyInfo(String updatedBy, LocalDateTime updatedAt) {
+    void setModifiedInfo(String updatedBy, LocalDateTime updatedAt) {
         if (updatedAt != null && !updatedAt.isBefore(this.updatedAt)) {
             this.updatedBy = updatedBy;
             this.updatedAt = updatedAt;
         }
-
     }
 }

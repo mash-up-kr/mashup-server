@@ -12,8 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PostPersist;
-import javax.persistence.PostUpdate;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -98,9 +98,9 @@ public class Question {
         return question;
     }
 
-    @PostUpdate
-    @PostPersist
+    @PrePersist
+    @PreUpdate
     public void updateApplicationFormModifyInfo() {
-        this.applicationForm.setModifyInfo(this.getUpdatedBy(), this.getUpdatedAt());
+        applicationForm.setModifiedInfo(updatedBy, updatedAt);
     }
 }
