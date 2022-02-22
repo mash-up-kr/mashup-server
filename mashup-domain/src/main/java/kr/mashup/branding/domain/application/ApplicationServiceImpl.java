@@ -115,13 +115,19 @@ public class ApplicationServiceImpl implements ApplicationService {
         Assert.notNull(applicationId, "'applicationId' must not be null");
 
         validateDate(applicantId);
+
+        if (applicationRepository.existsByApplicant_applicantIdAndStatus(applicantId, ApplicationStatus.SUBMITTED)) {
+            throw new ApplicationAlreadySubmittedException(
+                "Failed to submit application. applicationId: " + applicationId);
+        }
+
         Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(applicationId,
             applicantId).orElseThrow(ApplicationNotFoundException::new);
         try {
             application.submit(applicationSubmitRequestVo);
         } catch (IllegalArgumentException e) {
             throw new ApplicationSubmitRequestInvalidException(
-                "Failed to update application. applicationId: " + applicationId, e);
+                "Failed to submit application. applicationId: " + applicationId, e);
         }
         return application;
     }
