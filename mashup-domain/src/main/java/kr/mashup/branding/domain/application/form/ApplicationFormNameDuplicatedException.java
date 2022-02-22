@@ -5,7 +5,7 @@ import kr.mashup.branding.domain.exception.BadRequestException;
 
 public class ApplicationFormNameDuplicatedException extends BadRequestException {
 
-    public ApplicationFormNameDuplicatedException() {
-        super(ResultCode.APPLICATION_FORM_NAME_DUPLICATED);
+    public ApplicationFormNameDuplicatedException(String message) {
+        super(ResultCode.APPLICATION_FORM_NAME_DUPLICATED, message);
     }
 }
