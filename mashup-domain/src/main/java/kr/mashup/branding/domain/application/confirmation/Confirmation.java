@@ -34,7 +34,7 @@ public class Confirmation {
     private Long confirmationId;
 
     @OneToOne
-    @JoinColumn
+    @JoinColumn(name = "application_id")
     private Application application;
 
     @Enumerated(EnumType.STRING)

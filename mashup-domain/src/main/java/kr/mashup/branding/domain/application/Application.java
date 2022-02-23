@@ -51,9 +51,11 @@ public class Application {
     private Long applicationId;
 
     @ManyToOne
+    @JoinColumn(name = "applicant_id")
     private Applicant applicant;
 
     @ManyToOne
+    @JoinColumn(name = "application_form_id")
     private ApplicationForm applicationForm;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "application")
@@ -69,7 +71,7 @@ public class Application {
     private ApplicationStatus status;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "applicationId")
+    @JoinColumn(name = "application_id")
     private final List<Answer> answers = new ArrayList<>();
 
     /**
