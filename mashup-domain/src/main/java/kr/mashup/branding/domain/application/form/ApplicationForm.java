@@ -40,7 +40,7 @@ public class ApplicationForm {
     @ManyToOne
     private Team team;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "applicationForm")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "applicationForm", orphanRemoval = true)
     private final List<Question> questions = new ArrayList<>();
 
     private String name;
@@ -84,11 +84,10 @@ public class ApplicationForm {
         name = updateApplicationFormVo.getName();
     }
 
-    void setModifyInfo(String updatedBy, LocalDateTime updatedAt) {
+    void setModifiedInfo(String updatedBy, LocalDateTime updatedAt) {
         if (updatedAt != null && !updatedAt.isBefore(this.updatedAt)) {
             this.updatedBy = updatedBy;
             this.updatedAt = updatedAt;
         }
-
     }
 }
