@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,6 +21,7 @@ import kr.mashup.branding.domain.notification.sms.SmsSendFailedException;
 import kr.mashup.branding.domain.notification.sms.SmsSendResultRecipientVo;
 import kr.mashup.branding.domain.notification.sms.SmsSendResultVo;
 import kr.mashup.branding.domain.notification.sms.SmsService;
+import kr.mashup.branding.domain.notification.sms.whitelist.SmsWhitelistService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,6 +47,7 @@ public class ToastSmsService implements SmsService {
     private final String toastUrl;
     private final String appKey;
     private final RestTemplate toastRestTemplate;
+    private final ObjectProvider<SmsWhitelistService> smsWhitelistService;
 
     @Override
     public SmsSendResultVo send(SmsRequestVo smsRequestVo) {
@@ -95,9 +98,11 @@ public class ToastSmsService implements SmsService {
                 .map(it -> it.replaceAll("-", ""))
                 .orElse(null),
             smsRequestVo.getMessageId(),
-            smsRequestVo.getSmsRecipientRequestVos().stream()
+            smsRequestVo.getSmsRecipientRequestVos()
+                .stream()
                 .map(it -> ToastSmsRecipient.of(
                     Optional.ofNullable(it.getPhoneNumber())
+                        .filter(this::isInWhitelist)
                         .map(phoneNumber -> phoneNumber.replaceAll("-", ""))
                         .orElse(null),
                     it.getMessageId()
@@ -106,11 +111,26 @@ public class ToastSmsService implements SmsService {
         );
     }
 
+    /**
+     * 문자 발송을 시도해도 되는 전화번호인지 검사
+     * @see kr.mashup.branding.domain.notification.sms.whitelist.SmsWhitelistServiceImpl
+     * @param phoneNumber 수신자 전화번호
+     * @return 문자 발송을 시도해도되는지 여부
+     */
+    private boolean isInWhitelist(String phoneNumber) {
+        SmsWhitelistService service = smsWhitelistService.getIfAvailable();
+        // 운영환경에서는 smsWhitelistService 가 존재하지 않고, 검사할 필요도 없다.
+        if (service == null) {
+            return true;
+        }
+        return service.contains(phoneNumber);
+    }
+
     private SmsSendResultVo toSmsResultVo(ToastSmsResponse toastSmsResponse) {
         Assert.notNull(toastSmsResponse, "'toastSmsResponse' must not be null");
         if (toastSmsResponse.getBody() == null || toastSmsResponse.getBody().getData() == null) {
             log.error("Failed to parse toastSmsResponse. toastSmsResponse: {}", toastSmsResponse);
-            SmsSendResultVo.of(
+            return SmsSendResultVo.of(
                 null,
                 null,
                 NotificationStatus.FAILURE,
