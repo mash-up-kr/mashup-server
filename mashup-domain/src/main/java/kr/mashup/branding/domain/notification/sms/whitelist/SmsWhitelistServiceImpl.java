@@ -1,5 +1,8 @@
 package kr.mashup.branding.domain.notification.sms.whitelist;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,5 +29,30 @@ public class SmsWhitelistServiceImpl implements SmsWhitelistService {
     @Override
     public boolean contains(String phoneNumber) {
         return smsWhitelistRepository.existsByPhoneNumber(phoneNumber);
+    }
+
+    @Override
+    @Transactional
+    public String add(String phoneNumber) {
+        if (smsWhitelistRepository.existsByPhoneNumber(phoneNumber)) {
+            return phoneNumber;
+        }
+        return smsWhitelistRepository.save(SmsWhitelist.of(phoneNumber))
+            .getPhoneNumber();
+    }
+
+    @Override
+    @Transactional
+    public void remove(String phoneNumber) {
+        smsWhitelistRepository.findByPhoneNumber(phoneNumber)
+            .ifPresent(smsWhitelistRepository::delete);
+    }
+
+    @Override
+    public List<String> getAll() {
+        return smsWhitelistRepository.findAll()
+            .stream()
+            .map(SmsWhitelist::getPhoneNumber)
+            .collect(Collectors.toList());
     }
 }
