@@ -69,7 +69,10 @@ public class ApplicationAssembler {
             return ApplicationStatusResponse.submitted(applicationResult.getApplication().getStatus());
         }
         if (!recruitmentScheduleService.canAnnounceInterviewResult(now)) {
-            return ApplicationStatusResponse.screeningResult(applicationResult.getScreeningStatus());
+            return ApplicationStatusResponse.screeningResult(
+                applicationResult.getApplication().getStatus(),
+                applicationResult.getScreeningStatus()
+            );
         }
         return ApplicationStatusResponse.interviewResult(
             applicationResult.getScreeningStatus(),
