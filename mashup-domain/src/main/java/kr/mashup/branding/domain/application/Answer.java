@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -32,6 +33,7 @@ public class Answer {
     private String content;
 
     @ManyToOne
+    @JoinColumn(name = "question_id")
     private Question question;
 
     @CreatedDate

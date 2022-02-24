@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -75,7 +76,7 @@ public class TestDataInitializer {
             Application application = createApplication(applicant.getApplicantId(), applicationForm);
             log.info("Application is created. application: {}", application);
         } catch (Exception e) {
-            log.info("Failed to created application for test data. message: {}", e.getMessage());
+            log.info("Failed to created application for test data. message: {}", e.getMessage(), e);
         }
     }
 
@@ -149,17 +150,17 @@ public class TestDataInitializer {
         Constructor<Applicant> declaredConstructor = Applicant.class.getDeclaredConstructor();
         declaredConstructor.setAccessible(true);
         Applicant applicant = declaredConstructor.newInstance();
-        setApplicantField("email", applicant, "mashup.12th.branding.server.dev@gmail.com");
-        setApplicantField("googleUserId", applicant, "googleUserId");
-        setApplicantField("name", applicant, "TESTER");
-        setApplicantField("phoneNumber", applicant, "01031280428");
-        setApplicantField("status", applicant, ApplicantStatus.ACTIVE);
+        setApplicantField(String.class, "email", applicant, "mashup.12th.branding.server.dev@gmail.com");
+        setApplicantField(String.class, "googleUserId", applicant, "googleUserId");
+        setApplicantField(String.class, "name", applicant, "TESTER");
+        setApplicantField(String.class, "phoneNumber", applicant, "01031280428");
+        setApplicantField(ApplicantStatus.class, "status", applicant, ApplicantStatus.ACTIVE);
         return applicantRepository.save(applicant);
     }
 
-    private void setApplicantField(String fieldName, Applicant target, Object value) throws Exception {
-        Field field = Applicant.class.getField(fieldName);
-        field.setAccessible(true);
+    private void setApplicantField(Class<?> fieldClass, String fieldName, Applicant target, Object value) {
+        Field field = ReflectionUtils.findField(Applicant.class, fieldName, fieldClass);
+        ReflectionUtils.makeAccessible(Objects.requireNonNull(field));
         ReflectionUtils.setField(field, target, value);
     }
 

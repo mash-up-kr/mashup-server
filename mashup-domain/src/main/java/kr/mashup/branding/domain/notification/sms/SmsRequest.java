@@ -41,7 +41,7 @@ public class SmsRequest {
     private Long smsRequestId;
 
     @ManyToOne
-    @JoinColumn(name = "notification_id", nullable = false, updatable = false)
+    @JoinColumn(name = "notification_id")
     private Notification notification;
 
     @ManyToOne
