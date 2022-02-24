@@ -37,7 +37,7 @@ public class ApplicationResult {
     private Long applicationResultId;
 
     @OneToOne
-    @JoinColumn(name = "applicationId")
+    @JoinColumn(name = "application_id")
     private Application application;
 
     /**
