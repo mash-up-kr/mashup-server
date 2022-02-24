@@ -28,4 +28,6 @@ public interface ApplicationService {
     Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo);
 
     void deleteByApplicationFormId(Long applicationFormId);
+
+    void delete(Long applicationId);
 }
