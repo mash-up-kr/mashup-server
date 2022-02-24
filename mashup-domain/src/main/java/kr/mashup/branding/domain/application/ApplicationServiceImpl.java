@@ -227,4 +227,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         applicationRepository.deleteAllById(applicationIds);
     }
+
+    @Override
+    @Transactional
+    public void delete(Long applicationId) {
+        applicationRepository.findById(applicationId)
+            .ifPresent(applicationRepository::delete);
+    }
 }

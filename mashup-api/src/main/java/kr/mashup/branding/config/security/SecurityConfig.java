@@ -52,6 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.antMatcher("/api/v1/**")
             .authorizeRequests()
+            .antMatchers("/api/v1/test/**").permitAll()
             .antMatchers("/api/v1/teams/**").permitAll()
             .antMatchers("/api/v1/applicants/login").permitAll()
             .anyRequest().hasAuthority(APPLICANT_ROLE_NAME);
