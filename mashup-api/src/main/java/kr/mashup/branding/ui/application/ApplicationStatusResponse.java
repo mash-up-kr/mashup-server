@@ -10,6 +10,7 @@ import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
 public enum ApplicationStatusResponse {
     WRITING("임시저장"),
     SUBMITTED("제출완료"),
+    SCREENING_EXPIRED("기한만료"), // 임시저장까지 했는데 서류제출기간이 지난 경우
     SCREENING_FAILED("서류불합격"),
     SCREENING_PASSED("서류합격"),
     INTERVIEW_FAILED("면접불합격"),
@@ -32,7 +33,13 @@ public enum ApplicationStatusResponse {
     /**
      * 서류 합격 발표 후 ~ 면접 합격 발표 전 지원상태
      */
-    static ApplicationStatusResponse screeningResult(ApplicationScreeningStatus screeningStatus) {
+    static ApplicationStatusResponse screeningResult(
+        ApplicationStatus applicationStatus,
+        ApplicationScreeningStatus screeningStatus
+    ) {
+        if (applicationStatus == ApplicationStatus.WRITING) {
+            return SCREENING_EXPIRED;
+        }
         if (screeningStatus == ApplicationScreeningStatus.PASSED) {
             return SCREENING_PASSED;
         }
