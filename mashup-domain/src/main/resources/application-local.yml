@@ -12,5 +12,5 @@ spring:
 sms:
   toast:
     url: https://api-sms.cloud.toast.com/
-    app-key: ENC(6RJ/b4qil0Y8tFxhSnIMZQvmxzCrEEw7DAx2uZ3x6W668sB6sxQ3SNgBj5lxiG6yD4n4NPgr2lZPEEVrbUlBlg==)
-    secret-key: ENC(ab1yfScRuzyplJ3e2xpdYX8qW5j4ZBjwmG4nKekbVp1NdJ/zV9BL7UO8P/68lrB9)
+    app-key: ENC(QKz4ifv8P94St51J1S2t8gKBkMt4ywkz2GuARKIj9kh0Xfb4lmGCxHBi2sojX7Ca7JXsQlzKm+aarAwo3HFhKw==)
+    secret-key: ENC(YFBdrMRpwGail+K8avV+dzcIqJXjDSgJlmAFMZfQ0wahgk12rOPrBly74PYY5QIf)
