@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -29,7 +30,7 @@ public class ApplicationRepositoryImpl extends QuerydslRepositorySupport impleme
         resolveBooleanExpression(applicationQueryVo).ifPresent(query::where);
         // sort
         List<OrderSpecifier> orderSpecifiers = QueryUtils.toOrderSpecifiers(qApplication,
-            applicationQueryVo.getPageable().getSort());
+            applicationQueryVo.getPageable().getSortOr(Sort.by(Sort.Order.asc("name"))));
         if (!CollectionUtils.isEmpty(orderSpecifiers)) {
             query.orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]));
         }
