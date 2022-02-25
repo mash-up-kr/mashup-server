@@ -30,7 +30,7 @@ public class ApplicationRepositoryImpl extends QuerydslRepositorySupport impleme
         resolveBooleanExpression(applicationQueryVo).ifPresent(query::where);
         // sort
         List<OrderSpecifier> orderSpecifiers = QueryUtils.toOrderSpecifiers(qApplication,
-            applicationQueryVo.getPageable().getSortOr(Sort.by(Sort.Order.asc("name"))));
+            applicationQueryVo.getPageable().getSortOr(Sort.by(Sort.Order.asc("applicant.name"))));
         if (!CollectionUtils.isEmpty(orderSpecifiers)) {
             query.orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]));
         }
