@@ -45,7 +45,7 @@ public class SmsRequest {
     private Notification notification;
 
     @ManyToOne
-    @JoinColumn(name = "applicant_id")
+    @JoinColumn(name = "recipient_applicant_id")
     private Applicant recipientApplicant;
 
     @Enumerated(EnumType.STRING)
