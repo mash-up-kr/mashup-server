@@ -33,7 +33,10 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         if (applicationFormRepository.existsByTeam_teamId(team.getTeamId())) {
             throw new ApplicationFormAlreadyExistException("해당 팀에 다른 설문지가 이미 존재합니다. teamId: " + team.getTeamId());
         }
-        validateName(createApplicationFormVo.getName());
+        if (applicationFormRepository.existsByNameLike(createApplicationFormVo.getName())) {
+            throw new ApplicationFormNameDuplicatedException(
+                "ApplicationForm 'name' is already used. name: " + createApplicationFormVo.getName());
+        }
 
         ApplicationForm applicationForm = ApplicationForm.of(team, createApplicationFormVo.getName());
         List<Question> questions = createApplicationFormVo.getQuestionRequestVoList()
@@ -64,21 +67,14 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         UpdateApplicationFormVo updateApplicationFormVo
     ) {
         validateDate(adminMemberId);
-        validateName(updateApplicationFormVo.getName());
         ApplicationForm applicationForm = applicationFormRepository.findByApplicationFormId(applicationFormId)
             .orElseThrow(ApplicationFormNotFoundException::new);
         applicationForm.update(updateApplicationFormVo);
-        return applicationForm;
-    }
-
-    /**
-     * 설문지 이름이 사용중인지 검사
-     * @param name 생성, 수정하려는 설문지 이름
-     */
-    private void validateName(String name) {
-        if (applicationFormRepository.existsByNameLike(name)) {
-            throw new ApplicationFormNameDuplicatedException("ApplicationForm 'name' is already used. name: " + name);
+        if (applicationFormRepository.countByNameLike(applicationForm.getName()) > 1) {
+            throw new ApplicationFormNameDuplicatedException(
+                "ApplicationForm 'name' is already used. name: " + applicationForm.getName());
         }
+        return applicationForm;
     }
 
     @Override
