@@ -1,2 +1,9 @@
 jwt:
   secret: ENC(Y/ZTOcvtPL8kc0hzWrognP25n7Xc1sdpAKV8J6LtKVt3D5jVDbvRiJNiKlO7QlaCN1UcRtQsa3nuiESvzimVvw==)
+
+mashup:
+  logging:
+    appender:
+      discord:
+        level: ERROR
+        webhook-url: ENC(cHj7n8y/RIg8OTDM3xoq3NVlx84D/OV2br4PYY/PCoL8SKFcwum6XcdVWUKmpU0/0kbe+/8RdyfUQK1RupaFCifVtyHb0U+3Ro/sBt+aAWNwjqH7+Pj6VClRLniHxksyHImafww8RRnAA8B8MKLDOrZtIWA5VIuEN7lr+wM8VeCqzPaCiX9ma1fyQWq6x+N5OeSuzmrtd4F+yVlVJusMuA==)

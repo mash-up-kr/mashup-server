@@ -1,6 +1,5 @@
 package kr.mashup.branding.config;
 
-import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
+
 /**
  * Run > Edit Configurations > Configuration > Environment variables > 'JASYPT_ENCRYPTOR_PASSWORD={암호화키}' 입력
  */
@@ -20,19 +21,18 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest
 class JasyptConfigTest {
 
+    @Autowired
+    private ConfigurableEnvironment configurableEnvironment;
     @Value("${jasypt.encryptor.password}")
     private String jasyptEncryptorPassword;
 
-    @Autowired
-    ConfigurableEnvironment configurableEnvironment;
-
-    DefaultLazyEncryptor encryptor;
+    private DefaultLazyEncryptor encryptor;
 
     @BeforeEach
-    void setUp() throws Exception {
-        System.out.println(jasyptEncryptorPassword);
-        if(StringUtils.isBlank(jasyptEncryptorPassword)) {
-            throw new Exception("jasypt.encryptor.password must not be null, empty or blank.");
+    void setUp() {
+        System.out.println("jasyptEncryptorPassword: " + jasyptEncryptorPassword);
+        if (StringUtils.isBlank(jasyptEncryptorPassword)) {
+            throw new IllegalArgumentException("'jasypt.encryptor.password' must not be null, empty or blank.");
         }
         encryptor = new DefaultLazyEncryptor(configurableEnvironment);
     }
@@ -40,15 +40,17 @@ class JasyptConfigTest {
     @Test
     void testForEncryption() {
         String source = "string want to encrypt";
+        String encrypted = encryptor.encrypt(source);
         System.out.println("source: " + source);
-        System.out.println("encrypted: " + encryptor.encrypt(source));
+        System.out.println("encrypted: " + encrypted);
     }
 
     @Test
     void testForDecryption() {
         // 암호화 되지 않은 문자열을 넣으면 복호화시 에러 발생함
         String source = "string want to decrypt";
+        String decrypted = encryptor.decrypt(source);
         System.out.println("source: " + source);
-        System.out.println("encrypted: " + encryptor.decrypt(source));
+        System.out.println("decrypted: " + decrypted);
     }
 }
