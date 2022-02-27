@@ -23,7 +23,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     implementation "io.springfox:springfox-boot-starter:$swaggerVersion"
     implementation "org.apache.commons:commons-text:$commonsTextVersion"
-    implementation "com.github.napstr:logback-discord-appender:$discordLogbackAppenderVersion"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
