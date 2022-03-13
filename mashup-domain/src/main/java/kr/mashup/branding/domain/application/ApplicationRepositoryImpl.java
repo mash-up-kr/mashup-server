@@ -38,7 +38,7 @@ public class ApplicationRepositoryImpl extends QuerydslRepositorySupport impleme
         int pageSize = applicationQueryVo.getPageable().getPageSize();
         query.offset(applicationQueryVo.getPageable().getOffset());
         query.limit(pageSize);
-        return QueryUtils.toPage(query.fetchResults(), pageSize);
+        return QueryUtils.toPage(query.fetchResults(), applicationQueryVo.getPageable());
     }
 
     private Optional<BooleanExpression> resolveBooleanExpression(ApplicationQueryVo applicationQueryVo) {

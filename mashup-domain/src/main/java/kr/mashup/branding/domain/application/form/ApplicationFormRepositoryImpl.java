@@ -43,7 +43,7 @@ public class ApplicationFormRepositoryImpl extends QuerydslRepositorySupport
         int pageSize = applicationFormQueryVo.getPageable().getPageSize();
         query.offset(applicationFormQueryVo.getPageable().getOffset());
         query.limit(pageSize);
-        return QueryUtils.toPage(query.fetchResults(), pageSize);
+        return QueryUtils.toPage(query.fetchResults(), applicationFormQueryVo.getPageable());
     }
 
     private Optional<BooleanExpression> resolveCondition(ApplicationFormQueryVo applicationFormQueryVo) {
