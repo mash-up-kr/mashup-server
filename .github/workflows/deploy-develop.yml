@@ -1,4 +1,4 @@
-name: CI with parallel jobs
+name: Development 서버 배포
 
 on:
   push:
