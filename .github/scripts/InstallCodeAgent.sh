@@ -1,3 +1,4 @@
+# CodeDeploy agent 설치용 스크립트
 sudo yum update -y
 sudo yum install ruby -y
 sudo yum install wget -y
