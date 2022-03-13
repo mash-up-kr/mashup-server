@@ -19,4 +19,6 @@ public interface ApplicationFormRepository
     Optional<ApplicationForm> findByApplicationFormId(Long applicationFormId);
 
     boolean existsByNameLike(String name);
+
+    long countByNameLike(String name);
 }

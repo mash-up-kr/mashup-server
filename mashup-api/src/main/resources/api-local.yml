@@ -5,4 +5,10 @@ oauth:
   google:
     client:
       id: ENC(KG4o2prDXn/cgpFs7vj3G/qOfMrnfnRr4+UExq72rFoua97Zc3oBABOAPV7iesz4e5ai7iUtfwoKBtD9u7ylSeAB3d4jeJqrauduE4gLiiMcJt711PqMVEAHDNOz6vOQjFmYowUDhLOyYWEbbXNkkg==)
-      
+
+mashup:
+  logging:
+    appender:
+      discord:
+        level: OFF
+        webhook-url: ENC(dlBpA2EzIA706EyBrX9b2XiMzZNY/U5jY5pa+5hMUjdTpF0e6ssLDRaS3fLV0VpWpLKVOHeYeLssyiR8ro7oY8Enql/KM8Ro8z1AEdMqGcn3RzSuL/8VEzrQR41ARNOLLZAkWelmS/NwpQa/3C3lGHgF3lisjYiIBIyR1MRcFQ3yH3HZcGlU7Ke2gCJtWlMxc8TdeWLLkxNretpNzWqaNA==)
