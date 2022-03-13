@@ -1,0 +1,13 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ec2-user/apps/mashup-admin
+
+hooks:
+  BeforeInstall:
+    - location: .github/scripts/BeforeInstall.sh
+      runas: root
+  AfterInstall:
+    - location: .github/scripts/AfterInstall.sh
+      runas: root
