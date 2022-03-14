@@ -12,4 +12,4 @@ ENTRYPOINT exec java ${JAVA_OPTS} \
 -Dobj_name=${SCOUTER_OBJECT_NAME} \
 -Dnet_collector_ip=${SCOUTER_HOST} \
 -jar /app.jar
-EXPOSE 8080
+EXPOSE 8090
