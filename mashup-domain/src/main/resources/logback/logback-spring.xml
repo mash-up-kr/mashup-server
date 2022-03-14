@@ -4,6 +4,24 @@
                     defaultValue=""/>
     <springProperty scope="context" name="discordLevel" source="mashup.logging.appender.discord.level"
                     defaultValue="OFF"/>
+    <springProperty scope="context" name="applicationName" source="mashup.logging.appender.application.name"
+                    defaultValue=""/>
+
+    <springProfile name="develop, production">
+        <property name="LOG_DIR" value="./logs/${applicationName}" />
+        <property name="LOG_PATH_NAME" value="${LOG_DIR}/spring.log" />
+
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH_NAME}</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH_NAME}.%d{yyyyMMdd}</fileNamePattern>
+                <maxHistory>60</maxHistory> <!-- 일자별 백업파일의 보관기간 -->
+            </rollingPolicy>
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5p] [%F]%M\(%L\) : %m%n</pattern>
+            </encoder>
+        </appender>
+    </springProfile>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -26,6 +44,11 @@
         </filter>
     </appender>
 
+    <springProfile name="develop, production">
+        <root level="info">
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
     <root level="info">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="ASYNC_DISCORD"/>

@@ -12,3 +12,5 @@ mashup:
       discord:
         level: ERROR
         webhook-url: ENC(dlBpA2EzIA706EyBrX9b2XiMzZNY/U5jY5pa+5hMUjdTpF0e6ssLDRaS3fLV0VpWpLKVOHeYeLssyiR8ro7oY8Enql/KM8Ro8z1AEdMqGcn3RzSuL/8VEzrQR41ARNOLLZAkWelmS/NwpQa/3C3lGHgF3lisjYiIBIyR1MRcFQ3yH3HZcGlU7Ke2gCJtWlMxc8TdeWLLkxNretpNzWqaNA==)
+      application:
+        name: recruitment
