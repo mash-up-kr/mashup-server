@@ -36,6 +36,8 @@ jobs:
     steps:
       - name: Checkout EC2
         uses: actions/checkout@v2
+
+      - name: Connect EC2 and Deploy
         env:
           HOST_NAME: ${{ secrets.DEV_ADMIN_AWS_HOST_NAME }}
           PRIVATE_KEY: ${{ secrets.DEV_AWS_PRIVATE_KEY }}
