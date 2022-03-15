@@ -1,6 +1,7 @@
 package kr.mashup.branding.domain.application;
 
 import java.lang.reflect.Constructor;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -36,6 +37,9 @@ class ApplicationTest {
         ApplicationSubmitRequestVo applicationSubmitRequestVo = ApplicationSubmitRequestVo.of(
             "applicantName",
             "010-1234-1234",
+            LocalDate.now(),
+            "매쉬업",
+            "제주도",
             applicationForm.getQuestions()
                 .stream()
                 .map(it -> AnswerRequestVo.of(atomicLong.incrementAndGet(), it.getQuestionId(), "answerContent"))
@@ -63,6 +67,9 @@ class ApplicationTest {
         ApplicationSubmitRequestVo applicationSubmitRequestVo = ApplicationSubmitRequestVo.of(
             "applicantName",
             "010-1234-1234",
+            LocalDate.now(),
+            "매쉬업",
+            "제주도",
             applicationForm.getQuestions()
                 .stream()
                 .map(it -> AnswerRequestVo.of(atomicLong.incrementAndGet(), it.getQuestionId(), "answerContent"))
