@@ -6,8 +6,7 @@ RUN mkdir -p /logs
 #ARG SCOUTER_OBJECT_NAME
 #ARG SCOUTER_HOST
 ARG JAR_FILE
-RUN echo -e "`ls -al`\n"
-#COPY ${JAR_FILE:-build/libs/mashup-admin.jar} app.jar
+COPY ${JAR_FILE:-build/libs/mashup-admin.jar} app.jar
 ENTRYPOINT exec java ${JAVA_OPTS} \
 #-javaagent:/scouter/agent.java/scouter.agent.jar \
 #-Dobj_name=${SCOUTER_OBJECT_NAME} \
