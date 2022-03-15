@@ -11,5 +11,3 @@ mashup:
       discord:
         level: ERROR
         webhook-url: ENC(7CCDVWnbqz3GacXp/QlXH61AwXPTbJ9aFzMhNLlVUe55KdByxFEtrHFfy3fGfZYCKdiZjdfyG2L1Y9pm0hUciaC57p7rcztHeBXGaCw9lNmZ2ORbwi75mFLN4FNT2CM8MVllcb82+hcExPSfnrLYhZjYaflisshDup/iXET41zqOAYkpMdMaMCFChFgyvpT4aocQHQiz0cT/tkG4BEQLRA==)
-      application:
-        name: admin
