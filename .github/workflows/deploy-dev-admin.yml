@@ -1,4 +1,4 @@
-name: CI/CD Mash-Up develop Admin Server
+name: Mash-Up develop Admin Server Deploy
 
 on:
   push:
