@@ -132,8 +132,8 @@ public class ApplicationAssembler {
         Assert.hasText(applicationSubmitRequest.getApplicantName(), "'applicantName' must not be blank");
         Assert.hasText(applicationSubmitRequest.getPhoneNumber(), "'phoneNumber' must not be blank");
         Assert.notNull(applicationSubmitRequest.getBirthdate(), "'birthdate' must not be null");
-        Assert.hasText(applicationSubmitRequest.getDepartment(), "'department' must not be blank");
         Assert.hasText(applicationSubmitRequest.getResidence(), "'residence' must not be blank");
+        Assert.hasText(applicationSubmitRequest.getDepartment(), "'department' must not be blank");
         return ApplicationSubmitRequestVo.of(
             applicationSubmitRequest.getApplicantName(),
             applicationSubmitRequest.getPhoneNumber(),
