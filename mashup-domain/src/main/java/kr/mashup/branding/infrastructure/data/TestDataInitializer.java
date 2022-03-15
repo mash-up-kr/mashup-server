@@ -2,6 +2,7 @@ package kr.mashup.branding.infrastructure.data;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -182,7 +183,8 @@ public class TestDataInitializer {
             .map(it -> AnswerRequestVo.of(it.getAnswerId(), it.getQuestion().getQuestionId(), "응답"))
             .collect(Collectors.toList());
 
-        UpdateApplicationVo updateApplicationVo = UpdateApplicationVo.of("이름", "01000000000", answerRequestVos, true);
+        UpdateApplicationVo updateApplicationVo = UpdateApplicationVo.of("이름", "01000000000",
+            LocalDate.now(), "매쉬업", "서울", answerRequestVos, true);
         applicationService.update(applicantId, application.getApplicationId(), updateApplicationVo);
         return application;
     }

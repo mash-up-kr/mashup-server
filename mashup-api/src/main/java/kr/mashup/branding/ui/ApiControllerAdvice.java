@@ -3,6 +3,7 @@ package kr.mashup.branding.ui;
 import java.security.Principal;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,7 +31,7 @@ public class ApiControllerAdvice {
             return null;
         }
         if (principal instanceof PreAuthenticatedAuthenticationToken) {
-            return (Long)((PreAuthenticatedAuthenticationToken)principal).getPrincipal();
+            return (Long) ((PreAuthenticatedAuthenticationToken) principal).getPrincipal();
         }
         return null;
     }
@@ -46,6 +47,13 @@ public class ApiControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<?> handleBadRequest(MethodArgumentTypeMismatchException e) {
         log.info("handleMethodArgumentTypeMismatchException: {}", e.getMessage(), e);
+        return ApiResponse.failure(ResultCode.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.info("handleHttpMessageNotReadableException: {}", e.getMessage(), e);
         return ApiResponse.failure(ResultCode.BAD_REQUEST, e.getMessage());
     }
 

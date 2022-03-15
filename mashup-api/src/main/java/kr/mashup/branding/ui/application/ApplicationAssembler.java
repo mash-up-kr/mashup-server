@@ -85,6 +85,9 @@ public class ApplicationAssembler {
         return UpdateApplicationVo.of(
             updateApplicationRequest.getApplicantName(),
             updateApplicationRequest.getPhoneNumber(),
+            updateApplicationRequest.getBirthdate(),
+            updateApplicationRequest.getDepartment(),
+            updateApplicationRequest.getResidence(),
             Optional.ofNullable(updateApplicationRequest.getAnswers())
                 .map(it -> it.stream()
                     .map(this::toAnswerRequestVo)
@@ -126,6 +129,9 @@ public class ApplicationAssembler {
         return ApplicationSubmitRequestVo.of(
             applicationSubmitRequest.getApplicantName(),
             applicationSubmitRequest.getPhoneNumber(),
+            applicationSubmitRequest.getBirthdate(),
+            applicationSubmitRequest.getDepartment(),
+            applicationSubmitRequest.getResidence(),
             Optional.ofNullable(applicationSubmitRequest.getAnswers())
                 .map(it -> it.stream()
                     .map(this::toAnswerRequestVo)
