@@ -82,6 +82,9 @@ public class ApplicationAssembler {
 
     UpdateApplicationVo toUpdateApplicationVo(UpdateApplicationRequest updateApplicationRequest) {
         Assert.notNull(updateApplicationRequest, "'updateApplicationRequest' must not be null");
+        Assert.hasText(updateApplicationRequest.getApplicantName(), "'applicantName' must not be blank");
+        Assert.hasText(updateApplicationRequest.getPhoneNumber(), "'phoneNumber' must not be blank");
+        Assert.notNull(updateApplicationRequest.getBirthdate(), "'birthdate' must not be null");
         return UpdateApplicationVo.of(
             updateApplicationRequest.getApplicantName(),
             updateApplicationRequest.getPhoneNumber(),
@@ -126,6 +129,11 @@ public class ApplicationAssembler {
     }
 
     ApplicationSubmitRequestVo toApplicationSubmitRequestVo(ApplicationSubmitRequest applicationSubmitRequest) {
+        Assert.hasText(applicationSubmitRequest.getApplicantName(), "'applicantName' must not be blank");
+        Assert.hasText(applicationSubmitRequest.getPhoneNumber(), "'phoneNumber' must not be blank");
+        Assert.notNull(applicationSubmitRequest.getBirthdate(), "'birthdate' must not be null");
+        Assert.hasText(applicationSubmitRequest.getDepartment(), "'department' must not be blank");
+        Assert.hasText(applicationSubmitRequest.getResidence(), "'residence' must not be blank");
         return ApplicationSubmitRequestVo.of(
             applicationSubmitRequest.getApplicantName(),
             applicationSubmitRequest.getPhoneNumber(),

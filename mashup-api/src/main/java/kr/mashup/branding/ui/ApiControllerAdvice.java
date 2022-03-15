@@ -57,6 +57,13 @@ public class ApiControllerAdvice {
         return ApiResponse.failure(ResultCode.BAD_REQUEST, e.getMessage());
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<?> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.info("handleIllegalArgumentException: {}", e.getMessage(), e);
+        return ApiResponse.failure(ResultCode.BAD_REQUEST, e.getMessage());
+    }
+
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<?> handleBadRequestException(BadRequestException e) {
