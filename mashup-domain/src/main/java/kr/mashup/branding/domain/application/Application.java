@@ -119,7 +119,10 @@ public class Application {
 
         applicant.update(
             updateApplicationVo.getName(),
-            updateApplicationVo.getPhoneNumber()
+            updateApplicationVo.getPhoneNumber(),
+            updateApplicationVo.getBirthdate(),
+            updateApplicationVo.getDepartment(),
+            updateApplicationVo.getResidence()
         );
         if (updateApplicationVo.getAnswerRequestVoList() != null) {
             updateAnswers(updateApplicationVo.getAnswerRequestVoList());
@@ -145,7 +148,10 @@ public class Application {
     void submit(ApplicationSubmitRequestVo applicationSubmitRequestVo) {
         applicant.submit(
             applicationSubmitRequestVo.getApplicantName(),
-            applicationSubmitRequestVo.getPhoneNumber()
+            applicationSubmitRequestVo.getPhoneNumber(),
+            applicationSubmitRequestVo.getBirthdate(),
+            applicationSubmitRequestVo.getDepartment(),
+            applicationSubmitRequestVo.getResidence()
         );
 
         validateAnswerRequests(applicationSubmitRequestVo.getAnswerRequestVoList());

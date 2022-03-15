@@ -11,9 +11,12 @@ public class ApplicantAssembler {
     public ApplicantResponse toApplicantResponse(Applicant applicant) {
         return new ApplicantResponse(
             applicant.getApplicantId(),
+            applicant.getEmail(),
             applicant.getName(),
             applicant.getPhoneNumber(),
-            applicant.getEmail(),
+            applicant.getBirthdate(),
+            applicant.getDepartment(),
+            applicant.getResidence(),
             applicant.getStatus()
         );
     }

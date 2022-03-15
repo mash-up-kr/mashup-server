@@ -1,5 +1,6 @@
 package kr.mashup.branding.domain.applicant;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -39,6 +40,12 @@ public class Applicant {
 
     private String phoneNumber;
 
+    private LocalDate birthdate;
+
+    private String department;
+
+    private String residence;
+
     @Enumerated(EnumType.STRING)
     private ApplicantStatus status = ApplicantStatus.ACTIVE;
 
@@ -58,15 +65,18 @@ public class Applicant {
         return applicant;
     }
 
-    public void update(String name, String phoneNumber) {
+    public void update(String name, String phoneNumber, LocalDate birthdate, String department, String residence) {
         this.name = name;
         this.phoneNumber = Optional.ofNullable(phoneNumber)
             .map(String::trim)
             .orElse(null);
+        this.birthdate = birthdate;
+        this.department = department;
+        this.residence = residence;
     }
 
-    public void submit(String name, String phoneNumber) {
-        this.update(name, phoneNumber);
+    public void submit(String name, String phoneNumber, LocalDate birthdate, String department, String residence) {
+        this.update(name, phoneNumber, birthdate, department, residence);
         validate();
     }
 
