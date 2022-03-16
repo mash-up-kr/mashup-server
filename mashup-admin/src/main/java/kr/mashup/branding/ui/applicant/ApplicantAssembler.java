@@ -12,6 +12,9 @@ public class ApplicantAssembler {
             applicant.getName(),
             applicant.getEmail(),
             applicant.getPhoneNumber(),
+            applicant.getBirthdate(),
+            applicant.getDepartment(),
+            applicant.getResidence(),
             applicant.getStatus(),
             applicant.getCreatedAt(),
             applicant.getUpdatedAt()

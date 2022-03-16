@@ -63,6 +63,9 @@ public class ApplicationRepositoryImpl extends QuerydslRepositorySupport impleme
                     .or(qApplication.applicant.phoneNumber.contains(applicationQueryVo.getSearchWord()))
             );
         }
+        if (!applicationQueryVo.getIsShowAll()) {
+            booleanExpressions.add(qApplication.status.eq(ApplicationStatus.SUBMITTED));
+        }
         return booleanExpressions.stream().reduce(BooleanExpression::and);
     }
 }
