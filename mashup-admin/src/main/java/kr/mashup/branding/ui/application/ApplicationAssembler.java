@@ -127,14 +127,18 @@ public class ApplicationAssembler {
         Long teamId,
         ApplicantConfirmationStatus confirmStatus,
         ApplicationResultStatus resultStatus,
+        Boolean isShowAll,
         Pageable pageable
     ) {
+        if(isShowAll == null) isShowAll = false;
+
         return ApplicationQueryVo.of(
             searchWord,
             teamId,
             confirmStatus,
             toApplicationScreeningStatus(resultStatus),
             toApplicationInterviewStatus(resultStatus),
+            isShowAll,
             pageable
         );
     }

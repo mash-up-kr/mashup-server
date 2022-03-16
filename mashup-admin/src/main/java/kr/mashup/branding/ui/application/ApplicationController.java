@@ -35,6 +35,7 @@ public class ApplicationController {
         @RequestParam(required = false) Long teamId,
         @RequestParam(required = false) ApplicantConfirmationStatus confirmStatus,
         @RequestParam(required = false) ApplicationResultStatus resultStatus,
+        @RequestParam(required = false) Boolean isShowAll,
         Pageable pageable
     ) {
         return ApiResponse.success(
@@ -45,6 +46,7 @@ public class ApplicationController {
                     teamId,
                     confirmStatus,
                     resultStatus,
+                    isShowAll,
                     pageable
                 )
             ).map(applicationAssembler::toApplicationSimpleResponse)
