@@ -10,4 +10,5 @@ public class AdminMemberResponse {
     private Long adminMemberId;
     private String username;
     private Position position;
+    private String phoneNumber;
 }
