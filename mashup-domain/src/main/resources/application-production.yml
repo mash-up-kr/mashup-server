@@ -10,6 +10,6 @@ sms:
   toast:
     url: https://api-sms.cloud.toast.com/
     app-key: ENC(XX49s5+8kEqOLhg67J89qHjeXYwbU55vcqScbgECJe/u3O77Cxy1J1lz3WiPDru4tl0SUIhwG0bJze5Z+T59PQ==)
-    secret-key: ENC(RxnWUTWTXS93vSfsLX0M4gHYbFGrLsFU5BH09V4Ds0bBgWcNteRYKbgVOuPe+2Si
+    secret-key: ENC(RxnWUTWTXS93vSfsLX0M4gHYbFGrLsFU5BH09V4Ds0bBgWcNteRYKbgVOuPe+2Si)
 logging:
   config: classpath:logback/logback-spring.xml
