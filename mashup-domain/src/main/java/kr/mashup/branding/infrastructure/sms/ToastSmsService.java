@@ -102,7 +102,7 @@ public class ToastSmsService implements SmsService {
                 .stream()
                 .map(it -> ToastSmsRecipient.of(
                     Optional.ofNullable(it.getPhoneNumber())
-                        .filter(this::isInWhitelist)
+//                        .filter(this::isInWhitelist)
                         .map(phoneNumber -> phoneNumber.replaceAll("-", ""))
                         .orElse(null),
                     it.getMessageId()
@@ -170,11 +170,11 @@ public class ToastSmsService implements SmsService {
             return NotificationStatus.UNKNOWN;
         }
         switch (toastSmsStatusCode) {
+            case 0:
+                return NotificationStatus.SUCCESS;
             case 1:
                 return NotificationStatus.IN_PROGRESS;
             case 2:
-                return NotificationStatus.SUCCESS;
-            case 3:
                 return NotificationStatus.FAILURE;
             default:
                 log.error("Unknown toastSmsStatusCode. toastSmsStatusCode: {}", toastSmsResponse);
