@@ -160,10 +160,11 @@ public class Application {
         validatePrivacyPolicyAgreed(applicationSubmitRequestVo.getPrivacyPolicyAgreed());
         this.privacyPolicyAgreed = applicationSubmitRequestVo.getPrivacyPolicyAgreed();
 
+        status = status.submit();
+
         if (status.isSubmitted()) {
             submittedAt = LocalDateTime.now();
         }
-        status = status.submit();
     }
 
     private void validateAnswerRequests(List<AnswerRequestVo> answerRequestVos) {
