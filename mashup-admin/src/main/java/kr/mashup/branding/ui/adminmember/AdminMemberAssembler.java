@@ -29,7 +29,8 @@ public class AdminMemberAssembler {
         return new AdminMemberResponse(
             adminMember.getAdminMemberId(),
             adminMember.getUsername(),
-            adminMember.getPosition()
+            adminMember.getPosition(),
+            adminMember.getPhoneNumber()
         );
     }
 }
