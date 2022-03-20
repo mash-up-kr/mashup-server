@@ -39,7 +39,7 @@ public enum ApplicationResultStatus {
             return SCREENING_TO_BE_DETERMINED;
         }
         if (screeningStatus == ApplicationScreeningStatus.FAILED) {
-            return SCREENING_PASSED;
+            return SCREENING_FAILED;
         }
         if (screeningStatus == ApplicationScreeningStatus.NOT_RATED) {
             return NOT_RATED;

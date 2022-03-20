@@ -96,7 +96,7 @@ public class ApplicationResult {
             interviewStatus = interviewStatus.update(updateApplicationResultVo.getInterviewStatus());
         }
         // 면접 일정 변경
-        if (interviewStartedAt == null) {
+        if (updateApplicationResultVo.getInterviewStartedAt() == null) {
             return;
         }
         if (screeningStatus != ApplicationScreeningStatus.PASSED) {
@@ -104,7 +104,7 @@ public class ApplicationResult {
                 "'screeningStatus' is not available for interviewTime. screeningStatus: " + screeningStatus);
         }
         this.interviewStartedAt = updateApplicationResultVo.getInterviewStartedAt();
-        if (!interviewEndedAt.isAfter(interviewStartedAt)) {
+        if (!updateApplicationResultVo.getInterviewEndedAt().isAfter(interviewStartedAt)) {
             throw new InterviewTimeInvalidException(
                 "'interviewEndedAt' must be after or equal to 'interviewStartedAt'. interviewStartedAt: "
                     + interviewStartedAt + ", interviewEndedAt: " + interviewEndedAt);
