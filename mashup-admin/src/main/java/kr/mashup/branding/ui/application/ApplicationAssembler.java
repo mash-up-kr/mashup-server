@@ -37,6 +37,7 @@ public class ApplicationAssembler {
             teamAssembler.toTeamResponse(application.getApplicationForm().getTeam()),
             application.getConfirmation().getStatus(),
             toApplicationResultResponse(application.getApplicationResult()),
+            application.getSubmittedAt(),
             application.getCreatedAt(),
             application.getUpdatedAt()
         );
