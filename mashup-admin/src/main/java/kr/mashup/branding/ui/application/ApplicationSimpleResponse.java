@@ -16,6 +16,7 @@ public class ApplicationSimpleResponse {
     private TeamResponse team;
     private ApplicantConfirmationStatus confirmationStatus;
     private ApplicationResultResponse result;
+    private LocalDateTime submittedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
