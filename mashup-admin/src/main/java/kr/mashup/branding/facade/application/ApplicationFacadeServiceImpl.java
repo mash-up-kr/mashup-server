@@ -29,8 +29,8 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
     }
 
     @Override
-    public ApplicationDetailVo getApplicationDetail(Long applicationId) {
-        Application application = applicationService.getApplication(applicationId);
+    public ApplicationDetailVo getApplicationDetail(Long adminMemberId, Long applicationId) {
+        Application application = applicationService.getApplicationFromAdmin(adminMemberId, applicationId);
         List<SmsRequest> smsRequests = smsRequestService.getSmsRequestsByApplicantId(
             application.getApplicant().getApplicantId());
         return ApplicationDetailVo.of(application, smsRequests);

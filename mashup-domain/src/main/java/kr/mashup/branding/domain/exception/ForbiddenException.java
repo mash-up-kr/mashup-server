@@ -10,4 +10,8 @@ public class ForbiddenException extends MashupServerException {
     public ForbiddenException(ResultCode resultCode) {
         super(resultCode);
     }
+
+    public ForbiddenException(ResultCode resultCode, String message) {
+        super(resultCode, message);
+    }
 }

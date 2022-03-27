@@ -55,9 +55,10 @@ public class ApplicationController {
 
     @GetMapping("/{applicationId}")
     public ApiResponse<ApplicationDetailResponse> getApplication(
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long applicationId
     ) {
-        ApplicationDetailVo applicationDetailVo = applicationFacadeService.getApplicationDetail(applicationId);
+        ApplicationDetailVo applicationDetailVo = applicationFacadeService.getApplicationDetail(adminMemberId, applicationId);
         return ApiResponse.success(
             applicationAssembler.toApplicationDetailResponse(applicationDetailVo)
         );
@@ -73,9 +74,9 @@ public class ApplicationController {
     ) {
         return ApiResponse.success(
             applicationFacadeService.updateResults(
-                adminMemberId,
-                applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
-            ).stream()
+                    adminMemberId,
+                    applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
+                ).stream()
                 .map(applicationAssembler::toApplicationSimpleResponse)
                 .collect(Collectors.toList())
         );
