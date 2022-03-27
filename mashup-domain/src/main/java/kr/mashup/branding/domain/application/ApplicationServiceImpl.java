@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.exception.ForbiddenException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -197,9 +198,14 @@ public class ApplicationServiceImpl implements ApplicationService {
     public Application getApplication(Long applicantId, Long applicationId) {
         Assert.notNull(applicantId, "'applicantId' must not be null");
         Assert.notNull(applicationId, "'applicationId' must not be null");
-        // TODO: applicant
-        return applicationRepository.findById(applicationId)
+
+        Application application = applicationRepository.findById(applicationId)
             .orElseThrow(ApplicationNotFoundException::new);
+
+        if (!applicantId.equals(application.getApplicant().getApplicantId())) {
+            throw new ForbiddenException();
+        }
+        return application;
     }
 
     @Override
