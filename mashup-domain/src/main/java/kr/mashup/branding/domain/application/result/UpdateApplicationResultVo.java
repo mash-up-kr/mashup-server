@@ -1,8 +1,8 @@
 package kr.mashup.branding.domain.application.result;
 
-import java.time.LocalDateTime;
-
 import lombok.Value;
+
+import java.time.LocalDateTime;
 
 @Value(staticConstructor = "of")
 public class UpdateApplicationResultVo {
@@ -11,12 +11,14 @@ public class UpdateApplicationResultVo {
     ApplicationInterviewStatus interviewStatus;
     LocalDateTime interviewStartedAt;
     LocalDateTime interviewEndedAt;
+    String interviewGuideLink;
 
     public static UpdateApplicationResultVo notRated(Long applicationId) {
         return UpdateApplicationResultVo.of(
             applicationId,
             ApplicationScreeningStatus.NOT_RATED,
             ApplicationInterviewStatus.NOT_RATED,
+            null,
             null,
             null
         );
@@ -28,6 +30,7 @@ public class UpdateApplicationResultVo {
             ApplicationScreeningStatus.FAILED,
             ApplicationInterviewStatus.NOT_APPLICABLE,
             null,
+            null,
             null
         );
     }
@@ -38,6 +41,7 @@ public class UpdateApplicationResultVo {
             ApplicationScreeningStatus.TO_BE_DETERMINED,
             ApplicationInterviewStatus.NOT_RATED,
             null,
+            null,
             null
         );
     }
@@ -45,14 +49,16 @@ public class UpdateApplicationResultVo {
     public static UpdateApplicationResultVo screeningPassed(
         Long applicationId,
         LocalDateTime interviewStartedAt,
-        LocalDateTime interviewEndedAt
+        LocalDateTime interviewEndedAt,
+        String interviewGuideLink
     ) {
         return UpdateApplicationResultVo.of(
             applicationId,
             ApplicationScreeningStatus.PASSED,
             ApplicationInterviewStatus.NOT_RATED,
             interviewStartedAt,
-            interviewEndedAt
+            interviewEndedAt,
+            interviewGuideLink
         );
     }
 
@@ -62,6 +68,7 @@ public class UpdateApplicationResultVo {
             ApplicationScreeningStatus.PASSED,
             ApplicationInterviewStatus.FAILED,
             null,
+            null,
             null
         );
     }
@@ -69,14 +76,16 @@ public class UpdateApplicationResultVo {
     public static UpdateApplicationResultVo interviewToBeDetermined(
         Long applicationId,
         LocalDateTime interviewStartedAt,
-        LocalDateTime interviewEndedAt
+        LocalDateTime interviewEndedAt,
+        String interviewGuideLink
     ) {
         return UpdateApplicationResultVo.of(
             applicationId,
             ApplicationScreeningStatus.PASSED,
             ApplicationInterviewStatus.TO_BE_DETERMINED,
             interviewStartedAt,
-            interviewEndedAt
+            interviewEndedAt,
+            interviewGuideLink
         );
     }
 
@@ -85,6 +94,7 @@ public class UpdateApplicationResultVo {
             applicationId,
             ApplicationScreeningStatus.PASSED,
             ApplicationInterviewStatus.PASSED,
+            null,
             null,
             null
         );

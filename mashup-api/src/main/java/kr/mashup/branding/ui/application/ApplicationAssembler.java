@@ -58,7 +58,8 @@ public class ApplicationAssembler {
         return new ApplicationResultResponse(
             toApplicationStatusResponse(applicationResult),
             applicationResult.getInterviewStartedAt(),
-            applicationResult.getInterviewEndedAt()
+            applicationResult.getInterviewEndedAt(),
+            applicationResult.getInterviewGuideLink()
         );
     }
 
