@@ -55,9 +55,10 @@ public class ApplicationController {
 
     @GetMapping("/{applicationId}")
     public ApiResponse<ApplicationDetailResponse> getApplication(
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long applicationId
     ) {
-        ApplicationDetailVo applicationDetailVo = applicationFacadeService.getApplicationDetail(applicationId);
+        ApplicationDetailVo applicationDetailVo = applicationFacadeService.getApplicationDetail(adminMemberId, applicationId);
         return ApiResponse.success(
             applicationAssembler.toApplicationDetailResponse(applicationDetailVo)
         );

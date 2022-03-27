@@ -23,7 +23,7 @@ public interface ApplicationService {
 
     Application getApplication(Long applicantId, Long applicationId);
 
-    Application getApplication(Long applicationId);
+    Application getApplicationFromAdmin(Long adminMemberId, Long applicationId);
 
     Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo);
 

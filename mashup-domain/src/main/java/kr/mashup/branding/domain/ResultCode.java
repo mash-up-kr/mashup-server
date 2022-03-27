@@ -21,6 +21,7 @@ public enum ResultCode {
     APPLICATION_CONFIRMATION_UPDATE_INVALID("올바르지 않은 지원결과 확인 요청 입니다."),
     APPLICATION_MODIFICATION_NOT_ALLOWED("지원서 제출 기간이 아닙니다."),
     APPLICATION_SUBMIT_REQUEST_INVALID("지원서 제출 요청에 올바르지 않은 값이 있습니다."),
+    APPLICATION_NO_ACCESS("해당 지원서에 대한 접근 권한이 없습니다."),
 
     // application result (지원서 결과)
     INTERVIEW_TIME_INVALID("면접시간이 올바르지 않습니다."),
@@ -49,6 +50,7 @@ public enum ResultCode {
     ADMIN_MEMBER_SIGN_UP_REQUEST_INVALID("회원 가입 요청에 오류가 있습니다."),
     ADMIN_MEMBER_USERNAME_DUPLICATED("이미 사용중인 username 입니다."),
     ADMIN_MEMBER_LOGIN_FAILED("username 또는 password 가 올바르지 않습니다."),
+    ADMIN_MEMBER_NO_ACCESS_TEAM("접근 권한이 없는 팀입니다."),
     ;
 
     private final String message;

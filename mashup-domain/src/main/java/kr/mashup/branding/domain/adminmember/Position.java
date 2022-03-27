@@ -41,7 +41,15 @@ public enum Position {
         this.authorities = authorities;
     }
 
+    @Getter
     public enum Team {
-        SPRING, NODE, iOS, ANDROID, WEB, DESIGN,
+        SPRING("Spring"), NODE("Node"), iOS("iOS"),
+        ANDROID("Android"), WEB("Web"), DESIGN("Design");
+
+        private final String name;
+
+        Team(String name) {
+            this.name = name;
+        }
     }
 }

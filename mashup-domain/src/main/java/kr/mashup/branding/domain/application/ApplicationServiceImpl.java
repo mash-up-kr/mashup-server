@@ -1,9 +1,13 @@
 package kr.mashup.branding.domain.application;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.ResultCode;
+import kr.mashup.branding.domain.adminmember.AdminMember;
+import kr.mashup.branding.domain.adminmember.AdminMemberService;
 import kr.mashup.branding.domain.exception.ForbiddenException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -32,6 +36,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationFormService applicationFormService;
     private final TeamService teamService;
     private final ApplicantService applicantService;
+    private final AdminMemberService adminMemberService;
     private final ApplicationScheduleValidator applicationScheduleValidator;
 
     /**
@@ -40,7 +45,7 @@ public class ApplicationServiceImpl implements ApplicationService {
      * - CREATED, WRITING: 성공
      * - SUBMITTED: 실패
      *
-     * @param applicantId 지원자 식별자
+     * @param applicantId         지원자 식별자
      * @param createApplicationVo 지원서 생성 요청 정보
      * @return 지원서
      */
@@ -144,7 +149,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     /**
      * 이미 제출한 지원서가 존재하는지 검증
-     * @param applicantId 지원자 식별자
+     *
+     * @param applicantId   지원자 식별자
      * @param applicationId 지원서 식별자
      */
     private void validateSubmittedApplicationExists(Long applicantId, Long applicationId) {
@@ -179,9 +185,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     @Transactional
     public Application updateConfirmationFromApplicant(Long applicantId,
-        UpdateConfirmationVo updateConfirmationVo) {
+                                                       UpdateConfirmationVo updateConfirmationVo) {
         Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(
-            updateConfirmationVo.getApplicationId(), applicantId)
+                updateConfirmationVo.getApplicationId(), applicantId)
             .orElseThrow(ApplicationNotFoundException::new);
         application.updateConfirm(updateConfirmationVo.getStatus());
         return application;
@@ -203,17 +209,25 @@ public class ApplicationServiceImpl implements ApplicationService {
             .orElseThrow(ApplicationNotFoundException::new);
 
         if (!applicantId.equals(application.getApplicant().getApplicantId())) {
-            throw new ForbiddenException();
+            throw new ForbiddenException(ResultCode.APPLICATION_NO_ACCESS, "No Access application.");
         }
         return application;
     }
 
     @Override
-    public Application getApplication(Long applicationId) {
+    public Application getApplicationFromAdmin(Long adminMemberId, Long applicationId) {
         Assert.notNull(applicationId, "'applicationId' must not be null");
-        // TODO: staff 권한 검사 (같은 팀만 볼수있어야함, 회장, 부회장, 브랜딩팀은 모든 팀 볼수있음)
-        return applicationRepository.findById(applicationId)
+
+        Application application = applicationRepository.findById(applicationId)
             .orElseThrow(ApplicationNotFoundException::new);
+        String teamName = application.getApplicationForm().getTeam().getName();
+
+        AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
+        if (Arrays.stream(adminMember.getPosition().getAuthorities())
+            .noneMatch(team -> team.getName().equals(teamName))) {
+            throw new ForbiddenException(ResultCode.ADMIN_MEMBER_NO_ACCESS_TEAM, "No Access to other team applications.");
+        }
+        return application;
     }
 
     @Override
