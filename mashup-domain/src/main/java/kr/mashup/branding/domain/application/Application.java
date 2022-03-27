@@ -221,6 +221,7 @@ public class Application {
      */
     void updateResult(UpdateApplicationResultVo updateApplicationResultVo) {
         applicationResult.updateResult(updateApplicationResultVo);
+        confirmation.updateFromAdmin(updateApplicationResultVo.getScreeningStatus(), updateApplicationResultVo.getInterviewStatus());
     }
 
     void updateConfirm(ApplicantConfirmationStatus status) {

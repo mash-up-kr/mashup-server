@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
+import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -55,5 +57,9 @@ public class Confirmation {
 
     public void updateFromApplicant(ApplicantConfirmationStatus status) {
         this.status = this.status.updateFromApplicant(status);
+    }
+
+    public void updateFromAdmin(ApplicationScreeningStatus screeningStatus, ApplicationInterviewStatus interviewStatus) {
+        this.status = this.status.updateFromAdmin(screeningStatus, interviewStatus);
     }
 }
