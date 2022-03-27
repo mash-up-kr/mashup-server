@@ -74,9 +74,9 @@ public class ApplicationController {
     ) {
         return ApiResponse.success(
             applicationFacadeService.updateResults(
-                adminMemberId,
-                applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
-            ).stream()
+                    adminMemberId,
+                    applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
+                ).stream()
                 .map(applicationAssembler::toApplicationSimpleResponse)
                 .collect(Collectors.toList())
         );

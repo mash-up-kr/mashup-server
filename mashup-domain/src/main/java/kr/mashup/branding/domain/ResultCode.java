@@ -51,6 +51,7 @@ public enum ResultCode {
     ADMIN_MEMBER_USERNAME_DUPLICATED("이미 사용중인 username 입니다."),
     ADMIN_MEMBER_LOGIN_FAILED("username 또는 password 가 올바르지 않습니다."),
     ADMIN_MEMBER_NO_ACCESS_TEAM("접근 권한이 없는 팀입니다."),
+    ADMIN_MEMBER_NO_UPDATE_PERMISSION("수정 권한이 없는 관리자 멤버입니다."),
     ;
 
     private final String message;

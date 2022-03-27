@@ -175,9 +175,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         Long applicationId = updateApplicationResultVo.getApplicationId();
         Assert.notNull(applicationId, "'applicationId' must not be null");
 
-        // TODO: adminMemberId 조회 및 권한 검증
         Application application = applicationRepository.findById(applicationId)
             .orElseThrow(ApplicationNotFoundException::new);
+
+        checkAdminMemberAuthority(adminMemberId, application.getApplicationForm().getTeam().getName());
+        checkHelperAdminMember(adminMemberId);
+
         application.updateResult(updateApplicationResultVo);
         return application;
     }
@@ -220,13 +223,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         Application application = applicationRepository.findById(applicationId)
             .orElseThrow(ApplicationNotFoundException::new);
-        String teamName = application.getApplicationForm().getTeam().getName();
 
-        AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
-        if (Arrays.stream(adminMember.getPosition().getAuthorities())
-            .noneMatch(team -> team.getName().equals(teamName))) {
-            throw new ForbiddenException(ResultCode.ADMIN_MEMBER_NO_ACCESS_TEAM, "No Access to other team applications.");
-        }
+        checkAdminMemberAuthority(adminMemberId, application.getApplicationForm().getTeam().getName());
+
         return application;
     }
 
@@ -253,5 +252,20 @@ public class ApplicationServiceImpl implements ApplicationService {
     public void delete(Long applicationId) {
         applicationRepository.findById(applicationId)
             .ifPresent(applicationRepository::delete);
+    }
+
+    private void checkAdminMemberAuthority(Long adminMemberId, String teamName) {
+        AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
+        if (Arrays.stream(adminMember.getPosition().getAuthorities())
+            .noneMatch(team -> team.getName().equals(teamName))) {
+            throw new ForbiddenException(ResultCode.ADMIN_MEMBER_NO_ACCESS_TEAM, "No Access to other team applications.");
+        }
+    }
+
+    private void checkHelperAdminMember(Long adminMemberId) {
+        AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
+        if (adminMember.getPosition().name().contains("HELPER")) {
+            throw new ForbiddenException(ResultCode.ADMIN_MEMBER_NO_UPDATE_PERMISSION, "Helper is not authorized to update.");
+        }
     }
 }
