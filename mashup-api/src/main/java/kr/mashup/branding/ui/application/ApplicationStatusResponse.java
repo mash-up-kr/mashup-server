@@ -9,12 +9,12 @@ import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
  */
 public enum ApplicationStatusResponse {
     WRITING("임시저장"),
-    SUBMITTED("제출완료"),
-    SCREENING_EXPIRED("기한만료"), // 임시저장까지 했는데 서류제출기간이 지난 경우
-    SCREENING_FAILED("서류불합격"),
-    SCREENING_PASSED("서류합격"),
-    INTERVIEW_FAILED("면접불합격"),
-    INTERVIEW_PASSED("최종합격"),
+    SUBMITTED("제출 완료"),
+    SCREENING_EXPIRED("기한 만료"), // 임시저장까지 했는데 서류제출기간이 지난 경우
+    SCREENING_FAILED("서류 불합격"),
+    SCREENING_PASSED("서류 합격"),
+    INTERVIEW_FAILED("최종 불합격"),
+    INTERVIEW_PASSED("최종 합격"),
     ;
 
     ApplicationStatusResponse(String description) {

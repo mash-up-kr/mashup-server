@@ -62,6 +62,11 @@ public class ApplicationResult {
      */
     private LocalDateTime interviewEndedAt;
 
+    /**
+     * 면접 안내 링크 (오픈채팅방 링크 or 화상미팅 링크)
+     */
+    private String interviewGuideLink;
+
     @CreatedBy
     private String createdBy;
 
@@ -110,5 +115,7 @@ public class ApplicationResult {
                     + interviewStartedAt + ", interviewEndedAt: " + interviewEndedAt);
         }
         this.interviewEndedAt = updateApplicationResultVo.getInterviewEndedAt();
+        // 면접 안내 링크 변경
+        this.interviewGuideLink = updateApplicationResultVo.getInterviewGuideLink();
     }
 }

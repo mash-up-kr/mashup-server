@@ -74,7 +74,7 @@ public class ApplicationAssembler {
         ApplicationResultStatus applicationResultStatus = request.getApplicationResultStatus();
         return request.getApplicationIds()
             .stream()
-            .map(it -> toUpdateApplicationResultVo(it, applicationResultStatus, null, null))
+            .map(it -> toUpdateApplicationResultVo(it, applicationResultStatus, null, null, null))
             .collect(Collectors.toList());
     }
 
@@ -82,7 +82,8 @@ public class ApplicationAssembler {
         Long applicationId,
         ApplicationResultStatus applicationResultStatus,
         LocalDateTime interviewStartedAt,
-        LocalDateTime interviewEndedAt
+        LocalDateTime interviewEndedAt,
+        String interviewGuideLink
     ) {
         switch (applicationResultStatus) {
             case NOT_RATED:
@@ -95,7 +96,8 @@ public class ApplicationAssembler {
                 return UpdateApplicationResultVo.screeningPassed(
                     applicationId,
                     interviewStartedAt,
-                    interviewEndedAt
+                    interviewEndedAt,
+                    interviewGuideLink
                 );
             case INTERVIEW_FAILED:
                 return UpdateApplicationResultVo.interviewFailed(applicationId);
@@ -103,7 +105,8 @@ public class ApplicationAssembler {
                 return UpdateApplicationResultVo.interviewToBeDetermined(
                     applicationId,
                     interviewStartedAt,
-                    interviewEndedAt
+                    interviewEndedAt,
+                    interviewGuideLink
                 );
             case INTERVIEW_PASSED:
                 return UpdateApplicationResultVo.interviewPassed(applicationId);
@@ -119,7 +122,8 @@ public class ApplicationAssembler {
             applicationId,
             request.getApplicationResultStatus(),
             request.getInterviewStartedAt(),
-            request.getInterviewEndedAt()
+            request.getInterviewEndedAt(),
+            request.getInterviewGuideLink()
         );
     }
 
@@ -200,7 +204,8 @@ public class ApplicationAssembler {
                 applicationResult.getInterviewStatus()
             ),
             applicationResult.getInterviewStartedAt(),
-            applicationResult.getInterviewEndedAt()
+            applicationResult.getInterviewEndedAt(),
+            applicationResult.getInterviewGuideLink()
         );
     }
 }

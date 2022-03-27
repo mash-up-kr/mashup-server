@@ -14,8 +14,7 @@ public enum ApplicationResultStatus {
     SCREENING_TO_BE_DETERMINED("서류 보류"),
     SCREENING_PASSED("서류 합격"),
     INTERVIEW_FAILED("최종 불합격"),
-    // TODO: '면접 예정' 은 있고 '면접 보류' 는 없어서 문의해보아야함
-    INTERVIEW_TO_BE_DETERMINED("면접 예정"),
+    INTERVIEW_TO_BE_DETERMINED("최종 보류"),
     INTERVIEW_PASSED("최종 합격"),
     ;
 
