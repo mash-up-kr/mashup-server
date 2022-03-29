@@ -1,10 +1,9 @@
 package kr.mashup.branding.config.messageconverter;
 
-import org.apache.commons.text.StringEscapeUtils;
-
 import com.fasterxml.jackson.core.SerializableString;
 import com.fasterxml.jackson.core.io.CharacterEscapes;
 import com.fasterxml.jackson.core.io.SerializedString;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class HTMLCharacterEscapes extends CharacterEscapes {
 
@@ -31,14 +30,14 @@ public class HTMLCharacterEscapes extends CharacterEscapes {
     @Override
     public SerializableString getEscapeSequence(int ch) {
         SerializedString serializedString;
-        char charAt = (char)ch;
+        char charAt = (char) ch;
         if (Character.isHighSurrogate(charAt) || Character.isLowSurrogate(charAt)) {
             StringBuilder sb = new StringBuilder();
             sb.append("\\u");
             sb.append(String.format("%04x", ch));
             serializedString = new SerializedString(sb.toString());
         } else {
-            serializedString = new SerializedString(StringEscapeUtils.escapeHtml4(Character.toString(charAt)));
+            serializedString = new SerializedString(StringEscapeUtils.escapeHtml3(Character.toString(charAt)));
         }
         return serializedString;
     }
