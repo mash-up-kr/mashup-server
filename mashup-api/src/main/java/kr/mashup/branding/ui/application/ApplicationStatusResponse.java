@@ -37,7 +37,7 @@ public enum ApplicationStatusResponse {
         ApplicationStatus applicationStatus,
         ApplicationScreeningStatus screeningStatus
     ) {
-        if (applicationStatus == ApplicationStatus.WRITING) {
+        if (applicationStatus == ApplicationStatus.WRITING || screeningStatus == ApplicationScreeningStatus.NOT_RATED) {
             return SCREENING_EXPIRED;
         }
         if (screeningStatus == ApplicationScreeningStatus.PASSED) {
@@ -53,7 +53,10 @@ public enum ApplicationStatusResponse {
         ApplicationScreeningStatus screeningStatus,
         ApplicationInterviewStatus interviewStatus
     ) {
-        if (screeningStatus == ApplicationScreeningStatus.FAILED) {
+        if (screeningStatus == ApplicationScreeningStatus.NOT_RATED || interviewStatus == ApplicationInterviewStatus.NOT_RATED) {
+            return SCREENING_EXPIRED;
+        }
+        if (screeningStatus == ApplicationScreeningStatus.FAILED || interviewStatus == ApplicationInterviewStatus.NOT_APPLICABLE) {
             return SCREENING_FAILED;
         }
         if (interviewStatus == ApplicationInterviewStatus.PASSED) {
