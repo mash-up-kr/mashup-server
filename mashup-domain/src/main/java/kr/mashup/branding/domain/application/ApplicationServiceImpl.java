@@ -197,6 +197,17 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    @Transactional
+    public Application updateConfirmationForTest(Long applicantId,
+                                                  UpdateConfirmationVo updateConfirmationVo) {
+        Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(
+                updateConfirmationVo.getApplicationId(), applicantId)
+            .orElseThrow(ApplicationNotFoundException::new);
+        application.updateConfirmForTest(updateConfirmationVo.getStatus());
+        return application;
+    }
+
+    @Override
     public List<Application> getApplications(Long applicantId) {
         return applicationRepository.findByApplicant_applicantIdAndStatusIn(applicantId,
             ApplicationStatus.validSet());

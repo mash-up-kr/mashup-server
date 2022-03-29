@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import kr.mashup.branding.domain.applicant.ApplicantService;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationService;
 import kr.mashup.branding.domain.application.ApplicationSubmitRequestVo;
@@ -17,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
-    private final ApplicantService applicantService;
     private final ApplicationService applicationService;
 
     /**
@@ -69,8 +67,19 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
      */
     @Override
     public Application updateConfirm(Long applicantId, Long applicationId,
-        UpdateConfirmationRequest updateRequest) {
+                                     UpdateConfirmationRequest updateRequest) {
         return applicationService.updateConfirmationFromApplicant(
+            applicantId,
+            UpdateConfirmationVo.of(applicationId, updateRequest.getStatus()));
+    }
+
+    /**
+     * (Test용) 인터뷰, 최종합격에 대한 지원자 응답
+     */
+    @Override
+    public Application updateConfirmForTest(Long applicantId, Long applicationId,
+                                            UpdateConfirmationRequest updateRequest) {
+        return applicationService.updateConfirmationForTest(
             applicantId,
             UpdateConfirmationVo.of(applicationId, updateRequest.getStatus()));
     }

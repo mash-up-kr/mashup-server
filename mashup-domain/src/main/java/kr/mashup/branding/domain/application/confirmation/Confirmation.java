@@ -62,4 +62,8 @@ public class Confirmation {
     public void updateFromAdmin(ApplicationScreeningStatus screeningStatus, ApplicationInterviewStatus interviewStatus) {
         this.status = this.status.updateFromAdmin(screeningStatus, interviewStatus);
     }
+
+    public void updateFromTest(ApplicantConfirmationStatus status) {
+        this.status = status;
+    }
 }
