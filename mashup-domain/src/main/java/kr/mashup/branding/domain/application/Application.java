@@ -228,6 +228,10 @@ public class Application {
         confirmation.updateFromApplicant(status);
     }
 
+    void updateConfirmForTest(ApplicantConfirmationStatus status) {
+        confirmation.updateFromTest(status);
+    }
+
     boolean isSubmitted() {
         return status.isSubmitted();
     }

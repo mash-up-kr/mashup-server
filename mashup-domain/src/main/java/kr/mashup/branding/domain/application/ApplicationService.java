@@ -13,11 +13,13 @@ public interface ApplicationService {
     Application update(Long applicantId, Long applicationId, UpdateApplicationVo updateApplicationVo);
 
     Application submit(Long applicantId, Long applicationId,
-        ApplicationSubmitRequestVo applicationSubmitRequestVo);
+                       ApplicationSubmitRequestVo applicationSubmitRequestVo);
 
     Application updateResult(Long adminMemberId, UpdateApplicationResultVo updateApplicationResultVo);
 
     Application updateConfirmationFromApplicant(Long applicantId, UpdateConfirmationVo updateConfirmationVo);
+
+    Application updateConfirmationForTest(Long applicantId, UpdateConfirmationVo updateConfirmationVo);
 
     List<Application> getApplications(Long applicantId);
 

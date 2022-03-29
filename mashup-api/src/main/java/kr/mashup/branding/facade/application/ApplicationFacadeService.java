@@ -14,11 +14,13 @@ public interface ApplicationFacadeService {
     Application update(Long applicantId, Long applicationId, UpdateApplicationVo updateApplicationVo);
 
     Application submit(Long applicantId, Long applicationId,
-        ApplicationSubmitRequestVo applicationSubmitRequestVo);
+                       ApplicationSubmitRequestVo applicationSubmitRequestVo);
 
     List<Application> getApplications(Long applicantId);
 
     Application getApplication(Long applicantId, Long applicationId);
 
     Application updateConfirm(Long applicantId, Long applicationId, UpdateConfirmationRequest updateRequest);
+
+    Application updateConfirmForTest(Long applicantId, Long applicationId, UpdateConfirmationRequest updateRequest);
 }
