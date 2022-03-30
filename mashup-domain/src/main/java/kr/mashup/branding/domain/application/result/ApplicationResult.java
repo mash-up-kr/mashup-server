@@ -96,6 +96,11 @@ public class ApplicationResult {
         // 합격 상태 변경
         if (updateApplicationResultVo.getScreeningStatus() != null) {
             screeningStatus = screeningStatus.update(updateApplicationResultVo.getScreeningStatus());
+            if (updateApplicationResultVo.getScreeningStatus() != ApplicationScreeningStatus.PASSED) {
+                interviewStartedAt = null;
+                interviewEndedAt = null;
+                interviewGuideLink = null;
+            }
         }
         if (updateApplicationResultVo.getInterviewStatus() != null) {
             interviewStatus = interviewStatus.update(updateApplicationResultVo.getInterviewStatus());

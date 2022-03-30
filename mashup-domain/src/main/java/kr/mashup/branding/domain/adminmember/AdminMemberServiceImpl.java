@@ -44,9 +44,13 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         if (!StringUtils.hasText(adminMemberVo.getPassword())) {
             throw new AdminMemberSignUpRequestInvalidException("'password' must not be null, empty or blank");
         }
-        if (adminMemberVo.getPhoneNumber() != null && adminMemberVo.getPhoneNumber().length() > 11) {
+        if (adminMemberVo.getPhoneNumber() != null && adminMemberVo.getPhoneNumber().length() > 13) {
             throw new AdminMemberSignUpRequestInvalidException(
-                "'phoneNumber' length must be less than or equal to 11");
+                "'phoneNumber' length must be less than or equal to 13");
+        }
+        if (adminMemberVo.getPhoneNumber().replaceAll("-", "").length() != 11) {
+            throw new AdminMemberSignUpRequestInvalidException(
+                "'phoneNumber' format must include hyphen('-').");
         }
         if (adminMemberRepository.existsByUsername(adminMemberVo.getUsername())) {
             throw new AdminMemberUsernameDuplicatedException(

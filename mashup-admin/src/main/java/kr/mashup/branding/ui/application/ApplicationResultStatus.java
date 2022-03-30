@@ -28,6 +28,9 @@ public enum ApplicationResultStatus {
         if (interviewStatus == ApplicationInterviewStatus.PASSED) {
             return INTERVIEW_PASSED;
         }
+        if (interviewStatus == ApplicationInterviewStatus.TO_BE_DETERMINED) {
+            return INTERVIEW_TO_BE_DETERMINED;
+        }
         if (interviewStatus == ApplicationInterviewStatus.FAILED) {
             return INTERVIEW_FAILED;
         }
