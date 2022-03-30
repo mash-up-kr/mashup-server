@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -38,7 +39,7 @@ public class ApplicationAssembler {
             application.getApplicationId(),
             applicantAssembler.toApplicantResponse(application.getApplicant()),
             teamAssembler.toTeamResponse(application.getApplicationForm().getTeam()),
-            application.getConfirmation().getStatus(),
+            toApplicantConfirmationStatus(application.getConfirmation().getStatus()),
             application.getStatus(),
             application.getSubmittedAt(),
             application.getApplicationForm().getQuestions()
@@ -52,6 +53,18 @@ public class ApplicationAssembler {
             toApplicationResultResponse(application.getApplicationResult()),
             application.getPrivacyPolicyAgreed()
         );
+    }
+
+    ApplicantConfirmationStatus toApplicantConfirmationStatus(ApplicantConfirmationStatus applicantConfirmationStatus) {
+        LocalDateTime now = LocalDateTime.now();
+        if (!recruitmentScheduleService.canAnnounceScreeningResult(now)) {
+            return ApplicantConfirmationStatus.TO_BE_DETERMINED;
+        }
+        if (!recruitmentScheduleService.canAnnounceInterviewResult(now) &&
+            applicantConfirmationStatus == ApplicantConfirmationStatus.FINAL_CONFIRM_WAITING) {
+            return ApplicantConfirmationStatus.INTERVIEW_CONFIRM_ACCEPTED;
+        }
+        return applicantConfirmationStatus;
     }
 
     ApplicationResultResponse toApplicationResultResponse(ApplicationResult applicationResult) {
