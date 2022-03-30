@@ -9,14 +9,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum ApplicantConfirmationStatus {
     TO_BE_DETERMINED("미검토"),
+    NOT_APPLICABLE("대상 아님"),
     INTERVIEW_CONFIRM_WAITING("면접 확인 대기"),
     INTERVIEW_CONFIRM_ACCEPTED("면접 수락"),
     INTERVIEW_CONFIRM_REJECTED("면접 거절"),
     FINAL_CONFIRM_WAITING("최종 확인 대기"),
     FINAL_CONFIRM_ACCEPTED("최종 수락"),
-    FINAL_CONFIRM_REJECTED("최종 거절"),
-
-    NOT_APPLICABLE("해당 없음");
+    FINAL_CONFIRM_REJECTED("최종 거절");
 
     private final String description;
 
@@ -50,8 +49,8 @@ public enum ApplicantConfirmationStatus {
     public ApplicantConfirmationStatus updateFromAdmin(ApplicationScreeningStatus screeningStatus, ApplicationInterviewStatus interviewStatus) {
         switch (this) {
             case TO_BE_DETERMINED:
-            case INTERVIEW_CONFIRM_WAITING:
             case NOT_APPLICABLE:
+            case INTERVIEW_CONFIRM_WAITING:
                 return updateByScreeningStatus(screeningStatus);
             case INTERVIEW_CONFIRM_ACCEPTED:
             case FINAL_CONFIRM_WAITING:
@@ -65,6 +64,7 @@ public enum ApplicantConfirmationStatus {
         switch (screeningStatus) {
             case NOT_RATED:
                 return TO_BE_DETERMINED;
+            case NOT_APPLICABLE:
             case FAILED:
             case TO_BE_DETERMINED:
                 return NOT_APPLICABLE;

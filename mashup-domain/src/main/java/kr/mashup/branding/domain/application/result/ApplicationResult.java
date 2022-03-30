@@ -95,15 +95,13 @@ public class ApplicationResult {
     public void updateResult(UpdateApplicationResultVo updateApplicationResultVo) {
         // 합격 상태 변경
         if (updateApplicationResultVo.getScreeningStatus() != null) {
-            screeningStatus = screeningStatus.update(updateApplicationResultVo.getScreeningStatus());
+            updateScreeningStatus(updateApplicationResultVo.getScreeningStatus());
             if (updateApplicationResultVo.getScreeningStatus() != ApplicationScreeningStatus.PASSED) {
-                interviewStartedAt = null;
-                interviewEndedAt = null;
-                interviewGuideLink = null;
+                initInterviewInfo();
             }
         }
         if (updateApplicationResultVo.getInterviewStatus() != null) {
-            interviewStatus = interviewStatus.update(updateApplicationResultVo.getInterviewStatus());
+            updateInterviewStatus(updateApplicationResultVo.getInterviewStatus());
         }
         // 면접 일정 변경
         if (updateApplicationResultVo.getInterviewStartedAt() == null) {
@@ -122,5 +120,19 @@ public class ApplicationResult {
         this.interviewEndedAt = updateApplicationResultVo.getInterviewEndedAt();
         // 면접 안내 링크 변경
         this.interviewGuideLink = updateApplicationResultVo.getInterviewGuideLink();
+    }
+
+    public void updateScreeningStatus(ApplicationScreeningStatus applicationScreeningStatus) {
+        screeningStatus = screeningStatus.update(applicationScreeningStatus);
+    }
+
+    public void updateInterviewStatus(ApplicationInterviewStatus applicationInterviewStatus) {
+        interviewStatus = interviewStatus.update(applicationInterviewStatus);
+    }
+
+    private void initInterviewInfo() {
+        interviewStartedAt = null;
+        interviewEndedAt = null;
+        interviewGuideLink = null;
     }
 }

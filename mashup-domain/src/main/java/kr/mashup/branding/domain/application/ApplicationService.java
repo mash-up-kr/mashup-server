@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 
-public interface ApplicationService {
+public interface  ApplicationService {
     Application create(Long applicantId, CreateApplicationVo createApplicationVo);
 
     Application update(Long applicantId, Long applicationId, UpdateApplicationVo updateApplicationVo);
@@ -28,6 +28,8 @@ public interface ApplicationService {
     Application getApplicationFromAdmin(Long adminMemberId, Long applicationId);
 
     Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo);
+
+    void updateApplicationResult(Application application);
 
     void deleteByApplicationFormId(Long applicationFormId);
 
