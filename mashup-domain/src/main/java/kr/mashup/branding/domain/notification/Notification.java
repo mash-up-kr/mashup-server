@@ -140,6 +140,10 @@ public class Notification {
         return notification;
     }
 
+    public void setSmsRequests(List<SmsRequest> smsRequests) {
+        this.smsRequests.addAll(smsRequests);
+    }
+
     public String getSenderPhoneNumber() {
         return senderValue;
     }

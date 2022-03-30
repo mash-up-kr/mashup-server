@@ -78,7 +78,6 @@ public class ToastSmsService implements SmsService {
         if (toastSmsResponse == null || !toastSmsResponse.isSuccess()) {
             log.error(
                 "Failed to send SMS. toastSmsResponse: " + toastSmsResponse + ", toastSmsRequest: " + toastSmsRequest);
-            return toSmsResultVo(toastSmsResponse);
         }
         return toSmsResultVo(toastSmsResponse);
     }
@@ -153,11 +152,7 @@ public class ToastSmsService implements SmsService {
     }
 
     private NotificationStatus toNotificationStatus(ToastSmsResponse toastSmsResponse) {
-        boolean isSuccess = !Optional.ofNullable(toastSmsResponse)
-            .map(ToastSmsResponse::getHeader)
-            .map(ToastSmsResponse.ToastSmsResponseHeader::getIsSuccessful)
-            .filter(it -> Boolean.TRUE == it)
-            .orElse(false);
+        boolean isSuccess = toastSmsResponse.getHeader().getIsSuccessful();
         if (!isSuccess) {
             return NotificationStatus.FAILURE;
         }
@@ -170,11 +165,11 @@ public class ToastSmsService implements SmsService {
             return NotificationStatus.UNKNOWN;
         }
         switch (toastSmsStatusCode) {
-            case 0:
-                return NotificationStatus.SUCCESS;
             case 1:
                 return NotificationStatus.IN_PROGRESS;
             case 2:
+                return NotificationStatus.SUCCESS;
+            case 3:
                 return NotificationStatus.FAILURE;
             default:
                 log.error("Unknown toastSmsStatusCode. toastSmsStatusCode: {}", toastSmsResponse);
