@@ -37,13 +37,20 @@ public enum ApplicationStatusResponse {
         ApplicationStatus applicationStatus,
         ApplicationScreeningStatus screeningStatus
     ) {
-        if (applicationStatus == ApplicationStatus.WRITING || screeningStatus == ApplicationScreeningStatus.NOT_RATED) {
-            return SCREENING_EXPIRED;
+        switch (applicationStatus) {
+            case CREATED:
+            case WRITING:
+                return SCREENING_EXPIRED;
         }
-        if (screeningStatus == ApplicationScreeningStatus.PASSED) {
-            return SCREENING_PASSED;
+        switch (screeningStatus) {
+            case NOT_APPLICABLE:
+                return SCREENING_EXPIRED;
+            case NOT_RATED:
+            case FAILED:
+            case TO_BE_DETERMINED:
+                return SCREENING_FAILED;
         }
-        return SCREENING_FAILED;
+        return SCREENING_PASSED;
     }
 
     /**
@@ -53,15 +60,22 @@ public enum ApplicationStatusResponse {
         ApplicationScreeningStatus screeningStatus,
         ApplicationInterviewStatus interviewStatus
     ) {
-        if (screeningStatus == ApplicationScreeningStatus.NOT_RATED || interviewStatus == ApplicationInterviewStatus.NOT_RATED) {
-            return SCREENING_EXPIRED;
+        switch (screeningStatus) {
+            case NOT_APPLICABLE:
+                return SCREENING_EXPIRED;
+            case NOT_RATED:
+            case FAILED:
+            case TO_BE_DETERMINED:
+                return SCREENING_FAILED;
         }
-        if (screeningStatus == ApplicationScreeningStatus.FAILED || interviewStatus == ApplicationInterviewStatus.NOT_APPLICABLE) {
-            return SCREENING_FAILED;
+        switch (interviewStatus) {
+            case NOT_APPLICABLE:
+                return SCREENING_FAILED;
+            case NOT_RATED:
+            case FAILED:
+            case TO_BE_DETERMINED:
+                return INTERVIEW_FAILED;
         }
-        if (interviewStatus == ApplicationInterviewStatus.PASSED) {
-            return INTERVIEW_PASSED;
-        }
-        return INTERVIEW_FAILED;
+        return INTERVIEW_PASSED;
     }
 }

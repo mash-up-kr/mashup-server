@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberService;
+import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
 import kr.mashup.branding.domain.exception.ForbiddenException;
+import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final TeamService teamService;
     private final ApplicantService applicantService;
     private final AdminMemberService adminMemberService;
+    private final RecruitmentScheduleService recruitmentScheduleService;
     private final ApplicationScheduleValidator applicationScheduleValidator;
 
     /**
@@ -198,7 +201,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     @Transactional
     public Application updateConfirmationForTest(Long applicantId,
-                                                  UpdateConfirmationVo updateConfirmationVo) {
+                                                 UpdateConfirmationVo updateConfirmationVo) {
         Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(
                 updateConfirmationVo.getApplicationId(), applicantId)
             .orElseThrow(ApplicationNotFoundException::new);
@@ -207,19 +210,24 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    @Transactional
     public List<Application> getApplications(Long applicantId) {
-        return applicationRepository.findByApplicant_applicantIdAndStatusIn(applicantId,
-            ApplicationStatus.validSet());
+        List<Application> applications = applicationRepository.findByApplicant_applicantIdAndStatusIn(
+            applicantId, ApplicationStatus.validSet());
+        applications.forEach(this::updateApplicationResult);
+        return applications;
     }
 
     // TODO: 상세 조회시 form 도 같이 조합해서 내려주어야할듯 (teamId, memberId 요청하면 해당팀 쓰던 지원서 질문, 내용 다 합쳐서)
     @Override
+    @Transactional
     public Application getApplication(Long applicantId, Long applicationId) {
         Assert.notNull(applicantId, "'applicantId' must not be null");
         Assert.notNull(applicationId, "'applicationId' must not be null");
 
         Application application = applicationRepository.findById(applicationId)
             .orElseThrow(ApplicationNotFoundException::new);
+        updateApplicationResult(application);
 
         if (!applicantId.equals(application.getApplicant().getApplicantId())) {
             throw new ForbiddenException(ResultCode.APPLICATION_NO_ACCESS, "No Access application.");
@@ -242,6 +250,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo) {
         return applicationRepository.findBy(applicationQueryVo);
+    }
+
+    @Override
+    public void updateApplicationResult(Application application) {
+        // 서류 제출 기간이 지난 경우에도 지원서를 제출하지 않았다면(생성됨, 작성중의 상태) 서류 평가 대상이 아님을 업데이트 한다.
+        if (!recruitmentScheduleService.isRecruitAvailable(LocalDateTime.now()) && !application.getStatus().isSubmitted()
+            && (application.getApplicationResult().getScreeningStatus() != ApplicationScreeningStatus.NOT_APPLICABLE)
+        ) {
+            application.getApplicationResult().updateScreeningStatus(ApplicationScreeningStatus.NOT_APPLICABLE);
+        }
     }
 
     @Override
