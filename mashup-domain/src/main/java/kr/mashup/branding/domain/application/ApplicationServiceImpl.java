@@ -179,7 +179,6 @@ public class ApplicationServiceImpl implements ApplicationService {
             .orElseThrow(ApplicationNotFoundException::new);
 
         checkAdminMemberAuthority(adminMemberId, application.getApplicationForm().getTeam().getName());
-        checkHelperAdminMember(adminMemberId);
 
         application.updateResult(updateApplicationResultVo);
         return application;
