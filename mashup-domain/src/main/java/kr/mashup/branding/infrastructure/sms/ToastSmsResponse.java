@@ -41,10 +41,12 @@ public class ToastSmsResponse {
         private String recipientGroupingKey;
     }
 
+    /**
+     * SMS의 성공 여부는 header.isSuccessful에 담겨옴
+     *
+     * @return 요청 성공 여부
+     */
     public boolean isSuccess() {
-        if (!this.header.isSuccessful) {
-            return false;
-        }
-        return ToastSmsResponseStatus.isSuccess(header.resultCode);
+        return this.header.isSuccessful;
     }
 }

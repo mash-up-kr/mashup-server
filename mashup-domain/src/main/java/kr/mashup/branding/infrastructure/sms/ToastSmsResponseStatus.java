@@ -1,10 +1,10 @@
 package kr.mashup.branding.infrastructure.sms;
 
 public enum ToastSmsResponseStatus {
-    SUCCESS("발송 완료", 0),
-    // header.resultCode 에서는 현재 0만 사용 나머지는 확인 불가
+    // 요청 상태 코드(1:요청 중, 2:요청 완료, 3:요청 실패) -> body.data.statusCode
     IN_PROGRESS("발송 중", 1),
-    FAILURE("발송 실패", 2),
+    SUCCESS("발송 완료", 2),
+    FAILURE("발송 실패", 3),
     ;
 
     private final int toastSmsStatusCode;

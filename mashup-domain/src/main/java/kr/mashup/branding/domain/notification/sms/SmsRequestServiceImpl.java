@@ -27,6 +27,7 @@ class SmsRequestServiceImpl implements SmsRequestService {
         List<SmsRequest> smsRequests = applicants.stream()
             .map(it -> SmsRequest.of(notification, it))
             .collect(Collectors.toList());
+        notification.setSmsRequests(smsRequests);
         return smsRequestRepository.saveAll(smsRequests);
     }
 
