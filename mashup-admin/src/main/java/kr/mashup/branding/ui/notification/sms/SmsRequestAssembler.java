@@ -34,6 +34,7 @@ public class SmsRequestAssembler {
             smsRequest.getNotification().getSender().getPosition(),
             smsRequest.getNotification().getContent(),
             smsRequest.getStatus(),
+            smsRequest.getCreatedAt(),
             teamAssembler.toTeamResponse(team)
         );
     }
