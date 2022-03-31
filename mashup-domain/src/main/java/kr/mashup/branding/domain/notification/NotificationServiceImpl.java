@@ -5,7 +5,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,6 +95,12 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Page<Notification> getNotifications(Long adminMemberId, @Nullable String searchWord, Pageable pageable) {
         Assert.notNull(pageable, "'pageable' must not be null");
+        pageable = PageRequest.of(
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            pageable.getSortOr(Sort.by(Sort.Order.desc("sentAt")))
+        );
+
         if (searchWord == null) {
             return notificationRepository.findAll(pageable);
         }
