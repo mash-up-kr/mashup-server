@@ -1,9 +1,11 @@
 package kr.mashup.branding.ui.application;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.notification.sms.SmsRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -64,6 +66,7 @@ public class ApplicationAssembler {
             application.getUpdatedAt(),
             applicationDetailVo.getSmsRequests()
                 .stream()
+                .sorted(Comparator.comparing(SmsRequest::getCreatedAt).reversed())
                 .map(it -> smsRequestAssembler.toSmsRequestDetailResponse(it,
                     application.getApplicationForm().getTeam()))
                 .collect(Collectors.toList())
