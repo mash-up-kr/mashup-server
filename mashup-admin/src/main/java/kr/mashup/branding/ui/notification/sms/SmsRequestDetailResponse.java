@@ -7,6 +7,8 @@ import kr.mashup.branding.ui.team.TeamResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 public class SmsRequestDetailResponse {
@@ -27,6 +29,9 @@ public class SmsRequestDetailResponse {
 
     @ApiModelProperty(value = "발송 상태(성공, 실패)", example = "SUCCESS")
     private SmsNotificationStatus status;
+
+    @ApiModelProperty(value = "발송(생성) 날짜 및 시간")
+    private LocalDateTime createdAt;
 
     @ApiModelProperty(value = "수신자 지원 플랫폼")
     private TeamResponse team;
