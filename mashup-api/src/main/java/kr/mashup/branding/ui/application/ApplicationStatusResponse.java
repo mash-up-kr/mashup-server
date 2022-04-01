@@ -72,6 +72,10 @@ public enum ApplicationStatusResponse {
             case NOT_APPLICABLE:
                 return SCREENING_FAILED;
             case NOT_RATED:
+                if (screeningStatus == ApplicationScreeningStatus.PASSED) {
+                    return SCREENING_PASSED;
+                }
+                break;
             case FAILED:
             case TO_BE_DETERMINED:
                 return INTERVIEW_FAILED;
