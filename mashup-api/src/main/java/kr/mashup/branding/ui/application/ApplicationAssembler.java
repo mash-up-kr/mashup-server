@@ -68,29 +68,43 @@ public class ApplicationAssembler {
     }
 
     ApplicationResultResponse toApplicationResultResponse(ApplicationResult applicationResult) {
+        LocalDateTime interviewStartedAt = applicationResult.getInterviewStartedAt();
+        LocalDateTime interviewEndedAt = applicationResult.getInterviewEndedAt();
+        String interviewGuideLink = applicationResult.getInterviewGuideLink();
+
+        if (!recruitmentScheduleService.canAnnounceScreeningResult(LocalDateTime.now())) {
+            interviewStartedAt = null;
+            interviewEndedAt = null;
+            interviewGuideLink = null;
+        }
         return new ApplicationResultResponse(
             toApplicationStatusResponse(applicationResult),
-            applicationResult.getInterviewStartedAt(),
-            applicationResult.getInterviewEndedAt(),
-            applicationResult.getInterviewGuideLink()
+            interviewStartedAt,
+            interviewEndedAt,
+            interviewGuideLink
         );
     }
 
     private ApplicationStatusResponse toApplicationStatusResponse(ApplicationResult applicationResult) {
         // TODO: 13기 생기면 기수별로 일정 관리해야함
         LocalDateTime now = LocalDateTime.now();
-        if (!recruitmentScheduleService.canAnnounceScreeningResult(now)) {
+
+        if (recruitmentScheduleService.isRecruitAvailable(now)) { // 서류 마감 전
             return ApplicationStatusResponse.submitted(applicationResult.getApplication().getStatus());
         }
-        if (!recruitmentScheduleService.canAnnounceInterviewResult(now)) {
+        if (!recruitmentScheduleService.canAnnounceScreeningResult(now)) { // 서류 마감 후 ~ 서류 발표 전
+            return ApplicationStatusResponse.beforeResult(applicationResult.getApplication().getStatus());
+        }
+        if (!recruitmentScheduleService.canAnnounceInterviewResult(now)) { // 서류 발표 후 ~ 면접 발표 전
             return ApplicationStatusResponse.screeningResult(
                 applicationResult.getApplication().getStatus(),
                 applicationResult.getScreeningStatus()
             );
         }
-        return ApplicationStatusResponse.interviewResult(
+        return ApplicationStatusResponse.interviewResult( // 면접 발표 후
             applicationResult.getScreeningStatus(),
-            applicationResult.getInterviewStatus()
+            applicationResult.getInterviewStatus(),
+            applicationResult.getApplication().getConfirmation().getStatus()
         );
     }
 
