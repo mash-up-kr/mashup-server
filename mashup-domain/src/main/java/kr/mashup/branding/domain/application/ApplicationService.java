@@ -1,11 +1,10 @@
 package kr.mashup.branding.domain.application;
 
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-
 import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface  ApplicationService {
     Application create(Long applicantId, CreateApplicationVo createApplicationVo);
@@ -22,6 +21,8 @@ public interface  ApplicationService {
     Application updateConfirmationForTest(Long applicantId, UpdateConfirmationVo updateConfirmationVo);
 
     List<Application> getApplications(Long applicantId);
+
+    List<Application> getApplicationsByApplicationStatusAndEventName(ApplicationStatus status, String eventName);
 
     Application getApplication(Long applicantId, Long applicationId);
 

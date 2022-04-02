@@ -2,12 +2,18 @@ package kr.mashup.branding.domain.schedule;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface RecruitmentScheduleService {
     /**
      * 채용 일정 목록 조회
      */
     List<RecruitmentSchedule> getAll();
+
+    /**
+     * 채용 일정 조회
+     */
+    RecruitmentSchedule getByEventName(String eventName);
 
     /**
      * 채용 일정 생성
