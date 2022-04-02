@@ -3,6 +3,7 @@ package kr.mashup.branding.domain.application.confirmation;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationService;
 import kr.mashup.branding.domain.application.ApplicationStatus;
+import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +52,24 @@ public class ConfirmationServiceImpl implements ConfirmationService {
             .forEach(application -> {
                     application.updateConfirmationStatus(ApplicantConfirmationStatus.INTERVIEW_CONFIRM_REJECTED);
                     log.info("[updateInterviewConfirmWaitingToRejected] applicationId: " + application.getApplicationId());
+                }
+            );
+    }
+
+    @Override
+    @Transactional
+    public void updateFinalConfirmWaitingToRejected() {
+        List<Application> applications = applicationService.getApplicationsByApplicationStatusAndEventName(
+            ApplicationStatus.SUBMITTED, RECRUITMENT_ENDED
+        );
+        applications.stream()
+            .filter(application ->
+                application.getApplicationResult().getInterviewStatus().equals(ApplicationInterviewStatus.PASSED) &&
+                    application.getConfirmation().getStatus().equals(ApplicantConfirmationStatus.FINAL_CONFIRM_WAITING)
+            )
+            .forEach(application -> {
+                    application.updateConfirmationStatus(ApplicantConfirmationStatus.FINAL_CONFIRM_REJECTED);
+                    log.info("[updateFinalConfirmWaitingToRejected] applicationId: " + application.getApplicationId());
                 }
             );
     }

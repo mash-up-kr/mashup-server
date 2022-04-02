@@ -24,4 +24,12 @@ public class ConfirmationFacadeServiceImpl implements ConfirmationFacadeService 
     public void updateInterviewConfirmWaitingToRejected() {
         confirmationService.updateInterviewConfirmWaitingToRejected();
     }
+
+    /**
+     * 제출된 지원서 중 면접 결과가 합격인 지원서를 조회하여 지원자 응답 변경
+     */
+    @Override
+    public void updateFinalConfirmWaitingToRejected() {
+        confirmationService.updateFinalConfirmWaitingToRejected();
+    }
 }

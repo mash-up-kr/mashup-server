@@ -4,4 +4,6 @@ public interface ConfirmationFacadeService {
     void updateToBeDeterminedToNotApplicable();
 
     void updateInterviewConfirmWaitingToRejected();
+
+    void updateFinalConfirmWaitingToRejected();
 }
