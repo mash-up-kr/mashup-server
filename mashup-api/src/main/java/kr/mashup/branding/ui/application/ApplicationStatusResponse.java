@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.application;
 
 import kr.mashup.branding.domain.application.ApplicationStatus;
+import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
 
@@ -21,13 +22,23 @@ public enum ApplicationStatusResponse {
     }
 
     /**
-     * 서류 합격 발표 전 지원상태
+     * 서류 마감 전 지원상태
      */
     static ApplicationStatusResponse submitted(ApplicationStatus status) {
         if (status.isSubmitted()) {
             return SUBMITTED;
         }
         return WRITING;
+    }
+
+    /**
+     * 서류 마감 후 ~ 서류 합격 발표 전 지원상태
+     */
+    static ApplicationStatusResponse beforeResult(ApplicationStatus status) {
+        if (!status.isSubmitted()) {
+            return SCREENING_EXPIRED;
+        }
+        return SUBMITTED;
     }
 
     /**
@@ -58,7 +69,8 @@ public enum ApplicationStatusResponse {
      */
     static ApplicationStatusResponse interviewResult(
         ApplicationScreeningStatus screeningStatus,
-        ApplicationInterviewStatus interviewStatus
+        ApplicationInterviewStatus interviewStatus,
+        ApplicantConfirmationStatus confirmationStatus
     ) {
         switch (screeningStatus) {
             case NOT_APPLICABLE:
@@ -72,6 +84,10 @@ public enum ApplicationStatusResponse {
             case NOT_APPLICABLE:
                 return SCREENING_FAILED;
             case NOT_RATED:
+                if (screeningStatus == ApplicationScreeningStatus.PASSED
+                    && confirmationStatus != ApplicantConfirmationStatus.INTERVIEW_CONFIRM_ACCEPTED) {
+                    return SCREENING_PASSED;
+                }
             case FAILED:
             case TO_BE_DETERMINED:
                 return INTERVIEW_FAILED;
