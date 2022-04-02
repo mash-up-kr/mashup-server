@@ -26,6 +26,12 @@ public class RecruitmentScheduleServiceImpl implements RecruitmentScheduleServic
     }
 
     @Override
+    public RecruitmentSchedule getByEventName(String eventName) {
+        return recruitmentScheduleRepository.findByEventName(eventName)
+            .orElseThrow(RecruitmentScheduleNotFoundException::new);
+    }
+
+    @Override
     @Transactional
     public RecruitmentSchedule create(RecruitmentScheduleCreateVo recruitmentScheduleCreateVo) {
         Assert.notNull(recruitmentScheduleCreateVo, "'createRecruitmentScheduleVo' must not be null");
@@ -82,7 +88,7 @@ public class RecruitmentScheduleServiceImpl implements RecruitmentScheduleServic
     @Override
     public boolean canAnnounceScreeningResult(LocalDateTime localDateTime) {
         LocalDateTime screeningResultAnnouncedAt = recruitmentScheduleRepository.findByEventName(
-            SCREENING_RESULT_ANNOUNCED)
+                SCREENING_RESULT_ANNOUNCED)
             .map(RecruitmentSchedule::getEventOccurredAt)
             .orElseThrow(RecruitmentScheduleNotFoundException::new);
         return !localDateTime.isBefore(screeningResultAnnouncedAt);
@@ -91,7 +97,7 @@ public class RecruitmentScheduleServiceImpl implements RecruitmentScheduleServic
     @Override
     public boolean canAnnounceInterviewResult(LocalDateTime localDateTime) {
         LocalDateTime interviewResultAnnouncedAt = recruitmentScheduleRepository.findByEventName(
-            INTERVIEW_RESULT_ANNOUNCED)
+                INTERVIEW_RESULT_ANNOUNCED)
             .map(RecruitmentSchedule::getEventOccurredAt)
             .orElseThrow(RecruitmentScheduleNotFoundException::new);
         return !localDateTime.isBefore(interviewResultAnnouncedAt);

@@ -205,7 +205,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(
                 updateConfirmationVo.getApplicationId(), applicantId)
             .orElseThrow(ApplicationNotFoundException::new);
-        application.updateConfirmForTest(updateConfirmationVo.getStatus());
+        application.updateConfirmationStatus(updateConfirmationVo.getStatus());
         return application;
     }
 
@@ -216,6 +216,12 @@ public class ApplicationServiceImpl implements ApplicationService {
             applicantId, ApplicationStatus.validSet());
         applications.forEach(this::updateApplicationResult);
         return applications;
+    }
+
+    @Override
+    public List<Application> getApplicationsByApplicationStatusAndEventName(ApplicationStatus status, String eventName) {
+        LocalDateTime eventOccurredAt = recruitmentScheduleService.getByEventName(eventName).getEventOccurredAt();
+        return applicationRepository.findByStatusAndCreatedAtBefore(status, eventOccurredAt);
     }
 
     // TODO: 상세 조회시 form 도 같이 조합해서 내려주어야할듯 (teamId, memberId 요청하면 해당팀 쓰던 지원서 질문, 내용 다 합쳐서)

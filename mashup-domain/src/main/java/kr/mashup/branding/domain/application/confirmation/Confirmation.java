@@ -63,7 +63,7 @@ public class Confirmation {
         this.status = this.status.updateFromAdmin(screeningStatus, interviewStatus);
     }
 
-    public void updateFromTest(ApplicantConfirmationStatus status) {
+    public void updateApplicantConfirmationStatus(ApplicantConfirmationStatus status) {
         this.status = status;
     }
 }
