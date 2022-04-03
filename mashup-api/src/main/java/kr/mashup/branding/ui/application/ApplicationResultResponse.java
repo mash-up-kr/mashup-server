@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.application;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import lombok.Data;
 
@@ -13,11 +14,11 @@ public class ApplicationResultResponse {
     /**
      * 면접 시작 시각
      */
-    private final LocalDateTime interviewStartedAt;
+    private final ZonedDateTime interviewStartedAt;
     /**
      * 면접 종료 시각
      */
-    private final LocalDateTime interviewEndedAt;
+    private final ZonedDateTime interviewEndedAt;
     /**
      * 면접 안내 링크 (오픈채팅방 링크 or 화상미팅 링크)
      */

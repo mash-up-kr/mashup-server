@@ -1,6 +1,8 @@
 package kr.mashup.branding.ui.application;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -79,8 +81,8 @@ public class ApplicationAssembler {
         }
         return new ApplicationResultResponse(
             toApplicationStatusResponse(applicationResult),
-            interviewStartedAt,
-            interviewEndedAt,
+            ZonedDateTime.of(interviewStartedAt, ZoneId.of("Asia/Seoul")),
+            ZonedDateTime.of(interviewEndedAt, ZoneId.of("Asia/Seoul")),
             interviewGuideLink
         );
     }
