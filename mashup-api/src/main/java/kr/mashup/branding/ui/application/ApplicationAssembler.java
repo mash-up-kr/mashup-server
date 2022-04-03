@@ -79,13 +79,10 @@ public class ApplicationAssembler {
             interviewEndedAt = null;
             interviewGuideLink = null;
         }
-        ZonedDateTime interviewStartedAtZ = interviewStartedAt == null ? null : ZonedDateTime.of(interviewStartedAt, ZoneId.of("Asia/Seoul"));
-        ZonedDateTime interviewEndedAtZ = interviewEndedAt == null ? null : ZonedDateTime.of(interviewEndedAt, ZoneId.of("Asia/Seoul"));
-
         return new ApplicationResultResponse(
             toApplicationStatusResponse(applicationResult),
-            interviewStartedAtZ,
-            interviewEndedAtZ,
+            convertToZonedDateTime(interviewStartedAt),
+            convertToZonedDateTime(interviewEndedAt),
             interviewGuideLink
         );
     }
@@ -180,5 +177,12 @@ public class ApplicationAssembler {
                 .orElse(null),
             applicationSubmitRequest.getPrivacyPolicyAgreed()
         );
+    }
+
+    private ZonedDateTime convertToZonedDateTime(LocalDateTime localDateTime) {
+        if (localDateTime == null) {
+            return null;
+        }
+        return ZonedDateTime.of(localDateTime, ZoneId.of("Asia/Seoul"));
     }
 }
