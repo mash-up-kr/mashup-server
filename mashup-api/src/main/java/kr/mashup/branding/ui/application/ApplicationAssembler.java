@@ -79,10 +79,13 @@ public class ApplicationAssembler {
             interviewEndedAt = null;
             interviewGuideLink = null;
         }
+        ZonedDateTime interviewStartedAtZ = interviewStartedAt == null ? null : ZonedDateTime.of(interviewStartedAt, ZoneId.of("Asia/Seoul"));
+        ZonedDateTime interviewEndedAtZ = interviewEndedAt == null ? null : ZonedDateTime.of(interviewEndedAt, ZoneId.of("Asia/Seoul"));
+
         return new ApplicationResultResponse(
             toApplicationStatusResponse(applicationResult),
-            ZonedDateTime.of(interviewStartedAt, ZoneId.of("Asia/Seoul")),
-            ZonedDateTime.of(interviewEndedAt, ZoneId.of("Asia/Seoul")),
+            interviewStartedAtZ,
+            interviewEndedAtZ,
             interviewGuideLink
         );
     }
