@@ -38,6 +38,7 @@ public class ApplicationAssembler {
             applicantAssembler.toApplicantResponse(application.getApplicant()),
             teamAssembler.toTeamResponse(application.getApplicationForm().getTeam()),
             application.getConfirmation().getStatus(),
+            application.getConfirmation().getRejectionReason(),
             toApplicationResultResponse(application.getApplicationResult()),
             application.getSubmittedAt(),
             application.getCreatedAt(),
@@ -60,6 +61,7 @@ public class ApplicationAssembler {
                 .map(this::toAnswerResponse)
                 .collect(Collectors.toList()),
             application.getConfirmation().getStatus(),
+            application.getConfirmation().getRejectionReason(),
             toApplicationResultResponse(application.getApplicationResult()),
             application.getSubmittedAt(),
             application.getCreatedAt(),

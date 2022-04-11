@@ -6,4 +6,5 @@ import lombok.Value;
 public class UpdateConfirmationVo {
     Long applicationId;
     ApplicantConfirmationStatus status;
+    String rejectionReason;
 }

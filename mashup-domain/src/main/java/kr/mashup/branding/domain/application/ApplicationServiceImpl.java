@@ -194,7 +194,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(
                 updateConfirmationVo.getApplicationId(), applicantId)
             .orElseThrow(ApplicationNotFoundException::new);
-        application.updateConfirm(updateConfirmationVo.getStatus());
+        application.updateConfirm(updateConfirmationVo.getStatus(), updateConfirmationVo.getRejectionReason());
         return application;
     }
 
