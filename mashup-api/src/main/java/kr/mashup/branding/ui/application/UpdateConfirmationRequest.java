@@ -10,4 +10,6 @@ import lombok.ToString;
 public class UpdateConfirmationRequest {
     @ApiModelProperty(value = "지원자 응답", example = "INTERVIEW_CONFIRM_ACCEPTED")
     private ApplicantConfirmationStatus status;
+
+    private String rejectionReason;
 }

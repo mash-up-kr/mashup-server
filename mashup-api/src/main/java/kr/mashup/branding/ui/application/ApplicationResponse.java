@@ -17,6 +17,7 @@ public class ApplicationResponse {
     private ApplicantResponse applicant;
     private TeamResponse team;
     private ApplicantConfirmationStatus confirmationStatus;
+    private String rejectionReason;
     private ApplicationStatus status;
     private LocalDateTime submittedAt;
     private List<QuestionResponse> questions;

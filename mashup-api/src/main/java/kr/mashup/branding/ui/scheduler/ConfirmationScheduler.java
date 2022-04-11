@@ -38,7 +38,7 @@ public class ConfirmationScheduler {
      * 면접 발표 후 24시간 뒤 면접 합격이지만 응답 대기중인 지원서에 대한 지원자 응답 변경
      * FINAL_CONFIRM_WAITING -> FINAL_CONFIRM_REJECTED
      */
-    @Scheduled(cron = "0 0 10 13 4 ?") // 2022-04-12 10:00:00 24시간 뒤인 04-13 10:00:00
+    @Scheduled(cron = "0 0 19 13 4 ?") // 2022-04-12 19:00:00 24시간 뒤인 04-13 19:00:00
     public void updateConfirmationAtInterviewEnded() {
         log.info("[ConfirmationScheduler] updateConfirmationAtInterviewEnded >>> start");
         confirmationFacadeService.updateFinalConfirmWaitingToRejected();

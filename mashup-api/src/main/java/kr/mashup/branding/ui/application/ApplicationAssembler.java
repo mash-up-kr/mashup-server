@@ -42,6 +42,7 @@ public class ApplicationAssembler {
             applicantAssembler.toApplicantResponse(application.getApplicant()),
             teamAssembler.toTeamResponse(application.getApplicationForm().getTeam()),
             toApplicantConfirmationStatus(application.getConfirmation().getStatus()),
+            application.getConfirmation().getRejectionReason(),
             application.getStatus(),
             application.getSubmittedAt(),
             application.getApplicationForm().getQuestions()

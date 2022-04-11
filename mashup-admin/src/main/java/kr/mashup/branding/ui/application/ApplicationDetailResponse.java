@@ -20,6 +20,7 @@ public class ApplicationDetailResponse {
     private List<QuestionResponse> questions;
     private List<AnswerResponse> answers;
     private ApplicantConfirmationStatus confirmationStatus;
+    private String rejectionReason;
     private ApplicationResultResponse result;
     private LocalDateTime submittedAt;
     private LocalDateTime createdAt;

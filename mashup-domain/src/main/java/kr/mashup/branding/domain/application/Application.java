@@ -224,8 +224,8 @@ public class Application {
         confirmation.updateFromAdmin(updateApplicationResultVo.getScreeningStatus(), updateApplicationResultVo.getInterviewStatus());
     }
 
-    void updateConfirm(ApplicantConfirmationStatus status) {
-        confirmation.updateFromApplicant(status);
+    void updateConfirm(ApplicantConfirmationStatus status, String rejectionReason) {
+        confirmation.updateFromApplicant(status, rejectionReason);
     }
 
     public void updateConfirmationStatus(ApplicantConfirmationStatus status) {

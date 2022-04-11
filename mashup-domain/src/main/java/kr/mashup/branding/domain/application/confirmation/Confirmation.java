@@ -42,6 +42,8 @@ public class Confirmation {
     @Enumerated(EnumType.STRING)
     private ApplicantConfirmationStatus status;
 
+    private String rejectionReason;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -52,11 +54,13 @@ public class Confirmation {
         Confirmation confirmation = new Confirmation();
         confirmation.application = application;
         confirmation.status = ApplicantConfirmationStatus.TO_BE_DETERMINED;
+        confirmation.rejectionReason = null;
         return confirmation;
     }
 
-    public void updateFromApplicant(ApplicantConfirmationStatus status) {
+    public void updateFromApplicant(ApplicantConfirmationStatus status, String rejectionReason) {
         this.status = this.status.updateFromApplicant(status);
+        this.rejectionReason = rejectionReason;
     }
 
     public void updateFromAdmin(ApplicationScreeningStatus screeningStatus, ApplicationInterviewStatus interviewStatus) {

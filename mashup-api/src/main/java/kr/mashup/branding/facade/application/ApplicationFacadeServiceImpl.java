@@ -70,7 +70,7 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
                                      UpdateConfirmationRequest updateRequest) {
         return applicationService.updateConfirmationFromApplicant(
             applicantId,
-            UpdateConfirmationVo.of(applicationId, updateRequest.getStatus()));
+            UpdateConfirmationVo.of(applicationId, updateRequest.getStatus(), updateRequest.getRejectionReason()));
     }
 
     /**
@@ -81,6 +81,6 @@ public class ApplicationFacadeServiceImpl implements ApplicationFacadeService {
                                             UpdateConfirmationRequest updateRequest) {
         return applicationService.updateConfirmationForTest(
             applicantId,
-            UpdateConfirmationVo.of(applicationId, updateRequest.getStatus()));
+            UpdateConfirmationVo.of(applicationId, updateRequest.getStatus(), updateRequest.getRejectionReason()));
     }
 }
