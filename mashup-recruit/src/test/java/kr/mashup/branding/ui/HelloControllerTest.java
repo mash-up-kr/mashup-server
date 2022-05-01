@@ -22,6 +22,6 @@ public class HelloControllerTest {
     public void hello() throws Exception {
         mockMvc.perform(get("/hello"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("Hello, Mashup-api"));
+                .andExpect(jsonPath("$").value("Hello, Mashup-recruit"));
     }
 }
