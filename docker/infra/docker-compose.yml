@@ -1,0 +1,35 @@
+version: "3"
+services:
+  nginx:
+    container_name: 'nginx'
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+  jenkins:
+    container_name: 'jenkins'
+    image: 'jenkins/jenkins:latest'
+    restart: always
+    ports:
+      - 8100:8080
+      - 50000:50000
+    volumes:
+      - ./jenkins:/var/jenkins_home
+    environment:
+      TZ: "Asia/Seoul"
+#  filebeat:
+#    image: "mashupbranding/mashup-server-filebeat:${TAG:-latest}"
+#    volumes:
+#      - "${NGINX_ACCESS_LOG_PATH}:${NGINX_ACCESS_LOG_PATH}"
+#      - "${NGINX_ERROR_LOG_PATH}:${NGINX_ERROR_LOG_PATH}"
+#      - "${SPRING_LOG_DIR}:${SPRING_LOG_DIR}"
+#      - "${FILEBEAT_EXTERNAL_DIR}:${FILEBEAT_INTERNAL_DIR}:rw"
+#    environment:
+#      - "NGINX_ACCESS_LOG_PATH=${NGINX_ACCESS_LOG_PATH}"
+#      - "NGINX_ERROR_LOG_PATH=${NGINX_ERROR_LOG_PATH}"
+#      - "SPRING_LOG_PATH=${SPRING_LOG_PATH}"
+#      - "SERVICE_NAME=${SERVICE_NAME}"
+#      - "ES_HOST=${ES_HOST}"
+#      - "ES_USERNAME=${ES_USERNAME}"
+#      - "ES_PASSWORD=${ES_PASSWORD}"
