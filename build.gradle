@@ -11,7 +11,8 @@ sourceCompatibility = '1.8'
 
 def buildPhase = System.getProperty("build.phase", "local")
 project.ext.buildPhase = buildPhase
-
+def encrptorPassword = System.getProperty("encrptor.password", "mashup123")
+project.ext.encrptorPassword = encrptorPassword
 allprojects {
 	repositories {
 		mavenCentral()

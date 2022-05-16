@@ -10,15 +10,15 @@ jib {
         println "to image : ${image}:${tags}"
     }
     container {
+        String profile = "-Dspring.profiles.active=${buildPhase.toString()}"
+        String encryptor = "-Djasypt.encryptor.password=${encrptorPassword.toString()}"
         creationTime = "USE_CURRENT_TIMESTAMP"
         jvmFlags = [
-                "-Dspring.profiles.active=${buildPhase}",
-                "-Djasypt.encryptor.password=${encrptorPassword}",
+                profile,
+                encryptor,
                 "-Dlogging.file.path=/logs",
                 "-Dserver.tomcat.accesslog.enabled=true",
                 "-Dserver.tomcat.basedir=",
-                "-Dmashup.logging.appender.discord.webhook-url=https://discord.com/api/webhooks/947309138462011423/zw-icSCO8Zdk0jRoMvsoW7sVxW3Ct0IvTUDHWvJMItWgF01QSfuanY7aeDa7KuPrns8c",
-                "-Xmx256m",
                 "-XX:+UseContainerSupport",
                 "-Dserver.port=8080",
                 "-Dfile.encoding=UTF-8",
