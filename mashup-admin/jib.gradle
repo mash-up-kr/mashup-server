@@ -1,0 +1,24 @@
+apply plugin: "com.google.cloud.tools.jib"
+
+jib {
+    from {
+        image = "adoptopenjdk/openjdk11:alpine"
+    }
+    to {
+        image = "321148231533.dkr.ecr.ap-northeast-2.amazonaws.com/${project.name}"
+        tags = ["${buildPhase}"]
+        println "to image : ${image}:${tags}"
+    }
+    container {
+        creationTime = "USE_CURRENT_TIMESTAMP"
+        jvmFlags = [
+            "-XX:+UseContainerSupport",
+            "-Dserver.port=8080",
+            "-Dfile.encoding=UTF-8",
+            "-Duser.timezone=Asia/Seoul"
+//                "-javaagent:/scouter/agent.java/scouter.agent.jar",
+//                "-DScouter.config=/scouter/conf/scouter.conf",
+        ]
+        ports = ["8080"]
+    }
+}

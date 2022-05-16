@@ -4,6 +4,9 @@ plugins {
     id 'java'
 }
 
+apply plugin: "com.google.cloud.tools.jib"
+apply from: "jib.gradle"
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
