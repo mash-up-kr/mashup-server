@@ -7,14 +7,14 @@ services:
       - 80:80
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/cerbot/conf:/etc/letsencrypt
-      - ./nginx/cerbot/www:/var/www/cerbot
-  cerbot:
-    container_name: 'cerbot'
-    image: cerbot/cerbot:v0.36.0
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+  certbot:
+    container_name: 'certbot'
+    image: certbot/certbot:v0.36.0
     volumes:
-      - ./nginx/cerbot/conf:/etc/letsencrypt
-      - ./nginx/cerbot/www:/var/www/cerbot
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
   jenkins:
     container_name: 'jenkins'
     image: 'jenkins/jenkins:latest'
