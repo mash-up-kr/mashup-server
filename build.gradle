@@ -7,11 +7,11 @@ plugins {
 
 group = 'kr.mashup.branding'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 
 def buildPhase = System.getProperty("build.phase", "local")
 project.ext.buildPhase = buildPhase
-def encrptorPassword = System.getProperty("encrptor.password", "mashup123")
+def encrptorPassword = System.getProperty("encrptorPassword", "mashup123")
 project.ext.encrptorPassword = encrptorPassword
 allprojects {
 	repositories {
