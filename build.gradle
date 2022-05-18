@@ -11,7 +11,7 @@ sourceCompatibility = '11'
 
 def buildPhase = System.getProperty("build.phase", "local")
 project.ext.buildPhase = buildPhase
-def encrptorPassword = System.getProperty("encrptorPassword", "mashup123")
+def encrptorPassword = System.getProperty("encrptorPassword", "")
 project.ext.encrptorPassword = encrptorPassword
 allprojects {
 	repositories {
