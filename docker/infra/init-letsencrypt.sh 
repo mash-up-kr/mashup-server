@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(api.member.mash-up.kr api.adminsoo.mash-up.kr api.recruit.mash-up.kr jenkins.mash-up.kr)
+domains=(api.member.mash-up.kr api.adminsoo.mash-up.kr api.recruit.mash-up.kr)
 rsa_key_size=4096
 data_path="./nginx/certbot"
 email="branding.mashup@gmail.com" # Adding a valid address is strongly recommended
