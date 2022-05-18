@@ -7,7 +7,7 @@ services:
       - 80:80
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/cerbot/conf/etc/letsencrypt
+      - ./nginx/cerbot/conf:/etc/letsencrypt
       - ./nginx/cerbot/www:/var/www/cerbot
   cerbot:
     container_name: 'cerbot'
