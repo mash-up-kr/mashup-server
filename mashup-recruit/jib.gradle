@@ -2,7 +2,7 @@ apply plugin: "com.google.cloud.tools.jib"
 
 jib {
     from {
-        image = "adoptopenjdk/openjdk8:alpine"
+        image = "adoptopenjdk/openjdk16:alpine"
     }
     to {
         image = "321148231533.dkr.ecr.ap-northeast-2.amazonaws.com/${project.name}"
