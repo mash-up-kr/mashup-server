@@ -2,7 +2,7 @@
 
 # BLUE가 실행중인지 확인
 APP_NAME=mashup-admin
-EXIST_BLUE=$(sudo docker-compose -p admin-blue -f docker-compose.blue.yml ps | grep Up)
+EXIST_BLUE=$(sudo docker-compose -p mashup-admin-blue -f docker-compose.blue.yml ps | grep Up)
 
 if [ -z "${EXIST_BLUE}" ] # -z는 문자열 길이가 0이면 true.BLUE가 실행중이면 false
 then

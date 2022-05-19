@@ -2,7 +2,7 @@
 
 # BLUE가 실행중인지 확인
 APP_NAME=mashup-recruit
-EXIST_BLUE=$(sudo docker-compose -p admin-blue -f docker-compose.blue.yml ps | grep Up)
+EXIST_BLUE=$(sudo docker-compose -p mashup-recruit-blue -f docker-compose.blue.yml ps | grep Up)
 
 if [ -z "${EXIST_BLUE}" ] # -z는 문자열 길이가 0이면 true.BLUE가 실행중이면 false
 then
@@ -22,7 +22,7 @@ fi
 echo " ========== [start] change ${APP_NAME}-${TERMINATE_CONTAINER} to ${APP_NAME}-${START_CONTAINER} =========="
 
 echo "[step 1] deploy ${APP_NAME}-${START_CONTAINER}"
-sudo docker-compose -p ${APP_NAME}-${START_CONTAINER} -f docker-compose.${START_CONTAINER}.yml pull
+sudo docker-compose -p ${APPd_NAME}-${START_CONTAINER} -f docker-compose.${START_CONTAINER}.yml pull
 sudo docker-compose -p ${APP_NAME}-${START_CONTAINER} -f docker-compose.${START_CONTAINER}.yml up -d
 for RETRY_CNT in {1..10}
 do
