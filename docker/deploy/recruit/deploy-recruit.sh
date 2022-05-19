@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # BLUE가 실행중인지 확인
-APP_NAME=mashup-member
+APP_NAME=mashup-recruit
 EXIST_BLUE=$(sudo docker-compose -p admin-blue -f docker-compose.blue.yml ps | grep Up)
 
 if [ -z "${EXIST_BLUE}" ] # -z는 문자열 길이가 0이면 true.BLUE가 실행중이면 false
@@ -9,14 +9,14 @@ then
   # start blue
   START_CONTAINER=blue
   TERMINATE_CONTAINER=green
-  START_PORT=8070
-  TERMINATE_PORT=8071
+  START_PORT=8080
+  TERMINATE_PORT=8081
 else
   # start green
   START_CONTAINER=green
   TERMINATE_CONTAINER=blue
-  START_PORT=8071
-  TERMINATE_PORT=8070
+  START_PORT=8081
+  TERMINATE_PORT=8080
 fi
 
 echo " ========== [start] change ${APP_NAME}-${TERMINATE_CONTAINER} to ${APP_NAME}-${START_CONTAINER} =========="
