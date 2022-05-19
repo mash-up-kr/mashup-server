@@ -11,7 +11,7 @@ public class PingController {
 	}
 
 	@GetMapping("/v2/ping")
-	public boolean pingV2() {
-		return true;
+	public String pingV2() {
+		return "mashup-recruit";
 	}
 }
