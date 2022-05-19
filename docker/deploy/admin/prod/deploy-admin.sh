@@ -28,7 +28,7 @@ for RETRY_CNT in {1..10}
 do
   echo "Health Check Start...(${RETRY_CNT})"
 
-  HEALTH_CHECK_RESPONSE=$(curl -s http://127.0.0.1:${START_PORT}/ping | grep 'UP')
+  HEALTH_CHECK_RESPONSE=$(curl -s http://127.0.0.1:${START_PORT}/ping | grep 'MashUp')
   if [ -z "${HEALTH_CHECK_RESPONSE}" ] # 실행되었다면 break
   then
         echo "health check fail..${HEALTH_CHECK_RESPONSE}"
