@@ -14,4 +14,9 @@ public class PingController {
 	public boolean pingV2() {
 		return true;
 	}
+
+	@GetMapping("/v3/ping")
+	public boolean pingV3() {
+		return true;
+	}
 }
