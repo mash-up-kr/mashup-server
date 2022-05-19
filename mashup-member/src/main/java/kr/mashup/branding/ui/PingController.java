@@ -9,4 +9,9 @@ public class PingController {
 	public boolean ping() {
 		return true;
 	}
+
+	@GetMapping("/v2/ping")
+	public boolean pingV2() {
+		return true;
+	}
 }

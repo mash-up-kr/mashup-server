@@ -1,4 +1,4 @@
-name: Mash-Up develop Api Server Deploy
+name: Mash-Up Member Real CI
 
 on:
   push:
@@ -35,4 +35,4 @@ jobs:
       - name: Build Jib
         run: |
           chmod +x gradlew
-          ./gradlew :mashup-member:jib -PbuildPhase=production -PencrptorPassword=${{ secrets.ENCRPTOR_PASSWORD }}
+          ./gradlew :mashup-member:jib -PbuildPhase=production -PencryptorPassword=${{ secrets.ENCRPTOR_PASSWORD }}
