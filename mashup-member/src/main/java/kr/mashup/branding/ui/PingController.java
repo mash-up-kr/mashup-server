@@ -10,8 +10,8 @@ public class PingController {
 		return true;
 	}
 
-	@GetMapping("/v5/ping")
-	public boolean pingV5() {
-		return true;
+	@GetMapping("/v2/ping")
+	public String pingV2() {
+		return "mashup-member";
 	}
 }

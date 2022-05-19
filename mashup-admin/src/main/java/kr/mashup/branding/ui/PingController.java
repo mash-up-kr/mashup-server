@@ -9,4 +9,9 @@ public class PingController {
 	public boolean ping() {
 		return true;
 	}
+
+	@GetMapping("/v2/ping")
+	public String pingV2() {
+		return "mashup-adminsoo";
+	}
 }
