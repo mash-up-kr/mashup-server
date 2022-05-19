@@ -11,7 +11,7 @@ jib {
     }
     container {
         String profile = "-Dspring.profiles.active=${buildPhase.toString()}"
-        String encryptor = "-Djasypt.encryptor.password=${encrptorPassword.toString()}"
+        String encryptor = "-Djasypt.encryptor.password=${encryptorPassword.toString()}"
         creationTime = "USE_CURRENT_TIMESTAMP"
         jvmFlags = [
                 profile,

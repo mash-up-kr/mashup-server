@@ -35,4 +35,4 @@ jobs:
       - name: Build Jib
         run: |
           chmod +x gradlew
-          ./gradlew :mashup-admin:jib -PbuildPhase=production -PencrptorPassword=${{ secrets.ENCRPTOR_PASSWORD }}
+          ./gradlew :mashup-admin:jib -PbuildPhase=production -PencryptorPassword=${{ secrets.ENCRYPTOR_PASSWORD }}
