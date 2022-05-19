@@ -37,7 +37,7 @@ do
         break
   fi
 
-  if [ ${RETRY_COUNT} -eq 10 ]
+  if [ ${RETRY_COUNT} -eq 11 ]
   then
           echo "deployment failed."
           exit 1
