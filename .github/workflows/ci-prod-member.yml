@@ -1,4 +1,4 @@
-name: Mash-Up develop Api Server Deploy
+name: Mash-Up Member Real CI
 
 on:
   push:
