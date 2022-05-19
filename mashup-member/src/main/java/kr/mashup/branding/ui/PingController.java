@@ -10,13 +10,8 @@ public class PingController {
 		return true;
 	}
 
-	@GetMapping("/v2/ping")
-	public boolean pingV2() {
-		return true;
-	}
-
-	@GetMapping("/v3/ping")
-	public boolean pingV3() {
+	@GetMapping("/v5/ping")
+	public boolean pingV5() {
 		return true;
 	}
 }
