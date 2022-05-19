@@ -2,7 +2,7 @@
 
 # BLUE가 실행중인지 확인
 APP_NAME=mashup-recruit
-EXIST_BLUE=$(sudo docker-compose -p mashup-recruit-blue -f docker-compose.blue.yml ps | grep Up)
+EXIST_BLUE=$(docker-compose -p mashup-recruit-blue -f docker-compose.blue.yml ps | grep Up)
 
 if [ -z "${EXIST_BLUE}" ] # -z는 문자열 길이가 0이면 true.BLUE가 실행중이면 false
 then
@@ -22,8 +22,8 @@ fi
 echo " ========== [start] change ${APP_NAME}-${TERMINATE_CONTAINER} to ${APP_NAME}-${START_CONTAINER} =========="
 
 echo "[step 1] deploy ${APP_NAME}-${START_CONTAINER}"
-sudo docker-compose -p ${APPd_NAME}-${START_CONTAINER} -f docker-compose.${START_CONTAINER}.yml pull
-sudo docker-compose -p ${APP_NAME}-${START_CONTAINER} -f docker-compose.${START_CONTAINER}.yml up -d
+docker-compose -p ${APP_NAME}-${START_CONTAINER} -f docker-compose.${START_CONTAINER}.yml pull
+docker-compose -p ${APP_NAME}-${START_CONTAINER} -f docker-compose.${START_CONTAINER}.yml up -d
 for RETRY_CNT in {1..10}
 do
   echo "Health Check Start...(${RETRY_CNT})"
@@ -56,17 +56,17 @@ echo "deploy ${APP_NAME}-${START_CONTAINER} success!"
 # 종료되는 포트를 새로 시작되는 포트로 값을 변경해줍니다.
 # ex ) sudo sed -i "s/8080/8081/" /nginx/conf.d/app.conf
 echo -e "\n[step - 2] change port ${TERMINATE_PORT} to ${START_PORT}"
-sudo sed -i "s/${TERMINATE_PORT}/${START_PORT}/" /home/ec2-user/mashup-server/docker/infra/nginx/conf.d/app.conf
+sed -i "s/${TERMINATE_PORT}/${START_PORT}/" /home/ec2-user/mashup-server/docker/infra/nginx/conf.d/app.conf
 
 # 새로운 포트로 스프링부트가 구동 되고, nginx의 포트를 변경해주었다면, nginx 재시작해줍니다.
 # docker exec -it {nginx container name} nginx -s reload
 echo -e "\n[step - 3] nginx reload.."
-sudo docker exec -i nginx nginx -s reload
+docker exec -i nginx nginx -s reload
 
 
 # 기존에 실행 중이었던 docker-compose는 종료시켜줍니다.
 echo -e "\n[step - 4] exit ${APP_NAME}-${TERMINATE_CONTAINER}"
-sudo docker-compose -p ${APP_NAME}-${TERMINATE_CONTAINER} -f docker-compose.${TERMINATE_CONTAINER}.yml down
+docker-compose -p ${APP_NAME}-${TERMINATE_CONTAINER} -f docker-compose.${TERMINATE_CONTAINER}.yml down
 
 echo "exit ${APP_NAME}-${TERMINATE_CONTAINER} success!"
 
