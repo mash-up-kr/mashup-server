@@ -14,4 +14,8 @@ public class BadRequestException extends MashupServerException {
     public BadRequestException(ResultCode resultCode, String message) {
         super(resultCode, message);
     }
+
+    public BadRequestException(ResultCode resultCode, String message, Throwable cause) {
+        super(resultCode, message, cause);
+    }
 }

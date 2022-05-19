@@ -43,7 +43,7 @@ public class NotificationAssembler {
             notification.getName(),
             notification.getSenderPhoneNumber(),
             notification.getSentAt(),
-            notification.getSender().getPosition().name(),
+            notification.getSender().getPosition(),
             statusCountMap.getOrDefault(SmsNotificationStatus.SUCCESS, 0),
             statusCountMap.getOrDefault(SmsNotificationStatus.FAILURE, 0),
             statusCountMap.values().stream().mapToInt(it -> it).sum()
@@ -66,7 +66,7 @@ public class NotificationAssembler {
             notification.getContent(),
             notification.getSenderPhoneNumber(),
             notification.getSentAt(),
-            notification.getSender().getPosition().name(),
+            notification.getSender().getPosition(),
             statusCountMap.getOrDefault(SmsNotificationStatus.SUCCESS, 0),
             statusCountMap.getOrDefault(SmsNotificationStatus.FAILURE, 0),
             statusCountMap.values().stream().mapToInt(it -> it).sum(),

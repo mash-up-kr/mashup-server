@@ -1,7 +1,6 @@
 package kr.mashup.branding.ui.application.form;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,9 +43,7 @@ public class ApplicationFormController {
     ) {
         return ApiResponse.success(
             applicationFormFacadeService.getApplicationForms(ApplicationFormQueryVo.of(teamId, searchWord, pageable))
-                .stream()
                 .map(applicationFormAssembler::toApplicationFormResponse)
-                .collect(Collectors.toList())
         );
     }
 
@@ -70,11 +67,12 @@ public class ApplicationFormController {
      */
     @PostMapping
     public ApiResponse<ApplicationFormResponse> create(
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @RequestBody CreateApplicationFormRequest createApplicationFormRequest
     ) {
         CreateApplicationFormVo createApplicationFormVo = applicationFormAssembler.toCreateApplicationFormVo(
             createApplicationFormRequest);
-        ApplicationForm applicationForm = applicationFormFacadeService.create(createApplicationFormVo);
+        ApplicationForm applicationForm = applicationFormFacadeService.create(adminMemberId, createApplicationFormVo);
         return ApiResponse.success(
             applicationFormAssembler.toApplicationFormResponse(applicationForm)
         );
@@ -88,10 +86,12 @@ public class ApplicationFormController {
      */
     @PutMapping("/{applicationFormId}")
     public ApiResponse<ApplicationFormResponse> update(
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long applicationFormId,
         @RequestBody UpdateApplicationFormRequest updateApplicationFormRequest
     ) {
         ApplicationForm applicationForm = applicationFormFacadeService.update(
+            adminMemberId,
             applicationFormId,
             applicationFormAssembler.toUpdateApplicationFormVo(updateApplicationFormRequest)
         );
@@ -109,7 +109,7 @@ public class ApplicationFormController {
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long applicationFormId
     ) {
-        applicationFormFacadeService.delete(applicationFormId);
+        applicationFormFacadeService.delete(adminMemberId, applicationFormId);
         return ApiResponse.success();
     }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -32,15 +33,17 @@ public class ApplicationFormRepositoryImpl extends QuerydslRepositorySupport
         resolveCondition(applicationFormQueryVo).ifPresent(query::where);
         query.offset(applicationFormQueryVo.getPageable().getOffset());
         query.limit(applicationFormQueryVo.getPageable().getPageSize());
-        List<OrderSpecifier> orderSpecifiers = toOrderSpecifiers(qApplicationForm,
-            applicationFormQueryVo.getPageable().getSort());
+        List<OrderSpecifier> orderSpecifiers = toOrderSpecifiers(
+            qApplicationForm,
+            applicationFormQueryVo.getPageable().getSortOr(Sort.by(Sort.Order.desc("updatedAt")))
+        );
         if (!CollectionUtils.isEmpty(orderSpecifiers)) {
             query.orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]));
         }
         int pageSize = applicationFormQueryVo.getPageable().getPageSize();
         query.offset(applicationFormQueryVo.getPageable().getOffset());
         query.limit(pageSize);
-        return QueryUtils.toPage(query.fetchResults(), pageSize);
+        return QueryUtils.toPage(query.fetchResults(), applicationFormQueryVo.getPageable());
     }
 
     private Optional<BooleanExpression> resolveCondition(ApplicationFormQueryVo applicationFormQueryVo) {

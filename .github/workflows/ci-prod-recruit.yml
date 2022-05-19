@@ -1,0 +1,38 @@
+name: Mash-Up develop Api Server Deploy
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - "mashup-recruit/**"
+      - "mashup-domain/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: 'gradle'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build Jib
+        run: |
+          chmod +x gradlew
+          ./gradlew :mashup-recruit:jib -PbuildPhase=production -PencrptorPassword=${{ secrets.ENCRPTOR_PASSWORD }}

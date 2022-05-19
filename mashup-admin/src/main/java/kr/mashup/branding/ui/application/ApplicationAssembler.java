@@ -1,9 +1,11 @@
 package kr.mashup.branding.ui.application;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.notification.sms.SmsRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +38,9 @@ public class ApplicationAssembler {
             applicantAssembler.toApplicantResponse(application.getApplicant()),
             teamAssembler.toTeamResponse(application.getApplicationForm().getTeam()),
             application.getConfirmation().getStatus(),
+            application.getConfirmation().getRejectionReason(),
             toApplicationResultResponse(application.getApplicationResult()),
+            application.getSubmittedAt(),
             application.getCreatedAt(),
             application.getUpdatedAt()
         );
@@ -57,12 +61,14 @@ public class ApplicationAssembler {
                 .map(this::toAnswerResponse)
                 .collect(Collectors.toList()),
             application.getConfirmation().getStatus(),
+            application.getConfirmation().getRejectionReason(),
             toApplicationResultResponse(application.getApplicationResult()),
             application.getSubmittedAt(),
             application.getCreatedAt(),
             application.getUpdatedAt(),
             applicationDetailVo.getSmsRequests()
                 .stream()
+                .sorted(Comparator.comparing(SmsRequest::getCreatedAt).reversed())
                 .map(it -> smsRequestAssembler.toSmsRequestDetailResponse(it,
                     application.getApplicationForm().getTeam()))
                 .collect(Collectors.toList())
@@ -73,7 +79,7 @@ public class ApplicationAssembler {
         ApplicationResultStatus applicationResultStatus = request.getApplicationResultStatus();
         return request.getApplicationIds()
             .stream()
-            .map(it -> toUpdateApplicationResultVo(it, applicationResultStatus, null, null))
+            .map(it -> toUpdateApplicationResultVo(it, applicationResultStatus, null, null, null))
             .collect(Collectors.toList());
     }
 
@@ -81,7 +87,8 @@ public class ApplicationAssembler {
         Long applicationId,
         ApplicationResultStatus applicationResultStatus,
         LocalDateTime interviewStartedAt,
-        LocalDateTime interviewEndedAt
+        LocalDateTime interviewEndedAt,
+        String interviewGuideLink
     ) {
         switch (applicationResultStatus) {
             case NOT_RATED:
@@ -94,7 +101,8 @@ public class ApplicationAssembler {
                 return UpdateApplicationResultVo.screeningPassed(
                     applicationId,
                     interviewStartedAt,
-                    interviewEndedAt
+                    interviewEndedAt,
+                    interviewGuideLink
                 );
             case INTERVIEW_FAILED:
                 return UpdateApplicationResultVo.interviewFailed(applicationId);
@@ -102,7 +110,8 @@ public class ApplicationAssembler {
                 return UpdateApplicationResultVo.interviewToBeDetermined(
                     applicationId,
                     interviewStartedAt,
-                    interviewEndedAt
+                    interviewEndedAt,
+                    interviewGuideLink
                 );
             case INTERVIEW_PASSED:
                 return UpdateApplicationResultVo.interviewPassed(applicationId);
@@ -118,7 +127,8 @@ public class ApplicationAssembler {
             applicationId,
             request.getApplicationResultStatus(),
             request.getInterviewStartedAt(),
-            request.getInterviewEndedAt()
+            request.getInterviewEndedAt(),
+            request.getInterviewGuideLink()
         );
     }
 
@@ -127,14 +137,18 @@ public class ApplicationAssembler {
         Long teamId,
         ApplicantConfirmationStatus confirmStatus,
         ApplicationResultStatus resultStatus,
+        Boolean isShowAll,
         Pageable pageable
     ) {
+        if(isShowAll == null) isShowAll = false;
+
         return ApplicationQueryVo.of(
             searchWord,
             teamId,
             confirmStatus,
             toApplicationScreeningStatus(resultStatus),
             toApplicationInterviewStatus(resultStatus),
+            isShowAll,
             pageable
         );
     }
@@ -195,7 +209,8 @@ public class ApplicationAssembler {
                 applicationResult.getInterviewStatus()
             ),
             applicationResult.getInterviewStartedAt(),
-            applicationResult.getInterviewEndedAt()
+            applicationResult.getInterviewEndedAt(),
+            applicationResult.getInterviewGuideLink()
         );
     }
 }

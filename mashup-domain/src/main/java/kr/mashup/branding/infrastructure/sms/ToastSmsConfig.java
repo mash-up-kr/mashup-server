@@ -1,5 +1,6 @@
 package kr.mashup.branding.infrastructure.sms;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
 import kr.mashup.branding.domain.notification.sms.SmsService;
+import kr.mashup.branding.domain.notification.sms.whitelist.SmsWhitelistService;
 import kr.mashup.branding.util.RequestHeaderInterceptor;
 
 @Profile("sms")
@@ -34,11 +36,12 @@ public class ToastSmsConfig {
     }
 
     @Bean
-    public SmsService toastSmsService() {
+    public SmsService toastSmsService(ObjectProvider<SmsWhitelistService> smsWhitelistService) {
         return new ToastSmsService(
             toastUrl,
             appKey,
-            toastRestTemplate()
+            toastRestTemplate(),
+            smsWhitelistService
         );
     }
 }

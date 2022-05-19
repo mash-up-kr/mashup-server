@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
+import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -34,11 +36,13 @@ public class Confirmation {
     private Long confirmationId;
 
     @OneToOne
-    @JoinColumn
+    @JoinColumn(name = "application_id")
     private Application application;
 
     @Enumerated(EnumType.STRING)
     private ApplicantConfirmationStatus status;
+
+    private String rejectionReason;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -50,10 +54,20 @@ public class Confirmation {
         Confirmation confirmation = new Confirmation();
         confirmation.application = application;
         confirmation.status = ApplicantConfirmationStatus.TO_BE_DETERMINED;
+        confirmation.rejectionReason = null;
         return confirmation;
     }
 
-    public void updateFromApplicant(ApplicantConfirmationStatus status) {
+    public void updateFromApplicant(ApplicantConfirmationStatus status, String rejectionReason) {
         this.status = this.status.updateFromApplicant(status);
+        this.rejectionReason = rejectionReason;
+    }
+
+    public void updateFromAdmin(ApplicationScreeningStatus screeningStatus, ApplicationInterviewStatus interviewStatus) {
+        this.status = this.status.updateFromAdmin(screeningStatus, interviewStatus);
+    }
+
+    public void updateApplicantConfirmationStatus(ApplicantConfirmationStatus status) {
+        this.status = status;
     }
 }

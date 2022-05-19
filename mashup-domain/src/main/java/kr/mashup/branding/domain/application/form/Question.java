@@ -1,6 +1,7 @@
 package kr.mashup.branding.domain.application.form;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,10 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,7 +24,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Entity
 @Getter
 @ToString(of = {"questionId", "maxContentLength", "description", "required", "questionType", "createdBy", "createdAt",
@@ -58,6 +65,10 @@ public class Question {
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
 
+    @ManyToOne
+    @JoinColumn(name = "application_form_id")
+    private ApplicationForm applicationForm;
+
     @CreatedBy
     private String createdBy;
 
@@ -70,13 +81,26 @@ public class Question {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public static Question of(QuestionRequestVo questionRequestVo) {
+    public static Question of(ApplicationForm applicationForm, QuestionRequestVo questionRequestVo) {
         Question question = new Question();
+        question.applicationForm = applicationForm;
         question.content = questionRequestVo.getContent();
-        question.maxContentLength = questionRequestVo.getMaxContentLength();
         question.description = questionRequestVo.getDescription();
-        question.required = questionRequestVo.getRequired();
-        question.questionType = questionRequestVo.getQuestionType();
+        question.required = Optional.ofNullable(questionRequestVo.getRequired()).orElse(false);
+        if (questionRequestVo.getQuestionType() == null ||
+            questionRequestVo.getQuestionType() == QuestionType.SINGLE_LINE_TEXT) {
+            question.questionType = QuestionType.SINGLE_LINE_TEXT;
+            question.maxContentLength = null;
+        } else {
+            question.questionType = questionRequestVo.getQuestionType();
+            question.maxContentLength = questionRequestVo.getMaxContentLength();
+        }
         return question;
+    }
+
+    @PrePersist
+    @PreUpdate
+    public void updateApplicationFormModifyInfo() {
+        applicationForm.setModifiedInfo(updatedBy, updatedAt);
     }
 }

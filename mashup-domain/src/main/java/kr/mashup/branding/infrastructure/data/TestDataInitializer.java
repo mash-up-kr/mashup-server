@@ -1,18 +1,30 @@
 package kr.mashup.branding.infrastructure.data;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberRepository;
 import kr.mashup.branding.domain.adminmember.Position;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.ApplicantRepository;
+import kr.mashup.branding.domain.applicant.ApplicantStatus;
+import kr.mashup.branding.domain.application.AnswerRequestVo;
+import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.domain.application.ApplicationService;
+import kr.mashup.branding.domain.application.CreateApplicationVo;
+import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormService;
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
@@ -34,29 +46,39 @@ public class TestDataInitializer {
     private final RecruitmentScheduleRepository recruitmentScheduleRepository;
     private final TeamService teamService;
     private final ApplicationFormService applicationFormService;
+    private final ApplicationService applicationService;
     private final ApplicantRepository applicantRepository;
     private final AdminMemberRepository adminMemberRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void initialize() {
+        AdminMember adminMember = createAdminMember();
+        log.info("AdminMember is created. adminMember: {}", adminMember);
+
         List<RecruitmentSchedule> recruitmentSchedules = createRecruitmentSchedules();
         log.info("4 RecruitmentSchedules are created. recruitmentSchedules: {}", recruitmentSchedules);
 
         List<Team> teams = createTeams();
         log.info("6 Teams are created. teams: {}", teams);
 
-        ApplicationForm applicationForm = createApplicationForm(teams.stream()
-            .filter(it -> it.getName().equals("Spring"))
-            .findFirst()
-            .get()
+        ApplicationForm applicationForm = createApplicationForm(
+            adminMember.getAdminMemberId(),
+            teams.stream()
+                .filter(it -> it.getName().equals("Spring"))
+                .findFirst()
+                .get()
         );
         log.info("ApplicationForm is created. applicationForm: {}", applicationForm);
 
-        Applicant applicant = createApplicant();
-        log.info("Applicant is created. applicant: {}", applicant);
+        try {
+            Applicant applicant = createApplicant();
+            log.info("Applicant is created. applicant: {}", applicant);
 
-        AdminMember adminMember = createAdminMember();
-        log.info("AdminMember is created. adminMember: {}", adminMember);
+            Application application = createApplication(applicant.getApplicantId(), applicationForm);
+            log.info("Application is created. application: {}", application);
+        } catch (Exception e) {
+            log.info("Failed to created application for test data. message: {}", e.getMessage(), e);
+        }
     }
 
     private List<RecruitmentSchedule> createRecruitmentSchedules() {
@@ -73,9 +95,9 @@ public class TestDataInitializer {
         return teamService.findAllTeams();
     }
 
-    private ApplicationForm createApplicationForm(Team team) {
+    private ApplicationForm createApplicationForm(Long adminMemberId, Team team) {
         // 스프링팀 11기 지원서
-        return applicationFormService.create(CreateApplicationFormVo.of(
+        return applicationFormService.create(adminMemberId, CreateApplicationFormVo.of(
             team.getTeamId(),
             Arrays.asList(
                 QuestionRequestVo.of(
@@ -125,9 +147,22 @@ public class TestDataInitializer {
         ));
     }
 
-    private Applicant createApplicant() {
-        Applicant tester = Applicant.tester();
-        return applicantRepository.save(tester);
+    private Applicant createApplicant() throws Exception {
+        Constructor<Applicant> declaredConstructor = Applicant.class.getDeclaredConstructor();
+        declaredConstructor.setAccessible(true);
+        Applicant applicant = declaredConstructor.newInstance();
+        setApplicantField(String.class, "email", applicant, "mashup.12th.branding.server.dev@gmail.com");
+        setApplicantField(String.class, "googleUserId", applicant, "googleUserId");
+        setApplicantField(String.class, "name", applicant, "TESTER");
+        setApplicantField(String.class, "phoneNumber", applicant, "01031280428");
+        setApplicantField(ApplicantStatus.class, "status", applicant, ApplicantStatus.ACTIVE);
+        return applicantRepository.save(applicant);
+    }
+
+    private void setApplicantField(Class<?> fieldClass, String fieldName, Applicant target, Object value) {
+        Field field = ReflectionUtils.findField(Applicant.class, fieldName, fieldClass);
+        ReflectionUtils.makeAccessible(Objects.requireNonNull(field));
+        ReflectionUtils.setField(field, target, value);
     }
 
     private AdminMember createAdminMember() {
@@ -135,8 +170,22 @@ public class TestDataInitializer {
             "testadmin",
             "$2a$10$ReFbOONqzqSbJmEOq9DC0ezs64sfLJumeqei96Ov4Fb8RhVc2Fmf6",
             "01097944578",
-            Position.SPRING_LEADER
+            Position.BRANDING_MEMBER
         );
         return adminMemberRepository.save(testadmin);
+    }
+
+    // 테스트용 지원서 생성 (사용하려면 지원기간 validate 해제 해야함)
+    private Application createApplication(Long applicantId, ApplicationForm applicationForm) {
+        Application application = applicationService.create(applicantId,
+            new CreateApplicationVo(applicationForm.getTeam().getTeamId()));
+        List<AnswerRequestVo> answerRequestVos = application.getAnswers().stream()
+            .map(it -> AnswerRequestVo.of(it.getAnswerId(), it.getQuestion().getQuestionId(), "응답"))
+            .collect(Collectors.toList());
+
+        UpdateApplicationVo updateApplicationVo = UpdateApplicationVo.of("이름", "01000000000",
+            LocalDate.now(), "매쉬업", "서울", answerRequestVos, true);
+        applicationService.update(applicantId, application.getApplicationId(), updateApplicationVo);
+        return application;
     }
 }

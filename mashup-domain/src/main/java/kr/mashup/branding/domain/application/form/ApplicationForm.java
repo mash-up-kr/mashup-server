@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -41,8 +40,7 @@ public class ApplicationForm {
     @ManyToOne
     private Team team;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "applicationFormId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "applicationForm", orphanRemoval = true)
     private final List<Question> questions = new ArrayList<>();
 
     private String name;
@@ -61,14 +59,16 @@ public class ApplicationForm {
 
     public static ApplicationForm of(
         Team team,
-        List<Question> questions,
         String name
     ) {
         ApplicationForm applicationForm = new ApplicationForm();
         applicationForm.team = team;
-        applicationForm.questions.addAll(questions);
         applicationForm.name = name;
         return applicationForm;
+    }
+
+    public void addQuestions(List<Question> questions) {
+        this.questions.addAll(questions);
     }
 
     /**
@@ -78,9 +78,16 @@ public class ApplicationForm {
         questions.clear();
         questions.addAll(updateApplicationFormVo.getQuestions()
             .stream()
-            .map(Question::of)
+            .map(it -> Question.of(this, it))
             .collect(Collectors.toList())
         );
         name = updateApplicationFormVo.getName();
+    }
+
+    void setModifiedInfo(String updatedBy, LocalDateTime updatedAt) {
+        if (updatedAt != null && !updatedAt.isBefore(this.updatedAt)) {
+            this.updatedBy = updatedBy;
+            this.updatedAt = updatedAt;
+        }
     }
 }

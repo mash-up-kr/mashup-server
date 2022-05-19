@@ -1,6 +1,8 @@
 package kr.mashup.branding.domain.applicant;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import javax.persistence.Entity;
@@ -24,7 +26,7 @@ import lombok.ToString;
 @EqualsAndHashCode(of = "applicantId")
 @EntityListeners(AuditingEntityListener.class)
 public class Applicant {
-    private static final Pattern PATTERN_NUMBER = Pattern.compile("\\d+");
+    private static final Pattern PATTERN_NUMBER = Pattern.compile("\\d{3}-\\d{4}-\\d{4}");
 
     @Id
     @GeneratedValue
@@ -37,6 +39,12 @@ public class Applicant {
     private String name;
 
     private String phoneNumber;
+
+    private LocalDate birthdate;
+
+    private String department;
+
+    private String residence;
 
     @Enumerated(EnumType.STRING)
     private ApplicantStatus status = ApplicantStatus.ACTIVE;
@@ -57,26 +65,24 @@ public class Applicant {
         return applicant;
     }
 
-    private static final Applicant TESTER;
-
-    static {
-        TESTER = new Applicant();
-        TESTER.email = "mashup.12th.branding.server.dev@gmail.com";
-        TESTER.googleUserId = "googleUserId";
-        TESTER.name = "TESTER";
-        TESTER.phoneNumber = "01031280428";
-        TESTER.status = ApplicantStatus.ACTIVE;
-    }
-
-    public static Applicant tester() {
-        return TESTER;
-    }
-
-    public void update(String name, String phoneNumber) {
+    public void update(String name, String phoneNumber, LocalDate birthdate, String department, String residence) {
         this.name = name;
-        this.phoneNumber = phoneNumber.replaceAll("-", "").trim();
+        this.phoneNumber = Optional.ofNullable(phoneNumber)
+            .map(String::trim)
+            .orElse(null);
+        this.birthdate = birthdate;
+        this.department = department;
+        this.residence = residence;
+    }
+
+    public void submit(String name, String phoneNumber, LocalDate birthdate, String department, String residence) {
+        this.update(name, phoneNumber, birthdate, department, residence);
+        validate();
+    }
+
+    private void validate() {
         if (!PATTERN_NUMBER.matcher(this.phoneNumber).matches()) {
-            throw new IllegalArgumentException("'phoneNumber' must be include number and hyphen only");
+            throw new IllegalArgumentException("'phoneNumber' must be include number only");
         }
     }
 }

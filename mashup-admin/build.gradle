@@ -4,6 +4,9 @@ plugins {
     id 'java'
 }
 
+apply plugin: "com.google.cloud.tools.jib"
+apply from: "jib.gradle"
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -20,6 +23,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     implementation "io.springfox:springfox-boot-starter:$swaggerVersion"
+    implementation "org.apache.commons:commons-text:$commonsTextVersion"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'

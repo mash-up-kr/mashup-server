@@ -35,6 +35,7 @@ public class ApplicationController {
         @RequestParam(required = false) Long teamId,
         @RequestParam(required = false) ApplicantConfirmationStatus confirmStatus,
         @RequestParam(required = false) ApplicationResultStatus resultStatus,
+        @RequestParam(required = false) Boolean isShowAll,
         Pageable pageable
     ) {
         return ApiResponse.success(
@@ -45,6 +46,7 @@ public class ApplicationController {
                     teamId,
                     confirmStatus,
                     resultStatus,
+                    isShowAll,
                     pageable
                 )
             ).map(applicationAssembler::toApplicationSimpleResponse)
@@ -53,9 +55,10 @@ public class ApplicationController {
 
     @GetMapping("/{applicationId}")
     public ApiResponse<ApplicationDetailResponse> getApplication(
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long applicationId
     ) {
-        ApplicationDetailVo applicationDetailVo = applicationFacadeService.getApplicationDetail(applicationId);
+        ApplicationDetailVo applicationDetailVo = applicationFacadeService.getApplicationDetail(adminMemberId, applicationId);
         return ApiResponse.success(
             applicationAssembler.toApplicationDetailResponse(applicationDetailVo)
         );
@@ -71,9 +74,9 @@ public class ApplicationController {
     ) {
         return ApiResponse.success(
             applicationFacadeService.updateResults(
-                adminMemberId,
-                applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
-            ).stream()
+                    adminMemberId,
+                    applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
+                ).stream()
                 .map(applicationAssembler::toApplicationSimpleResponse)
                 .collect(Collectors.toList())
         );

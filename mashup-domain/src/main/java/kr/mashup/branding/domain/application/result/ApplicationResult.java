@@ -37,7 +37,7 @@ public class ApplicationResult {
     private Long applicationResultId;
 
     @OneToOne
-    @JoinColumn(name = "applicationId")
+    @JoinColumn(name = "application_id")
     private Application application;
 
     /**
@@ -61,6 +61,11 @@ public class ApplicationResult {
      * 면접 종료 시각
      */
     private LocalDateTime interviewEndedAt;
+
+    /**
+     * 면접 안내 링크 (오픈채팅방 링크 or 화상미팅 링크)
+     */
+    private String interviewGuideLink;
 
     @CreatedBy
     private String createdBy;
@@ -90,13 +95,16 @@ public class ApplicationResult {
     public void updateResult(UpdateApplicationResultVo updateApplicationResultVo) {
         // 합격 상태 변경
         if (updateApplicationResultVo.getScreeningStatus() != null) {
-            screeningStatus = screeningStatus.update(updateApplicationResultVo.getScreeningStatus());
+            updateScreeningStatus(updateApplicationResultVo.getScreeningStatus());
+            if (updateApplicationResultVo.getScreeningStatus() != ApplicationScreeningStatus.PASSED) {
+                initInterviewInfo();
+            }
         }
         if (updateApplicationResultVo.getInterviewStatus() != null) {
-            interviewStatus = interviewStatus.update(updateApplicationResultVo.getInterviewStatus());
+            updateInterviewStatus(updateApplicationResultVo.getInterviewStatus());
         }
         // 면접 일정 변경
-        if (interviewStartedAt == null) {
+        if (updateApplicationResultVo.getInterviewStartedAt() == null) {
             return;
         }
         if (screeningStatus != ApplicationScreeningStatus.PASSED) {
@@ -104,11 +112,27 @@ public class ApplicationResult {
                 "'screeningStatus' is not available for interviewTime. screeningStatus: " + screeningStatus);
         }
         this.interviewStartedAt = updateApplicationResultVo.getInterviewStartedAt();
-        if (!interviewEndedAt.isAfter(interviewStartedAt)) {
+        if (!updateApplicationResultVo.getInterviewEndedAt().isAfter(interviewStartedAt)) {
             throw new InterviewTimeInvalidException(
                 "'interviewEndedAt' must be after or equal to 'interviewStartedAt'. interviewStartedAt: "
                     + interviewStartedAt + ", interviewEndedAt: " + interviewEndedAt);
         }
         this.interviewEndedAt = updateApplicationResultVo.getInterviewEndedAt();
+        // 면접 안내 링크 변경
+        this.interviewGuideLink = updateApplicationResultVo.getInterviewGuideLink();
+    }
+
+    public void updateScreeningStatus(ApplicationScreeningStatus applicationScreeningStatus) {
+        screeningStatus = screeningStatus.update(applicationScreeningStatus);
+    }
+
+    public void updateInterviewStatus(ApplicationInterviewStatus applicationInterviewStatus) {
+        interviewStatus = interviewStatus.update(applicationInterviewStatus);
+    }
+
+    private void initInterviewInfo() {
+        interviewStartedAt = null;
+        interviewEndedAt = null;
+        interviewGuideLink = null;
     }
 }

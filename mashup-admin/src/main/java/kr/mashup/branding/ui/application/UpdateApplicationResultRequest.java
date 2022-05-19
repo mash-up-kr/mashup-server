@@ -11,4 +11,5 @@ public class UpdateApplicationResultRequest {
     private ApplicationResultStatus applicationResultStatus;
     private LocalDateTime interviewStartedAt;
     private LocalDateTime interviewEndedAt;
+    private String interviewGuideLink;
 }

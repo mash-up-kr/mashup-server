@@ -20,4 +20,8 @@ public class ApplicationResultResponse {
      * 면접 종료 시각
      */
     private LocalDateTime interviewEndedAt;
+    /**
+     * 면접 안내 링크 (오픈채팅방 링크 or 화상미팅 링크)
+     */
+    private String interviewGuideLink;
 }

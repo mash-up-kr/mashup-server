@@ -18,5 +18,6 @@ public class ApplicationQueryVo {
     ApplicantConfirmationStatus confirmationStatus;
     ApplicationScreeningStatus screeningStatus;
     ApplicationInterviewStatus interviewStatus;
+    Boolean isShowAll;
     Pageable pageable;
 }

@@ -1,0 +1,6 @@
+version: "3"
+services:
+  application:
+    image: 321148231533.dkr.ecr.ap-northeast-2.amazonaws.com/mashup-admin:develop
+    ports:
+      - 8071:8080

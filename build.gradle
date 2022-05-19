@@ -2,15 +2,21 @@ plugins {
 	id 'org.springframework.boot' version '2.6.2'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'com.google.cloud.tools.jib' version '3.2.1'
 }
 
 group = 'kr.mashup.branding'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 
+def buildPhase = System.getProperty("build.phase", "local")
+project.ext.buildPhase = buildPhase
+def encrptorPassword = System.getProperty("encrptorPassword", "")
+project.ext.encrptorPassword = encrptorPassword
 allprojects {
 	repositories {
 		mavenCentral()
+		maven { url 'https://jitpack.io' }
 	}
 }
 

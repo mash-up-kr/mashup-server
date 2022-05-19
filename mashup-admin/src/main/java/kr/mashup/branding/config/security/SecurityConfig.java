@@ -11,6 +11,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -19,6 +20,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.mashup.branding.config.jwt.JwtService;
+import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.adminmember.AdminMemberService;
 import kr.mashup.branding.domain.adminmember.Position;
 import kr.mashup.branding.ui.ApiResponse;
@@ -47,15 +49,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .httpBasic().disable()
             .requestCache().disable()
             .addFilterAt(tokenPreAuthFilter(), AbstractPreAuthenticatedProcessingFilter.class)
-            .sessionManagement().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
             .exceptionHandling()
             .authenticationEntryPoint((request, response, authException) -> {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 objectMapper.writeValue(
                     response.getOutputStream(),
-                    //TODO ReturnCode 관리 방법 논의
-                    ApiResponse.failure("Unauthorized", "인증에 필요한 요청입니다")
+                    ApiResponse.failure(ResultCode.UNAUTHORIZED)
                 );
             })
             .accessDeniedHandler((request, response, accessDeniedException) -> {
@@ -63,8 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 objectMapper.writeValue(
                     response.getOutputStream(),
-                    //TODO ReturnCode 관리 방법 논의
-                    ApiResponse.failure("Forbidden", "허용되지 않은 접근입니다.")
+                    ApiResponse.failure(ResultCode.FORBIDDEN)
                 );
             });
     }

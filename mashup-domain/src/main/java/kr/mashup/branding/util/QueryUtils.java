@@ -3,10 +3,7 @@ package kr.mashup.branding.util;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Order;
@@ -31,11 +28,7 @@ public class QueryUtils {
         return sortOrder.getDirection().isAscending() ? Order.ASC : Order.DESC;
     }
 
-    public static <T> Page<T> toPage(QueryResults<T> queryResults, int pageSize) {
-        return new PageImpl<>(
-            queryResults.getResults(),
-            PageRequest.of(((int)queryResults.getTotal() / pageSize), pageSize),
-            queryResults.getTotal()
-        );
+    public static <T> Page<T> toPage(QueryResults<T> queryResults, Pageable pageable) {
+        return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
     }
 }
