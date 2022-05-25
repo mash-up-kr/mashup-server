@@ -30,7 +30,7 @@ public class Generation extends BaseEntity{
     }
 
     public Generation(int number, LocalDate startedAt, LocalDate ended_at){
-        if(DateUtil.isStartBeforeOrEqualEnd(startedAt, ended_at)){
+        if(!DateUtil.isStartBeforeOrEqualEnd(startedAt, ended_at)){
             throw new IllegalArgumentException();
         }
         if(number<=0){

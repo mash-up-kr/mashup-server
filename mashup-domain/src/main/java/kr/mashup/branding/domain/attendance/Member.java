@@ -63,7 +63,7 @@ public class Member extends BaseEntity{
         if(identification.length() > MAX_ID_LENGTH ){
             throw new IllegalArgumentException("아이디는 "+MAX_ID_LENGTH+"글자 이하이어야 합니다.");
         }
-        //TODO: 아이디에 숫자 포함 가능? 피그마엔 영어 대소문자로만 적혀있음
+
         //숫자도 허용할 경우 : ^[A-Za-z0-9+]*$
         if(!Pattern.matches("^[a-zA-Z]*$", identification)){
             throw new IllegalArgumentException("아이디는 영어 대소문자로만 구성되어야 합니다.");
@@ -74,7 +74,7 @@ public class Member extends BaseEntity{
         if(!StringUtils.hasText(name)){
             throw new IllegalArgumentException("이름이 비어있을 수 없습니다.");
         }
-        if(name.length() <2 ||  name.length() > 4){
+        if(name.length() <3 ||  name.length() > 4){
             throw new IllegalArgumentException("이름은 세글자 혹은 네글자이어야 합니다.");
         }
         if(!Pattern.matches("^[가-힣]*$", name)){
