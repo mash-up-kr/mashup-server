@@ -29,16 +29,23 @@ public class Generation extends BaseEntity{
         this.schedules.add(schedule);
     }
 
-    public Generation(int number, LocalDate startedAt, LocalDate ended_at){
-        if(!DateUtil.isStartBeforeOrEqualEnd(startedAt, ended_at)){
-            throw new IllegalArgumentException();
-        }
+    public Generation(int number, LocalDate startedAt, LocalDate endedAt){
+
+        checkStartBeforeOrEqualEnd(startedAt, endedAt);
+
         if(number<=0){
             throw new IllegalArgumentException();
         }
+
         this.number = number;
         this.startedAt = startedAt;
-        this.ended_at = ended_at;
+        this.ended_at = endedAt;
+    }
+
+    private void checkStartBeforeOrEqualEnd(LocalDate startedAt, LocalDate ended_at) {
+        if(!DateUtil.isStartBeforeOrEqualEnd(startedAt, ended_at)){
+            throw new IllegalArgumentException();
+        }
     }
 
     public void changeStartDate(LocalDate newStartDate){
