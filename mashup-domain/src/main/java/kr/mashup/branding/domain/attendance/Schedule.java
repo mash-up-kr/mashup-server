@@ -44,15 +44,32 @@ public class Schedule extends BaseEntity{
         checkStartBeforeOrEqualEnd(startedAt, endedAt);
         checkNameHasText(name);
 
-        LocalDate genStartDate = generation.getStartedAt();
-        LocalDate genEndedDate = generation.getEnded_at();
 
-        checkGenerationRangeContainScheduleRange(genStartDate, genEndedDate,startedAt, endedAt);
+
+        checkGenerationRangeContainScheduleRange(generation,startedAt, endedAt);
 
         this.generation = generation;
+        this.generation.addSchedule(this);
         this.name = name;
         this.startedAt = startedAt;
         this.endedAt = endedAt;
+    }
+
+    public void changeName(String newName){
+        checkNameHasText(name);
+        this.name = newName;
+    }
+
+    public void changeStartDate(LocalDateTime newStartDate){
+        checkStartBeforeOrEqualEnd(newStartDate, endedAt);
+        checkGenerationRangeContainScheduleRange(this.generation,newStartDate, endedAt);
+        this.startedAt = newStartDate;
+    }
+
+    public void changeEndDate(LocalDateTime newEndDate){
+        checkStartBeforeOrEqualEnd(startedAt, newEndDate);
+        checkGenerationRangeContainScheduleRange(this.generation,startedAt, newEndDate);
+        this.endedAt = newEndDate;
     }
 
 
@@ -61,7 +78,10 @@ public class Schedule extends BaseEntity{
      *
      * Private Methods
      */
-    private void checkGenerationRangeContainScheduleRange(LocalDate genStartDate, LocalDate genEndedDate, LocalDateTime startedAt, LocalDateTime endedAt) {
+    private void checkGenerationRangeContainScheduleRange(Generation generation, LocalDateTime startedAt, LocalDateTime endedAt) {
+        LocalDate genStartDate = generation.getStartedAt();
+        LocalDate genEndedDate = generation.getEnded_at();
+
         if(!DateUtil.isContainDateRange(genStartDate, genEndedDate, startedAt.toLocalDate(), endedAt.toLocalDate())){
             throw new IllegalArgumentException("기수를 벗어난 유효하지 않은 시간입니다.");
         }

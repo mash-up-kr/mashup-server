@@ -25,6 +25,10 @@ public class Generation extends BaseEntity{
     @OneToMany(mappedBy = "generation")
     private final List<Schedule> schedules = new ArrayList<>();
 
+    public void addSchedule(Schedule schedule){
+        this.schedules.add(schedule);
+    }
+
     public Generation(int number, LocalDate startedAt, LocalDate ended_at){
         if(DateUtil.isStartBeforeOrEqualEnd(startedAt, ended_at)){
             throw new IllegalArgumentException();

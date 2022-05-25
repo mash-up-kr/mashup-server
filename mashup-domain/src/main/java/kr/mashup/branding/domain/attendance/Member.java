@@ -21,7 +21,6 @@ public class Member extends BaseEntity{
 
     private String password;
 
-
     @Enumerated(EnumType.STRING)
     private Team team;
 
@@ -32,6 +31,7 @@ public class Member extends BaseEntity{
     private boolean privatePolicyAgreed;
 
     public Member(String name, String identification, String password, Team team, Generation generation, boolean privatePolicyAgreed){
+
         Assert.notNull(team, "플랫폼은 비어있을 수 없습니다.");
         Assert.notNull(generation, "기수는 비어있을 수 없습니다.");
         Assert.isTrue(privatePolicyAgreed, "개인정보 이용에 동의해야만 가입할 수 있습니다.");
@@ -78,8 +78,7 @@ public class Member extends BaseEntity{
             throw new IllegalArgumentException("이름은 세글자 혹은 네글자이어야 합니다.");
         }
         if(!Pattern.matches("^[가-힣]*$", name)){
-            // TODO: 기획 물어보기
-            throw new IllegalArgumentException("이름에 영어가 포함될 수 없습니다.");
+            throw new IllegalArgumentException("이름은 완성된 한글로만 이루어져야 합니다.");
         }
     }
 
@@ -88,8 +87,8 @@ public class Member extends BaseEntity{
             throw new IllegalArgumentException("비밀번호는 비어있을 수 없습니다.");
         }
     }
-    //TODO: MIn Length 물어보기
-    private static final int MIN_ID_LENGTH = 3;
+
+    private static final int MIN_ID_LENGTH = 5;
     private static final int MAX_ID_LENGTH = 15;
 
 }

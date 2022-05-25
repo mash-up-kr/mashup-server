@@ -2,6 +2,7 @@ package kr.mashup.branding.domain.attendance;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 
 import javax.persistence.*;
 
@@ -20,4 +21,14 @@ public class Attendance extends BaseEntity{
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="content_id")
     private Content content;
+
+    public Attendance(Member member, AttendanceStatus status, Content content){
+        Assert.notNull(member, "");
+        Assert.notNull(status, "");
+        Assert.notNull(content, "");
+
+        this.member = member;
+        this.status = status;
+        this.content = content;
+    }
 }
