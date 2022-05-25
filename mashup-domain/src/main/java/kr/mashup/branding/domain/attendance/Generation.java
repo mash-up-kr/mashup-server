@@ -48,21 +48,25 @@ public class Generation extends BaseEntity{
         }
 
         //스케줄 중 변경되는 범위에 벗어나는 것이 없는지 체크
-        boolean isOutOfSchedule = false;
-        StringBuilder outOfSchedules = new StringBuilder();
+        List<Schedule> outOfSchedules = new ArrayList<>();
         for(Schedule schedule : schedules){
             LocalDate scheduleStartedDate = schedule.getStartedAt().toLocalDate();
             LocalDate scheduleEndedDate = schedule.getEndedAt().toLocalDate();
             if(!DateUtil.isContainDateRange(newStartDate, ended_at, scheduleStartedDate, scheduleEndedDate)){
-                isOutOfSchedule = true;
-                outOfSchedules.append(schedule.getName()).append(" ");
+                outOfSchedules.add(schedule);
             }
         }
-        if(isOutOfSchedule){
-            throw new IllegalArgumentException("변경된 날짜 범위를 벗어나는 일정이 있습니다: "+outOfSchedules);
+        if(!outOfSchedules.isEmpty()){
+            String exceptionMessage = getExceptionMessage(outOfSchedules);
+            throw new IllegalArgumentException("변경된 날짜 범위를 벗어나는 일정이 있습니다. "+exceptionMessage);
         }
 
         this.startedAt = newStartDate;
+    }
+
+    private String getExceptionMessage(List<Schedule> outOfSchedules) {
+        // TODO: 스케줄 이름만 보여줄지?
+        return "";
     }
 
     public void changeEndedDate(LocalDate newEndedDate){
