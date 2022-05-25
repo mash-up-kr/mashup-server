@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,21 +23,17 @@ public class Content extends BaseEntity{
 
     public Content(Event event, String content){
         Assert.notNull(event, "");
-        checkNotEmptyContent(content);
+        Assert.hasText(content, "");
 
         this.event = event;
+        event.addContent(this);
         this.content = content;
     }
 
     public void changeContent(String newContent){
-        checkNotEmptyContent(newContent);
+        Assert.hasText(newContent, "");
         this.content = newContent;
     }
 
-    private void checkNotEmptyContent(String content) {
-        if(!StringUtils.hasText(content)){
-            throw new IllegalArgumentException("");
-        }
-    }
 
 }

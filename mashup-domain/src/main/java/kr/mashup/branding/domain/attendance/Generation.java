@@ -25,7 +25,14 @@ public class Generation extends BaseEntity{
     @OneToMany(mappedBy = "generation")
     private final List<Schedule> schedules = new ArrayList<>();
 
+    @OneToMany(mappedBy = "generation")
+    private final List<Member> members = new ArrayList<>();
+
+//    @OneToMany(mappedBy = "generation")
+//    private final List<Invite> invites = new ArrayList<>();
+
     public void addSchedule(Schedule schedule){
+
         this.schedules.add(schedule);
     }
 

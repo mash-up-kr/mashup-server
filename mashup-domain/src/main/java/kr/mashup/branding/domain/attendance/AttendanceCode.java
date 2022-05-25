@@ -16,10 +16,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AttendanceCode extends BaseEntity{
 
-    //TODO: 컨텐츠 단위로 출첵하는게 맞는지?
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "content_id")
-    private Content content;
+    @JoinColumn(name = "event_id")
+    private Event event;
 
     private String code;
 
@@ -27,26 +26,32 @@ public class AttendanceCode extends BaseEntity{
 
     private LocalDateTime endedAt;
 
-    public AttendanceCode(Content content, String code, LocalDateTime startedAt, LocalDateTime endedAt){
-        Assert.notNull(content,"");
+    public AttendanceCode(Event event, String code, LocalDateTime startedAt, LocalDateTime endedAt){
+        Assert.notNull(event,"");
         Assert.notNull(startedAt,"");
         Assert.notNull(endedAt,"");
+        Assert.hasText(code, "");
 
         checkStartBeforeOrEqualEnd(startedAt, endedAt);
-        checkCodeNotEmpty(code);
-        //TODO: 시작시간 끝시간 스케줄 일정 안에 포함되는지 검증하기.
-        this.content = content;
+        checkEventDateContainsCodeDate(event, startedAt, endedAt);
+
+        this.event = event;
+        event.setAttendanceCode(this);
         this.code = code;
         this.startedAt = startedAt;
         this.endedAt = endedAt;
     }
 
+    private void checkEventDateContainsCodeDate(Event event, LocalDateTime startedAt, LocalDateTime endedAt){
 
-    private void checkCodeNotEmpty(String code) {
-        if(!StringUtils.hasText(code)){
+        LocalDateTime eventStartedAt = event.getStartedAt();
+        LocalDateTime eventEndedAt = event.getEndedAt();
+
+        if(!DateUtil.isContainDateRange(eventStartedAt, eventEndedAt, startedAt, endedAt)){
             throw new IllegalArgumentException();
         }
     }
+
 
     private void checkStartBeforeOrEqualEnd(LocalDateTime startedAt, LocalDateTime endedAt) {
         if(!DateUtil.isStartBeforeOrEqualEnd(startedAt, endedAt)){

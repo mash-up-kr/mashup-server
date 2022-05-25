@@ -2,15 +2,14 @@ package kr.mashup.branding.domain.attendance;
 
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,6 +23,12 @@ public class Event extends BaseEntity{
     private LocalDateTime startedAt;
 
     private LocalDateTime endedAt;
+
+    @OneToMany(mappedBy = "event")
+    private List<Content> contentList;
+
+    @OneToOne(mappedBy = "event", fetch = FetchType.LAZY)
+    private AttendanceCode attendanceCode;
 
     public Event(Schedule schedule, LocalDateTime startedAt, LocalDateTime endedAt){
 
@@ -40,6 +45,14 @@ public class Event extends BaseEntity{
         this.endedAt = endedAt;
     }
 
+    public void addContent(Content content){
+        if(contentList.contains(content)){
+            return;
+        }
+        this.contentList.add(content);
+    }
+
+
     public void changeStartDate(LocalDateTime newStartedAt){
         checkStartBeforeOrEqualEnd(newStartedAt, endedAt);
         checkScheduleDateContainEventDate(schedule, newStartedAt, endedAt);
@@ -50,6 +63,10 @@ public class Event extends BaseEntity{
         checkStartBeforeOrEqualEnd(startedAt, newEndedAt);
         checkScheduleDateContainEventDate(schedule, startedAt, newEndedAt);
         this.endedAt = newEndedAt;
+    }
+
+    public void setAttendanceCode(AttendanceCode code){
+        this.attendanceCode = code;
     }
 
     private void checkScheduleDateContainEventDate(Schedule schedule, LocalDateTime statedAt, LocalDateTime endedAt) {
@@ -63,5 +80,6 @@ public class Event extends BaseEntity{
             throw new IllegalArgumentException();
         }
     }
+
 
 }

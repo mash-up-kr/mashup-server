@@ -1,12 +1,14 @@
 package kr.mashup.branding.domain.attendance;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Attendance extends BaseEntity{
 
@@ -17,18 +19,21 @@ public class Attendance extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private AttendanceStatus status;
 
-    //TODO: Event 단위로 출첵하는게 맞을듯?
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="content_id")
-    private Content content;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="event_id")
+    private Event event;
 
-    public Attendance(Member member, AttendanceStatus status, Content content){
+    public Attendance(Member member, AttendanceStatus status, Event event){
         Assert.notNull(member, "");
         Assert.notNull(status, "");
-        Assert.notNull(content, "");
+        Assert.notNull(event, "");
 
         this.member = member;
         this.status = status;
-        this.content = content;
+        this.event = event;
+    }
+
+    public void changeStatus(AttendanceStatus status){
+        this.status = status;
     }
 }

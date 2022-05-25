@@ -27,25 +27,22 @@ public class Schedule extends BaseEntity{
 
     private LocalDateTime endedAt;
 
-    @CreatedBy
-    private String createdBy;
-    @LastModifiedBy
-    private String updatedBy;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "generation_id")
     private Generation generation;
 
+    private String createdBy;
+    private String updatedBy;
 
-    public Schedule(Generation generation, String name, LocalDateTime startedAt, LocalDateTime endedAt){
+
+    public Schedule(Generation generation, String name, LocalDateTime startedAt, LocalDateTime endedAt, String createdBy){
         Assert.notNull(generation,"기수가 비어있을 수 없습니다.");
         Assert.notNull(startedAt,"시작시각이 비어있을 수 없습니다.");
         Assert.notNull(endedAt,"끝나는 시각이 비어있을 수 없습니다.");
+
         checkStartBeforeOrEqualEnd(startedAt, endedAt);
         checkNameHasText(name);
-
-
-
+        checkCreatedByHasText(createdBy);
         checkGenerationRangeContainScheduleRange(generation,startedAt, endedAt);
 
         this.generation = generation;
@@ -53,6 +50,7 @@ public class Schedule extends BaseEntity{
         this.name = name;
         this.startedAt = startedAt;
         this.endedAt = endedAt;
+        this.createdBy = createdBy;
     }
 
     public void changeName(String newName){
@@ -72,6 +70,10 @@ public class Schedule extends BaseEntity{
         this.endedAt = newEndDate;
     }
 
+    public void changeUpdateBy(String updatedBy){
+
+    }
+
 
 
     /**
@@ -89,6 +91,11 @@ public class Schedule extends BaseEntity{
     private void checkNameHasText(String name) {
         if(!StringUtils.hasText(name)){
             throw new IllegalArgumentException("스케줄 이름이 비어있을 수 없습니다.");
+        }
+    }
+    private void checkCreatedByHasText(String createdBy) {
+        if(!StringUtils.hasText(createdBy)){
+            throw new IllegalArgumentException("이름이 비어있을 수 없습니다.");
         }
     }
     private void checkStartBeforeOrEqualEnd(LocalDateTime startedAt, LocalDateTime endedAt) {
