@@ -9,6 +9,7 @@ import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,16 +17,16 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Event extends BaseEntity{
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id")
-    private Schedule schedule;
-
     private LocalDateTime startedAt;
 
     private LocalDateTime endedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id")
+    private Schedule schedule;
+
     @OneToMany(mappedBy = "event")
-    private List<Content> contentList;
+    private final List<Content> contentList = new ArrayList<>();
 
     @OneToOne(mappedBy = "event", fetch = FetchType.LAZY)
     private AttendanceCode attendanceCode;

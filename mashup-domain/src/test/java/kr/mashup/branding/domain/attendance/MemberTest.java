@@ -20,7 +20,8 @@ class MemberTest {
         Generation generation = new Generation(11, LocalDate.now(), LocalDate.now().plusMonths(6));
         Member member = new Member("테스트",
                 "testtest",
-                passwordEncoder.encode("test"),
+                "test",
+                passwordEncoder,
                 Team.SPRING,
                 generation,
                 true);
@@ -34,7 +35,8 @@ class MemberTest {
         Generation generation = new Generation(11, LocalDate.now(), LocalDate.now().plusMonths(6));
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Member("테스", "testtest", passwordEncoder.encode("test"), Team.SPRING, generation, true));
+                .isThrownBy(() -> new Member("테스", "testtest","test",
+                        passwordEncoder, Team.SPRING, generation, true));
 
     }
 
@@ -44,7 +46,8 @@ class MemberTest {
         Generation generation = new Generation(11, LocalDate.now(), LocalDate.now().plusMonths(6));
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Member("테스트테스", "testtest", passwordEncoder.encode("test"), Team.SPRING, generation, true));
+                .isThrownBy(() -> new Member("테스트테스", "testtest", "test",
+                        passwordEncoder, Team.SPRING, generation, true));
     }
 
     @Test
@@ -53,7 +56,8 @@ class MemberTest {
         Generation generation = new Generation(11, LocalDate.now(), LocalDate.now().plusMonths(6));
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Member("ㅌㅅㅌ", "testtest", passwordEncoder.encode("test"), Team.SPRING, generation, true));
+                .isThrownBy(() -> new Member("ㅌㅅㅌ", "testtest", "test",
+                        passwordEncoder, Team.SPRING, generation, true));
     }
 
     @Test
@@ -62,7 +66,8 @@ class MemberTest {
         Generation generation = new Generation(11, LocalDate.now(), LocalDate.now().plusMonths(6));
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Member("테스트", "testtest1", passwordEncoder.encode("test"), Team.SPRING, generation, true));
+                .isThrownBy(() -> new Member("테스트", "testtest1", "test",
+                        passwordEncoder, Team.SPRING, generation, true));
     }
 
     @Test
@@ -71,7 +76,8 @@ class MemberTest {
         Generation generation = new Generation(11, LocalDate.now(), LocalDate.now().plusMonths(6));
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Member("테스트", "test", passwordEncoder.encode("test"), Team.SPRING, generation, true));
+                .isThrownBy(() -> new Member("테스트", "test", "test",
+                        passwordEncoder, Team.SPRING, generation, true));
     }
 
     @Test
@@ -80,7 +86,8 @@ class MemberTest {
         Generation generation = new Generation(11, LocalDate.now(), LocalDate.now().plusMonths(6));
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Member("테스트", "testtesttesttest", passwordEncoder.encode("test"), Team.SPRING, generation, true));
+                .isThrownBy(() -> new Member("테스트", "testtesttesttest", "test",
+                        passwordEncoder, Team.SPRING, generation, true));
     }
 
     @Test
@@ -89,7 +96,8 @@ class MemberTest {
         Generation generation = new Generation(11, LocalDate.now(), LocalDate.now().plusMonths(6));
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Member("테스트", "testtesttesttest", passwordEncoder.encode("test"), Team.SPRING, generation, false));
+                .isThrownBy(() -> new Member("테스트", "testtesttesttest", "test",
+                        passwordEncoder, Team.SPRING, generation, false));
     }
 
 }

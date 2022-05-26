@@ -9,12 +9,11 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,6 +30,9 @@ public class Schedule extends BaseEntity{
     @JoinColumn(name = "generation_id")
     private Generation generation;
 
+    @OneToMany(mappedBy = "schedule")
+    private final List<Event> events = new ArrayList<>();
+
     private String createdBy;
     private String updatedBy;
 
@@ -39,10 +41,10 @@ public class Schedule extends BaseEntity{
         Assert.notNull(generation,"기수가 비어있을 수 없습니다.");
         Assert.notNull(startedAt,"시작시각이 비어있을 수 없습니다.");
         Assert.notNull(endedAt,"끝나는 시각이 비어있을 수 없습니다.");
+        Assert.hasText(name, "이름이 비어있을 수 없습니다.");
+        Assert.hasText(createdBy, "생성자 이름이 비어있을 수 없습니다.");
 
         checkStartBeforeOrEqualEnd(startedAt, endedAt);
-        checkNameHasText(name);
-        checkCreatedByHasText(createdBy);
         checkGenerationRangeContainScheduleRange(generation,startedAt, endedAt);
 
         this.generation = generation;
@@ -54,7 +56,7 @@ public class Schedule extends BaseEntity{
     }
 
     public void changeName(String newName){
-        checkNameHasText(name);
+        Assert.hasText(newName,"이름이 비어있을 수 없습니다.");
         this.name = newName;
     }
 
@@ -71,7 +73,8 @@ public class Schedule extends BaseEntity{
     }
 
     public void changeUpdateBy(String updatedBy){
-
+        Assert.hasText(updatedBy, "수정자 이름이 비었을 수 없습니다.");
+        this.updatedBy = updatedBy;
     }
 
 
@@ -88,16 +91,7 @@ public class Schedule extends BaseEntity{
             throw new IllegalArgumentException("기수를 벗어난 유효하지 않은 시간입니다.");
         }
     }
-    private void checkNameHasText(String name) {
-        if(!StringUtils.hasText(name)){
-            throw new IllegalArgumentException("스케줄 이름이 비어있을 수 없습니다.");
-        }
-    }
-    private void checkCreatedByHasText(String createdBy) {
-        if(!StringUtils.hasText(createdBy)){
-            throw new IllegalArgumentException("이름이 비어있을 수 없습니다.");
-        }
-    }
+
     private void checkStartBeforeOrEqualEnd(LocalDateTime startedAt, LocalDateTime endedAt) {
         if(!DateUtil.isStartBeforeOrEqualEnd(startedAt, endedAt)){
             throw new IllegalArgumentException("유효하지 않은 시작시간과 끝나는 시간입니다.");

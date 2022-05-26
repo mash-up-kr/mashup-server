@@ -32,7 +32,9 @@ public class Generation extends BaseEntity{
 //    private final List<Invite> invites = new ArrayList<>();
 
     public void addSchedule(Schedule schedule){
-
+        if(schedules.contains(schedule)){
+            return;
+        }
         this.schedules.add(schedule);
     }
 
