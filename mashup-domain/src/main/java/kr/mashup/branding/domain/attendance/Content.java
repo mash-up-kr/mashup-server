@@ -1,5 +1,6 @@
 package kr.mashup.branding.domain.attendance;
 
+import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,15 +16,19 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Content extends BaseEntity{
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "event_id")
     private Event event;
 
+    @NotNull
     private String content;
 
-    public Content(Event event, String content){
-        Assert.notNull(event, "");
-        Assert.hasText(content, "");
+    public static Content of(Event event, String content){
+        return new Content(event, content);
+    }
+
+    private Content(Event event, String content){
 
         this.event = event;
         event.addContent(this);

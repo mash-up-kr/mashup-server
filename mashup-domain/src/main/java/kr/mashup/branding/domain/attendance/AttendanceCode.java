@@ -3,36 +3,37 @@ package kr.mashup.branding.domain.attendance;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.util.Assert;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AttendanceCode extends BaseEntity{
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "event_id")
     private Event event;
-
+    @NotNull
     private String code;
-
+    @NotNull
     private LocalDateTime startedAt;
-
+    @NotNull
     private LocalDateTime endedAt;
 
-    public AttendanceCode(Event event, String code, LocalDateTime startedAt, LocalDateTime endedAt){
-        Assert.notNull(event,"");
-        Assert.notNull(startedAt,"");
-        Assert.notNull(endedAt,"");
-        Assert.hasText(code, "");
+    public static AttendanceCode of(Event event, String code, LocalDateTime startedAt, LocalDateTime endedAt){
+        return new AttendanceCode(event, code, startedAt, endedAt);
+    }
+
+    private AttendanceCode(Event event, String code, LocalDateTime startedAt, LocalDateTime endedAt){
 
         checkStartBeforeOrEqualEnd(startedAt, endedAt);
-        checkEventDateContainsCodeDate(event, startedAt, endedAt);
+        checkAttendancePeriod(event, startedAt, endedAt);
 
         this.event = event;
         event.setAttendanceCode(this);
@@ -41,7 +42,13 @@ public class AttendanceCode extends BaseEntity{
         this.endedAt = endedAt;
     }
 
-    private void checkEventDateContainsCodeDate(Event event, LocalDateTime startedAt, LocalDateTime endedAt){
+    private void checkStartBeforeOrEqualEnd(LocalDateTime startedAt, LocalDateTime endedAt) {
+        if(!DateUtil.isStartBeforeOrEqualEnd(startedAt, endedAt)){
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void checkAttendancePeriod(Event event, LocalDateTime startedAt, LocalDateTime endedAt){
 
         LocalDateTime eventStartedAt = event.getStartedAt();
         LocalDateTime eventEndedAt = event.getEndedAt();
@@ -52,10 +59,6 @@ public class AttendanceCode extends BaseEntity{
     }
 
 
-    private void checkStartBeforeOrEqualEnd(LocalDateTime startedAt, LocalDateTime endedAt) {
-        if(!DateUtil.isStartBeforeOrEqualEnd(startedAt, endedAt)){
-            throw new IllegalArgumentException();
-        }
-    }
+
 
 }

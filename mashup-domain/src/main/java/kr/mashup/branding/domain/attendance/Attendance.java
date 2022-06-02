@@ -1,9 +1,9 @@
 package kr.mashup.branding.domain.attendance;
 
+import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.Assert;
 
 import javax.persistence.*;
 
@@ -12,21 +12,25 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Attendance extends BaseEntity{
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name ="member_id")
     private Member member;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private AttendanceStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name ="event_id")
     private Event event;
 
-    public Attendance(Member member, AttendanceStatus status, Event event){
-        Assert.notNull(member, "");
-        Assert.notNull(status, "");
-        Assert.notNull(event, "");
+    public static Attendance of(Member member, AttendanceStatus status, Event event){
+        return new Attendance(member, status, event);
+    }
+
+    private Attendance(Member member, AttendanceStatus status, Event event){
 
         this.member = member;
         this.status = status;

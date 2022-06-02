@@ -1,6 +1,7 @@
 package kr.mashup.branding.domain.attendance;
 
 
+import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,31 +19,36 @@ import java.util.regex.Pattern;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
+    @NotNull
     private String name;
 
+    @NotNull
     private String identification;
-
+    @NotNull
     private String password;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Team team;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "generation_id")
     private Generation generation;
 
     @OneToMany(mappedBy = "member")
     private final List<Attendance> attendances = new ArrayList<>();
 
-    private boolean privatePolicyAgreed;
+    @NotNull
+    private Boolean privatePolicyAgreed;
 
-    public Member(String name, String identification, String rawPassword, PasswordEncoder encoder, Team team, Generation generation, boolean privatePolicyAgreed) {
+    public static Member of(String name, String identification, String rawPassword, PasswordEncoder encoder, Team team, Generation generation, Boolean privatePolicyAgreed){
+        return new Member(name,identification,rawPassword,encoder, team, generation, privatePolicyAgreed);
+    }
 
-        Assert.notNull(team, "플랫폼은 비어있을 수 없습니다.");
-        Assert.notNull(generation, "기수는 비어있을 수 없습니다.");
-        Assert.isTrue(privatePolicyAgreed, "개인정보 이용에 동의해야만 가입할 수 있습니다.");
-        Assert.hasText(rawPassword, "비밀번호는 비어있을 수 없습니다.");
+    private Member(String name, String identification, String rawPassword, PasswordEncoder encoder, Team team, Generation generation, Boolean privatePolicyAgreed) {
 
+        checkAgreePrivacyPolicy(privatePolicyAgreed);
         checkValidName(name);
         checkValidID(identification);
 
@@ -53,6 +59,8 @@ public class Member extends BaseEntity {
         this.generation = generation;
         this.privatePolicyAgreed = privatePolicyAgreed;
     }
+
+
 
     public boolean isMatchPassword(String rawPassword, PasswordEncoder encoder){
         return encoder.matches(rawPassword, this.password);
@@ -90,6 +98,12 @@ public class Member extends BaseEntity {
         }
         if (!Pattern.matches("^[가-힣]*$", name)) {
             throw new IllegalArgumentException("이름은 완성된 한글로만 이루어져야 합니다.");
+        }
+    }
+
+    private void checkAgreePrivacyPolicy(Boolean privatePolicyAgreed) {
+        if(!privatePolicyAgreed){
+            throw new IllegalArgumentException("개인정보 이용에 동의해야만 가입할 수 있습니다.");
         }
     }
 

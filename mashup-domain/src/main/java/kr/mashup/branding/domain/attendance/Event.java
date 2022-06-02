@@ -1,11 +1,10 @@
 package kr.mashup.branding.domain.attendance;
 
+import com.sun.istack.NotNull;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,11 +16,13 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Event extends BaseEntity{
 
+    @NotNull
     private LocalDateTime startedAt;
 
+    @NotNull
     private LocalDateTime endedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
@@ -31,15 +32,15 @@ public class Event extends BaseEntity{
     @OneToOne(mappedBy = "event", fetch = FetchType.LAZY)
     private AttendanceCode attendanceCode;
 
-    public Event(Schedule schedule, LocalDateTime startedAt, LocalDateTime endedAt){
 
-        Assert.notNull(schedule, "");
-        Assert.notNull(startedAt, "");
-        Assert.notNull(endedAt, "");
+    public static Event of(Schedule schedule, LocalDateTime startedAt, LocalDateTime endedAt){
+        return new Event(schedule, startedAt, endedAt);
+    }
+
+    private Event(Schedule schedule, LocalDateTime startedAt, LocalDateTime endedAt){
 
         checkStartBeforeOrEqualEnd(startedAt, endedAt);
-
-        checkScheduleDateContainEventDate(schedule, startedAt, endedAt);
+        checkEventPeriod(schedule, startedAt, endedAt);
 
         this.schedule = schedule;
         this.startedAt = startedAt;
@@ -56,13 +57,13 @@ public class Event extends BaseEntity{
 
     public void changeStartDate(LocalDateTime newStartedAt){
         checkStartBeforeOrEqualEnd(newStartedAt, endedAt);
-        checkScheduleDateContainEventDate(schedule, newStartedAt, endedAt);
+        checkEventPeriod(schedule, newStartedAt, endedAt);
         this.startedAt = newStartedAt;
     }
 
     public void changeEndDate(LocalDateTime newEndedAt){
         checkStartBeforeOrEqualEnd(startedAt, newEndedAt);
-        checkScheduleDateContainEventDate(schedule, startedAt, newEndedAt);
+        checkEventPeriod(schedule, startedAt, newEndedAt);
         this.endedAt = newEndedAt;
     }
 
@@ -70,7 +71,7 @@ public class Event extends BaseEntity{
         this.attendanceCode = code;
     }
 
-    private void checkScheduleDateContainEventDate(Schedule schedule, LocalDateTime statedAt, LocalDateTime endedAt) {
+    private void checkEventPeriod(Schedule schedule, LocalDateTime statedAt, LocalDateTime endedAt) {
         if(!DateUtil.isContainDateRange(schedule.getStartedAt(), schedule.getEndedAt(), statedAt, endedAt)){
             throw new IllegalArgumentException();
         }

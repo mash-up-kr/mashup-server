@@ -1,5 +1,6 @@
 package kr.mashup.branding.domain.attendance;
 
+import com.sun.istack.NotNull;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,11 +17,14 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Generation extends BaseEntity{
 
+    @NotNull
     private Integer number;
 
+    @NotNull
     private LocalDate startedAt;
 
-    private LocalDate ended_at;
+    @NotNull
+    private LocalDate endedAt;
 
     @OneToMany(mappedBy = "generation")
     private final List<Schedule> schedules = new ArrayList<>();
@@ -28,6 +32,7 @@ public class Generation extends BaseEntity{
     @OneToMany(mappedBy = "generation")
     private final List<Member> members = new ArrayList<>();
 
+    // TODO : 최민성 구현 예정
 //    @OneToMany(mappedBy = "generation")
 //    private final List<Invite> invites = new ArrayList<>();
 
@@ -38,7 +43,11 @@ public class Generation extends BaseEntity{
         this.schedules.add(schedule);
     }
 
-    public Generation(int number, LocalDate startedAt, LocalDate endedAt){
+    public static Generation of(Integer number, LocalDate startedAt, LocalDate endedAt){
+        return new Generation(number, startedAt, endedAt);
+    }
+
+    private Generation(int number, LocalDate startedAt, LocalDate endedAt){
 
         checkStartBeforeOrEqualEnd(startedAt, endedAt);
 
@@ -48,7 +57,7 @@ public class Generation extends BaseEntity{
 
         this.number = number;
         this.startedAt = startedAt;
-        this.ended_at = endedAt;
+        this.endedAt = endedAt;
     }
 
     private void checkStartBeforeOrEqualEnd(LocalDate startedAt, LocalDate ended_at) {
@@ -59,31 +68,13 @@ public class Generation extends BaseEntity{
 
     public void changeStartDate(LocalDate newStartDate){
 
-        if(!DateUtil.isStartBeforeOrEqualEnd(newStartDate, ended_at)){
+        if(!DateUtil.isStartBeforeOrEqualEnd(newStartDate, endedAt)){
             throw new IllegalArgumentException("유효하지 않은 시작시간과 끝나는 시간입니다.");
-        }
-
-        //스케줄 중 변경되는 범위에 벗어나는 것이 없는지 체크
-        List<Schedule> outOfSchedules = new ArrayList<>();
-        for(Schedule schedule : schedules){
-            LocalDate scheduleStartedDate = schedule.getStartedAt().toLocalDate();
-            LocalDate scheduleEndedDate = schedule.getEndedAt().toLocalDate();
-            if(!DateUtil.isContainDateRange(newStartDate, ended_at, scheduleStartedDate, scheduleEndedDate)){
-                outOfSchedules.add(schedule);
-            }
-        }
-        if(!outOfSchedules.isEmpty()){
-            String exceptionMessage = getExceptionMessage(outOfSchedules);
-            throw new IllegalArgumentException("변경된 날짜 범위를 벗어나는 일정이 있습니다. "+exceptionMessage);
         }
 
         this.startedAt = newStartDate;
     }
 
-    private String getExceptionMessage(List<Schedule> outOfSchedules) {
-        // TODO: 스케줄 이름만 보여줄지?
-        return "";
-    }
 
     public void changeEndedDate(LocalDate newEndedDate){
 
@@ -91,22 +82,7 @@ public class Generation extends BaseEntity{
             throw new IllegalArgumentException("유효하지 않은 시작시간과 끝나는 시간입니다.");
         }
 
-        //스케줄 중 변경되는 범위에 벗어나는 것이 없는지 체크
-        boolean isOutOfSchedule = false;
-        StringBuilder outOfSchedules = new StringBuilder();
-        for(Schedule schedule : schedules){
-            LocalDate scheduleStartedDate = schedule.getStartedAt().toLocalDate();
-            LocalDate scheduleEndedDate = schedule.getEndedAt().toLocalDate();
-            if(!DateUtil.isContainDateRange(startedAt, newEndedDate, scheduleStartedDate, scheduleEndedDate)){
-                isOutOfSchedule = true;
-                outOfSchedules.append(schedule.getName()).append(" ");
-            }
-        }
-        if(isOutOfSchedule){
-            throw new IllegalArgumentException("변경된 날짜 범위를 벗어나는 일정이 있습니다: "+outOfSchedules);
-        }
-
-        this.ended_at = newEndedDate;
+        this.endedAt = newEndedDate;
     }
 
 }
