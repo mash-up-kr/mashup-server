@@ -42,7 +42,14 @@ public class Member extends BaseEntity {
     @NotNull
     private Boolean privatePolicyAgreed;
 
-    public static Member of(String name, String identification, String rawPassword, PasswordEncoder encoder, Team team, Generation generation, Boolean privatePolicyAgreed){
+    public static Member of(
+            String name,
+            String identification,
+            String rawPassword,
+            PasswordEncoder encoder,
+            Team team,
+            Generation generation,
+            Boolean privatePolicyAgreed){
         return new Member(name,identification,rawPassword,encoder, team, generation, privatePolicyAgreed);
     }
 

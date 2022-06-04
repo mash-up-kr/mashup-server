@@ -1,5 +1,6 @@
 package kr.mashup.branding.domain.attendance;
 
+import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -40,19 +41,19 @@ public class Schedule extends BaseEntity{
     @NotNull
     private String updatedBy;
 
-    public static Schedule of(Generation generation, String name, LocalDateTime startedAt, LocalDateTime endedAt, String createdBy){
-        return new Schedule(generation, name, startedAt, endedAt, createdBy);
+    public static Schedule of(Generation generation, String name, DateRange dateRange, String createdBy){
+        return new Schedule(generation, name, dateRange, createdBy);
     }
 
-    public Schedule(Generation generation, String name, LocalDateTime startedAt, LocalDateTime endedAt, String createdBy){
+    public Schedule(Generation generation, String name, DateRange dateRange, String createdBy){
 
         checkStartBeforeOrEqualEnd(startedAt, endedAt);
 
         this.generation = generation;
         this.generation.addSchedule(this);
         this.name = name;
-        this.startedAt = startedAt;
-        this.endedAt = endedAt;
+        this.startedAt = dateRange.getStart();
+        this.endedAt = dateRange.getEnd();
         this.createdBy = createdBy;
     }
 

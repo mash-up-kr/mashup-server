@@ -13,38 +13,25 @@ public class DateUtil {
         return startedAt.isBefore(ended_at) || startedAt.isEqual(ended_at);
     }
 
-    /**
-     *
-     * is base date range contains target date range
-     * ex base - start: 1월1일00시, end 1월 2일 00시
-     *    target - start : 1월1일00시, end 1월1일23시 : true
-     */
-    public static boolean isContainDateRange(LocalDateTime baseStartedAt,
-                                        LocalDateTime baseEndedAt,
-                                        LocalDateTime targetStartedAt,
-                                        LocalDateTime targetEndedAt){
+
+    public static boolean isContainDateRange(
+                                        DateRange baseRange,
+                                        DateRange targetRange){
+
+        LocalDateTime baseStartedAt = baseRange.getStart();
+        LocalDateTime baseEndedAt = baseRange.getEnd();
+
+        LocalDateTime targetStartedAt = targetRange.getStart();
+        LocalDateTime targetEndedAt = targetRange.getEnd();
+
 
         boolean isBaseStartBeforeOrEqualTargetStart
                 = baseStartedAt.isBefore(targetStartedAt) || baseStartedAt.isEqual(targetStartedAt);
 
-        boolean isBaseEndBeforeOrEqualTargetEnd
+        boolean isBaseEndAfterOrEqualTargetEnd
                 = baseEndedAt.isAfter(targetEndedAt) || baseEndedAt.isEqual(targetEndedAt);
 
-        return isBaseStartBeforeOrEqualTargetStart && isBaseEndBeforeOrEqualTargetEnd;
-    }
-
-    public static boolean isContainDateRange(LocalDate baseStartedAt,
-                                             LocalDate baseEndedAt,
-                                             LocalDate targetStartedAt,
-                                             LocalDate targetEndedAt){
-
-        boolean isBaseStartBeforeOrEqualTargetStart
-                = baseStartedAt.isBefore(targetStartedAt) || baseStartedAt.isEqual(targetStartedAt);
-
-        boolean isBaseEndBeforeOrEqualTargetEnd
-                = baseEndedAt.isAfter(targetEndedAt) || baseEndedAt.isEqual(targetEndedAt);
-
-        return isBaseStartBeforeOrEqualTargetStart && isBaseEndBeforeOrEqualTargetEnd;
+        return isBaseStartBeforeOrEqualTargetStart && isBaseEndAfterOrEqualTargetEnd;
     }
 
 

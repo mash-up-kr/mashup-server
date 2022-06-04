@@ -1,6 +1,7 @@
 package kr.mashup.branding.domain.attendance;
 
 import com.sun.istack.NotNull;
+import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,18 +34,17 @@ public class Event extends BaseEntity{
     private AttendanceCode attendanceCode;
 
 
-    public static Event of(Schedule schedule, LocalDateTime startedAt, LocalDateTime endedAt){
-        return new Event(schedule, startedAt, endedAt);
+    public static Event of(Schedule schedule, DateRange dateRange){
+        return new Event(schedule, dateRange);
     }
 
-    private Event(Schedule schedule, LocalDateTime startedAt, LocalDateTime endedAt){
+    private Event(Schedule schedule, DateRange dateRange){
 
-        checkStartBeforeOrEqualEnd(startedAt, endedAt);
-        checkEventPeriod(schedule, startedAt, endedAt);
+        checkEventPeriod(schedule, dateRange.getStart(), dateRange.getEnd());
 
         this.schedule = schedule;
-        this.startedAt = startedAt;
-        this.endedAt = endedAt;
+        this.startedAt = dateRange.getStart();
+        this.endedAt = dateRange.getEnd();
     }
 
     public void addContent(Content content){
@@ -71,8 +71,8 @@ public class Event extends BaseEntity{
         this.attendanceCode = code;
     }
 
-    private void checkEventPeriod(Schedule schedule, LocalDateTime statedAt, LocalDateTime endedAt) {
-        if(!DateUtil.isContainDateRange(schedule.getStartedAt(), schedule.getEndedAt(), statedAt, endedAt)){
+    private void checkEventPeriod(Schedule schedule, LocalDateTime startedAt, LocalDateTime endedAt) {
+        if(!DateUtil.isContainDateRange(DateRange.of(schedule.getStartedAt(), schedule.getEndedAt()), DateRange.of(startedAt, endedAt))){
             throw new IllegalArgumentException();
         }
     }

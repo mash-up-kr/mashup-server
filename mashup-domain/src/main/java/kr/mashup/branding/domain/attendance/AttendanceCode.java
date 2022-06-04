@@ -1,5 +1,6 @@
 package kr.mashup.branding.domain.attendance;
 
+import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -26,34 +27,25 @@ public class AttendanceCode extends BaseEntity{
     @NotNull
     private LocalDateTime endedAt;
 
-    public static AttendanceCode of(Event event, String code, LocalDateTime startedAt, LocalDateTime endedAt){
-        return new AttendanceCode(event, code, startedAt, endedAt);
+    public static AttendanceCode of(Event event, String code, DateRange dateRange){
+        return new AttendanceCode(event, code, dateRange);
     }
 
-    private AttendanceCode(Event event, String code, LocalDateTime startedAt, LocalDateTime endedAt){
+    private AttendanceCode(Event event, String code, DateRange dateRange){
 
-        checkStartBeforeOrEqualEnd(startedAt, endedAt);
-        checkAttendancePeriod(event, startedAt, endedAt);
+        checkAttendancePeriod(event, dateRange);
 
         this.event = event;
         event.setAttendanceCode(this);
         this.code = code;
-        this.startedAt = startedAt;
-        this.endedAt = endedAt;
+        this.startedAt = dateRange.getStart();
+        this.endedAt = dateRange.getEnd();
     }
 
-    private void checkStartBeforeOrEqualEnd(LocalDateTime startedAt, LocalDateTime endedAt) {
-        if(!DateUtil.isStartBeforeOrEqualEnd(startedAt, endedAt)){
-            throw new IllegalArgumentException();
-        }
-    }
 
-    private void checkAttendancePeriod(Event event, LocalDateTime startedAt, LocalDateTime endedAt){
+    private void checkAttendancePeriod(Event event, DateRange dateRange){
 
-        LocalDateTime eventStartedAt = event.getStartedAt();
-        LocalDateTime eventEndedAt = event.getEndedAt();
-
-        if(!DateUtil.isContainDateRange(eventStartedAt, eventEndedAt, startedAt, endedAt)){
+        if(!DateUtil.isContainDateRange(DateRange.of(event.getStartedAt(), event.getEndedAt()), dateRange)){
             throw new IllegalArgumentException();
         }
     }

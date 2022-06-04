@@ -1,6 +1,7 @@
 package kr.mashup.branding.domain.attendance;
 
 import com.sun.istack.NotNull;
+import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -43,25 +44,23 @@ public class Generation extends BaseEntity{
         this.schedules.add(schedule);
     }
 
-    public static Generation of(Integer number, LocalDate startedAt, LocalDate endedAt){
-        return new Generation(number, startedAt, endedAt);
+    public static Generation of(Integer number, DateRange dateRange){
+        return new Generation(number, dateRange);
     }
 
-    private Generation(int number, LocalDate startedAt, LocalDate endedAt){
-
-        checkStartBeforeOrEqualEnd(startedAt, endedAt);
+    private Generation(int number, DateRange dateRange){
 
         if(number<=0){
             throw new IllegalArgumentException();
         }
 
         this.number = number;
-        this.startedAt = startedAt;
-        this.endedAt = endedAt;
+        this.startedAt = dateRange.getStart().toLocalDate();
+        this.endedAt = dateRange.getEnd().toLocalDate();
     }
 
-    private void checkStartBeforeOrEqualEnd(LocalDate startedAt, LocalDate ended_at) {
-        if(!DateUtil.isStartBeforeOrEqualEnd(startedAt, ended_at)){
+    private void checkStartBeforeOrEqualEnd(LocalDate startedAt, LocalDate endedAt) {
+        if(!DateUtil.isStartBeforeOrEqualEnd(startedAt, endedAt)){
             throw new IllegalArgumentException();
         }
     }
