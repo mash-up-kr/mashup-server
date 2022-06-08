@@ -1,5 +1,7 @@
 package kr.mashup.branding.domain.attendance;
 
+import kr.mashup.branding.domain.BaseEntity;
+import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
@@ -14,7 +16,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AttendanceCode extends BaseEntity{
+public class AttendanceCode extends BaseEntity {
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY, optional = false)

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import kr.mashup.branding.domain.adminmember.AdminMember;
-import kr.mashup.branding.domain.adminmember.AdminMemberService;
+import kr.mashup.branding.service.adminmember.AdminMemberService;
 import kr.mashup.branding.domain.adminmember.AdminMemberVo;
 import kr.mashup.branding.domain.adminmember.Position;
 import lombok.RequiredArgsConstructor;

@@ -21,7 +21,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.mashup.branding.domain.team.CreateTeamVo;
-import kr.mashup.branding.domain.team.TeamService;
+import kr.mashup.branding.service.team.TeamService;
 import kr.mashup.branding.ui.ApiResponse;
 
 @AutoConfigureMockMvc

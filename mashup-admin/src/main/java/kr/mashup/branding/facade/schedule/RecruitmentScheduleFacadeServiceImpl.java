@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import kr.mashup.branding.domain.schedule.RecruitmentSchedule;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleCreateVo;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleUpdateVo;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentSchedule;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleCreateVo;
+import kr.mashup.branding.service.recruitmentschedule.RecruitmentScheduleService;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleUpdateVo;
 import lombok.RequiredArgsConstructor;
 
 @Service

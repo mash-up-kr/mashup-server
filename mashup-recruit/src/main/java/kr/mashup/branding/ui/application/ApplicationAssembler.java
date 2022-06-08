@@ -18,7 +18,7 @@ import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
+import kr.mashup.branding.service.recruitmentschedule.RecruitmentScheduleService;
 import kr.mashup.branding.ui.applicant.ApplicantAssembler;
 import kr.mashup.branding.ui.team.TeamAssembler;
 import lombok.RequiredArgsConstructor;

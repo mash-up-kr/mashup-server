@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.mashup.branding.domain.notification.sms.whitelist.SmsWhitelistService;
+import kr.mashup.branding.service.notification.sms.SmsWhitelistService;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
