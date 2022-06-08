@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.mashup.branding.domain.schedule.RecruitmentSchedule;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleCreateVo;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleUpdateVo;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentSchedule;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleCreateVo;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleUpdateVo;
 import kr.mashup.branding.facade.schedule.RecruitmentScheduleFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;

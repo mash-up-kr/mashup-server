@@ -10,7 +10,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 
 import kr.mashup.branding.config.jwt.JwtService;
 import kr.mashup.branding.domain.applicant.Applicant;
-import kr.mashup.branding.domain.applicant.ApplicantService;
+import kr.mashup.branding.service.applicant.ApplicantService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

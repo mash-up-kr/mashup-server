@@ -1,6 +1,6 @@
 package kr.mashup.branding.facade.application;
 
-import kr.mashup.branding.domain.application.confirmation.ConfirmationService;
+import kr.mashup.branding.service.application.confirmation.ConfirmationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

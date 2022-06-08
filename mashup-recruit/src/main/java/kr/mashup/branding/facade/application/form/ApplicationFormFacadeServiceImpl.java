@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.domain.application.form.ApplicationForm;
-import kr.mashup.branding.domain.application.form.ApplicationFormService;
+import kr.mashup.branding.service.application.form.ApplicationFormService;
 import lombok.RequiredArgsConstructor;
 
 @Service

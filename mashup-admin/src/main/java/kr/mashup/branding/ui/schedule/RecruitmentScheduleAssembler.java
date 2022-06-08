@@ -2,9 +2,9 @@ package kr.mashup.branding.ui.schedule;
 
 import org.springframework.stereotype.Component;
 
-import kr.mashup.branding.domain.schedule.RecruitmentSchedule;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleCreateVo;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleUpdateVo;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentSchedule;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleCreateVo;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleUpdateVo;
 
 @Component
 public class RecruitmentScheduleAssembler {

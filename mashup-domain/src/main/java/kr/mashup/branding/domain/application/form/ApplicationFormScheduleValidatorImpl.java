@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
 
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
+import kr.mashup.branding.service.recruitmentschedule.RecruitmentScheduleService;
 import lombok.RequiredArgsConstructor;
 
 @Component

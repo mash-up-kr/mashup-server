@@ -3,10 +3,10 @@ package kr.mashup.branding.facade.application.form;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import kr.mashup.branding.domain.application.ApplicationService;
+import kr.mashup.branding.service.application.ApplicationService;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormQueryVo;
-import kr.mashup.branding.domain.application.form.ApplicationFormService;
+import kr.mashup.branding.service.application.form.ApplicationFormService;
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
 import kr.mashup.branding.domain.application.form.UpdateApplicationFormVo;
 import kr.mashup.branding.facade.ProfileFacadeService;

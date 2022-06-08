@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.domain.team.CreateTeamVo;
 import kr.mashup.branding.domain.team.Team;
-import kr.mashup.branding.domain.team.TeamService;
+import kr.mashup.branding.service.team.TeamService;
 import lombok.RequiredArgsConstructor;
 
 @Service

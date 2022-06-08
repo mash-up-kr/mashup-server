@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.service.notification.sms.SmsWhitelistServiceImpl;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,8 +21,8 @@ import kr.mashup.branding.domain.notification.sms.SmsRequestVo;
 import kr.mashup.branding.domain.notification.sms.SmsSendFailedException;
 import kr.mashup.branding.domain.notification.sms.SmsSendResultRecipientVo;
 import kr.mashup.branding.domain.notification.sms.SmsSendResultVo;
-import kr.mashup.branding.domain.notification.sms.SmsService;
-import kr.mashup.branding.domain.notification.sms.whitelist.SmsWhitelistService;
+import kr.mashup.branding.service.notification.sms.SmsService;
+import kr.mashup.branding.service.notification.sms.SmsWhitelistService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -112,7 +113,7 @@ public class ToastSmsService implements SmsService {
 
     /**
      * 문자 발송을 시도해도 되는 전화번호인지 검사
-     * @see kr.mashup.branding.domain.notification.sms.whitelist.SmsWhitelistServiceImpl
+     * @see SmsWhitelistServiceImpl
      * @param phoneNumber 수신자 전화번호
      * @return 문자 발송을 시도해도되는지 여부
      */

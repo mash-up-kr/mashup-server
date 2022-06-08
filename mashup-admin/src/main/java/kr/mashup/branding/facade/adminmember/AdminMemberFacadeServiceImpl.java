@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import kr.mashup.branding.config.jwt.JwtService;
 import kr.mashup.branding.domain.adminmember.AdminMember;
 import kr.mashup.branding.domain.adminmember.AdminMemberLoginVo;
-import kr.mashup.branding.domain.adminmember.AdminMemberService;
+import kr.mashup.branding.service.adminmember.AdminMemberService;
 import lombok.RequiredArgsConstructor;
 
 @Service

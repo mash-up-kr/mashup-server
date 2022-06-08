@@ -28,8 +28,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.mashup.branding.config.jpa.SpringSecurityAuditorAware;
 import kr.mashup.branding.domain.ResultCode;
-import kr.mashup.branding.domain.schedule.RecruitmentSchedule;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleRepository;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentSchedule;
+import kr.mashup.branding.repository.recruitmentschedule.RecruitmentScheduleRepository;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.api.RecruitmentScheduleApi;
 

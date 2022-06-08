@@ -2,7 +2,7 @@ package kr.mashup.branding.ui.notification.sms;
 
 import org.springframework.stereotype.Component;
 
-import kr.mashup.branding.domain.application.ApplicationService;
+import kr.mashup.branding.service.application.ApplicationService;
 import kr.mashup.branding.domain.application.ApplicationStatus;
 import kr.mashup.branding.domain.notification.sms.SmsRequest;
 import kr.mashup.branding.domain.team.Team;
