@@ -7,6 +7,7 @@ import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.repository.member.AttendanceCodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,10 +15,12 @@ public class AttendanceCodeService {
 
     private final AttendanceCodeRepository attendanceCodeRepository;
 
+    @Transactional
     public void save(AttendanceCode attendanceCode) {
         attendanceCodeRepository.save(attendanceCode);
     }
 
+    @Transactional(readOnly = true)
     public void validateDup(Event event,String code) {
         boolean isExist = attendanceCodeRepository.existsByEventAndCode(event, code);
         if(isExist) {
