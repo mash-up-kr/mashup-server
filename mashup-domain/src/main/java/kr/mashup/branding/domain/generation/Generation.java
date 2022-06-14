@@ -2,6 +2,7 @@ package kr.mashup.branding.domain.generation;
 
 import com.sun.istack.NotNull;
 import kr.mashup.branding.domain.BaseEntity;
+import kr.mashup.branding.domain.invite.Invite;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.util.DateRange;
@@ -36,9 +37,8 @@ public class Generation extends BaseEntity {
     @OneToMany(mappedBy = "generation")
     private final List<Member> members = new ArrayList<>();
 
-    // TODO : 최민성 구현 예정
-//    @OneToMany(mappedBy = "generation")
-//    private final List<Invite> invites = new ArrayList<>();
+    @OneToMany(mappedBy = "generation")
+    private final List<Invite> invites = new ArrayList<>();
 
     public void addSchedule(Schedule schedule){
         if(schedules.contains(schedule)){
