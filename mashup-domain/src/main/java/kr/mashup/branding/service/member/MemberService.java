@@ -48,6 +48,14 @@ public class MemberService {
         return MemberVo.from(member);
     }
 
+    public MemberVo changePassword(Long memberId, String rawPassword, String newPassword){
+
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        member.changePassword(rawPassword, newPassword, passwordEncoder);
+
+        return MemberVo.from(member);
+    }
+
     //4. 회원 삭제.
     public MemberVo deleteMember(Long memberId) {
 

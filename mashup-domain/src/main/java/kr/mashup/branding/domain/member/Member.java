@@ -53,6 +53,31 @@ public class Member extends BaseEntity {
     @AssertTrue(message = "개인정보 이용에 동의해야만 가입할 수 있습니다.")
     private Boolean privatePolicyAgreed;
 
+    public void updateInfo(MemberUpdateVo memberUpdateVo){
+
+        final String name = memberUpdateVo.getName();
+        final Generation generation = memberUpdateVo.getGeneration();
+        final Platform platform = memberUpdateVo.getPlatform();
+
+        checkValidName(name);
+
+        this.name = name;
+        this.generation = generation;
+        this.platform = platform;
+    }
+
+    public boolean isMatchPassword(String rawPassword, PasswordEncoder encoder) {
+        return encoder.matches(rawPassword, this.password);
+    }
+
+    public void changePassword(String rawPassword, String newPassword, PasswordEncoder encoder) {
+        if (!encoder.matches(rawPassword, this.password)) {
+            throw new IllegalArgumentException();
+        }
+        checkValidPassword(rawPassword);
+        this.password = encoder.encode(newPassword);
+    }
+
     public static Member of(
             String name,
             String identification,
@@ -84,33 +109,6 @@ public class Member extends BaseEntity {
         this.platform = platform;
         this.generation = generation;
         this.privatePolicyAgreed = privatePolicyAgreed;
-    }
-
-
-    public boolean isMatchPassword(String rawPassword, PasswordEncoder encoder) {
-        return encoder.matches(rawPassword, this.password);
-    }
-
-
-    public void changePassword(String rawPassword, String newPassword, PasswordEncoder encoder) {
-        if (!encoder.matches(rawPassword, this.password)) {
-            throw new IllegalArgumentException();
-        }
-        checkValidPassword(rawPassword);
-        this.password = encoder.encode(newPassword);
-    }
-
-    public void updateInfo(MemberUpdateVo memberUpdateVo){
-
-        final String name = memberUpdateVo.getName();
-        final Generation generation = memberUpdateVo.getGeneration();
-        final Platform platform = memberUpdateVo.getPlatform();
-
-        checkValidName(name);
-
-        this.name = name;
-        this.generation = generation;
-        this.platform = platform;
     }
 
     private void checkValidID(String identification) {
