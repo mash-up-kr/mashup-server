@@ -100,6 +100,19 @@ public class Member extends BaseEntity {
         this.password = encoder.encode(newPassword);
     }
 
+    public void updateInfo(MemberUpdateVo memberUpdateVo){
+
+        final String name = memberUpdateVo.getName();
+        final Generation generation = memberUpdateVo.getGeneration();
+        final Platform platform = memberUpdateVo.getPlatform();
+
+        checkValidName(name);
+
+        this.name = name;
+        this.generation = generation;
+        this.platform = platform;
+    }
+
     private void checkValidID(String identification) {
         if (!StringUtils.hasText(identification)) {
             throw new IllegalArgumentException("아이디는 비어있을 수 없습니다.");

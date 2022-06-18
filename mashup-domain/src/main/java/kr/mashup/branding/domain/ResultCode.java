@@ -53,6 +53,9 @@ public enum ResultCode {
     ADMIN_MEMBER_NO_ACCESS_TEAM("접근 권한이 없는 팀입니다."),
     ADMIN_MEMBER_NO_UPDATE_PERMISSION("수정 권한이 없는 관리자 멤버입니다."),
 
+    // Member (회원)
+    MEMBER_NOT_FOUND("회원을 찾을 수 없습니다."),
+
     // Event (일정)
     EVENT_NOT_FOUND("일정이 존재하지 않습니다."),
 
