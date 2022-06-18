@@ -56,4 +56,5 @@ public class MemberService {
 
         return MemberVo.from(member);
     }
+
 }
