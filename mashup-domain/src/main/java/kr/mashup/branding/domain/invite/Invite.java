@@ -64,8 +64,15 @@ public class Invite extends BaseEntity {
 	 *
 	 */
 	private static String generateCode(Platform platform, int generationNumber) {
-		StringBuilder code = new StringBuilder(platform.name().substring(2).concat(String.format("%03d", generationNumber)));
+		// Platform 앞 2글자 - 2글자
+		StringBuilder code = new StringBuilder(platform.name().substring(0, 2));
 
+		// 기수 숫자변환(0 ~ 999) - 3글자
+		for (char ch : String.format("%03d", generationNumber).toCharArray()) {
+			code.append((char)((int)ch + 17));
+		}
+
+		// 랜덤 문자열 - 3글자
 		for (int i = 1; i <= 3; i++) {
 			char randomChar = (char) ((Math.random() * 26) + 65);
 			code.append(randomChar);
