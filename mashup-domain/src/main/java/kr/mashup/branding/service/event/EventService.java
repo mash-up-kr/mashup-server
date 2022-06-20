@@ -1,4 +1,4 @@
-package kr.mashup.branding.service.member;
+package kr.mashup.branding.service.event;
 
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.event.Event;
