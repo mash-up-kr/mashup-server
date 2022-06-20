@@ -10,7 +10,7 @@ import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleCreateVo;
 import kr.mashup.branding.service.schedule.ScheduleService;
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.schedule.model.request.ScheduleCreateRequest;
+import kr.mashup.branding.ui.schedule.request.ScheduleCreateRequest;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
