@@ -1,4 +1,4 @@
-package kr.mashup.branding.repository.member;
+package kr.mashup.branding.repository.event;
 
 import kr.mashup.branding.domain.event.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
