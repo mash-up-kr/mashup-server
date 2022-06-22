@@ -16,6 +16,8 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.util.Assert;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.domain.generation.Generation;
@@ -41,11 +43,12 @@ public class Schedule extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "generation_id")
+    @JsonIgnore
     private Generation generation;
 
     @OneToMany(mappedBy = "schedule")
     @OrderBy("startedAt")
-    private final List<Event> events = new ArrayList<>();
+    private final List<Event> eventList = new ArrayList<>();
 
     @CreatedBy
     private String createdBy;
@@ -64,6 +67,13 @@ public class Schedule extends BaseEntity {
         this.name = name;
         this.startedAt = dateRange.getStart();
         this.endedAt = dateRange.getEnd();
+    }
+
+    public void addEvent(Event event) {
+        if (eventList.contains(event)) {
+            return;
+        }
+        this.eventList.add(event);
     }
 
     public void changeName(String newName) {

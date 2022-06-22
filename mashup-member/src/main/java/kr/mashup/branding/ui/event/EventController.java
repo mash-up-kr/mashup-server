@@ -20,7 +20,7 @@ public class EventController {
 
     private final EventService eventService;
 
-    @ApiOperation("스케줄 생성")
+    @ApiOperation("이벤트 생성")
     @PostMapping()
     public ApiResponse<Event> create(
         @RequestBody EventCreateRequest eventCreateRequest
