@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class InviteService {
 	private final InviteRepository inviteRepository;
 
+	@Transactional
 	public Invite create(Platform platform, Generation generation, DateRange dateRange) {
 		Invite invite = Invite.of(platform, generation, dateRange);
 

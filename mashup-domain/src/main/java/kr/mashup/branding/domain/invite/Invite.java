@@ -6,6 +6,7 @@ import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.util.DateRange;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -43,18 +44,27 @@ public class Invite extends BaseEntity {
 	@NotNull
 	private LocalDateTime endedAt;
 
+	@Builder
+	public Invite(String code, Platform platform, Generation generation, int limitCount, LocalDateTime startedAt, LocalDateTime endedAt) {
+		this.code = code;
+		this.platform = platform;
+		this.generation = generation;
+		this.limitCount = limitCount;
+		this.startedAt = startedAt;
+		this.endedAt = endedAt;
+	}
+
 	public static Invite of(Platform platform, Generation generation, DateRange dateRange) {
 		int defaultLimitCount = 30;
 
-		Invite invite = new Invite();
-		invite.code = generateCode(platform, generation.getNumber());
-		invite.platform = platform;
-		invite.generation = generation;
-		invite.limitCount = defaultLimitCount;
-		invite.startedAt = dateRange.getStart();
-		invite.endedAt = dateRange.getEnd();
-
-		return invite;
+		return Invite.builder()
+			.code(generateCode(platform, generation.getNumber()))
+			.platform(platform)
+			.generation(generation)
+			.limitCount(defaultLimitCount)
+			.startedAt(dateRange.getStart())
+			.endedAt(dateRange.getEnd())
+			.build();
 	}
 
 	/**
