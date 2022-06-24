@@ -11,6 +11,7 @@ import kr.mashup.branding.domain.schedule.ScheduleCreateVo;
 import kr.mashup.branding.service.schedule.ScheduleService;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.schedule.request.ScheduleCreateRequest;
+import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -19,17 +20,20 @@ import lombok.RequiredArgsConstructor;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
+    private final ScheduleAssembler scheduleAssembler;
 
     @ApiOperation("스케줄 생성")
     @PostMapping()
-    public ApiResponse<Schedule> create(
+    public ApiResponse<ScheduleResponse> create(
         @RequestBody ScheduleCreateRequest scheduleCreateRequest
     ) {
         Schedule schedule = scheduleService.create(
-            ScheduleCreateVo.of(scheduleCreateRequest.getName(),
-                scheduleCreateRequest.getStartedAt(), scheduleCreateRequest.getEndedAt(),
+            ScheduleCreateVo.of(
+                scheduleCreateRequest.getName(),
+                scheduleCreateRequest.getStartedAt(),
+                scheduleCreateRequest.getEndedAt(),
                 scheduleCreateRequest.getGenerationId())
         );
-        return ApiResponse.success(schedule);
+        return ApiResponse.success(scheduleAssembler.toScheduleResponse(schedule));
     }
 }

@@ -11,6 +11,7 @@ import kr.mashup.branding.domain.content.ContentCreateVo;
 import kr.mashup.branding.service.content.ContentService;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.content.request.ContentCreateRequest;
+import kr.mashup.branding.ui.content.response.ContentResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -19,16 +20,18 @@ import lombok.RequiredArgsConstructor;
 public class ContentController {
 
     private final ContentService contentService;
+    private final ContentAssembler contentAssembler;
 
     @ApiOperation("이벤트 내용 생성")
     @PostMapping()
-    public ApiResponse<Content> create(
+    public ApiResponse<ContentResponse> create(
         @RequestBody ContentCreateRequest contentCreateRequest
     ) {
         Content content = contentService.create(
             ContentCreateVo.of(
-                contentCreateRequest.getContent(), contentCreateRequest.getEventId()
+                contentCreateRequest.getContent(),
+                contentCreateRequest.getEventId()
             ));
-        return ApiResponse.success(content);
+        return ApiResponse.success(contentAssembler.toContentResponse(content));
     }
 }
