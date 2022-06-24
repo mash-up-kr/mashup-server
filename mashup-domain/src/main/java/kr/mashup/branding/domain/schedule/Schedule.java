@@ -43,7 +43,6 @@ public class Schedule extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "generation_id")
-    @JsonIgnore
     private Generation generation;
 
     @OneToMany(mappedBy = "schedule")
