@@ -1,5 +1,23 @@
 package kr.mashup.branding.domain.schedule;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.util.Assert;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.domain.generation.Generation;
@@ -8,13 +26,6 @@ import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.Assert;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -35,54 +46,52 @@ public class Schedule extends BaseEntity {
     private Generation generation;
 
     @OneToMany(mappedBy = "schedule")
-    private final List<Event> events = new ArrayList<>();
+    @OrderBy("startedAt")
+    private final List<Event> eventList = new ArrayList<>();
 
-    @NotNull
+    @CreatedBy
     private String createdBy;
 
-    @NotNull
+    @LastModifiedBy
     private String updatedBy;
 
-    public static Schedule of(Generation generation, String name, DateRange dateRange, String createdBy){
-        return new Schedule(generation, name, dateRange, createdBy);
+    public static Schedule of(Generation generation, String name, DateRange dateRange) {
+        return new Schedule(generation, name, dateRange);
     }
 
-    public Schedule(Generation generation, String name, DateRange dateRange, String createdBy){
-
-        checkStartBeforeOrEqualEnd(startedAt, endedAt);
+    public Schedule(Generation generation, String name, DateRange dateRange) {
+        checkStartBeforeOrEqualEnd(dateRange.getStart(), dateRange.getEnd());
 
         this.generation = generation;
-        this.generation.addSchedule(this);
         this.name = name;
         this.startedAt = dateRange.getStart();
         this.endedAt = dateRange.getEnd();
-        this.createdBy = createdBy;
     }
 
-    public void changeName(String newName){
-        Assert.hasText(newName,"이름이 비어있을 수 없습니다.");
+    public void addEvent(Event event) {
+        if (eventList.contains(event)) {
+            return;
+        }
+        this.eventList.add(event);
+    }
+
+    public void changeName(String newName) {
+        Assert.hasText(newName, "이름이 비어있을 수 없습니다.");
         this.name = newName;
     }
 
-    public void changeStartDate(LocalDateTime newStartDate){
+    public void changeStartDate(LocalDateTime newStartDate) {
         checkStartBeforeOrEqualEnd(newStartDate, endedAt);
         this.startedAt = newStartDate;
     }
 
-    public void changeEndDate(LocalDateTime newEndDate){
+    public void changeEndDate(LocalDateTime newEndDate) {
         checkStartBeforeOrEqualEnd(startedAt, newEndDate);
         this.endedAt = newEndDate;
     }
 
-    public void changeUpdateBy(String updatedBy){
-        Assert.hasText(updatedBy, "수정자 이름이 비었을 수 없습니다.");
-        this.updatedBy = updatedBy;
-    }
-
-
-
     private void checkStartBeforeOrEqualEnd(LocalDateTime startedAt, LocalDateTime endedAt) {
-        if(!DateUtil.isStartBeforeOrEqualEnd(startedAt, endedAt)){
+        if (!DateUtil.isStartBeforeOrEqualEnd(startedAt, endedAt)) {
             throw new IllegalArgumentException("유효하지 않은 시작시간과 끝나는 시간입니다.");
         }
     }
