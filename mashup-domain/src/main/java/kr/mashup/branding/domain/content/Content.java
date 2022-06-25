@@ -24,7 +24,6 @@ public class Content extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "event_id")
-    @JsonIgnore
     private Event event;
 
     @NotNull
