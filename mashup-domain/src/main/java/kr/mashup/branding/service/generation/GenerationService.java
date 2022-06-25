@@ -13,11 +13,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GenerationService {
 
-    private final GenerationRepository generationRepository;
+	private final GenerationRepository generationRepository;
 
-    @Transactional(readOnly = true)
-    public Generation getByIdOrThrow(Long generationId) {
-        return generationRepository.findById(generationId)
-            .orElseThrow(() -> new NotFoundException(ResultCode.GENERATION_NOT_FOUND));
-    }
+	@Transactional(readOnly = true)
+	public Generation getByIdOrThrow(Long generationId) {
+		return generationRepository.findById(generationId)
+			.orElseThrow(() -> new NotFoundException(ResultCode.GENERATION_NOT_FOUND));
+	}
+
+	@Transactional(readOnly = true)
+	public Generation getByNumberOrThrow(Integer number) {
+		return generationRepository.findByNumber(number)
+			.orElseThrow(() -> new NotFoundException(ResultCode.GENERATION_NOT_FOUND));
+	}
 }
