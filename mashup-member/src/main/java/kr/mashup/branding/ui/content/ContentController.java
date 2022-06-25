@@ -19,19 +19,18 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class ContentController {
 
-    private final ContentService contentService;
-    private final ContentAssembler contentAssembler;
+	private final ContentService contentService;
 
-    @ApiOperation("이벤트 내용 생성")
-    @PostMapping()
-    public ApiResponse<ContentResponse> create(
-        @RequestBody ContentCreateRequest contentCreateRequest
-    ) {
-        Content content = contentService.create(
-            ContentCreateVo.of(
-                contentCreateRequest.getContent(),
-                contentCreateRequest.getEventId()
-            ));
-        return ApiResponse.success(contentAssembler.toContentResponse(content));
-    }
+	@ApiOperation("이벤트 내용 생성")
+	@PostMapping()
+	public ApiResponse<ContentResponse> create(
+		@RequestBody ContentCreateRequest contentCreateRequest
+	) {
+		Content content = contentService.create(
+			ContentCreateVo.of(
+				contentCreateRequest.getContent(),
+				contentCreateRequest.getEventId()
+			));
+		return ApiResponse.success(ContentResponse.of(content));
+	}
 }

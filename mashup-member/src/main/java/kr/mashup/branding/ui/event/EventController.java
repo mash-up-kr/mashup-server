@@ -19,20 +19,19 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class EventController {
 
-    private final EventService eventService;
-    private final EventAssembler eventAssembler;
+	private final EventService eventService;
 
-    @ApiOperation("이벤트 생성")
-    @PostMapping()
-    public ApiResponse<EventResponse> create(
-        @RequestBody EventCreateRequest eventCreateRequest
-    ) {
-        Event event = eventService.create(
-            EventCreateVo.of(
-                eventCreateRequest.getStartedAt(),
-                eventCreateRequest.getEndedAt(),
-                eventCreateRequest.getScheduleId()
-            ));
-        return ApiResponse.success(eventAssembler.toEventResponse(event));
-    }
+	@ApiOperation("이벤트 생성")
+	@PostMapping()
+	public ApiResponse<EventResponse> create(
+		@RequestBody EventCreateRequest eventCreateRequest
+	) {
+		Event event = eventService.create(
+			EventCreateVo.of(
+				eventCreateRequest.getStartedAt(),
+				eventCreateRequest.getEndedAt(),
+				eventCreateRequest.getScheduleId()
+			));
+		return ApiResponse.success(EventResponse.of(event));
+	}
 }
