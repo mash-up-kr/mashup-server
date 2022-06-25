@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.ui.content.response.ContentResponse;
-import kr.mashup.branding.ui.qrcode.response.AttendanceCodeResponse;
+import kr.mashup.branding.ui.attendance.response.AttendanceCodeResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

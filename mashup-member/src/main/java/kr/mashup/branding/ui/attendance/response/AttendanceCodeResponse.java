@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.qrcode.response;
+package kr.mashup.branding.ui.attendance.response;
 
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import lombok.Getter;
