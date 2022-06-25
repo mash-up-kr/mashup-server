@@ -38,8 +38,8 @@ public class Event extends BaseEntity {
     @OneToMany(mappedBy = "event")
     private final List<Content> contentList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "event", fetch = FetchType.LAZY)
-    private AttendanceCode attendanceCode;
+    @OneToMany(mappedBy = "event")
+    private final List<AttendanceCode> attendanceCodeList = new ArrayList<>();
 
     public static Event of(Schedule schedule, DateRange dateRange) {
         return new Event(schedule, dateRange);
@@ -61,7 +61,15 @@ public class Event extends BaseEntity {
         this.contentList.add(content);
     }
 
-    public void changeStartDate(LocalDateTime newStartedAt) {
+    public void addAttendanceCode(AttendanceCode attendanceCode) {
+        if(attendanceCodeList.contains(attendanceCode)) {
+            return;
+        }
+        this.attendanceCodeList.add(attendanceCode);
+    }
+
+
+    public void changeStartDate(LocalDateTime newStartedAt){
         checkStartBeforeOrEqualEnd(newStartedAt, endedAt);
         checkEventPeriod(schedule, newStartedAt, endedAt);
         this.startedAt = newStartedAt;
@@ -71,10 +79,6 @@ public class Event extends BaseEntity {
         checkStartBeforeOrEqualEnd(startedAt, newEndedAt);
         checkEventPeriod(schedule, startedAt, newEndedAt);
         this.endedAt = newEndedAt;
-    }
-
-    public void setAttendanceCode(AttendanceCode code) {
-        this.attendanceCode = code;
     }
 
     private void checkEventPeriod(Schedule schedule, LocalDateTime startedAt, LocalDateTime endedAt) {
