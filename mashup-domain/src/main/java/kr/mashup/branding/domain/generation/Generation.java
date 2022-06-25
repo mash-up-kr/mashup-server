@@ -63,14 +63,14 @@ public class Generation extends BaseEntity {
     }
 
     private void checkStartBeforeOrEqualEnd(LocalDate startedAt, LocalDate endedAt) {
-        if(!DateUtil.isStartBeforeOrEqualEnd(startedAt, endedAt)){
+        if(!DateUtil.isStartBeforeOrEqualEnd(startedAt.atStartOfDay(), endedAt.atStartOfDay())){
             throw new IllegalArgumentException();
         }
     }
 
     public void changeStartDate(LocalDate newStartDate){
 
-        if(!DateUtil.isStartBeforeOrEqualEnd(newStartDate, endedAt)){
+        if(!DateUtil.isStartBeforeOrEqualEnd(newStartDate.atStartOfDay(), endedAt.atStartOfDay())){
             throw new IllegalArgumentException("유효하지 않은 시작시간과 끝나는 시간입니다.");
         }
 
@@ -80,7 +80,7 @@ public class Generation extends BaseEntity {
 
     public void changeEndedDate(LocalDate newEndedDate){
 
-        if(!DateUtil.isStartBeforeOrEqualEnd(startedAt, newEndedDate)){
+        if(!DateUtil.isStartBeforeOrEqualEnd(startedAt.atStartOfDay(), newEndedDate.atStartOfDay())){
             throw new IllegalArgumentException("유효하지 않은 시작시간과 끝나는 시간입니다.");
         }
 
