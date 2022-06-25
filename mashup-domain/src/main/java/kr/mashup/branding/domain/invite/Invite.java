@@ -1,6 +1,16 @@
 package kr.mashup.branding.domain.invite;
 
+import java.time.LocalDateTime;
+
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotEmpty;
+
 import com.sun.istack.NotNull;
+
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Platform;
@@ -9,15 +19,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotEmpty;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -45,7 +46,8 @@ public class Invite extends BaseEntity {
 	private LocalDateTime endedAt;
 
 	@Builder
-	public Invite(String code, Platform platform, Generation generation, int limitCount, LocalDateTime startedAt, LocalDateTime endedAt) {
+	public Invite(String code, Platform platform, Generation generation, int limitCount, LocalDateTime startedAt,
+		LocalDateTime endedAt) {
 		this.code = code;
 		this.platform = platform;
 		this.generation = generation;
@@ -84,7 +86,7 @@ public class Invite extends BaseEntity {
 
 		// 랜덤 문자열 - 3글자
 		for (int i = 1; i <= 3; i++) {
-			char randomChar = (char) ((Math.random() * 26) + 65);
+			char randomChar = (char)((Math.random() * 26) + 65);
 			code.append(randomChar);
 		}
 
