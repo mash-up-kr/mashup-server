@@ -9,6 +9,10 @@ spring:
         show_sql: true
     hibernate:
       ddl-auto: update
+  datasource:
+    url: jdbc:h2:mem://localhost/~/testdb;MODE=MYSQL
+    username: sa
+    password:
 sms:
   toast:
     url: https://api-sms.cloud.toast.com/
