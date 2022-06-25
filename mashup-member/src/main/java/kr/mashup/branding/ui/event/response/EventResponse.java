@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.ui.content.response.ContentResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public class EventResponse {
 

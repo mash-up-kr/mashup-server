@@ -1,8 +1,10 @@
 package kr.mashup.branding.ui.content.response;
 
 import kr.mashup.branding.domain.content.Content;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public class ContentResponse {
 
