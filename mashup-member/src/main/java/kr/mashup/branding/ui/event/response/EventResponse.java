@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.ui.content.response.ContentResponse;
+import kr.mashup.branding.ui.qrcode.response.AttendanceCodeResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +18,7 @@ public class EventResponse {
     private final LocalDateTime startedAt;
     private final LocalDateTime endedAt;
     private final List<ContentResponse> contentList;
-    private final List<AttendanceCode> attendanceCode;
+    private final List<AttendanceCodeResponse> attendanceCode;
 
     public static EventResponse from(Event event) {
         return new EventResponse(
@@ -30,6 +30,9 @@ public class EventResponse {
                 .map(ContentResponse::from)
                 .collect(Collectors.toList()),
             event.getAttendanceCodeList()
+                .stream()
+                .map(AttendanceCodeResponse::from)
+                .collect(Collectors.toList())
         );
     }
 }
