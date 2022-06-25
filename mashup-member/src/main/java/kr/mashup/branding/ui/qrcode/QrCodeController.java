@@ -28,7 +28,7 @@ public class QrCodeController {
             request.getEnd()
         );
 
-        return ApiResponse.success(QrCreateResponse.of(url));
+        return ApiResponse.success(QrCreateResponse.from(url));
     }
 
     @GetMapping("/")
@@ -39,7 +39,7 @@ public class QrCodeController {
         boolean result = qrCodeService.isAvailableCode(
             eventId, code, LocalDateTime.now()
         );
-        return ApiResponse.success(QrCheckResponse.of(result));
+        return ApiResponse.success(QrCheckResponse.from(result));
     }
 
 }

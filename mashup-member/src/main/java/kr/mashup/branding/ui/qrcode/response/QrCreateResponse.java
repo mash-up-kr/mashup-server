@@ -6,7 +6,7 @@ import lombok.Data;
 public class QrCreateResponse {
     private final String qrCodeUrl;
 
-    public static QrCreateResponse of(String url) {
+    public static QrCreateResponse from(String url) {
         return new QrCreateResponse(url);
     }
 }

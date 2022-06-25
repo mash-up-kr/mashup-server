@@ -31,6 +31,6 @@ public class ContentController {
 				contentCreateRequest.getContent(),
 				contentCreateRequest.getEventId()
 			));
-		return ApiResponse.success(ContentResponse.of(content));
+		return ApiResponse.success(ContentResponse.from(content));
 	}
 }

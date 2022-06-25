@@ -18,7 +18,7 @@ public class ScheduleResponse {
     private final Integer generationNumber;
     private final List<EventResponse> eventList;
 
-    public static ScheduleResponse of(Schedule schedule) {
+    public static ScheduleResponse from(Schedule schedule) {
         return new ScheduleResponse(
             schedule.getId(),
             schedule.getName(),

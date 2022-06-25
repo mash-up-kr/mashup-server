@@ -25,7 +25,7 @@ public class EventResponse {
             event.getEndedAt(),
             event.getContentList()
                 .stream()
-                .map(ContentResponse::of)
+                .map(ContentResponse::from)
                 .collect(Collectors.toList()),
             event.getAttendanceCodeList()
         );
