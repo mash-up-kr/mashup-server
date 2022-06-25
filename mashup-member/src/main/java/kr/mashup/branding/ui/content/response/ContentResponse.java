@@ -1,13 +1,15 @@
 package kr.mashup.branding.ui.content.response;
 
-import lombok.AllArgsConstructor;
+import kr.mashup.branding.domain.content.Content;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class ContentResponse {
 
-    private Long contentId;
+	private final Long contentId;
+	private final String content;
 
-    private String content;
+	public static ContentResponse of(Content content) {
+		return new ContentResponse(content.getId(), content.getContent());
+	}
 }
