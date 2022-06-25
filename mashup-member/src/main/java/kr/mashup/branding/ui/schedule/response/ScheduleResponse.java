@@ -27,7 +27,7 @@ public class ScheduleResponse {
             schedule.getGeneration().getNumber(),
             schedule.getEventList()
                 .stream()
-                .map(EventResponse::of)
+                .map(EventResponse::from)
                 .collect(Collectors.toList())
         );
     }

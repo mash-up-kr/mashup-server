@@ -16,9 +16,9 @@ public class EventResponse {
     private final LocalDateTime startedAt;
     private final LocalDateTime endedAt;
     private final List<ContentResponse> contentList;
-    private final AttendanceCode attendanceCode;
+    private final List<AttendanceCode> attendanceCode;
 
-    public static EventResponse of(Event event) {
+    public static EventResponse from(Event event) {
         return new EventResponse(
             event.getId(),
             event.getStartedAt(),
@@ -27,7 +27,7 @@ public class EventResponse {
                 .stream()
                 .map(ContentResponse::of)
                 .collect(Collectors.toList()),
-            event.getAttendanceCode()
+            event.getAttendanceCodeList()
         );
     }
 }
