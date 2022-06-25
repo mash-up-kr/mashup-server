@@ -19,11 +19,7 @@ public class ContentService {
 
     @Transactional
     public Content create(ContentCreateVo contentCreateVo) {
-        System.out.println("들어왔당");
-        System.out.println(contentCreateVo.getEventId());
         Event event = eventService.getByIdOrThrow(contentCreateVo.getEventId());
-        System.out.println(event.getId());
-
         Content content = Content.of(event, contentCreateVo.getContent());
         return contentRepository.save(content);
     }

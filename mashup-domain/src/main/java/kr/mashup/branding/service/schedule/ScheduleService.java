@@ -14,12 +14,12 @@ import kr.mashup.branding.util.DateRange;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final GenerationService generationService;
 
-    @Transactional
     public Schedule create(ScheduleCreateVo scheduleCreateVo) {
         Generation generation = generationService.getByIdOrThrow(scheduleCreateVo.getGenerationId());
         DateRange dateRange = DateRange.of(scheduleCreateVo.getStartedAt(), scheduleCreateVo.getEndedAt());

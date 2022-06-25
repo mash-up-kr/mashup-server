@@ -2,7 +2,7 @@ package kr.mashup.branding.ui.schedule.request;
 
 import java.time.LocalDateTime;
 
-import com.sun.istack.NotNull;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.ToString;

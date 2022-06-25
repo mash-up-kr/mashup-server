@@ -1,5 +1,7 @@
 package kr.mashup.branding.ui.schedule;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +27,7 @@ public class ScheduleController {
     @ApiOperation("스케줄 생성")
     @PostMapping()
     public ApiResponse<ScheduleResponse> create(
-        @RequestBody ScheduleCreateRequest scheduleCreateRequest
+         @Valid @RequestBody ScheduleCreateRequest scheduleCreateRequest
     ) {
         Schedule schedule = scheduleService.create(
             ScheduleCreateVo.of(
