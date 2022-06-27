@@ -38,7 +38,7 @@ import kr.mashup.branding.service.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Profile({"local"})
+//@Profile({"local"})
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -50,7 +50,7 @@ public class TestDataInitializer {
     private final ApplicantRepository applicantRepository;
     private final AdminMemberRepository adminMemberRepository;
 
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void initialize() {
         AdminMember adminMember = createAdminMember();
         log.info("AdminMember is created. adminMember: {}", adminMember);
