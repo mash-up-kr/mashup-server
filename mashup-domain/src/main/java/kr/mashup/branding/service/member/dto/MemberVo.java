@@ -1,6 +1,7 @@
-package kr.mashup.branding.domain.member;
+package kr.mashup.branding.service.member.dto;
 
-import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,7 +17,7 @@ public class MemberVo {
 
     private Platform platform;
 
-    private Generation generation;
+    private Integer generation;
 
     public static MemberVo from(Member member){
         return MemberVo.of(
@@ -24,7 +25,7 @@ public class MemberVo {
                 member.getName(),
                 member.getIdentification(),
                 member.getPlatform(),
-                member.getGeneration());
+                member.getGeneration().getNumber());
     }
 
 }

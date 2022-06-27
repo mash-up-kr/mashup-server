@@ -1,6 +1,9 @@
-package kr.mashup.branding.domain.member;
+package kr.mashup.branding.service.member.dto;
 
 import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.generation.GenerationVo;
+import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,12 +20,9 @@ public class MemberCreateVo {
 
     private Platform platform;
 
-    private Generation generation;
+    private GenerationVo generation;
 
     private Boolean privatePolicyAgreed;
 
-    public Member toEntity(PasswordEncoder encoder){
-        return Member.of(name, identification, password, encoder, platform, generation, privatePolicyAgreed);
-    }
 
 }

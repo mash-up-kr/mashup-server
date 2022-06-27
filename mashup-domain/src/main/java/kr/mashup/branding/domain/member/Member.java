@@ -3,9 +3,11 @@ package kr.mashup.branding.domain.member;
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.service.member.dto.MemberUpdateVo;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 
@@ -52,6 +54,8 @@ public class Member extends BaseEntity {
 
     @AssertTrue(message = "개인정보 이용에 동의해야만 가입할 수 있습니다.")
     private Boolean privatePolicyAgreed;
+
+    // TODO: soft delete 방식 필요?
 
     public void updateInfo(MemberUpdateVo memberUpdateVo){
 
