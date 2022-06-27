@@ -2,11 +2,9 @@ package kr.mashup.branding.ui.member;
 
 import kr.mashup.branding.facade.member.MemberFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.ApiV1RestController;
 import kr.mashup.branding.ui.member.dto.request.LoginRequest;
 import kr.mashup.branding.ui.member.dto.request.ValidInviteRequest;
 import kr.mashup.branding.ui.member.dto.request.SignUpRequest;
-import kr.mashup.branding.ui.member.dto.request.WithdrawRequest;
 import kr.mashup.branding.ui.member.dto.response.LoginResponse;
 import kr.mashup.branding.ui.member.dto.response.MemberInfoResponse;
 import kr.mashup.branding.ui.member.dto.response.ValidInviteResponse;
@@ -16,8 +14,8 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 
-@ApiV1RestController
-@RequestMapping("member")
+@RestController
+@RequestMapping("api/v1/members")
 @RequiredArgsConstructor
 public class MemberController {
 

@@ -12,7 +12,6 @@ import kr.mashup.branding.support.JwtService;
 import kr.mashup.branding.ui.member.dto.request.LoginRequest;
 import kr.mashup.branding.ui.member.dto.request.ValidInviteRequest;
 import kr.mashup.branding.ui.member.dto.request.SignUpRequest;
-import kr.mashup.branding.ui.member.dto.request.WithdrawRequest;
 import kr.mashup.branding.ui.member.dto.response.LoginResponse;
 import kr.mashup.branding.ui.member.dto.response.MemberInfoResponse;
 import kr.mashup.branding.ui.member.dto.response.ValidInviteResponse;
