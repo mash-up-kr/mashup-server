@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface GenerationRepository extends JpaRepository<Generation, Long> {
 
-    Optional<Generation> findByNumber(Integer number);
+	Optional<Generation> findByNumber(Integer number);
 }
