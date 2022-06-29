@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.qrcode;
 
-import kr.mashup.branding.facade.QrCodeService;
+import io.swagger.annotations.ApiOperation;
+import kr.mashup.branding.facade.qrcode.QrCodeService;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.qrcode.response.QrCheckResponse;
 import kr.mashup.branding.ui.qrcode.request.QrCreateRequest;
@@ -17,29 +18,31 @@ public class QrCodeController {
 
     private final QrCodeService qrCodeService;
 
+    @ApiOperation("QR 코드 생성")
     @PostMapping("/")
     public ApiResponse<QrCreateResponse> create(
         @RequestBody QrCreateRequest request
     ) {
-        String url = qrCodeService.generate(
+        String qrCodeURL = qrCodeService.generate(
             request.getEventId(),
             request.getCode(),
             request.getStart(),
             request.getEnd()
         );
-
-        return ApiResponse.success(QrCreateResponse.from(url));
+        return ApiResponse.success(QrCreateResponse.from(qrCodeURL));
     }
 
+    @ApiOperation("QR 코드 체크")
     @GetMapping("/")
     public ApiResponse<QrCheckResponse> valid(
         @RequestParam Long eventId,
         @RequestParam String code
     ) {
-        boolean result = qrCodeService.isAvailableCode(
-            eventId, code, LocalDateTime.now()
-        );
-        return ApiResponse.success(QrCheckResponse.from(result));
+
+        boolean isAvailable =
+            qrCodeService.isAvailableCode(eventId, code, LocalDateTime.now());
+
+        return ApiResponse.success(QrCheckResponse.from(isAvailable));
     }
 
 }

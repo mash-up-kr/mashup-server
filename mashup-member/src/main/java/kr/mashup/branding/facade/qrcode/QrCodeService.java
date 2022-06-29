@@ -1,4 +1,4 @@
-package kr.mashup.branding.facade;
+package kr.mashup.branding.facade.qrcode;
 
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.event.Event;
@@ -42,7 +42,9 @@ public class QrCodeService {
         String code,
         LocalDateTime checkTime
     ) {
-        AttendanceCode attendanceCode = attendanceCodeService.getOrThrow(eventId, code);
+        AttendanceCode attendanceCode =
+            attendanceCodeService.getOrThrow(eventId, code);
+
         return DateUtil.isInTime(
             attendanceCode.getStartedAt(),
             attendanceCode.getEndedAt(),
