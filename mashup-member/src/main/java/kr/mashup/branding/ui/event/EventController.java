@@ -32,6 +32,6 @@ public class EventController {
 				eventCreateRequest.getEndedAt(),
 				eventCreateRequest.getScheduleId()
 			));
-		return ApiResponse.success(EventResponse.of(event));
+		return ApiResponse.success(EventResponse.from(event));
 	}
 }

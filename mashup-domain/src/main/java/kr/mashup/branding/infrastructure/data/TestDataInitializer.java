@@ -38,9 +38,9 @@ import kr.mashup.branding.service.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Profile({"local"})
+//@Profile({"local"})
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public class TestDataInitializer {
     private final RecruitmentScheduleRepository recruitmentScheduleRepository;

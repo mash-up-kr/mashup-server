@@ -66,7 +66,9 @@ public enum ResultCode {
     GENERATION_NOT_FOUND("기수가 존재하지 않습니다."),
 
     // AttendanceCode (출석 코드)
-    ATTENDANCE_CODE_DUPLICATED("이미 사용된 코드입니다.");
+    ATTENDANCE_CODE_DUPLICATED("이미 사용된 코드입니다."),
+    ATTENDANCE_CODE_NOT_FOUND("해당 출석 코드가 존재하지 않습니다.")
+    ;
 
     private final String message;
 

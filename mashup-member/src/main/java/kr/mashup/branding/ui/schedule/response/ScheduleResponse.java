@@ -6,8 +6,10 @@ import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.ui.event.response.EventResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public class ScheduleResponse {
 
@@ -18,7 +20,7 @@ public class ScheduleResponse {
     private final Integer generationNumber;
     private final List<EventResponse> eventList;
 
-    public static ScheduleResponse of(Schedule schedule) {
+    public static ScheduleResponse from(Schedule schedule) {
         return new ScheduleResponse(
             schedule.getId(),
             schedule.getName(),
@@ -27,7 +29,7 @@ public class ScheduleResponse {
             schedule.getGeneration().getNumber(),
             schedule.getEventList()
                 .stream()
-                .map(EventResponse::of)
+                .map(EventResponse::from)
                 .collect(Collectors.toList())
         );
     }
