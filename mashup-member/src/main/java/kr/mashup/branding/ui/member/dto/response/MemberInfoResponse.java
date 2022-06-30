@@ -1,6 +1,6 @@
 package kr.mashup.branding.ui.member.dto.response;
 
-import kr.mashup.branding.service.attendanceCode.dto.MemberVo;
+import kr.mashup.branding.service.member.dto.MemberVo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

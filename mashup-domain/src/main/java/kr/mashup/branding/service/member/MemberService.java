@@ -1,4 +1,4 @@
-package kr.mashup.branding.service.attendanceCode;
+package kr.mashup.branding.service.member;
 
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.generation.GenerationVo;
@@ -7,11 +7,11 @@ import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
 import kr.mashup.branding.domain.member.exception.MemberNotFoundException;
-import kr.mashup.branding.repository.attendancecode.MemberRepository;
+import kr.mashup.branding.repository.member.MemberRepository;
 import kr.mashup.branding.repository.generation.GenerationRepository;
-import kr.mashup.branding.service.attendanceCode.dto.MemberCreateVo;
-import kr.mashup.branding.service.attendanceCode.dto.MemberUpdateVo;
-import kr.mashup.branding.service.attendanceCode.dto.MemberVo;
+import kr.mashup.branding.service.member.dto.MemberCreateVo;
+import kr.mashup.branding.service.member.dto.MemberUpdateVo;
+import kr.mashup.branding.service.member.dto.MemberVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

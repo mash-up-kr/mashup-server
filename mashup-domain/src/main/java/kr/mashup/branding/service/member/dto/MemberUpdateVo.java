@@ -1,4 +1,4 @@
-package kr.mashup.branding.service.attendanceCode.dto;
+package kr.mashup.branding.service.member.dto;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Platform;
 import lombok.AllArgsConstructor;
