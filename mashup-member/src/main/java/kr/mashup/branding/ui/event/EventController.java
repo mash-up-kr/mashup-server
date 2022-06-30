@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.domain.event.Event;
-import kr.mashup.branding.domain.event.EventCreateVo;
+import kr.mashup.branding.dto.event.EventCreateDto;
 import kr.mashup.branding.service.event.EventService;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.event.request.EventCreateRequest;
@@ -27,11 +27,12 @@ public class EventController {
 		@RequestBody EventCreateRequest eventCreateRequest
 	) {
 		Event event = eventService.create(
-			EventCreateVo.of(
+			EventCreateDto.of(
 				eventCreateRequest.getStartedAt(),
 				eventCreateRequest.getEndedAt(),
 				eventCreateRequest.getScheduleId()
-			));
+			)
+        );
 		return ApiResponse.success(EventResponse.from(event));
 	}
 }

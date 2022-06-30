@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.domain.schedule.Schedule;
-import kr.mashup.branding.domain.schedule.ScheduleCreateVo;
+import kr.mashup.branding.dto.schedule.ScheduleCreateDto;
 import kr.mashup.branding.service.schedule.ScheduleService;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.schedule.request.ScheduleCreateRequest;
@@ -34,12 +34,13 @@ public class ScheduleController {
 		@Valid @RequestBody ScheduleCreateRequest scheduleCreateRequest
 	) {
 		Schedule schedule = scheduleService.create(
-			ScheduleCreateVo.of(
+			ScheduleCreateDto.of(
 				scheduleCreateRequest.getName(),
 				scheduleCreateRequest.getStartedAt(),
 				scheduleCreateRequest.getEndedAt(),
 				scheduleCreateRequest.getGenerationId())
 		);
+
 		return ApiResponse.success(ScheduleResponse.from(schedule));
 	}
 
@@ -52,9 +53,13 @@ public class ScheduleController {
 
 	@ApiOperation("기수로 스케줄 조회")
 	@GetMapping("generations/{generationNumber}")
-	public ApiResponse<List<ScheduleResponse>> getByGenerationNumber(@PathVariable Integer generationNumber) {
-		List<Schedule> scheduleList = scheduleService.getByGenerationNumber(generationNumber);
-		return ApiResponse.success(
+	public ApiResponse<List<ScheduleResponse>> getByGenerationNumber(
+        @PathVariable Integer generationNumber
+    ) {
+		List<Schedule> scheduleList =
+            scheduleService.getByGenerationNumber(generationNumber);
+
+        return ApiResponse.success(
 			scheduleList.stream()
 				.map(ScheduleResponse::from)
 				.collect(Collectors.toList())

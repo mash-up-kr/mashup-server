@@ -10,7 +10,7 @@ import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.schedule.Schedule;
-import kr.mashup.branding.domain.schedule.ScheduleCreateVo;
+import kr.mashup.branding.dto.schedule.ScheduleCreateDto;
 import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.util.DateRange;
@@ -23,12 +23,22 @@ public class ScheduleService {
 	private final ScheduleRepository scheduleRepository;
 	private final GenerationService generationService;
 
-	public Schedule create(ScheduleCreateVo scheduleCreateVo) {
-		Generation generation = generationService.getByIdOrThrow(scheduleCreateVo.getGenerationId());
-		DateRange dateRange = DateRange.of(scheduleCreateVo.getStartedAt(), scheduleCreateVo.getEndedAt());
+	public Schedule create(ScheduleCreateDto scheduleCreateDto) {
+		Generation generation = generationService.getByIdOrThrow(
+            scheduleCreateDto.getGenerationId()
+        );
+		DateRange dateRange = DateRange.of(
+            scheduleCreateDto.getStartedAt(),
+            scheduleCreateDto.getEndedAt()
+        );
 
-		Schedule schedule = Schedule.of(generation, scheduleCreateVo.getName(), dateRange);
-		return scheduleRepository.save(schedule);
+		Schedule schedule = Schedule.of(
+            generation,
+            scheduleCreateDto.getName(),
+            dateRange
+        );
+
+        return scheduleRepository.save(schedule);
 	}
 
 	@Transactional(readOnly = true)
@@ -39,7 +49,12 @@ public class ScheduleService {
 
 	@Transactional(readOnly = true)
 	public List<Schedule> getByGenerationNumber(Integer generationNumber) {
-		Generation generation = generationService.getByNumberOrThrow(generationNumber);
-		return scheduleRepository.findByGeneration(generation, Sort.by(Sort.Direction.ASC, "startedAt"));
+		Generation generation =
+            generationService.getByNumberOrThrow(generationNumber);
+
+        return scheduleRepository.findByGeneration(
+            generation,
+            Sort.by(Sort.Direction.ASC, "startedAt")
+        );
 	}
 }

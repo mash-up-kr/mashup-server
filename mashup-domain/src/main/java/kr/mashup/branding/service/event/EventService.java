@@ -2,7 +2,7 @@ package kr.mashup.branding.service.event;
 
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.event.Event;
-import kr.mashup.branding.domain.event.EventCreateVo;
+import kr.mashup.branding.dto.event.EventCreateDto;
 import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.repository.event.EventRepository;
@@ -21,9 +21,14 @@ public class EventService {
     private final ScheduleService scheduleService;
 
     @Transactional
-    public Event create(EventCreateVo eventCreateVo) {
-        Schedule schedule = scheduleService.getByIdOrThrow(eventCreateVo.getScheduleId());
-        DateRange dateRange = DateRange.of(eventCreateVo.getStartedAt(), eventCreateVo.getEndedAt());
+    public Event create(EventCreateDto eventCreateDto) {
+        Schedule schedule = scheduleService.getByIdOrThrow(
+            eventCreateDto.getScheduleId()
+        );
+        DateRange dateRange = DateRange.of(
+            eventCreateDto.getStartedAt(),
+            eventCreateDto.getEndedAt()
+        );
 
         Event event = Event.of(schedule, dateRange);
         return eventRepository.save(event);

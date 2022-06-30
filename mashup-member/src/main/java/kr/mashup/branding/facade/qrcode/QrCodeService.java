@@ -2,7 +2,7 @@ package kr.mashup.branding.facade.qrcode;
 
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.event.Event;
-import kr.mashup.branding.service.attendanceCode.AttendanceCodeService;
+import kr.mashup.branding.service.attendance.AttendanceCodeService;
 import kr.mashup.branding.service.event.EventService;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;

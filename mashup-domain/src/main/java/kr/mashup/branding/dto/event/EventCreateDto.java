@@ -1,11 +1,12 @@
-package kr.mashup.branding.domain.event;
+package kr.mashup.branding.dto.event;
 
 import java.time.LocalDateTime;
 
+import lombok.Getter;
 import lombok.Value;
 
 @Value(staticConstructor = "of")
-public class EventCreateVo {
+public class EventCreateDto {
 
 	LocalDateTime startedAt;
 

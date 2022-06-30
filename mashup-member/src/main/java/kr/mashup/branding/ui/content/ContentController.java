@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.domain.content.Content;
-import kr.mashup.branding.domain.content.ContentCreateVo;
+import kr.mashup.branding.dto.content.ContentCreateDto;
 import kr.mashup.branding.service.content.ContentService;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.content.request.ContentCreateRequest;
@@ -27,10 +27,11 @@ public class ContentController {
 		@RequestBody ContentCreateRequest contentCreateRequest
 	) {
 		Content content = contentService.create(
-			ContentCreateVo.of(
+			ContentCreateDto.of(
 				contentCreateRequest.getContent(),
 				contentCreateRequest.getEventId()
-			));
+			)
+        );
 		return ApiResponse.success(ContentResponse.from(content));
 	}
 }

@@ -1,11 +1,11 @@
-package kr.mashup.branding.domain.schedule;
+package kr.mashup.branding.dto.schedule;
 
 import java.time.LocalDateTime;
 
 import lombok.Value;
 
 @Value(staticConstructor = "of")
-public class ScheduleCreateVo {
+public class ScheduleCreateDto {
 
     String name;
 

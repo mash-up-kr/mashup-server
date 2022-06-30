@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.mashup.branding.domain.content.Content;
-import kr.mashup.branding.domain.content.ContentCreateVo;
+import kr.mashup.branding.dto.content.ContentCreateDto;
 import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.repository.content.ContentRepository;
 import kr.mashup.branding.service.event.EventService;
@@ -18,9 +18,9 @@ public class ContentService {
     private final EventService eventService;
 
     @Transactional
-    public Content create(ContentCreateVo contentCreateVo) {
-        Event event = eventService.getByIdOrThrow(contentCreateVo.getEventId());
-        Content content = Content.of(event, contentCreateVo.getContent());
+    public Content create(ContentCreateDto contentCreateDto) {
+        Event event = eventService.getByIdOrThrow(contentCreateDto.getEventId());
+        Content content = Content.of(event, contentCreateDto.getContent());
         return contentRepository.save(content);
     }
 }

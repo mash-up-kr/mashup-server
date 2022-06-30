@@ -1,4 +1,4 @@
-package kr.mashup.branding.service.attendanceCode;
+package kr.mashup.branding.service.attendance;
 
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.AttendanceCode;

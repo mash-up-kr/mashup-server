@@ -1,9 +1,9 @@
-package kr.mashup.branding.domain.content;
+package kr.mashup.branding.dto.content;
 
 import lombok.Value;
 
 @Value(staticConstructor = "of")
-public class ContentCreateVo {
+public class ContentCreateDto {
 
     String content;
 
