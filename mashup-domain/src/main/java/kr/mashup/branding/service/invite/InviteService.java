@@ -26,9 +26,14 @@ public class InviteService {
 		return inviteRepository.save(invite);
 	}
 
-	public InviteVo getInviteVo(String inviteCode){
+	public InviteVo getOrThrow(String inviteCode){
 		Invite invite = inviteRepository.findByCode(inviteCode).orElseThrow(InviteNotFoundException::new);
 		return InviteVo.from(invite);
+	}
+
+	public Optional<InviteVo> getOrNull(String inviteCode){
+		Optional<Invite> invite = inviteRepository.findByCode(inviteCode);
+		return invite.map(InviteVo::from);
 	}
 
 }

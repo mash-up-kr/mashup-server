@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.member;
 
 import kr.mashup.branding.facade.member.MemberFacadeService;
+import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.member.dto.request.LoginRequest;
 import kr.mashup.branding.ui.member.dto.request.ValidInviteRequest;
@@ -24,9 +25,9 @@ public class MemberController {
     //1. 회원 정보 조회 Api
     @GetMapping
     public ApiResponse<?> getMemberInfo(
-            @ApiIgnore @ModelAttribute("memberId") Long memberId
+            @ApiIgnore MemberAuth memberAuth
     ){
-        MemberInfoResponse memberInfoResponse = memberFacadeService.getMemberInfo(memberId);
+        MemberInfoResponse memberInfoResponse = memberFacadeService.getMemberInfo(memberAuth.getMemberId());
 
         return ApiResponse.success(memberInfoResponse);
     }
@@ -51,9 +52,10 @@ public class MemberController {
     //4. 회원가입 코드 검증
     @GetMapping("code")
     public ApiResponse<?> validateSignUpCode(
-            @Valid @RequestBody ValidInviteRequest request
+             @RequestParam String platform,
+             @RequestParam String code
     ){
-        ValidInviteResponse response = memberFacadeService.validateInviteCode(request);
+        ValidInviteResponse response = memberFacadeService.validateInviteCode(ValidInviteRequest.of(platform,code));
 
         return ApiResponse.success(response);
     }

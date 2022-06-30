@@ -8,7 +8,7 @@ import kr.mashup.branding.service.invite.InviteService;
 import kr.mashup.branding.service.member.dto.MemberCreateVo;
 import kr.mashup.branding.service.member.dto.MemberVo;
 import kr.mashup.branding.service.member.MemberService;
-import kr.mashup.branding.support.JwtService;
+import kr.mashup.branding.security.JwtService;
 import kr.mashup.branding.ui.member.dto.request.LoginRequest;
 import kr.mashup.branding.ui.member.dto.request.ValidInviteRequest;
 import kr.mashup.branding.ui.member.dto.request.SignUpRequest;
@@ -18,6 +18,8 @@ import kr.mashup.branding.ui.member.dto.response.ValidInviteResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +57,7 @@ public class MemberFacadeService {
     public void signUp(SignUpRequest request) {
         // 초대코드 조회
         final String inviteCode = request.getInviteCode();
-        final InviteVo inviteVo = inviteService.getInviteVo(inviteCode);
+        final InviteVo inviteVo = inviteService.getOrThrow(inviteCode);
 
         // 코드 검증
         final Platform platform = request.getPlatform();
@@ -77,9 +79,13 @@ public class MemberFacadeService {
     }
 
     public ValidInviteResponse validateInviteCode(ValidInviteRequest request) {
+        final Optional<InviteVo> inviteVo = inviteService.getOrNull(request.getInviteCode());
 
-        final InviteVo inviteVo = inviteService.getInviteVo(request.getInviteCode());
-        final boolean isValidCode = inviteVo.getPlatform().equals(request.getPlatform());
+        if(inviteVo.isEmpty()){
+            return ValidInviteResponse.of(false);
+        }
+
+        final boolean isValidCode = inviteVo.get().getPlatform().equals(request.getPlatform());
 
         return ValidInviteResponse.of(isValidCode);
     }
