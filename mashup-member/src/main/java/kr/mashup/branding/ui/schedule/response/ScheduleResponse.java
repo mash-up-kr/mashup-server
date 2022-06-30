@@ -1,27 +1,32 @@
 package kr.mashup.branding.ui.schedule.response;
 
+import kr.mashup.branding.domain.schedule.Schedule;
+import kr.mashup.branding.ui.event.response.EventResponse;
+import lombok.Getter;
+import lombok.Value;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kr.mashup.branding.domain.schedule.Schedule;
-import kr.mashup.branding.ui.event.response.EventResponse;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 @Getter
-@RequiredArgsConstructor
+@Value(staticConstructor = "of")
 public class ScheduleResponse {
 
-    private final Long scheduleId;
-    private final String name;
-    private final LocalDateTime startedAt;
-    private final LocalDateTime endedAt;
-    private final Integer generationNumber;
-    private final List<EventResponse> eventList;
+    Long scheduleId;
+
+    String name;
+
+    LocalDateTime startedAt;
+
+    LocalDateTime endedAt;
+
+    Integer generationNumber;
+
+    List<EventResponse> eventList;
 
     public static ScheduleResponse from(Schedule schedule) {
-        return new ScheduleResponse(
+        return ScheduleResponse.of(
             schedule.getId(),
             schedule.getName(),
             schedule.getStartedAt(),

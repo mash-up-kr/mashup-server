@@ -3,8 +3,8 @@ package kr.mashup.branding.ui.qrcode;
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.qrcode.QrCodeService;
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.qrcode.response.QrCheckResponse;
 import kr.mashup.branding.ui.qrcode.request.QrCreateRequest;
+import kr.mashup.branding.ui.qrcode.response.QrCheckResponse;
 import kr.mashup.branding.ui.qrcode.response.QrCreateResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +23,9 @@ public class QrCodeController {
     public ApiResponse<QrCreateResponse> create(
         @RequestBody QrCreateRequest request
     ) {
-        String qrCodeURL = qrCodeService.generate(
-            request.getEventId(),
-            request.getCode(),
-            request.getStart(),
-            request.getEnd()
-        );
-        return ApiResponse.success(QrCreateResponse.from(qrCodeURL));
+        QrCreateResponse res = qrCodeService.generate(request);
+
+        return ApiResponse.success(res);
     }
 
     @ApiOperation("QR 코드 체크")
@@ -38,11 +34,10 @@ public class QrCodeController {
         @RequestParam Long eventId,
         @RequestParam String code
     ) {
-
-        boolean isAvailable =
+        QrCheckResponse res =
             qrCodeService.isAvailableCode(eventId, code, LocalDateTime.now());
 
-        return ApiResponse.success(QrCheckResponse.from(isAvailable));
+        return ApiResponse.success(res);
     }
 
 }

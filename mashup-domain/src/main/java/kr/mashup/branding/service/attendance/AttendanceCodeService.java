@@ -17,14 +17,14 @@ public class AttendanceCodeService {
     private final AttendanceCodeRepository attendanceCodeRepository;
 
     @Transactional
-    public void save(AttendanceCode attendanceCode) {
-        attendanceCodeRepository.save(attendanceCode);
+    public AttendanceCode save(AttendanceCode attendanceCode) {
+        return attendanceCodeRepository.save(attendanceCode);
     }
 
     @Transactional(readOnly = true)
     public void validateDup(Event event, String code) {
         boolean isExist = attendanceCodeRepository.existsByEventAndCode(event, code);
-        if(isExist) {
+        if (isExist) {
             throw new BadRequestException(ResultCode.ATTENDANCE_CODE_DUPLICATED);
         }
     }

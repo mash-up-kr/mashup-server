@@ -1,18 +1,13 @@
-package kr.mashup.branding.ui.member.dto.request;
+package kr.mashup.branding.ui.member.request;
 
 import kr.mashup.branding.domain.member.Platform;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(staticName = "of")
 public class SignUpRequest {
 
     @NotBlank(message = "아이디는 비어있을 수 없습니다.")

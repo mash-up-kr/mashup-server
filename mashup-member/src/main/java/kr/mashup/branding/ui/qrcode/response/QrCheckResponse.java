@@ -1,12 +1,10 @@
 package kr.mashup.branding.ui.qrcode.response;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Value;
 
-@Data
+@Getter
+@Value(staticConstructor = "of")
 public class QrCheckResponse {
-    private final boolean isAvailable;
-
-    public static QrCheckResponse from(boolean isAvailable) {
-        return new QrCheckResponse(isAvailable);
-    }
+    boolean isAvailable;
 }

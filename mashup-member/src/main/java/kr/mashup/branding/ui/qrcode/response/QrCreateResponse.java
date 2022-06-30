@@ -1,12 +1,10 @@
 package kr.mashup.branding.ui.qrcode.response;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Value;
 
-@Data
+@Getter
+@Value(staticConstructor = "of")
 public class QrCreateResponse {
-    private final String qrCodeUrl;
-
-    public static QrCreateResponse from(String url) {
-        return new QrCreateResponse(url);
-    }
+    String qrCodeUrl;
 }

@@ -4,6 +4,9 @@ import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.service.attendance.AttendanceCodeService;
 import kr.mashup.branding.service.event.EventService;
+import kr.mashup.branding.ui.qrcode.request.QrCreateRequest;
+import kr.mashup.branding.ui.qrcode.response.QrCheckResponse;
+import kr.mashup.branding.ui.qrcode.response.QrCreateResponse;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import kr.mashup.branding.util.QrGenerator;
@@ -19,25 +22,22 @@ public class QrCodeService {
     private final AttendanceCodeService attendanceCodeService;
 
     // QR 코드 생성
-    public String generate(
-        Long eventId,
-        String code,
-        LocalDateTime start,
-        LocalDateTime end
-    ) {
-        Event event = eventService.getByIdOrThrow(eventId);
+    public QrCreateResponse generate(QrCreateRequest req) {
+        Event event = eventService.getByIdOrThrow(req.getEventId());
+        attendanceCodeService.validateDup(event, req.getCode());
+        DateRange period = DateRange.of(req.getStart(), req.getEnd());
 
-        attendanceCodeService.validateDup(event, code);
+        attendanceCodeService.save(
+            AttendanceCode.of(event, req.getCode(), period)
+        );
 
-        DateRange period = DateRange.of(start, end);
-        AttendanceCode attendanceCode = AttendanceCode.of(event, code, period);
-        attendanceCodeService.save(attendanceCode);
+        String qrCode = QrGenerator.generate(req.getCode());
 
-        return QrGenerator.generate(code);
+        return QrCreateResponse.of(qrCode);
     }
 
     // QR 코드 확인
-    public boolean isAvailableCode(
+    public QrCheckResponse isAvailableCode(
         Long eventId,
         String code,
         LocalDateTime checkTime
@@ -45,10 +45,12 @@ public class QrCodeService {
         AttendanceCode attendanceCode =
             attendanceCodeService.getOrThrow(eventId, code);
 
-        return DateUtil.isInTime(
+        boolean isAvailable = DateUtil.isInTime(
             attendanceCode.getStartedAt(),
             attendanceCode.getEndedAt(),
             checkTime
         );
+
+        return QrCheckResponse.of(isAvailable);
     }
 }

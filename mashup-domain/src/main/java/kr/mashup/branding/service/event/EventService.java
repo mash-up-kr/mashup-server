@@ -18,19 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final ScheduleService scheduleService;
 
     @Transactional
-    public Event create(EventCreateDto eventCreateDto) {
-        Schedule schedule = scheduleService.getByIdOrThrow(
-            eventCreateDto.getScheduleId()
-        );
-        DateRange dateRange = DateRange.of(
-            eventCreateDto.getStartedAt(),
-            eventCreateDto.getEndedAt()
-        );
-
-        Event event = Event.of(schedule, dateRange);
+    public Event save(Event event) {
         return eventRepository.save(event);
     }
 

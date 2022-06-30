@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.member.dto.response;
+package kr.mashup.branding.ui.member.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
