@@ -1,6 +1,6 @@
-package kr.mashup.branding.service.invite.dto;
+package kr.mashup.branding.dto.invite;
 
-import kr.mashup.branding.service.generation.dto.GenerationVo;
+import kr.mashup.branding.dto.generation.GenerationDto;
 import kr.mashup.branding.domain.invite.Invite;
 import kr.mashup.branding.domain.member.Platform;
 import lombok.AllArgsConstructor;
@@ -10,13 +10,13 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class InviteVo {
+public class InviteDto {
 
     private String code;
 
     private Platform platform;
 
-    private GenerationVo generation;
+    private GenerationDto generation;
 
     private int limitCount;
 
@@ -24,12 +24,12 @@ public class InviteVo {
 
     private LocalDateTime endedAt;
 
-    public static InviteVo from(Invite invite){
+    public static InviteDto from(Invite invite){
 
-        return InviteVo.of(
+        return InviteDto.of(
                 invite.getCode(),
                 invite.getPlatform(),
-                GenerationVo.from(invite.getGeneration()),
+                GenerationDto.from(invite.getGeneration()),
                 invite.getLimitCount(),
                 invite.getStartedAt(),
                 invite.getEndedAt());

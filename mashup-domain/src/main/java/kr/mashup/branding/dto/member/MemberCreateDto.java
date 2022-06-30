@@ -1,13 +1,13 @@
-package kr.mashup.branding.service.member.dto;
+package kr.mashup.branding.dto.member;
 
-import kr.mashup.branding.service.generation.dto.GenerationVo;
+import kr.mashup.branding.dto.generation.GenerationDto;
 import kr.mashup.branding.domain.member.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class MemberCreateVo {
+public class MemberCreateDto {
 
     private String name;
 
@@ -17,7 +17,7 @@ public class MemberCreateVo {
 
     private Platform platform;
 
-    private GenerationVo generation;
+    private GenerationDto generation;
 
     private Boolean privatePolicyAgreed;
 

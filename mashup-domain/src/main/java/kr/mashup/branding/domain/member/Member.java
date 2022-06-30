@@ -3,7 +3,7 @@ package kr.mashup.branding.domain.member;
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.service.member.dto.MemberUpdateVo;
+import kr.mashup.branding.dto.member.MemberUpdateDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,11 +55,11 @@ public class Member extends BaseEntity {
 
     // TODO: soft delete 방식 필요?
 
-    public void updateInfo(MemberUpdateVo memberUpdateVo){
+    public void updateInfo(MemberUpdateDto memberUpdateDto){
 
-        final String name = memberUpdateVo.getName();
-        final Generation generation = memberUpdateVo.getGeneration();
-        final Platform platform = memberUpdateVo.getPlatform();
+        final String name = memberUpdateDto.getName();
+        final Generation generation = memberUpdateDto.getGeneration();
+        final Platform platform = memberUpdateDto.getPlatform();
 
         checkValidName(name);
 

@@ -1,7 +1,7 @@
 package kr.mashup.branding.service.member;
 
 import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.service.generation.dto.GenerationVo;
+import kr.mashup.branding.dto.generation.GenerationDto;
 import kr.mashup.branding.domain.generation.exception.GenerationNotFoundException;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;
@@ -9,9 +9,9 @@ import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
 import kr.mashup.branding.domain.member.exception.MemberNotFoundException;
 import kr.mashup.branding.repository.member.MemberRepository;
 import kr.mashup.branding.repository.generation.GenerationRepository;
-import kr.mashup.branding.service.member.dto.MemberCreateVo;
-import kr.mashup.branding.service.member.dto.MemberUpdateVo;
-import kr.mashup.branding.service.member.dto.MemberVo;
+import kr.mashup.branding.dto.member.MemberCreateDto;
+import kr.mashup.branding.dto.member.MemberUpdateDto;
+import kr.mashup.branding.dto.member.MemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,75 +28,75 @@ public class MemberService {
 
     //1. 회원 생성
     @Transactional
-    public MemberVo save(MemberCreateVo memberCreateVo) {
+    public MemberDto save(MemberCreateDto memberCreateDto) {
 
-        final String name = memberCreateVo.getName();
-        final String identification = memberCreateVo.getIdentification();
-        final Platform platform = memberCreateVo.getPlatform();
-        final String password = memberCreateVo.getPassword();
-        final Boolean privatePolicyAgreed = memberCreateVo.getPrivatePolicyAgreed();
+        final String name = memberCreateDto.getName();
+        final String identification = memberCreateDto.getIdentification();
+        final Platform platform = memberCreateDto.getPlatform();
+        final String password = memberCreateDto.getPassword();
+        final Boolean privatePolicyAgreed = memberCreateDto.getPrivatePolicyAgreed();
 
-        GenerationVo generationVo = memberCreateVo.getGeneration();
+        GenerationDto generationDto = memberCreateDto.getGeneration();
         Generation generation = generationRepository
-                .findByNumber(generationVo.getNumber())
+                .findByNumber(generationDto.getNumber())
                 .orElseThrow(GenerationNotFoundException::new);
 
         Member member = Member.of(name, identification, password, passwordEncoder, platform, generation, privatePolicyAgreed);
         memberRepository.save(member);
 
-        return MemberVo.from(member);
+        return MemberDto.from(member);
     }
 
     //2. 회원 조회
-    public MemberVo getOrThrowById(Long memberId) {
+    public MemberDto getOrThrowById(Long memberId) {
 
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
-        return MemberVo.from(member);
+        return MemberDto.from(member);
     }
 
-    public MemberVo getOrThrowByIdentification(String identification) {
+    public MemberDto getOrThrowByIdentification(String identification) {
 
         Member member = memberRepository.findByIdentification(identification).orElseThrow(MemberNotFoundException::new);
 
-        return MemberVo.from(member);
+        return MemberDto.from(member);
     }
 
-    public MemberVo getOrThrowByIdentificationAndPassword(String identification, String password){
+    public MemberDto getOrThrowByIdentificationAndPassword(String identification, String password){
         Member member = memberRepository.findByIdentification(identification).orElseThrow(MemberNotFoundException::new);
         if(!member.isMatchPassword(password, passwordEncoder)){
             throw new MemberLoginFailException();
         }
-        return MemberVo.from(member);
+        return MemberDto.from(member);
     }
 
     //3. 회원 수정
     @Transactional
-    public MemberVo updateMemberInfo(Long memberId, MemberUpdateVo memberUpdateVo) {
+    public MemberDto updateMemberInfo(Long memberId, MemberUpdateDto memberUpdateDto) {
 
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        member.updateInfo(memberUpdateVo);
+        member.updateInfo(memberUpdateDto);
 
-        return MemberVo.from(member);
+        return MemberDto.from(member);
     }
     @Transactional
-    public MemberVo changePassword(Long memberId, String rawPassword, String newPassword){
+    public MemberDto changePassword(Long memberId, String rawPassword, String newPassword){
 
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         member.changePassword(rawPassword, newPassword, passwordEncoder);
 
-        return MemberVo.from(member);
+        return MemberDto.from(member);
     }
 
 
     //4. 회원 삭제.
     @Transactional
-    public MemberVo deleteMember(Long memberId) {
+    public MemberDto deleteMember(Long memberId) {
 
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         memberRepository.delete(member);
 
-        return MemberVo.from(member);
+        return MemberDto.from(member);
     }
 
 

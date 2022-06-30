@@ -1,12 +1,12 @@
 package kr.mashup.branding.facade.member;
 
-import kr.mashup.branding.domain.generation.GenerationVo;
-import kr.mashup.branding.domain.invite.InviteVo;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberInvalidInviteCodeException;
+import kr.mashup.branding.dto.generation.GenerationDto;
+import kr.mashup.branding.dto.invite.InviteDto;
 import kr.mashup.branding.service.member.MemberService;
-import kr.mashup.branding.service.member.dto.MemberCreateVo;
-import kr.mashup.branding.service.member.dto.MemberVo;
+import kr.mashup.branding.dto.member.MemberCreateDto;
+import kr.mashup.branding.dto.member.MemberDto;
 import kr.mashup.branding.service.invite.InviteService;
 import kr.mashup.branding.security.JwtService;
 import kr.mashup.branding.ui.member.dto.request.LoginRequest;
@@ -32,32 +32,32 @@ public class MemberFacadeService {
     public MemberInfoResponse getMemberInfo(Long memberId) {
         Assert.notNull(memberId, "'memberId' must not be null");
 
-        final MemberVo memberVo = memberService.getOrThrowById(memberId);
+        final MemberDto memberDto = memberService.getOrThrowById(memberId);
 
-        return MemberInfoResponse.from(memberVo);
+        return MemberInfoResponse.from(memberDto);
     }
 
     public LoginResponse login(LoginRequest request) {
         // Member 조회
         final String identification = request.getIdentification();
         final String password = request.getPassword();
-        final MemberVo memberVo = memberService.getOrThrowByIdentificationAndPassword(identification, password);
+        final MemberDto memberDto = memberService.getOrThrowByIdentificationAndPassword(identification, password);
         // Token 생성
-        final Long memberId = memberVo.getId();
+        final Long memberId = memberDto.getId();
         final String token = jwtService.encode(memberId);
 
         return LoginResponse.of(
                 memberId,
                 token,
-                memberVo.getName(),
-                memberVo.getPlatform().name(),
-                memberVo.getGeneration());
+                memberDto.getName(),
+                memberDto.getPlatform().name(),
+                memberDto.getGeneration());
     }
 
     public void signUp(SignUpRequest request) {
         // 초대코드 조회
         final String inviteCode = request.getInviteCode();
-        final InviteVo inviteVo = inviteService.getOrThrow(inviteCode);
+        final InviteDto inviteVo = inviteService.getOrThrow(inviteCode);
 
         // 코드 검증
         final Platform platform = request.getPlatform();
@@ -65,9 +65,9 @@ public class MemberFacadeService {
             throw new MemberInvalidInviteCodeException();
         }
 
-        final GenerationVo generation = inviteVo.getGeneration();
+        final GenerationDto generation = inviteVo.getGeneration();
 
-        final MemberCreateVo memberCreateVo = MemberCreateVo.of(
+        final MemberCreateDto memberCreateDto = MemberCreateDto.of(
                 request.getName(),
                 request.getIdentification(),
                 request.getPassword(),
@@ -75,11 +75,12 @@ public class MemberFacadeService {
                 generation,
                 request.getPrivatePolicyAgreed());
 
-        memberService.save(memberCreateVo);
+        memberService.save(memberCreateDto);
     }
 
     public ValidInviteResponse validateInviteCode(ValidInviteRequest request) {
-        final Optional<InviteVo> inviteVo = inviteService.getOrNull(request.getInviteCode());
+        final Optional<InviteDto> inviteVo =
+            inviteService.getOrNull(request.getInviteCode());
 
         if(inviteVo.isEmpty()){
             return ValidInviteResponse.of(false);

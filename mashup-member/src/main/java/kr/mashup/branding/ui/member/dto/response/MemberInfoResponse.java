@@ -1,6 +1,6 @@
 package kr.mashup.branding.ui.member.dto.response;
 
-import kr.mashup.branding.service.member.dto.MemberVo;
+import kr.mashup.branding.dto.member.MemberDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -18,13 +18,13 @@ public class MemberInfoResponse {
 
     private Integer generationNumber;
 
-    public static MemberInfoResponse from(MemberVo memberVo){
+    public static MemberInfoResponse from(MemberDto memberDto){
         return MemberInfoResponse.of(
-                memberVo.getId(),
-                memberVo.getName(),
-                memberVo.getIdentification(),
-                memberVo.getPlatform().name(),
-                memberVo.getGeneration());
+                memberDto.getId(),
+                memberDto.getName(),
+                memberDto.getIdentification(),
+                memberDto.getPlatform().name(),
+                memberDto.getGeneration());
     }
 
 }

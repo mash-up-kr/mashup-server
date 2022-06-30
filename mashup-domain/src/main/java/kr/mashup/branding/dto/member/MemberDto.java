@@ -1,4 +1,4 @@
-package kr.mashup.branding.service.member.dto;
+package kr.mashup.branding.dto.member;
 
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;
@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class MemberVo {
+public class MemberDto {
 
     private Long id;
 
@@ -19,8 +19,8 @@ public class MemberVo {
 
     private Integer generation;
 
-    public static MemberVo from(Member member){
-        return MemberVo.of(
+    public static MemberDto from(Member member){
+        return MemberDto.of(
                 member.getId(),
                 member.getName(),
                 member.getIdentification(),

@@ -1,4 +1,4 @@
-package kr.mashup.branding.service.generation.dto;
+package kr.mashup.branding.dto.generation;
 
 import kr.mashup.branding.domain.generation.Generation;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class GenerationVo {
+public class GenerationDto {
 
     private Integer number;
 
@@ -16,7 +16,7 @@ public class GenerationVo {
 
     private LocalDate endedAt;
 
-    public static GenerationVo from(Generation generation){
-        return GenerationVo.of(generation.getNumber(), generation.getStartedAt(), generation.getEndedAt());
+    public static GenerationDto from(Generation generation){
+        return GenerationDto.of(generation.getNumber(), generation.getStartedAt(), generation.getEndedAt());
     }
 }

@@ -2,7 +2,7 @@ package kr.mashup.branding.service.invite;
 
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.invite.Invite;
-import kr.mashup.branding.service.invite.dto.InviteVo;
+import kr.mashup.branding.dto.invite.InviteDto;
 import kr.mashup.branding.domain.invite.exception.InviteNotFoundException;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.repository.invite.InviteRepository;
@@ -26,14 +26,14 @@ public class InviteService {
 		return inviteRepository.save(invite);
 	}
 
-	public InviteVo getOrThrow(String inviteCode){
+	public InviteDto getOrThrow(String inviteCode){
 		Invite invite = inviteRepository.findByCode(inviteCode).orElseThrow(InviteNotFoundException::new);
-		return InviteVo.from(invite);
+		return InviteDto.from(invite);
 	}
 
-	public Optional<InviteVo> getOrNull(String inviteCode){
+	public Optional<InviteDto> getOrNull(String inviteCode){
 		Optional<Invite> invite = inviteRepository.findByCode(inviteCode);
-		return invite.map(InviteVo::from);
+		return invite.map(InviteDto::from);
 	}
 
 }

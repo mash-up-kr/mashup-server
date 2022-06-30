@@ -1,4 +1,4 @@
-package kr.mashup.branding.service.member.dto;
+package kr.mashup.branding.dto.member;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Platform;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class MemberUpdateVo {
+public class MemberUpdateDto {
 
     private String name;
 
