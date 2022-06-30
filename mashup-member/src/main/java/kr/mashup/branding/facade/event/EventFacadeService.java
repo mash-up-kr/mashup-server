@@ -9,6 +9,7 @@ import kr.mashup.branding.ui.event.response.EventResponse;
 import kr.mashup.branding.util.DateRange;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class EventFacadeService {
     private final EventService eventService;
     private final ScheduleService scheduleService;
 
+    @Transactional
     public EventResponse create(EventCreateRequest req) {
         Schedule schedule = scheduleService.getByIdOrThrow(req.getScheduleId());
         DateRange dateRange = DateRange.of(

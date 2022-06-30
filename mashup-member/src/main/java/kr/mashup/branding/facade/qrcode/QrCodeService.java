@@ -12,6 +12,7 @@ import kr.mashup.branding.util.DateUtil;
 import kr.mashup.branding.util.QrGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +23,7 @@ public class QrCodeService {
     private final AttendanceCodeService attendanceCodeService;
 
     // QR 코드 생성
+    @Transactional
     public QrCreateResponse generate(QrCreateRequest req) {
         Event event = eventService.getByIdOrThrow(req.getEventId());
         attendanceCodeService.validateDup(event, req.getCode());
