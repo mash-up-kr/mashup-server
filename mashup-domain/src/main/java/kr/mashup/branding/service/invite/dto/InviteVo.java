@@ -1,7 +1,7 @@
-package kr.mashup.branding.domain.invite;
+package kr.mashup.branding.service.invite.dto;
 
-import com.sun.istack.NotNull;
-import kr.mashup.branding.domain.generation.GenerationVo;
+import kr.mashup.branding.service.generation.dto.GenerationVo;
+import kr.mashup.branding.domain.invite.Invite;
 import kr.mashup.branding.domain.member.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

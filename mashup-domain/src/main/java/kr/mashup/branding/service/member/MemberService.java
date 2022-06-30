@@ -1,7 +1,7 @@
 package kr.mashup.branding.service.member;
 
 import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.domain.generation.GenerationVo;
+import kr.mashup.branding.service.generation.dto.GenerationVo;
 import kr.mashup.branding.domain.generation.exception.GenerationNotFoundException;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;

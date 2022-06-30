@@ -1,5 +1,6 @@
-package kr.mashup.branding.domain.generation;
+package kr.mashup.branding.service.generation.dto;
 
+import kr.mashup.branding.domain.generation.Generation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

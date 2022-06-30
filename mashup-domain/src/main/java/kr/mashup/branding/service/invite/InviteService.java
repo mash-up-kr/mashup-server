@@ -2,7 +2,7 @@ package kr.mashup.branding.service.invite;
 
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.invite.Invite;
-import kr.mashup.branding.domain.invite.InviteVo;
+import kr.mashup.branding.service.invite.dto.InviteVo;
 import kr.mashup.branding.domain.invite.exception.InviteNotFoundException;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.repository.invite.InviteRepository;
