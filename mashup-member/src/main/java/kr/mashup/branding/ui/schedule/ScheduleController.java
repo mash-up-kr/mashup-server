@@ -40,14 +40,14 @@ public class ScheduleController {
 				scheduleCreateRequest.getEndedAt(),
 				scheduleCreateRequest.getGenerationId())
 		);
-		return ApiResponse.success(ScheduleResponse.of(schedule));
+		return ApiResponse.success(ScheduleResponse.from(schedule));
 	}
 
 	@ApiOperation("스케줄 조회")
 	@GetMapping("/{id}")
 	public ApiResponse<ScheduleResponse> getById(@PathVariable Long id) {
 		Schedule schedule = scheduleService.getByIdOrThrow(id);
-		return ApiResponse.success(ScheduleResponse.of(schedule));
+		return ApiResponse.success(ScheduleResponse.from(schedule));
 	}
 
 	@ApiOperation("기수로 스케줄 조회")
@@ -56,7 +56,7 @@ public class ScheduleController {
 		List<Schedule> scheduleList = scheduleService.getByGenerationNumber(generationNumber);
 		return ApiResponse.success(
 			scheduleList.stream()
-				.map(ScheduleResponse::of)
+				.map(ScheduleResponse::from)
 				.collect(Collectors.toList())
 		);
 	}

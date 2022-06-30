@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 
 //@Profile({"local"})
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public class TestDataInitializer {
     private final RecruitmentScheduleRepository recruitmentScheduleRepository;

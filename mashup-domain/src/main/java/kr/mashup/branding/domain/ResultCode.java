@@ -74,9 +74,11 @@ public enum ResultCode {
 
     // AttendanceCode (출석 코드)
     ATTENDANCE_CODE_DUPLICATED("이미 사용된 코드입니다."),
+    ATTENDANCE_CODE_NOT_FOUND("해당 출석 코드가 존재하지 않습니다."),
 
     // Invite (초대 코드)
-    INVITE_NOT_FOUND("초대 코드가 존재하지 않습니다.");
+    INVITE_NOT_FOUND("초대 코드가 존재하지 않습니다.")
+    ;
 
     private final String message;
 

@@ -1,4 +1,4 @@
-package kr.mashup.branding.repository.member;
+package kr.mashup.branding.repository.attendancecode;
 
 import kr.mashup.branding.domain.member.Member;
 import org.springframework.data.jpa.repository.EntityGraph;

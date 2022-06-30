@@ -3,14 +3,13 @@ package kr.mashup.branding.domain.member;
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.service.member.dto.MemberUpdateVo;
+import kr.mashup.branding.service.attendanceCode.dto.MemberUpdateVo;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
-
 import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;

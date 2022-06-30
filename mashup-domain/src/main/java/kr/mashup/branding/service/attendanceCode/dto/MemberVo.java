@@ -1,4 +1,4 @@
-package kr.mashup.branding.service.member.dto;
+package kr.mashup.branding.service.attendanceCode.dto;
 
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;
