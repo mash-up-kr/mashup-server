@@ -50,7 +50,7 @@ public class TestDataInitializer {
     private final ApplicantRepository applicantRepository;
     private final AdminMemberRepository adminMemberRepository;
 
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void initialize() {
         AdminMember adminMember = createAdminMember();
         log.info("AdminMember is created. adminMember: {}", adminMember);
