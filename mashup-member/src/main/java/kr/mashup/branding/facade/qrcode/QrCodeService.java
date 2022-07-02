@@ -26,7 +26,6 @@ public class QrCodeService {
     @Transactional
     public QrCreateResponse generate(QrCreateRequest req) {
         Event event = eventService.getByIdOrThrow(req.getEventId());
-        attendanceCodeService.validateDup(event, req.getCode());
         DateRange period = DateRange.of(req.getStart(), req.getEnd());
 
         attendanceCodeService.save(
