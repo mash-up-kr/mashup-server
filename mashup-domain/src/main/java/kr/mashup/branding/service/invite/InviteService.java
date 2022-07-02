@@ -4,7 +4,6 @@ import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.invite.Invite;
 import kr.mashup.branding.domain.invite.exception.InviteNotFoundException;
 import kr.mashup.branding.domain.member.Platform;
-import kr.mashup.branding.dto.invite.InviteDto;
 import kr.mashup.branding.repository.invite.InviteRepository;
 import kr.mashup.branding.util.DateRange;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +22,13 @@ public class InviteService {
         return inviteRepository.save(invite);
     }
 
-    public InviteDto getOrThrow(String inviteCode) {
-        Invite invite = inviteRepository.findByCode(inviteCode).orElseThrow(InviteNotFoundException::new);
-        return InviteDto.from(invite);
+    public Invite getOrThrow(String inviteCode) {
+        return inviteRepository.findByCode(inviteCode)
+            .orElseThrow(InviteNotFoundException::new);
     }
 
-    public Optional<InviteDto> getOrNull(String inviteCode) {
-        Optional<Invite> invite = inviteRepository.findByCode(inviteCode);
-        return invite.map(InviteDto::from);
+    public Optional<Invite> getOrNull(String inviteCode) {
+        return inviteRepository.findByCode(inviteCode);
     }
 
 }

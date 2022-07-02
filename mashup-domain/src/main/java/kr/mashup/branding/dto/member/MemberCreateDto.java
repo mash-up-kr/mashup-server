@@ -1,6 +1,6 @@
 package kr.mashup.branding.dto.member;
 
-import kr.mashup.branding.dto.generation.GenerationDto;
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +17,7 @@ public class MemberCreateDto {
 
     private Platform platform;
 
-    private GenerationDto generation;
+    private Generation generation;
 
     private Boolean privatePolicyAgreed;
 

@@ -16,7 +16,11 @@ public class GenerationDto {
 
     private LocalDate endedAt;
 
-    public static GenerationDto from(Generation generation){
-        return GenerationDto.of(generation.getNumber(), generation.getStartedAt(), generation.getEndedAt());
+    public static GenerationDto from(Generation generation) {
+        return GenerationDto.of(
+            generation.getNumber(),
+            generation.getStartedAt(),
+            generation.getEndedAt()
+        );
     }
 }
