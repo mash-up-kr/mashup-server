@@ -5,6 +5,6 @@ import lombok.Value;
 
 @Getter
 @Value(staticConstructor = "of")
-public class QrCheckResponse {
-    boolean isAvailable;
+public class QrCodeResponse {
+    String qrCodeUrl;
 }
