@@ -75,11 +75,12 @@ public enum ResultCode {
     // AttendanceCode (출석 코드)
     ATTENDANCE_CODE_DUPLICATED("이미 사용된 코드입니다."),
     ATTENDANCE_CODE_NOT_FOUND("출석 코드가 존재하지 않습니다."),
-    ATTENDANCE_CODE_EMPTY("이벤트에 출석 코드가 만들어지지 않았습니다."),
+    ATTENDANCE_CODE_EMPTY("출석 코드가 만들어지지 않았습니다."),
 
     // Attendance (출석)
     ATTENDANCE_NOT_FOUND("출석 정보가 존재하지 않습니다."),
     ATTENDANCE_ALREADY_CHECKED("이미 출석 체크를 했습니다."),
+    ATTENDANCE_TIME_OVER("출석 체크 시간이 지났습니다."),
 
     // Invite (초대 코드)
     INVITE_NOT_FOUND("초대 코드가 존재하지 않습니다.");

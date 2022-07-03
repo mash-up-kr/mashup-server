@@ -7,6 +7,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface AttendanceCodeRepository extends JpaRepository<AttendanceCode, Long> {
-    boolean existsByEventAndCode(Event event, String code);
-    Optional<AttendanceCode> findByEventIdAndCode(Long eventId, String code);
 }

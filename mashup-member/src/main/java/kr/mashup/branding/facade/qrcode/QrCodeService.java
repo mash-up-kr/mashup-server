@@ -36,22 +36,4 @@ public class QrCodeService {
 
         return QrCreateResponse.of(qrCode);
     }
-
-    // QR 코드 확인
-    public QrCheckResponse isAvailableCode(
-        Long eventId,
-        String code,
-        LocalDateTime checkTime
-    ) {
-        AttendanceCode attendanceCode =
-            attendanceCodeService.getOrThrow(eventId, code);
-
-        boolean isAvailable = DateUtil.isInTime(
-            attendanceCode.getStartedAt(),
-            attendanceCode.getEndedAt(),
-            checkTime
-        );
-
-        return QrCheckResponse.of(isAvailable);
-    }
 }

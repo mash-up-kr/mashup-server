@@ -27,17 +27,4 @@ public class QrCodeController {
 
         return ApiResponse.success(res);
     }
-
-    @ApiOperation("QR 코드 체크")
-    @GetMapping("/")
-    public ApiResponse<QrCheckResponse> valid(
-        @RequestParam Long eventId,
-        @RequestParam String code
-    ) {
-        QrCheckResponse res =
-            qrCodeService.isAvailableCode(eventId, code, LocalDateTime.now());
-
-        return ApiResponse.success(res);
-    }
-
 }

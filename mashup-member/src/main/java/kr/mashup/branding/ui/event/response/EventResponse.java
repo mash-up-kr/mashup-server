@@ -20,22 +20,19 @@ public class EventResponse {
 
     LocalDateTime endedAt;
 
-    List<ContentResponse> contentList;
+    AttendanceCodeResponse attendanceCode;
 
-    List<AttendanceCodeResponse> attendanceCode;
+    List<ContentResponse> contentList;
 
     public static EventResponse from(Event event) {
         return EventResponse.of(
             event.getId(),
             event.getStartedAt(),
             event.getEndedAt(),
+            AttendanceCodeResponse.from(event.getAttendanceCode()),
             event.getContentList()
                 .stream()
                 .map(ContentResponse::from)
-                .collect(Collectors.toList()),
-            event.getAttendanceCodeList()
-                .stream()
-                .map(AttendanceCodeResponse::from)
                 .collect(Collectors.toList())
         );
     }

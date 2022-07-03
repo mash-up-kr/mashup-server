@@ -16,10 +16,4 @@ public class AttendanceCodeService {
     public AttendanceCode save(AttendanceCode attendanceCode) {
         return attendanceCodeRepository.save(attendanceCode);
     }
-
-    public AttendanceCode getOrThrow(Long eventId, String code) {
-        return attendanceCodeRepository.findByEventIdAndCode(eventId, code)
-            .orElseThrow(() -> new NotFoundException(ResultCode.ATTENDANCE_CODE_NOT_FOUND));
-    }
-
 }

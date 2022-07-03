@@ -41,13 +41,6 @@ public class AttendanceFacadeService {
         if (attendanceCode == null) {
             throw new BadRequestException(ResultCode.ATTENDANCE_CODE_EMPTY);
         }
-
-        final boolean isEndEvent = !(DateUtil.isInTime(
-            event.getStartedAt(),
-            event.getEndedAt(),
-            checkTime
-        ));
-
         validEventTime(event.getStartedAt(), event.getEndedAt(), checkTime);
         validAlreadyCheckAttendance(member, event);
 
