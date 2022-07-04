@@ -6,18 +6,28 @@ import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.attendance.AttendanceStatus;
 import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.domain.exception.BadRequestException;
+import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.Platform;
+import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.event.EventService;
 import kr.mashup.branding.service.member.MemberService;
+import kr.mashup.branding.service.schedule.ScheduleService;
 import kr.mashup.branding.ui.attendance.reqeust.AttendanceCheckRequest;
 import kr.mashup.branding.ui.attendance.response.AttendanceCheckResponse;
+import kr.mashup.branding.ui.attendance.response.PlatformAttendanceResponse;
+import kr.mashup.branding.ui.attendance.response.TotalAttendanceResponse;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +36,12 @@ public class AttendanceFacadeService {
     private final AttendanceService attendanceService;
     private final MemberService memberService;
     private final EventService eventService;
+    private final ScheduleService scheduleService;
 
     /**
      * 출석 체크
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public AttendanceCheckResponse checkAttendance(AttendanceCheckRequest req) {
         final LocalDateTime checkTime = LocalDateTime.now();
 
@@ -90,4 +101,126 @@ public class AttendanceFacadeService {
         if (isLate) return AttendanceStatus.LATE;
         return AttendanceStatus.ATTENDANCE;
     }
+
+    /**
+     * 플랫폼별 전체 출석현황 조회
+     */
+    @Transactional(readOnly = true)
+    public TotalAttendanceResponse getTotalAttendance(Long scheduleId) {
+        final LocalDateTime now = LocalDateTime.now();
+        final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
+        final Event activeEvent = getActiveEvent(schedule.getEventList(), now);
+        final AttendanceCode attendanceCode = activeEvent.getAttendanceCode();
+
+        final boolean isEndAttendance = !DateUtil.isInTime(
+            attendanceCode.getStartedAt(),
+            attendanceCode.getEndedAt().plusMinutes(10),
+            now
+        );
+
+        final Map<Platform, Long> totalCountGroupByPlatform =
+            Arrays.stream(Platform.values()).collect(
+                Collectors.toMap(
+                    platform -> platform,
+                    memberService::getTotalCountByPlatform
+                )
+            );
+
+        final Map<Pair<Platform, AttendanceStatus>, Long> attendanceResult =
+            attendanceService.getAllByEvent(activeEvent).stream().collect(
+                Collectors.groupingBy(
+                    this::getGroupKeyOfPlatformAndStatus,
+                    Collectors.counting()
+                )
+            );
+
+        final List<TotalAttendanceResponse.PlatformInfo> platformInfos =
+            totalCountGroupByPlatform.entrySet().stream()
+                .map(entry -> {
+                    Platform platform = entry.getKey();
+                    Long totalCount = entry.getValue();
+                    Long attendanceCount = attendanceResult.get(
+                        Pair.of(platform, AttendanceStatus.ATTENDANCE)
+                    );
+                    Long lateCount = attendanceResult.get(
+                        Pair.of(platform, AttendanceStatus.LATE)
+                    );
+                    return TotalAttendanceResponse.PlatformInfo.of(
+                        platform,
+                        totalCount,
+                        attendanceCount,
+                        lateCount
+                    );
+                })
+                .collect(Collectors.toList());
+
+        return TotalAttendanceResponse.of(platformInfos, isEndAttendance);
+    }
+
+    private Event getActiveEvent(List<Event> events, LocalDateTime now) {
+        for (Event event : events) {
+            final boolean isIn = DateUtil.isInTime(
+                event.getStartedAt(),
+                event.getEndedAt(),
+                now
+            );
+            if (isIn) return event;
+        }
+        throw new BadRequestException(ResultCode.EVENT_NOT_FOUND);
+    }
+
+    private Pair<Platform, AttendanceStatus> getGroupKeyOfPlatformAndStatus(
+        Attendance attendance
+    ) {
+        return new ImmutablePair<>(
+            attendance.getMember().getPlatform(),
+            attendance.getStatus()
+        );
+    }
+
+    /**
+     * 각 플랫폼 인원별 출석현황 조회
+     */
+    @Transactional(readOnly = true)
+    public PlatformAttendanceResponse getPlatformAttendance(
+        Platform platform,
+        Long scheduleId
+    ) {
+        final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
+        final List<Member> members = memberService.getAllByPlatform(platform);
+
+        final List<PlatformAttendanceResponse.MemberInfo> memberInfos =
+            members.stream()
+                .map(member -> PlatformAttendanceResponse.MemberInfo.of(
+                    member.getName(),
+                    getAttendanceInfoByMember(member, schedule.getEventList())
+                ))
+                .collect(Collectors.toList());
+
+        return PlatformAttendanceResponse.of(platform, memberInfos);
+    }
+
+    private List<PlatformAttendanceResponse.AttendanceInfo> getAttendanceInfoByMember(
+        Member member,
+        List<Event> events
+    ) {
+        return events.stream().map(event -> {
+            AttendanceStatus status;
+            LocalDateTime attendanceAt = null;
+            try {
+                final Attendance attendance =
+                    attendanceService.getOrThrow(member, event);
+                status = attendance.getStatus();
+                attendanceAt = attendance.getCreatedAt();
+            } catch (NotFoundException e) {
+                status = AttendanceStatus.ABSENT;
+            }
+
+            return PlatformAttendanceResponse.AttendanceInfo.of(
+                status,
+                attendanceAt
+            );
+        }).collect(Collectors.toList());
+    }
+
 }

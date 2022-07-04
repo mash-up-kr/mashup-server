@@ -1,6 +1,7 @@
 package kr.mashup.branding.service.member;
 
 import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
 import kr.mashup.branding.domain.member.exception.MemberNotFoundException;
 import kr.mashup.branding.dto.member.MemberCreateDto;
@@ -9,6 +10,8 @@ import kr.mashup.branding.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -84,6 +87,14 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
         memberRepository.delete(member);
+    }
+
+    public Long getTotalCountByPlatform(Platform platform) {
+        return memberRepository.countByPlatform(platform);
+    }
+
+    public List<Member> getAllByPlatform(Platform platform) {
+        return memberRepository.findAllByPlatform(platform);
     }
 
 }
