@@ -18,7 +18,6 @@ import java.util.List;
 public class ScheduleController {
 
     private final ScheduleFacadeService scheduleFacadeService;
-    private final ScheduleService scheduleService;
 
     @ApiOperation("스케줄 생성")
     @PostMapping("/")

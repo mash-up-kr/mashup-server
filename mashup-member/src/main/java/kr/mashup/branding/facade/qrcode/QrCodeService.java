@@ -44,7 +44,7 @@ public class QrCodeService {
         final AttendanceCode attendanceCode = event.getAttendanceCode();
 
         if(attendanceCode == null) {
-            throw new BadRequestException(ResultCode.ATTENDANCE_CODE_EMPTY);
+            throw new BadRequestException(ResultCode.ATTENDANCE_CODE_NOT_FOUND);
         }
 
         final String qrCodeUrl = QrGenerator.generate(attendanceCode.getCode());
