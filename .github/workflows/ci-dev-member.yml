@@ -1,4 +1,4 @@
-name: Mash-Up Member Real CI
+name: Mash-Up Member Dev CI
 
 on:
   push:
