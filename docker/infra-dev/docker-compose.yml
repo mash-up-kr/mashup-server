@@ -1,0 +1,18 @@
+version: "3"
+services:
+  nginx:
+    container_name: 'nginx'
+    image: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+  certbot:
+    container_name: 'certbot'
+    image: certbot/certbot:v0.36.0
+    volumes:
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
