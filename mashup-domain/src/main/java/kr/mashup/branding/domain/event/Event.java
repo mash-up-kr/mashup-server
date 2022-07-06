@@ -1,6 +1,19 @@
 package kr.mashup.branding.domain.event;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
+
 import com.sun.istack.NotNull;
+
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.content.Content;
@@ -10,11 +23,6 @@ import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -32,6 +40,7 @@ public class Event extends BaseEntity {
     private Schedule schedule;
 
     @OneToMany(mappedBy = "event")
+    @OrderBy("startedAt")
     private final List<Content> contentList = new ArrayList<>();
 
     @OneToOne
@@ -56,7 +65,7 @@ public class Event extends BaseEntity {
         }
         this.contentList.add(content);
     }
-    
+
     public void setAttendanceCode(AttendanceCode code) {
         this.attendanceCode = code;
     }
