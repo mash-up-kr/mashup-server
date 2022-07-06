@@ -1,6 +1,5 @@
 package kr.mashup.branding.util;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class DateUtil {
@@ -16,9 +15,8 @@ public class DateUtil {
         LocalDateTime start,
         LocalDateTime end,
         LocalDateTime target) {
-        return !(start.isBefore(target) || end.isAfter(target));
+        return !(target.isBefore(start) || target.isAfter(end));
     }
-
 
     public static boolean isContainDateRange(
         DateRange baseRange,
@@ -31,7 +29,6 @@ public class DateUtil {
         LocalDateTime targetStartedAt = targetRange.getStart();
         LocalDateTime targetEndedAt = targetRange.getEnd();
 
-
         boolean isBaseStartBeforeOrEqualTargetStart
             = baseStartedAt.isBefore(targetStartedAt) || baseStartedAt.isEqual(targetStartedAt);
 
@@ -40,6 +37,5 @@ public class DateUtil {
 
         return isBaseStartBeforeOrEqualTargetStart && isBaseEndAfterOrEqualTargetEnd;
     }
-
 
 }
