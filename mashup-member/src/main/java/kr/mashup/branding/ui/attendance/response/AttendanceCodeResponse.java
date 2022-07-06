@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class AttendanceCodeResponse {
     private final Long id;
+    private final Long eventId;
     private final String code;
     private final LocalDateTime startedAt;
     private final LocalDateTime endedAt;
@@ -17,6 +18,7 @@ public class AttendanceCodeResponse {
     public static AttendanceCodeResponse from(AttendanceCode attendanceCode) {
         return new AttendanceCodeResponse(
             attendanceCode.getId(),
+            attendanceCode.getEventId(),
             attendanceCode.getCode(),
             attendanceCode.getStartedAt(),
             attendanceCode.getEndedAt()

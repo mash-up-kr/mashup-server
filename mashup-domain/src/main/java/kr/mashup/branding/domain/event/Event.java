@@ -1,23 +1,28 @@
 package kr.mashup.branding.domain.event;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
+
 import com.sun.istack.NotNull;
 
-import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.BaseEntity;
-import kr.mashup.branding.domain.schedule.Schedule;
+import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.content.Content;
+import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -32,14 +37,15 @@ public class Event extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "schedule_id")
-    @JsonIgnore
     private Schedule schedule;
 
     @OneToMany(mappedBy = "event")
+    @OrderBy("startedAt")
     private final List<Content> contentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "event")
-    private final List<AttendanceCode> attendanceCodeList = new ArrayList<>();
+    @OneToOne
+    @JoinColumn(name = "attendance_code_id")
+    private AttendanceCode attendanceCode;
 
     public static Event of(Schedule schedule, DateRange dateRange) {
         return new Event(schedule, dateRange);
@@ -50,7 +56,6 @@ public class Event extends BaseEntity {
         this.schedule = schedule;
         this.startedAt = dateRange.getStart();
         this.endedAt = dateRange.getEnd();
-        this.schedule = schedule;
         schedule.addEvent(this);
     }
 
@@ -61,15 +66,11 @@ public class Event extends BaseEntity {
         this.contentList.add(content);
     }
 
-    public void addAttendanceCode(AttendanceCode attendanceCode) {
-        if(attendanceCodeList.contains(attendanceCode)) {
-            return;
-        }
-        this.attendanceCodeList.add(attendanceCode);
+    public void setAttendanceCode(AttendanceCode code) {
+        this.attendanceCode = code;
     }
 
-
-    public void changeStartDate(LocalDateTime newStartedAt){
+    public void changeStartDate(LocalDateTime newStartedAt) {
         checkStartBeforeOrEqualEnd(newStartedAt, endedAt);
         checkEventPeriod(schedule, newStartedAt, endedAt);
         this.startedAt = newStartedAt;

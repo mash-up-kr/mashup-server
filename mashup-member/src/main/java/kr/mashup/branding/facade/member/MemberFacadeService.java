@@ -1,25 +1,24 @@
 package kr.mashup.branding.facade.member;
 
-import kr.mashup.branding.domain.generation.GenerationVo;
-import kr.mashup.branding.domain.invite.InviteVo;
+import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.invite.Invite;
+import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberInvalidInviteCodeException;
-import kr.mashup.branding.service.attendanceCode.MemberService;
-import kr.mashup.branding.service.attendanceCode.dto.MemberCreateVo;
-import kr.mashup.branding.service.attendanceCode.dto.MemberVo;
-import kr.mashup.branding.service.invite.InviteService;
+import kr.mashup.branding.dto.member.MemberCreateDto;
 import kr.mashup.branding.security.JwtService;
-import kr.mashup.branding.ui.member.dto.request.LoginRequest;
-import kr.mashup.branding.ui.member.dto.request.ValidInviteRequest;
-import kr.mashup.branding.ui.member.dto.request.SignUpRequest;
-import kr.mashup.branding.ui.member.dto.response.LoginResponse;
-import kr.mashup.branding.ui.member.dto.response.MemberInfoResponse;
-import kr.mashup.branding.ui.member.dto.response.ValidInviteResponse;
+import kr.mashup.branding.service.invite.InviteService;
+import kr.mashup.branding.service.member.MemberService;
+import kr.mashup.branding.ui.member.request.LoginRequest;
+import kr.mashup.branding.ui.member.request.SignUpRequest;
+import kr.mashup.branding.ui.member.request.ValidInviteRequest;
+import kr.mashup.branding.ui.member.response.LoginResponse;
+import kr.mashup.branding.ui.member.response.MemberInfoResponse;
+import kr.mashup.branding.ui.member.response.ValidInviteResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,67 +28,70 @@ public class MemberFacadeService {
     private final InviteService inviteService;
     private final JwtService jwtService;
 
+    @Transactional(readOnly = true)
     public MemberInfoResponse getMemberInfo(Long memberId) {
         Assert.notNull(memberId, "'memberId' must not be null");
 
-        final MemberVo memberVo = memberService.getOrThrowById(memberId);
+        final Member member = memberService.getOrThrowById(memberId);
 
-        return MemberInfoResponse.from(memberVo);
+        return MemberInfoResponse.from(member);
     }
 
+    @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
         // Member 조회
         final String identification = request.getIdentification();
         final String password = request.getPassword();
-        final MemberVo memberVo = memberService.getOrThrowByIdentificationAndPassword(identification, password);
+        final Member member =
+            memberService.getOrThrowByIdentificationAndPassword(identification, password);
         // Token 생성
-        final Long memberId = memberVo.getId();
+        final Long memberId = member.getId();
         final String token = jwtService.encode(memberId);
 
         return LoginResponse.of(
-                memberId,
-                token,
-                memberVo.getName(),
-                memberVo.getPlatform().name(),
-                memberVo.getGeneration());
+            memberId,
+            token,
+            member.getName(),
+            member.getPlatform().name(),
+            member.getGeneration().getNumber()
+        );
     }
 
+    @Transactional
     public void signUp(SignUpRequest request) {
         // 초대코드 조회
         final String inviteCode = request.getInviteCode();
-        final InviteVo inviteVo = inviteService.getOrThrow(inviteCode);
+        final Invite invite = inviteService.getOrThrow(inviteCode);
 
         // 코드 검증
         final Platform platform = request.getPlatform();
-        if (!inviteVo.getPlatform().equals(platform)) {
+        if (!invite.getPlatform().equals(platform)) {
             throw new MemberInvalidInviteCodeException();
         }
 
-        final GenerationVo generation = inviteVo.getGeneration();
+        final Generation generation = invite.getGeneration();
 
-        final MemberCreateVo memberCreateVo = MemberCreateVo.of(
-                request.getName(),
-                request.getIdentification(),
-                request.getPassword(),
-                platform,
-                generation,
-                request.getPrivatePolicyAgreed());
+        final MemberCreateDto memberCreateDto = MemberCreateDto.of(
+            request.getName(),
+            request.getIdentification(),
+            request.getPassword(),
+            platform,
+            generation,
+            request.getPrivatePolicyAgreed());
 
-        memberService.save(memberCreateVo);
+        memberService.save(memberCreateDto);
     }
 
+    @Transactional(readOnly = true)
     public ValidInviteResponse validateInviteCode(ValidInviteRequest request) {
-        final Optional<InviteVo> inviteVo = inviteService.getOrNull(request.getInviteCode());
-
-        if(inviteVo.isEmpty()){
-            return ValidInviteResponse.of(false);
-        }
-
-        final boolean isValidCode = inviteVo.get().getPlatform().equals(request.getPlatform());
+        boolean isValidCode = inviteService.getOrNull(request.getInviteCode())
+            .map(invite -> invite.getPlatform().equals(request.getPlatform()))
+            .orElse(false);
 
         return ValidInviteResponse.of(isValidCode);
     }
 
+    @Transactional
     public void withdraw(Long memberId) {
         Assert.notNull(memberId, "'memberId' must not be null");
         memberService.deleteMember(memberId);

@@ -1,14 +1,13 @@
 package kr.mashup.branding.ui.qrcode;
 
-import kr.mashup.branding.facade.QrCodeService;
+import io.swagger.annotations.ApiOperation;
+import kr.mashup.branding.facade.qrcode.QrCodeService;
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.qrcode.response.QrCheckResponse;
 import kr.mashup.branding.ui.qrcode.request.QrCreateRequest;
+import kr.mashup.branding.ui.qrcode.response.QrCodeResponse;
 import kr.mashup.branding.ui.qrcode.response.QrCreateResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,29 +16,21 @@ public class QrCodeController {
 
     private final QrCodeService qrCodeService;
 
+    @ApiOperation("QR 코드 생성")
     @PostMapping("/")
     public ApiResponse<QrCreateResponse> create(
         @RequestBody QrCreateRequest request
     ) {
-        String url = qrCodeService.generate(
-            request.getEventId(),
-            request.getCode(),
-            request.getStart(),
-            request.getEnd()
-        );
-
-        return ApiResponse.success(QrCreateResponse.from(url));
+        final QrCreateResponse res = qrCodeService.generate(request);
+        return ApiResponse.success(res);
     }
 
-    @GetMapping("/")
-    public ApiResponse<QrCheckResponse> valid(
-        @RequestParam Long eventId,
-        @RequestParam String code
+    @ApiOperation("QR 코드 조회")
+    @GetMapping("/{eventId}")
+    public ApiResponse<QrCodeResponse> getQrCode(
+        @PathVariable Long eventId
     ) {
-        boolean result = qrCodeService.isAvailableCode(
-            eventId, code, LocalDateTime.now()
-        );
-        return ApiResponse.success(QrCheckResponse.from(result));
+        final QrCodeResponse res = qrCodeService.getQrCode(eventId);
+        return ApiResponse.success(res);
     }
-
 }

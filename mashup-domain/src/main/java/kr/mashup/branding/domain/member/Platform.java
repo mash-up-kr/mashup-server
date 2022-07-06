@@ -11,10 +11,10 @@ public enum Platform {
     SPRING, IOS, ANDROID, DESIGN, WEB, NODE;
 
     @JsonCreator
-    public static Platform from(String s){
-        try{
-            return Platform.valueOf(s);
-        }catch (Exception e){
+    public static Platform from(String s) {
+        try {
+            return Platform.valueOf(s.toUpperCase());
+        } catch (Exception e) {
             log.info("platform type conversion error : {}", e.getMessage());
             throw new BadRequestException(ResultCode.INVALID_PLATFORM_NAME);
         }

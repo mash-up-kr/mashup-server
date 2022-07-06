@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
-import kr.mashup.branding.domain.content.Content;
-import kr.mashup.branding.domain.content.ContentCreateVo;
+import kr.mashup.branding.facade.content.ContentFacadeService;
 import kr.mashup.branding.service.content.ContentService;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.content.request.ContentCreateRequest;
@@ -19,18 +18,16 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class ContentController {
 
-	private final ContentService contentService;
+    private final ContentFacadeService contentFacadeService;
+    private final ContentService contentService;
 
-	@ApiOperation("이벤트 내용 생성")
-	@PostMapping()
-	public ApiResponse<ContentResponse> create(
-		@RequestBody ContentCreateRequest contentCreateRequest
-	) {
-		Content content = contentService.create(
-			ContentCreateVo.of(
-				contentCreateRequest.getContent(),
-				contentCreateRequest.getEventId()
-			));
-		return ApiResponse.success(ContentResponse.from(content));
-	}
+    @ApiOperation("이벤트 세부내용 생성")
+    @PostMapping()
+    public ApiResponse<ContentResponse> create(
+        @RequestBody ContentCreateRequest contentCreateRequest
+    ) {
+        ContentResponse res = contentFacadeService.create(contentCreateRequest);
+
+        return ApiResponse.success(res);
+    }
 }
