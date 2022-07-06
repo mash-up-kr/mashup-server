@@ -1,4 +1,4 @@
-name: Mash-Up Admin Real CI
+name: Mash-Up Admin Dev CI
 
 on:
   push:

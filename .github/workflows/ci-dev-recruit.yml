@@ -1,4 +1,4 @@
-name: Mash-Up Recruit Real CI
+name: Mash-Up Recruit Dev CI
 
 on:
   push:
