@@ -40,12 +40,17 @@ public class ScoreHistory extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public static ScoreHistory of(Title title, String scheduleName, LocalDate date, Generation generation, Member member
-    ) {
+    public static ScoreHistory of(
+            Title title,
+            String scheduleName,
+            LocalDate date,
+            Generation generation,
+            Member member) {
+
         return new ScoreHistory(title, scheduleName, date, generation, member);
     }
 
-    public ScoreHistory(Title title, String scheduleName, LocalDate date, Generation generation, Member member
+    private ScoreHistory(Title title, String scheduleName, LocalDate date, Generation generation, Member member
     ) {
         this.title = title;
         this.scheduleName = scheduleName;

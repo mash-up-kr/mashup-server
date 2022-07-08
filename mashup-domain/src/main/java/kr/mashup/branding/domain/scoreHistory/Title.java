@@ -16,6 +16,19 @@ public enum Title {
     MASHUP_SUBLEADER("13기 부회장", 999.0),
     ;
 
+    private final String description;
+    private final Double score;
+
     Title(String description, Double score) {
+        this.description= description;
+        this.score = score;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Double getScore() {
+        return score;
     }
 }
