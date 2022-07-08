@@ -32,9 +32,6 @@ public class ScoreHistory extends BaseEntity {
     @NotNull
     private LocalDate date;
 
-    @NotNull
-    private Integer score;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "generation_id")
     private Generation generation;
@@ -43,19 +40,16 @@ public class ScoreHistory extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public static ScoreHistory of(Title title, String scheduleName, LocalDate date, Integer score,
-        Generation generation, Member member
+    public static ScoreHistory of(Title title, String scheduleName, LocalDate date, Generation generation, Member member
     ) {
-        return new ScoreHistory(title, scheduleName, date, score, generation, member);
+        return new ScoreHistory(title, scheduleName, date, generation, member);
     }
 
-    public ScoreHistory(Title title, String scheduleName, LocalDate date, Integer score,
-        Generation generation, Member member
+    public ScoreHistory(Title title, String scheduleName, LocalDate date, Generation generation, Member member
     ) {
         this.title = title;
         this.scheduleName = scheduleName;
         this.date = date;
-        this.score = score;
         this.generation = generation;
         this.member = member;
     }
