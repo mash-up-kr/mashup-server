@@ -1,4 +1,4 @@
-package kr.mashup.branding.domain.scoreHistory;
+package kr.mashup.branding.domain.scorehistory;
 
 public enum Title {
     ATTENDANCE("출석", 1.0),

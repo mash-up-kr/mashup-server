@@ -1,4 +1,4 @@
-package kr.mashup.branding.domain.scoreHistory;
+package kr.mashup.branding.domain.scorehistory;
 
 import java.time.LocalDate;
 
