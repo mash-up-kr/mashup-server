@@ -1,6 +1,6 @@
 package kr.mashup.branding.domain.scorehistory;
 
-public enum Title {
+public enum ScoreType {
     ATTENDANCE("출석", 1.0),
     ABSENT("결석", -1.0),
     LATE("지각", -0.5),
@@ -12,15 +12,15 @@ public enum Title {
     HACKATHON_COMMITTEE("해커톤 준비 위원회", 1.0),
     TECH_BLOG_WRITE("기술블로그 작성", 1.0),
     MASHUP_CONTENT_WRITE("Mah-Up 콘텐츠 글 작성", 0.5),
-    MASHUP_LEADER("13기 회장", 999.0),
-    MASHUP_SUBLEADER("13기 부회장", 999.0),
+    MASHUP_LEADER("회장", 999.0),
+    MASHUP_SUBLEADER("부회장", 999.0),
     ;
 
     private final String description;
     private final Double score;
 
-    Title(String description, Double score) {
-        this.description= description;
+    ScoreType(String description, Double score) {
+        this.description = description;
         this.score = score;
     }
 
