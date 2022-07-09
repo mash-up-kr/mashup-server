@@ -93,13 +93,20 @@ public class AttendanceFacadeService {
         AttendanceCode attendanceCode,
         LocalDateTime checkTime
     ) {
-        final boolean isLate = !DateUtil.isInTime(
+        final boolean isAttendance = DateUtil.isInTime(
             attendanceCode.getStartedAt(),
             attendanceCode.getEndedAt(),
             checkTime
         );
+        final boolean isLate = DateUtil.isInTime(
+            attendanceCode.getEndedAt(),
+            attendanceCode.getEndedAt().plusMinutes(10),
+            checkTime
+        );
+
+        if (isAttendance) return AttendanceStatus.ATTENDANCE;
         if (isLate) return AttendanceStatus.LATE;
-        return AttendanceStatus.ATTENDANCE;
+        throw new BadRequestException(ResultCode.ATTENDANCE_TIME_OVER);
     }
 
     /**
