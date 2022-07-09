@@ -25,7 +25,7 @@ public class ScoreHistory extends BaseEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Title title;
+    private ScoreType scoreType;
 
     @NotBlank
     private String scheduleName;
@@ -42,18 +42,18 @@ public class ScoreHistory extends BaseEntity {
     private Member member;
 
     public static ScoreHistory of(
-            Title title,
-            String scheduleName,
-            LocalDate date,
-            Generation generation,
-            Member member) {
+        ScoreType scoreType,
+        String scheduleName,
+        LocalDate date,
+        Generation generation,
+        Member member) {
 
-        return new ScoreHistory(title, scheduleName, date, generation, member);
+        return new ScoreHistory(scoreType, scheduleName, date, generation, member);
     }
 
-    private ScoreHistory(Title title, String scheduleName, LocalDate date, Generation generation, Member member
+    private ScoreHistory(ScoreType scoreType, String scheduleName, LocalDate date, Generation generation, Member member
     ) {
-        this.title = title;
+        this.scoreType = scoreType;
         this.scheduleName = scheduleName;
         this.date = date;
         this.generation = generation;
