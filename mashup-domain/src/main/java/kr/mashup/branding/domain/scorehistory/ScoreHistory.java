@@ -1,4 +1,4 @@
-package kr.mashup.branding.domain.scoreHistory;
+package kr.mashup.branding.domain.scorehistory;
 
 import java.time.LocalDate;
 
@@ -8,6 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import kr.mashup.branding.domain.BaseEntity;
@@ -24,9 +25,9 @@ public class ScoreHistory extends BaseEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Title title;
+    private ScoreType scoreType;
 
-    @NotNull
+    @NotBlank
     private String scheduleName;
 
     @NotNull
@@ -40,14 +41,19 @@ public class ScoreHistory extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public static ScoreHistory of(Title title, String scheduleName, LocalDate date, Generation generation, Member member
-    ) {
-        return new ScoreHistory(title, scheduleName, date, generation, member);
+    public static ScoreHistory of(
+        ScoreType scoreType,
+        String scheduleName,
+        LocalDate date,
+        Generation generation,
+        Member member) {
+
+        return new ScoreHistory(scoreType, scheduleName, date, generation, member);
     }
 
-    public ScoreHistory(Title title, String scheduleName, LocalDate date, Generation generation, Member member
+    private ScoreHistory(ScoreType scoreType, String scheduleName, LocalDate date, Generation generation, Member member
     ) {
-        this.title = title;
+        this.scoreType = scoreType;
         this.scheduleName = scheduleName;
         this.date = date;
         this.generation = generation;
