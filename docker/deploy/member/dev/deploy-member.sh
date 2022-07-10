@@ -56,7 +56,7 @@ echo "deploy ${APP_NAME}-${START_CONTAINER} success!"
 # 종료되는 포트를 새로 시작되는 포트로 값을 변경해줍니다.
 # ex ) sudo sed -i "s/8080/8081/" /nginx/conf.d/app.conf
 echo -e "\n[step - 2] change port ${TERMINATE_PORT} to ${START_PORT}"
-sed -i "s/${TERMINATE_PORT}/${START_PORT}/" /home/ec2-user/mashup-server/docker/infra/nginx/conf.d/app.conf
+sed -i "s/${TERMINATE_PORT}/${START_PORT}/" /home/ec2-user/mashup-server/docker/infra-dev/nginx/conf.d/app.conf
 
 # 새로운 포트로 스프링부트가 구동 되고, nginx의 포트를 변경해주었다면, nginx 재시작해줍니다.
 # docker exec -it {nginx container name} nginx -s reload
