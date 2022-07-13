@@ -8,6 +8,7 @@ import kr.mashup.branding.ui.member.request.SignUpRequest;
 import kr.mashup.branding.ui.member.request.ValidInviteRequest;
 import kr.mashup.branding.ui.member.response.LoginResponse;
 import kr.mashup.branding.ui.member.response.MemberInfoResponse;
+import kr.mashup.branding.ui.member.response.SignUpResponse;
 import kr.mashup.branding.ui.member.response.ValidInviteResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class MemberController {
 
     //1. 회원 정보 조회 Api
     @GetMapping
-    public ApiResponse<?> getMemberInfo(
+    public ApiResponse<MemberInfoResponse> getMemberInfo(
         @ApiIgnore MemberAuth memberAuth
     ) {
         MemberInfoResponse memberInfoResponse =
@@ -35,7 +36,7 @@ public class MemberController {
 
     //2. 로그인
     @PostMapping("login")
-    public ApiResponse<?> login(
+    public ApiResponse<LoginResponse> login(
         @Valid @RequestBody LoginRequest request
     ) {
         LoginResponse memberLoginResponse = memberFacadeService.login(request);
@@ -45,17 +46,17 @@ public class MemberController {
 
     //3. 회원가입
     @PostMapping("signup")
-    public ApiResponse<?> signUp(
+    public ApiResponse<SignUpResponse> signUp(
         @Valid @RequestBody SignUpRequest request
     ) {
-        memberFacadeService.signUp(request);
+        SignUpResponse res = memberFacadeService.signUp(request);
 
-        return ApiResponse.success();
+        return ApiResponse.success(res);
     }
 
     //4. 회원가입 코드 검증
     @GetMapping("code")
-    public ApiResponse<?> validateSignUpCode(ValidInviteRequest req) {
+    public ApiResponse<ValidInviteResponse> validateSignUpCode(ValidInviteRequest req) {
         ValidInviteResponse response =
             memberFacadeService.validateInviteCode(req);
 
@@ -64,7 +65,7 @@ public class MemberController {
 
     //5. 회원탈퇴
     @DeleteMapping("/{memberId}")
-    public ApiResponse<?> withdraw(
+    public ApiResponse<Void> withdraw(
         @PathVariable Long memberId
     ) {
         memberFacadeService.withdraw(memberId);

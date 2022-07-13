@@ -14,6 +14,7 @@ import kr.mashup.branding.ui.member.request.SignUpRequest;
 import kr.mashup.branding.ui.member.request.ValidInviteRequest;
 import kr.mashup.branding.ui.member.response.LoginResponse;
 import kr.mashup.branding.ui.member.response.MemberInfoResponse;
+import kr.mashup.branding.ui.member.response.SignUpResponse;
 import kr.mashup.branding.ui.member.response.ValidInviteResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -58,7 +59,7 @@ public class MemberFacadeService {
     }
 
     @Transactional
-    public void signUp(SignUpRequest request) {
+    public SignUpResponse signUp(SignUpRequest request) {
         // 초대코드 조회
         final String inviteCode = request.getInviteCode();
         final Invite invite = inviteService.getOrThrow(inviteCode);
@@ -79,7 +80,9 @@ public class MemberFacadeService {
             generation,
             request.getPrivatePolicyAgreed());
 
-        memberService.save(memberCreateDto);
+        final Member member = memberService.save(memberCreateDto);
+        final String token = jwtService.encode(member.getId());
+        return SignUpResponse.of(token);
     }
 
     @Transactional(readOnly = true)
