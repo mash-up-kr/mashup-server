@@ -24,7 +24,7 @@ public class MemberControllerAdvice {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponse<?> handleBadRequest(MethodArgumentTypeMismatchException e) {
+    public ApiResponse<?> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         log.info("handleMethodArgumentTypeMismatchException: {}", e.getMessage(), e);
         return ApiResponse.failure(ResultCode.BAD_REQUEST, e.getMessage());
     }
@@ -37,35 +37,35 @@ public class MemberControllerAdvice {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK) // TODO: Illegal 은 클라 오류일수도, 서버 오류일수도 있어서 조금 애매
     public ApiResponse<?> handleIllegalArgumentException(IllegalArgumentException e) {
         log.info("handleIllegalArgumentException: {}", e.getMessage(), e);
         return ApiResponse.failure(ResultCode.BAD_REQUEST, e.getMessage());
     }
 
     @ExceptionHandler(BadRequestException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     public ApiResponse<?> handleBadRequestException(BadRequestException e) {
         log.info("handleBadRequestException: {}", e.getMessage(), e);
         return ApiResponse.failure(e.getResultCode());
     }
 
     @ExceptionHandler(UnauthorizedException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.OK)
     public ApiResponse<?> handleUnauthorizedException(UnauthorizedException e) {
         log.info("handleUnauthorizedException: {}", e.getMessage(), e);
         return ApiResponse.failure(e.getResultCode());
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.OK)
     public ApiResponse<?> handleForbiddenException(ForbiddenException e) {
         log.info("handleForbiddenException: {}", e.getMessage(), e);
         return ApiResponse.failure(e.getResultCode());
     }
 
     @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public ApiResponse<?> handleNotFoundException(NotFoundException e) {
         log.info("handleNotFoundException: {}", e.getMessage(), e);
         return ApiResponse.failure(e.getResultCode());
@@ -79,7 +79,7 @@ public class MemberControllerAdvice {
     }
 
     @ExceptionHandler(ServiceUnavailableException.class)
-    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResponse<?> handleServiceUnavailableException(ServiceUnavailableException e) {
         log.info("handleServiceUnavailableException: {}", e.getMessage(), e);
         return ApiResponse.failure(e.getResultCode());
