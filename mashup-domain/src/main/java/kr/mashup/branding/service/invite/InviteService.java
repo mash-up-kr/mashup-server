@@ -27,6 +27,11 @@ public class InviteService {
             .orElseThrow(InviteNotFoundException::new);
     }
 
+    public Invite getOrThrow(Platform platform, Generation generation){
+        return inviteRepository.findByPlatformAndGeneration(platform, generation)
+                .orElseThrow(InviteNotFoundException::new);
+    }
+
     public Optional<Invite> getOrNull(String inviteCode) {
         return inviteRepository.findByCode(inviteCode);
     }

@@ -58,11 +58,11 @@ public class MemberFacadeService {
     @Transactional
     public SignUpResponse signUp(SignUpRequest request) {
         // 초대코드 조회
+        final Platform platform = request.getPlatform();
         final String inviteCode = request.getInviteCode();
         final Invite invite = inviteService.getOrThrow(inviteCode);
 
         // 코드 검증
-        final Platform platform = request.getPlatform();
         if (!invite.getPlatform().equals(platform)) {
             throw new MemberInvalidInviteCodeException();
         }
