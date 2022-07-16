@@ -12,10 +12,7 @@ import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.member.request.LoginRequest;
 import kr.mashup.branding.ui.member.request.SignUpRequest;
 import kr.mashup.branding.ui.member.request.ValidInviteRequest;
-import kr.mashup.branding.ui.member.response.LoginResponse;
-import kr.mashup.branding.ui.member.response.MemberInfoResponse;
-import kr.mashup.branding.ui.member.response.SignUpResponse;
-import kr.mashup.branding.ui.member.response.ValidInviteResponse;
+import kr.mashup.branding.ui.member.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +28,6 @@ public class MemberFacadeService {
 
     @Transactional(readOnly = true)
     public MemberInfoResponse getMemberInfo(Long memberId) {
-        Assert.notNull(memberId, "'memberId' must not be null");
 
         final Member member = memberService.getOrThrowById(memberId);
 
@@ -58,14 +54,15 @@ public class MemberFacadeService {
         );
     }
 
+
     @Transactional
     public SignUpResponse signUp(SignUpRequest request) {
         // 초대코드 조회
+        final Platform platform = request.getPlatform();
         final String inviteCode = request.getInviteCode();
         final Invite invite = inviteService.getOrThrow(inviteCode);
 
         // 코드 검증
-        final Platform platform = request.getPlatform();
         if (!invite.getPlatform().equals(platform)) {
             throw new MemberInvalidInviteCodeException();
         }
@@ -96,8 +93,11 @@ public class MemberFacadeService {
 
     @Transactional
     public void withdraw(Long memberId) {
-        Assert.notNull(memberId, "'memberId' must not be null");
         memberService.deleteMember(memberId);
     }
 
+    public TokenResponse getAccessToken(Long memberId) {
+        final String token = jwtService.encode(memberId);
+        return TokenResponse.of(token);
+    }
 }

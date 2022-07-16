@@ -3,6 +3,7 @@ package kr.mashup.branding.ui.attendance;
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.facade.attendance.AttendanceFacadeService;
+import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.attendance.reqeust.AttendanceCheckRequest;
 import kr.mashup.branding.ui.attendance.response.AttendanceCheckResponse;
@@ -10,6 +11,7 @@ import kr.mashup.branding.ui.attendance.response.PlatformAttendanceResponse;
 import kr.mashup.branding.ui.attendance.response.TotalAttendanceResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,10 +21,12 @@ public class AttendanceController {
     private final AttendanceFacadeService attendanceFacadeService;
 
     @ApiOperation("출석 체크")
-    @PostMapping("/check")
+    @PostMapping("/check/{eventId}")
     public ApiResponse<AttendanceCheckResponse> check(
-        @RequestBody AttendanceCheckRequest req
+            @ApiIgnore MemberAuth auth,
+            @PathVariable Long eventId
     ) {
+        AttendanceCheckRequest req = AttendanceCheckRequest.of(auth.getMemberId(), eventId);
         AttendanceCheckResponse res = attendanceFacadeService.checkAttendance(req);
         return ApiResponse.success(res);
     }

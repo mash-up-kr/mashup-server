@@ -1,15 +1,13 @@
 package kr.mashup.branding.ui.member;
 
+import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.member.MemberFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.member.request.LoginRequest;
 import kr.mashup.branding.ui.member.request.SignUpRequest;
 import kr.mashup.branding.ui.member.request.ValidInviteRequest;
-import kr.mashup.branding.ui.member.response.LoginResponse;
-import kr.mashup.branding.ui.member.response.MemberInfoResponse;
-import kr.mashup.branding.ui.member.response.SignUpResponse;
-import kr.mashup.branding.ui.member.response.ValidInviteResponse;
+import kr.mashup.branding.ui.member.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -23,7 +21,7 @@ public class MemberController {
 
     private final MemberFacadeService memberFacadeService;
 
-    //1. 회원 정보 조회 Api
+    @ApiOperation("회원 정보 조회")
     @GetMapping
     public ApiResponse<MemberInfoResponse> getMemberInfo(
         @ApiIgnore MemberAuth memberAuth
@@ -34,7 +32,7 @@ public class MemberController {
         return ApiResponse.success(memberInfoResponse);
     }
 
-    //2. 로그인
+    @ApiOperation("로그인")
     @PostMapping("login")
     public ApiResponse<LoginResponse> login(
         @Valid @RequestBody LoginRequest request
@@ -44,17 +42,17 @@ public class MemberController {
         return ApiResponse.success(memberLoginResponse);
     }
 
-    //3. 회원가입
+    @ApiOperation("회원가입")
     @PostMapping("signup")
     public ApiResponse<SignUpResponse> signUp(
         @Valid @RequestBody SignUpRequest request
     ) {
-        SignUpResponse res = memberFacadeService.signUp(request);
+        SignUpResponse signUpResponse = memberFacadeService.signUp(request);
 
-        return ApiResponse.success(res);
+        return ApiResponse.success(signUpResponse);
     }
 
-    //4. 회원가입 코드 검증
+    @ApiOperation("회원 가입 코드 검증")
     @GetMapping("code")
     public ApiResponse<ValidInviteResponse> validateSignUpCode(ValidInviteRequest req) {
         ValidInviteResponse response =
@@ -63,7 +61,7 @@ public class MemberController {
         return ApiResponse.success(response);
     }
 
-    //5. 회원탈퇴
+    @ApiOperation("회원 탈퇴")
     @DeleteMapping("/{memberId}")
     public ApiResponse<Void> withdraw(
         @PathVariable Long memberId
@@ -71,6 +69,15 @@ public class MemberController {
         memberFacadeService.withdraw(memberId);
 
         return ApiResponse.success();
+    }
+
+    @ApiOperation("액세스 토큰 재발급")
+    @PostMapping("/token")
+    public ApiResponse<TokenResponse> issueAccessToken(
+            @ApiIgnore MemberAuth memberAuth
+    ){
+        TokenResponse tokenResponse = memberFacadeService.getAccessToken(memberAuth.getMemberId());
+        return ApiResponse.success(tokenResponse);
     }
 
 }
