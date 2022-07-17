@@ -1,4 +1,4 @@
-package kr.mashup.branding.facade.schedule;
+package kr.mashup.branding.facade.recruitmentschedule;
 
 import java.util.List;
 
