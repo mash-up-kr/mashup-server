@@ -28,5 +28,4 @@ public class ContentFacadeService {
 
         return ContentResponse.from(content);
     }
-
 }

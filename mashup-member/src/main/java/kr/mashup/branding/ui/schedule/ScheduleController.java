@@ -1,16 +1,17 @@
 package kr.mashup.branding.ui.schedule;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.schedule.ScheduleFacadeService;
-import kr.mashup.branding.service.schedule.ScheduleService;
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.schedule.request.ScheduleCreateRequest;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/schedules")
@@ -18,16 +19,6 @@ import java.util.List;
 public class ScheduleController {
 
     private final ScheduleFacadeService scheduleFacadeService;
-
-    @ApiOperation("스케줄 생성")
-    @PostMapping("/")
-    public ApiResponse<ScheduleResponse> create(
-        @Valid @RequestBody ScheduleCreateRequest scheduleCreateRequest
-    ) {
-        ScheduleResponse res = scheduleFacadeService.create(scheduleCreateRequest);
-
-        return ApiResponse.success(res);
-    }
 
     @ApiOperation("스케줄 조회")
     @GetMapping("/{id}")

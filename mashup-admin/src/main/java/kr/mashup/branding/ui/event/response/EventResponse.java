@@ -1,14 +1,13 @@
 package kr.mashup.branding.ui.event.response;
 
-import kr.mashup.branding.domain.event.Event;
-import kr.mashup.branding.ui.attendance.response.AttendanceCodeResponse;
-import kr.mashup.branding.ui.content.response.ContentResponse;
-import lombok.Getter;
-import lombok.Value;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import kr.mashup.branding.domain.event.Event;
+import kr.mashup.branding.ui.content.response.ContentResponse;
+import lombok.Getter;
+import lombok.Value;
 
 @Getter
 @Value(staticConstructor = "of")
