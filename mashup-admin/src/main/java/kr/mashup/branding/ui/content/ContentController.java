@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.content.ContentFacadeService;
-import kr.mashup.branding.service.content.ContentService;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.content.request.ContentCreateRequest;
 import kr.mashup.branding.ui.content.response.ContentResponse;
@@ -19,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 public class ContentController {
 
     private final ContentFacadeService contentFacadeService;
-    private final ContentService contentService;
 
     @ApiOperation("이벤트 세부내용 생성")
     @PostMapping()

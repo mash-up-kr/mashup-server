@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.schedule.Schedule;
+import kr.mashup.branding.ui.event.response.EventResponse;
 import lombok.Getter;
 import lombok.Value;
 

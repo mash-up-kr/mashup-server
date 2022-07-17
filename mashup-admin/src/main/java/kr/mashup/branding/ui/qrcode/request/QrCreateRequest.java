@@ -1,9 +1,9 @@
 package kr.mashup.branding.ui.qrcode.request;
 
+import java.time.LocalDateTime;
+
 import lombok.Getter;
 import lombok.Value;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Value(staticConstructor = "of")

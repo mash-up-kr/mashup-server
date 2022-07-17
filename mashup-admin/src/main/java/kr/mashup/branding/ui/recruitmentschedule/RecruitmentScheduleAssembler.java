@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.schedule;
+package kr.mashup.branding.ui.recruitmentschedule;
 
 import org.springframework.stereotype.Component;
 
