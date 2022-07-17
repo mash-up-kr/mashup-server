@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.schedule;
+package kr.mashup.branding.ui.recruitmentschedule;
 
 import java.util.List;
 import java.util.stream.Collectors;

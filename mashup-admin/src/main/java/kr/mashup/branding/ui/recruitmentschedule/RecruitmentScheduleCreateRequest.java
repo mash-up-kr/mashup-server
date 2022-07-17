@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.schedule;
+package kr.mashup.branding.ui.recruitmentschedule;
 
 import java.time.LocalDateTime;
 
@@ -7,6 +7,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class RecruitmentScheduleUpdateRequest {
+public class RecruitmentScheduleCreateRequest {
+    private String eventName;
     private LocalDateTime eventOccurredAt;
 }

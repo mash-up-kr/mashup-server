@@ -32,6 +32,9 @@ import kr.mashup.branding.domain.recruitmentschedule.RecruitmentSchedule;
 import kr.mashup.branding.repository.recruitmentschedule.RecruitmentScheduleRepository;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.api.RecruitmentScheduleApi;
+import kr.mashup.branding.ui.recruitmentschedule.RecruitmentScheduleCreateRequest;
+import kr.mashup.branding.ui.recruitmentschedule.RecruitmentScheduleResponse;
+import kr.mashup.branding.ui.recruitmentschedule.RecruitmentScheduleUpdateRequest;
 
 @AutoConfigureMockMvc
 @Transactional
