@@ -1,5 +1,11 @@
 package kr.mashup.branding.facade.schedule;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.service.generation.GenerationService;
@@ -8,11 +14,6 @@ import kr.mashup.branding.ui.schedule.request.ScheduleCreateRequest;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
 import kr.mashup.branding.util.DateRange;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class ScheduleFacadeService {
     @Transactional
     public ScheduleResponse create(ScheduleCreateRequest req) {
         Generation generation =
-            generationService.getByIdOrThrow(req.getGenerationId());
+            generationService.getByNumberOrThrow(req.getGenerationNumber());
         DateRange dateRange = DateRange.of(
             req.getStartedAt(),
             req.getEndedAt()

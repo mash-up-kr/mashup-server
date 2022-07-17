@@ -21,5 +21,5 @@ public class ScheduleCreateRequest {
     private LocalDateTime endedAt;
 
     @NotNull
-    private Long generationId;
+    private Integer generationNumber;
 }
