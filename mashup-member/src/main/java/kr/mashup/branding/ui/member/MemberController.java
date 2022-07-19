@@ -34,22 +34,22 @@ public class MemberController {
 
     @ApiOperation("로그인")
     @PostMapping("login")
-    public ApiResponse<LoginResponse> login(
+    public ApiResponse<AccessResponse> login(
         @Valid @RequestBody LoginRequest request
     ) {
-        LoginResponse memberLoginResponse = memberFacadeService.login(request);
+        AccessResponse memberAccessResponse = memberFacadeService.login(request);
 
-        return ApiResponse.success(memberLoginResponse);
+        return ApiResponse.success(memberAccessResponse);
     }
 
     @ApiOperation("회원가입")
     @PostMapping("signup")
-    public ApiResponse<SignUpResponse> signUp(
+    public ApiResponse<AccessResponse> signUp(
         @Valid @RequestBody SignUpRequest request
     ) {
-        SignUpResponse signUpResponse = memberFacadeService.signUp(request);
+        AccessResponse accessResponse = memberFacadeService.signUp(request);
 
-        return ApiResponse.success(signUpResponse);
+        return ApiResponse.success(accessResponse);
     }
 
     @ApiOperation("회원 가입 코드 검증")

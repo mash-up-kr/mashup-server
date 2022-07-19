@@ -16,7 +16,6 @@ import kr.mashup.branding.ui.member.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public class MemberFacadeService {
     }
 
     @Transactional(readOnly = true)
-    public LoginResponse login(LoginRequest request) {
+    public AccessResponse login(LoginRequest request) {
         // Member 조회
         final String identification = request.getIdentification();
         final String password = request.getPassword();
@@ -45,7 +44,7 @@ public class MemberFacadeService {
         final Long memberId = member.getId();
         final String token = jwtService.encode(memberId);
 
-        return LoginResponse.of(
+        return AccessResponse.of(
             memberId,
             token,
             member.getName(),
@@ -56,7 +55,7 @@ public class MemberFacadeService {
 
 
     @Transactional
-    public SignUpResponse signUp(SignUpRequest request) {
+    public AccessResponse signUp(SignUpRequest request) {
         // 초대코드 조회
         final Platform platform = request.getPlatform();
         final String inviteCode = request.getInviteCode();
@@ -79,7 +78,8 @@ public class MemberFacadeService {
 
         final Member member = memberService.save(memberCreateDto);
         final String token = jwtService.encode(member.getId());
-        return SignUpResponse.of(token);
+
+        return AccessResponse.of(member.getId(), token, member.getName(), member.getPlatform().name(), member.getGeneration().getNumber());
     }
 
     @Transactional(readOnly = true)
