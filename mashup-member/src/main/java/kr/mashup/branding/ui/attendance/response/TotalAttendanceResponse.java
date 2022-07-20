@@ -1,5 +1,6 @@
 package kr.mashup.branding.ui.attendance.response;
 
+import kr.mashup.branding.domain.attendance.AttendanceCheckStatus;
 import kr.mashup.branding.domain.member.Platform;
 import lombok.Getter;
 import lombok.Value;
@@ -10,7 +11,8 @@ import java.util.List;
 @Value(staticConstructor = "of")
 public class TotalAttendanceResponse {
     List<PlatformInfo> platformInfos;
-    Boolean isEnd;
+    Integer eventNum;
+    AttendanceCheckStatus attendanceCheckStatus;
 
     @Getter
     @Value(staticConstructor = "of")
