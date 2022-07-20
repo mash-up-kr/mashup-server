@@ -2,7 +2,6 @@ package kr.mashup.branding.facade.attendance;
 
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.Attendance;
-import kr.mashup.branding.domain.attendance.AttendanceCheckStatus;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.attendance.AttendanceStatus;
 import kr.mashup.branding.domain.event.Event;
@@ -25,12 +24,12 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -123,8 +122,12 @@ public class AttendanceFacadeService {
             getActiveEventInfo(schedule.getEventList(), now);
         final Event event = eventInfo.getLeft();
         final Integer eventNum = eventInfo.getRight();
-        final AttendanceCheckStatus attendanceCheckStatus =
-            getAttendanceCheckStatus(event.getAttendanceCode(), now);
+
+        final Boolean isEnd = !DateUtil.isInTime(
+            event.getAttendanceCode().getStartedAt(),
+            event.getAttendanceCode().getEndedAt().plusMinutes(10),
+            now
+        );
 
         final Map<Platform, Long> totalCountGroupByPlatform =
             Arrays.stream(Platform.values()).collect(
@@ -162,23 +165,7 @@ public class AttendanceFacadeService {
                 })
                 .collect(Collectors.toList());
 
-        return TotalAttendanceResponse.of(
-            platformInfos,
-            eventNum,
-            attendanceCheckStatus);
-    }
-
-    private AttendanceCheckStatus getAttendanceCheckStatus(
-        AttendanceCode attendanceCode,
-        LocalDateTime now
-    ) {
-        if(now.isBefore(attendanceCode.getStartedAt()))
-            return AttendanceCheckStatus.BEFORE;
-
-        if(now.isAfter(attendanceCode.getEndedAt().plusMinutes(10)))
-            return AttendanceCheckStatus.AFTER;
-
-        return AttendanceCheckStatus.ACTIVE;
+        return TotalAttendanceResponse.of(platformInfos, eventNum, isEnd);
     }
 
     private Pair<Event, Integer> getActiveEventInfo(
