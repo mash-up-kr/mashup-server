@@ -28,6 +28,7 @@ dependencies {
 
     // auth
     implementation "com.auth0:java-jwt:$javaJwtVersion"
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // swagger
     implementation "io.springfox:springfox-boot-starter:$swaggerVersion"
