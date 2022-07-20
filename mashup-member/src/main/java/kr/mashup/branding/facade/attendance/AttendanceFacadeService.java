@@ -2,6 +2,7 @@ package kr.mashup.branding.facade.attendance;
 
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.Attendance;
+import kr.mashup.branding.domain.attendance.AttendanceCheckStatus;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.attendance.AttendanceStatus;
 import kr.mashup.branding.domain.event.Event;
@@ -24,10 +25,12 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -116,14 +119,12 @@ public class AttendanceFacadeService {
     public TotalAttendanceResponse getTotalAttendance(Long scheduleId) {
         final LocalDateTime now = LocalDateTime.now();
         final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
-        final Event activeEvent = getActiveEvent(schedule.getEventList(), now);
-        final AttendanceCode attendanceCode = activeEvent.getAttendanceCode();
-
-        final boolean isEndAttendance = !DateUtil.isInTime(
-            attendanceCode.getStartedAt(),
-            attendanceCode.getEndedAt().plusMinutes(10),
-            now
-        );
+        final Pair<Event, Integer> eventInfo =
+            getActiveEventInfo(schedule.getEventList(), now);
+        final Event event = eventInfo.getLeft();
+        final Integer eventNum = eventInfo.getRight();
+        final AttendanceCheckStatus attendanceCheckStatus =
+            getAttendanceCheckStatus(event.getAttendanceCode(), now);
 
         final Map<Platform, Long> totalCountGroupByPlatform =
             Arrays.stream(Platform.values()).collect(
@@ -134,7 +135,7 @@ public class AttendanceFacadeService {
             );
 
         final Map<Pair<Platform, AttendanceStatus>, Long> attendanceResult =
-            attendanceService.getAllByEvent(activeEvent).stream().collect(
+            attendanceService.getAllByEvent(event).stream().collect(
                 Collectors.groupingBy(
                     this::getGroupKeyOfPlatformAndStatus,
                     Collectors.counting()
@@ -161,17 +162,38 @@ public class AttendanceFacadeService {
                 })
                 .collect(Collectors.toList());
 
-        return TotalAttendanceResponse.of(platformInfos, isEndAttendance);
+        return TotalAttendanceResponse.of(
+            platformInfos,
+            eventNum,
+            attendanceCheckStatus);
     }
 
-    private Event getActiveEvent(List<Event> events, LocalDateTime now) {
+    private AttendanceCheckStatus getAttendanceCheckStatus(
+        AttendanceCode attendanceCode,
+        LocalDateTime now
+    ) {
+        if(now.isBefore(attendanceCode.getStartedAt()))
+            return AttendanceCheckStatus.BEFORE;
+
+        if(now.isAfter(attendanceCode.getEndedAt().plusMinutes(10)))
+            return AttendanceCheckStatus.AFTER;
+
+        return AttendanceCheckStatus.ACTIVE;
+    }
+
+    private Pair<Event, Integer> getActiveEventInfo(
+        List<Event> events,
+        LocalDateTime now
+    ) {
+        int eventNum = 1;
         for (Event event : events) {
             final boolean isIn = DateUtil.isInTime(
                 event.getStartedAt(),
                 event.getEndedAt(),
                 now
             );
-            if (isIn) return event;
+            if (isIn) return Pair.of(event, eventNum);
+            eventNum++;
         }
         throw new BadRequestException(ResultCode.EVENT_NOT_FOUND);
     }
