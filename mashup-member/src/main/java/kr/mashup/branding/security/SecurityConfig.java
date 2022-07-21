@@ -26,8 +26,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    public static final String[] AUTHORITY_NAMES = Arrays.stream(Platform.values()).map(Enum::name)
-        .collect(Collectors.toList()).toArray(new String[Position.values().length]);
 
     private final ObjectMapper objectMapper;
 
@@ -37,8 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/api/v1/members/signup").permitAll()
             .antMatchers("/api/v1/members/login").permitAll()
-            .antMatchers("/api/v1/members/code").permitAll()
-            .anyRequest().hasAnyAuthority(AUTHORITY_NAMES);
+            .antMatchers("/api/v1/members/code").permitAll();
         http.cors().configurationSource(corsConfigurationSource());
         http.csrf().disable()
             .logout().disable()

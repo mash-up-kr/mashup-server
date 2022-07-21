@@ -54,6 +54,7 @@ public enum ResultCode {
     ADMIN_MEMBER_NO_UPDATE_PERMISSION("수정 권한이 없는 관리자 멤버입니다."),
 
     // Member (회원)
+    MEMBER_DUPLICATED_IDENTIFICATION("중복되는 아이디입니다."),
     MEMBER_NOT_FOUND("회원을 찾을 수 없습니다."),
     MEMBER_NOT_MATCH_PASSWORD("비밀번호가 일치하지 않습니다."),
     MEMBER_INVALID_INVITE("잘못된 가입 코드입니다."),

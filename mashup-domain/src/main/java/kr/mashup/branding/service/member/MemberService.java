@@ -1,5 +1,7 @@
 package kr.mashup.branding.service.member;
 
+import kr.mashup.branding.domain.ResultCode;
+import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
@@ -12,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,12 @@ public class MemberService {
 
     //1. 회원 생성
     public Member save(MemberCreateDto memberCreateDto) {
+
+        Boolean isExist = memberRepository.existsByIdentification(memberCreateDto.getIdentification());
+        if(isExist){
+            throw new BadRequestException(ResultCode.MEMBER_DUPLICATED_IDENTIFICATION);
+        }
+
         Member member = Member.of(
             memberCreateDto.getName(),
             memberCreateDto.getIdentification(),
@@ -43,6 +52,9 @@ public class MemberService {
     public Member getOrThrowByIdentification(String identification) {
         return memberRepository.findByIdentification(identification)
             .orElseThrow(MemberNotFoundException::new);
+    }
+    public boolean isDuplicatedIdentification(String identification){
+        return memberRepository.existsByIdentification(identification);
     }
 
     public Member getOrThrowByIdentificationAndPassword(
