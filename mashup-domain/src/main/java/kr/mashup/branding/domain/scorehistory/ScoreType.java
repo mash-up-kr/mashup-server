@@ -14,18 +14,19 @@ public enum ScoreType {
     MASHUP_CONTENT_WRITE("Mah-Up 콘텐츠 글 작성", 0.5),
     MASHUP_LEADER("회장", 999.0),
     MASHUP_SUBLEADER("부회장", 999.0),
+    ETC("기타", 0.0),
     ;
 
-    private final String description;
+    private final String name;
     private final Double score;
 
-    ScoreType(String description, Double score) {
-        this.description = description;
+    ScoreType(String name, Double score) {
+        this.name = name;
         this.score = score;
     }
 
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
     public Double getScore() {
