@@ -25,7 +25,7 @@ public class SignUpRequest {
     @NotBlank(message = "가입 코드는 비어있을 수 없습니다.")
     private String inviteCode;
 
-    @AssertTrue
+    @AssertTrue(message = "개인정보 이용에 동의해야 가입할 수 있습니다.")
     private Boolean privatePolicyAgreed;
 
 }

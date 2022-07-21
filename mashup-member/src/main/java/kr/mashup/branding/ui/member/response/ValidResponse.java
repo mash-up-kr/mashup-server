@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(staticName = "of")
-public class ValidInviteResponse {
-    private boolean isValidInviteCode;
+public class ValidResponse {
+    private boolean isValid;
 }

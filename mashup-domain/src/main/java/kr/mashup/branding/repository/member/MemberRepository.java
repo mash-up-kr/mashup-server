@@ -14,4 +14,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByIdentification(String identification);
     Long countByPlatform(Platform platform);
     List<Member> findAllByPlatform(Platform platform);
+    Boolean existsByIdentification(String identification);
 }

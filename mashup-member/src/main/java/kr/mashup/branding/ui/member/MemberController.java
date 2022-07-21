@@ -32,6 +32,15 @@ public class MemberController {
         return ApiResponse.success(memberInfoResponse);
     }
 
+    @ApiOperation("ID 중복 조회")
+    @GetMapping("{id}")
+    public ApiResponse<ValidResponse> isDuplicatedId(
+        @PathVariable String id
+    ){
+        ValidResponse response = memberFacadeService.checkDuplicatedIdentification(id);
+
+        return ApiResponse.success(response);
+    }
     @ApiOperation("로그인")
     @PostMapping("login")
     public ApiResponse<AccessResponse> login(
@@ -54,8 +63,8 @@ public class MemberController {
 
     @ApiOperation("회원 가입 코드 검증")
     @GetMapping("code")
-    public ApiResponse<ValidInviteResponse> validateSignUpCode(ValidInviteRequest req) {
-        ValidInviteResponse response =
+    public ApiResponse<ValidResponse> validateSignUpCode(ValidInviteRequest req) {
+        ValidResponse response =
             memberFacadeService.validateInviteCode(req);
 
         return ApiResponse.success(response);

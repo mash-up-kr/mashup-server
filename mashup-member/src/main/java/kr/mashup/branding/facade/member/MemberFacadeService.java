@@ -83,12 +83,12 @@ public class MemberFacadeService {
     }
 
     @Transactional(readOnly = true)
-    public ValidInviteResponse validateInviteCode(ValidInviteRequest request) {
+    public ValidResponse validateInviteCode(ValidInviteRequest request) {
         boolean isValidCode = inviteService.getOrNull(request.getInviteCode())
             .map(invite -> invite.getPlatform().equals(request.getPlatform()))
             .orElse(false);
 
-        return ValidInviteResponse.of(isValidCode);
+        return ValidResponse.of(isValidCode);
     }
 
     @Transactional
@@ -99,5 +99,11 @@ public class MemberFacadeService {
     public TokenResponse getAccessToken(Long memberId) {
         final String token = jwtService.encode(memberId);
         return TokenResponse.of(token);
+    }
+
+    @Transactional(readOnly = true)
+    public ValidResponse checkDuplicatedIdentification(String identification) {
+        boolean isExist = memberService.isDuplicatedIdentification(identification);
+        return ValidResponse.of(!isExist);
     }
 }
