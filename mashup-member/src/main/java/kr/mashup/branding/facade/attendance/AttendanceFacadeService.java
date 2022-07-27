@@ -14,9 +14,7 @@ import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.event.EventService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.schedule.ScheduleService;
-import kr.mashup.branding.ui.attendance.response.AttendanceCheckResponse;
-import kr.mashup.branding.ui.attendance.response.PlatformAttendanceResponse;
-import kr.mashup.branding.ui.attendance.response.TotalAttendanceResponse;
+import kr.mashup.branding.ui.attendance.response.*;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -234,7 +232,7 @@ public class AttendanceFacadeService {
         return PlatformAttendanceResponse.of(platform, memberInfos);
     }
 
-    private List<PlatformAttendanceResponse.AttendanceInfo> getAttendanceInfoByMember(
+    private List<AttendanceInfo> getAttendanceInfoByMember(
         Member member,
         List<Event> events
     ) {
@@ -250,11 +248,25 @@ public class AttendanceFacadeService {
                 status = AttendanceStatus.ABSENT;
             }
 
-            return PlatformAttendanceResponse.AttendanceInfo.of(
+            return AttendanceInfo.of(
                 status,
                 attendanceAt
             );
         }).collect(Collectors.toList());
     }
 
+
+    @Transactional(readOnly = true)
+    public PersonalAttendanceResponse getPersonalAttendance(
+        Long memberId,
+        Long scheduleId
+    ) {
+        final Member member = memberService.getOrThrowById(memberId);
+        final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
+
+        final List<AttendanceInfo> attendanceInfos =
+            getAttendanceInfoByMember(member, schedule.getEventList());
+
+        return PersonalAttendanceResponse.of(member.getName(), attendanceInfos);
+    }
 }

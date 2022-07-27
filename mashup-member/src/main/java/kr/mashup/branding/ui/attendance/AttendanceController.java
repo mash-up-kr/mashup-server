@@ -6,6 +6,7 @@ import kr.mashup.branding.facade.attendance.AttendanceFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.attendance.response.AttendanceCheckResponse;
+import kr.mashup.branding.ui.attendance.response.PersonalAttendanceResponse;
 import kr.mashup.branding.ui.attendance.response.PlatformAttendanceResponse;
 import kr.mashup.branding.ui.attendance.response.TotalAttendanceResponse;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,20 @@ public class AttendanceController {
     ) {
         PlatformAttendanceResponse res =
             attendanceFacadeService.getPlatformAttendance(platformName, scheduleId);
+        return ApiResponse.success(res);
+    }
+
+    @ApiOperation("세미나별 개인 출석조회")
+    @GetMapping("/schedules/{scheduleId}")
+    public ApiResponse<PersonalAttendanceResponse> getPersonal(
+        @ApiIgnore MemberAuth auth,
+        @PathVariable Long scheduleId
+    ) {
+        PersonalAttendanceResponse res =
+            attendanceFacadeService.getPersonalAttendance(
+                auth.getMemberId(),
+                scheduleId
+            );
         return ApiResponse.success(res);
     }
 }
