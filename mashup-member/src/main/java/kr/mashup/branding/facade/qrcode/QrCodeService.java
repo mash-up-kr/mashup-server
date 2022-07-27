@@ -26,7 +26,9 @@ public class QrCodeService {
             throw new BadRequestException(ResultCode.ATTENDANCE_CODE_NOT_FOUND);
         }
 
-        final String qrCodeUrl = QrGenerator.generate(attendanceCode.getCode());
+        final String qrCodeUrl = QrGenerator.generate(
+            attendanceCode.getEventId() + "," + attendanceCode.getCode()
+        );
 
         return QrCodeResponse.of(qrCodeUrl);
     }
