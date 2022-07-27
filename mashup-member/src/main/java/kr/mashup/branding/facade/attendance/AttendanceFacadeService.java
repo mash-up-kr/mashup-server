@@ -14,7 +14,6 @@ import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.event.EventService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.schedule.ScheduleService;
-import kr.mashup.branding.ui.attendance.reqeust.AttendanceCheckRequest;
 import kr.mashup.branding.ui.attendance.response.AttendanceCheckResponse;
 import kr.mashup.branding.ui.attendance.response.PlatformAttendanceResponse;
 import kr.mashup.branding.ui.attendance.response.TotalAttendanceResponse;
@@ -44,17 +43,21 @@ public class AttendanceFacadeService {
      * 출석 체크
      */
     @Transactional
-    public AttendanceCheckResponse checkAttendance(AttendanceCheckRequest req) {
+    public AttendanceCheckResponse checkAttendance(
+        Long memberId,
+        String checkingCode
+    ) {
         final LocalDateTime checkTime = LocalDateTime.now();
+        final Pair<Long, String> checkingInfo = parsingCheckingCode(checkingCode);
+        final Long eventId = checkingInfo.getLeft();
+        final String code = checkingInfo.getRight();
 
-        final Member member = memberService.getOrThrowById(req.getMemberId());
-        final Event event = eventService.getByIdOrThrow(req.getEventId());
+        final Member member = memberService.getOrThrowById(memberId);
+        final Event event = eventService.getByIdOrThrow(eventId);
         final AttendanceCode attendanceCode = event.getAttendanceCode();
 
-        if (attendanceCode == null) {
-            throw new BadRequestException(ResultCode.ATTENDANCE_CODE_NOT_FOUND);
-        }
         validEventTime(event.getStartedAt(), event.getEndedAt(), checkTime);
+        validAttendanceCode(attendanceCode, code);
         validAlreadyCheckAttendance(member, event);
 
         // 출석 체크
@@ -65,6 +68,21 @@ public class AttendanceFacadeService {
         );
 
         return AttendanceCheckResponse.from(attendance);
+    }
+
+    private Pair<Long, String> parsingCheckingCode(String checkingCode) {
+        String[] parsedCode = checkingCode.split(",");
+        return Pair.of(Long.parseLong(parsedCode[0]), parsedCode[1]);
+    }
+
+    private void validAttendanceCode(AttendanceCode attendanceCode, String code) {
+        if (attendanceCode == null) {
+            throw new BadRequestException(ResultCode.ATTENDANCE_CODE_NOT_FOUND);
+        }
+
+        if (attendanceCode.getCode().equals(code)) {
+            throw new BadRequestException(ResultCode.ATTENDANCE_CODE_INVALID);
+        }
     }
 
     private void validEventTime(

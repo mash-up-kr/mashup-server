@@ -5,7 +5,6 @@ import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.facade.attendance.AttendanceFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.attendance.reqeust.AttendanceCheckRequest;
 import kr.mashup.branding.ui.attendance.response.AttendanceCheckResponse;
 import kr.mashup.branding.ui.attendance.response.PlatformAttendanceResponse;
 import kr.mashup.branding.ui.attendance.response.TotalAttendanceResponse;
@@ -21,13 +20,15 @@ public class AttendanceController {
     private final AttendanceFacadeService attendanceFacadeService;
 
     @ApiOperation("출석 체크")
-    @PostMapping("/check/{eventId}")
+    @PostMapping("/check")
     public ApiResponse<AttendanceCheckResponse> check(
             @ApiIgnore MemberAuth auth,
-            @PathVariable Long eventId
+            @RequestParam String checkingCode
     ) {
-        AttendanceCheckRequest req = AttendanceCheckRequest.of(auth.getMemberId(), eventId);
-        AttendanceCheckResponse res = attendanceFacadeService.checkAttendance(req);
+        AttendanceCheckResponse res = attendanceFacadeService.checkAttendance(
+            auth.getMemberId(),
+            checkingCode
+        );
         return ApiResponse.success(res);
     }
 
