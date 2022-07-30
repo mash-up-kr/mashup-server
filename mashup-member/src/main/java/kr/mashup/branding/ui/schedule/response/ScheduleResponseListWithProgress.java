@@ -11,7 +11,7 @@ public class ScheduleResponseListWithProgress {
 
     Progress progress;
 
-    Long dateCount;
+    Integer dateCount;
 
     List<ScheduleResponse> scheduleList;
 }
