@@ -16,6 +16,8 @@ public class ScheduleResponse {
 
     String name;
 
+    Integer datCount;
+
     LocalDateTime startedAt;
 
     LocalDateTime endedAt;
@@ -24,10 +26,11 @@ public class ScheduleResponse {
 
     List<EventResponse> eventList;
 
-    public static ScheduleResponse from(Schedule schedule) {
+    public static ScheduleResponse from(Schedule schedule, Integer dayCount) {
         return ScheduleResponse.of(
             schedule.getId(),
             schedule.getName(),
+            dayCount,
             schedule.getStartedAt(),
             schedule.getEndedAt(),
             schedule.getGeneration().getNumber(),

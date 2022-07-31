@@ -7,7 +7,7 @@ import lombok.Value;
 
 @Getter
 @Value(staticConstructor = "of")
-public class ScheduleResponseListWithProgress {
+public class ScheduleResponseList {
 
     Progress progress;
 
