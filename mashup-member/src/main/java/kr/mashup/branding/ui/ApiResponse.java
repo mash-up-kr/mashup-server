@@ -24,57 +24,57 @@ public class ApiResponse<T> {
         this.page = page;
     }
 
-    public static <T> ApiResponse<T> success() {
+    public static ApiResponse<EmptyResponse> success() {
         return new ApiResponse<>(
-            ResultCode.SUCCESS,
-            ResultCode.SUCCESS.getMessage(),
-            null,
-            null
+                ResultCode.SUCCESS,
+                ResultCode.SUCCESS.getMessage(),
+                EmptyResponse.of(),
+                null
         );
     }
 
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(
-            ResultCode.SUCCESS,
-            ResultCode.SUCCESS.getMessage(),
-            data,
-            null
+                ResultCode.SUCCESS,
+                ResultCode.SUCCESS.getMessage(),
+                data,
+                null
         );
     }
 
     public static <T> ApiResponse<List<T>> success(List<T> data) {
         return new ApiResponse<>(
-            ResultCode.SUCCESS,
-            ResultCode.SUCCESS.getMessage(),
-            data,
-            null
+                ResultCode.SUCCESS,
+                ResultCode.SUCCESS.getMessage(),
+                data,
+                null
         );
     }
 
     public static <T> ApiResponse<List<T>> success(Page<T> data) {
         return new ApiResponse<>(
-            ResultCode.SUCCESS,
-            ResultCode.SUCCESS.getMessage(),
-            data.getContent(),
-            PageResponse.from(data)
+                ResultCode.SUCCESS,
+                ResultCode.SUCCESS.getMessage(),
+                data.getContent(),
+                PageResponse.from(data)
         );
     }
 
     public static <T> ApiResponse<T> failure(ResultCode resultCode) {
         return new ApiResponse<>(
-            resultCode,
-            resultCode.getMessage(),
-            null,
-            null
+                resultCode,
+                resultCode.getMessage(),
+                null,
+                null
         );
     }
 
     public static <T> ApiResponse<T> failure(ResultCode resultCode, String message) {
         return new ApiResponse<>(
-            resultCode,
-            message,
-            null,
-            null
+                resultCode,
+                message,
+                null,
+                null
         );
     }
 
@@ -93,9 +93,9 @@ public class ApiResponse<T> {
 
         public static PageResponse from(Page<?> page) {
             return new PageResponse(
-                page.getNumber(),
-                page.getSize(),
-                (int)page.getTotalElements()
+                    page.getNumber(),
+                    page.getSize(),
+                    (int) page.getTotalElements()
             );
         }
     }
