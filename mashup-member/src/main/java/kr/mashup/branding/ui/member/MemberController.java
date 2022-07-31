@@ -8,6 +8,7 @@ import kr.mashup.branding.ui.member.request.LoginRequest;
 import kr.mashup.branding.ui.member.request.SignUpRequest;
 import kr.mashup.branding.ui.member.request.ValidInviteRequest;
 import kr.mashup.branding.ui.member.response.*;
+import kr.mashup.branding.util.EmptyResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -71,13 +72,13 @@ public class MemberController {
     }
 
     @ApiOperation("회원 탈퇴")
-    @DeleteMapping("/{memberId}")
-    public ApiResponse<Void> withdraw(
-        @PathVariable Long memberId
+    @DeleteMapping
+    public ApiResponse<EmptyResponse> withdraw(
+            @ApiIgnore MemberAuth memberAuth
     ) {
-        memberFacadeService.withdraw(memberId);
+        memberFacadeService.withdraw(memberAuth.getMemberId());
 
-        return ApiResponse.success();
+        return ApiResponse.success(EmptyResponse.of());
     }
 
     @ApiOperation("액세스 토큰 재발급")
