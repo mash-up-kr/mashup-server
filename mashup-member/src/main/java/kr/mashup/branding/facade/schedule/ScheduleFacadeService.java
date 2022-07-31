@@ -25,9 +25,9 @@ public class ScheduleFacadeService {
 
     public ScheduleResponse getById(Long id) {
         Schedule schedule = scheduleService.getByIdOrThrow(id);
-        Integer dayCount = countDate(schedule.getStartedAt(), LocalDateTime.now());
+        Integer dateCount = countDate(schedule.getStartedAt(), LocalDateTime.now());
 
-        return ScheduleResponse.from(schedule, dayCount);
+        return ScheduleResponse.from(schedule, dateCount);
     }
 
     public ScheduleResponseList getByGenerationNum(Integer number) {
@@ -64,8 +64,8 @@ public class ScheduleFacadeService {
         Integer dateCount = 0;
 
         for (ScheduleResponse scheduleResponse : scheduleResponseList) {
-            if (scheduleResponse.getDatCount() > 0) {
-                dateCount = scheduleResponse.getDatCount();
+            if (scheduleResponse.getDateCount() > 0) {
+                dateCount = scheduleResponse.getDateCount();
                 break;
             }
         }
