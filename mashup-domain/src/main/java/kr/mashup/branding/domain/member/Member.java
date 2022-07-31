@@ -29,7 +29,7 @@ public class Member extends BaseEntity {
     private static final int MIN_ID_LENGTH = 5;
     private static final int MAX_ID_LENGTH = 15;
 
-    @Size(min = 2, max = 4, message = "이름은 두글자 이상 네글자 이하이어야 합니다.")
+    //@Size(min = 2, max = 4, message = "이름은 두글자 이상 네글자 이하이어야 합니다.")
     private String name;
 
     @Size(min = 5, max = 15, message = "아이디는 "+MIN_ID_LENGTH+"글자에서 "+MAX_ID_LENGTH+"글자이어야 합니다.")
@@ -130,12 +130,12 @@ public class Member extends BaseEntity {
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("이름이 비어있을 수 없습니다.");
         }
-        if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("이름은 "+MIN_NAME_LENGTH+"글자에서 "+MAX_NAME_LENGTH+"글자이어야 합니다.");
-        }
-        if (!Pattern.matches("^[가-힣]*$", name)) {
-            throw new IllegalArgumentException("이름은 완성된 한글로만 이루어져야 합니다.");
-        }
+//        if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
+//            throw new IllegalArgumentException("이름은 "+MIN_NAME_LENGTH+"글자에서 "+MAX_NAME_LENGTH+"글자이어야 합니다.");
+//        }
+//        if (!Pattern.matches("^[가-힣]*$", name)) {
+//            throw new IllegalArgumentException("이름은 완성된 한글로만 이루어져야 합니다.");
+//        }
     }
 
     private void checkAgreePrivacyPolicy(Boolean privatePolicyAgreed) {

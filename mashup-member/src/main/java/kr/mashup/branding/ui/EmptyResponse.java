@@ -1,4 +1,4 @@
-package kr.mashup.branding.util;
+package kr.mashup.branding.ui;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.NoArgsConstructor;

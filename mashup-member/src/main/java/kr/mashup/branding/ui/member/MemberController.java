@@ -8,7 +8,7 @@ import kr.mashup.branding.ui.member.request.LoginRequest;
 import kr.mashup.branding.ui.member.request.SignUpRequest;
 import kr.mashup.branding.ui.member.request.ValidInviteRequest;
 import kr.mashup.branding.ui.member.response.*;
-import kr.mashup.branding.util.EmptyResponse;
+import kr.mashup.branding.ui.EmptyResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -78,7 +78,7 @@ public class MemberController {
     ) {
         memberFacadeService.withdraw(memberAuth.getMemberId());
 
-        return ApiResponse.success(EmptyResponse.of());
+        return ApiResponse.success();
     }
 
     @ApiOperation("액세스 토큰 재발급")
