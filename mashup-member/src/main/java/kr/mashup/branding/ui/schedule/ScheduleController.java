@@ -1,7 +1,5 @@
 package kr.mashup.branding.ui.schedule;
 
-import java.util.List;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.schedule.ScheduleFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
+import kr.mashup.branding.ui.schedule.response.ScheduleResponseList;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -30,10 +29,10 @@ public class ScheduleController {
 
     @ApiOperation("기수로 스케줄 조회")
     @GetMapping("/generations/{generationNumber}")
-    public ApiResponse<List<ScheduleResponse>> getByGenerationNumber(
+    public ApiResponse<ScheduleResponseList> getByGenerationNumber(
         @PathVariable Integer generationNumber
     ) {
-        List<ScheduleResponse> res =
+        ScheduleResponseList res =
             scheduleFacadeService.getByGenerationNum(generationNumber);
 
         return ApiResponse.success(res);
