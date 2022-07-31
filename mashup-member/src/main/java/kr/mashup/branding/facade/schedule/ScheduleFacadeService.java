@@ -13,8 +13,7 @@ import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.schedule.ScheduleService;
 import kr.mashup.branding.ui.schedule.response.Progress;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
-import kr.mashup.branding.ui.schedule.response.ScheduleResponseListWithProgress;
-import kr.mashup.branding.util.DateUtil;
+import kr.mashup.branding.ui.schedule.response.ScheduleResponseList;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,55 +25,62 @@ public class ScheduleFacadeService {
 
     public ScheduleResponse getById(Long id) {
         Schedule schedule = scheduleService.getByIdOrThrow(id);
+        Integer dayCount = countDate(schedule.getStartedAt(), LocalDateTime.now());
 
-        return ScheduleResponse.from(schedule);
+        return ScheduleResponse.from(schedule, dayCount);
     }
 
-    public ScheduleResponseListWithProgress getByGenerationNum(Integer number) {
+    public ScheduleResponseList getByGenerationNum(Integer number) {
         Generation generation = generationService.getByNumberOrThrow(number);
 
         List<Schedule> scheduleList = scheduleService.getByGeneration(generation);
-        Progress progress;
-        Integer dateCount = calculateDateCount(scheduleList);
 
-        if (scheduleList.size() == 0) {
-            progress = Progress.NOT_REGISTER;
-        } else if (dateCount == -1L) {
-            progress = Progress.DONE;
-        } else {
-            progress = Progress.ON_GOING;
-        }
-
+        LocalDateTime currentTIme = LocalDateTime.now();
         List<ScheduleResponse> scheduleResponseList = scheduleList.stream()
-            .map(ScheduleResponse::from)
+            .map(schedule -> ScheduleResponse.from(
+                schedule,
+                countDate(schedule.getStartedAt(), currentTIme)
+            ))
             .collect(Collectors.toList());
 
-        return ScheduleResponseListWithProgress.of(progress, dateCount, scheduleResponseList);
+        Progress progress;
+        Integer dateCount = pickNextScheduleDate(scheduleResponseList);
+
+        if (scheduleList.size() == 0) {
+            progress = Progress.NOT_REGISTERED;
+        } else {
+            progress = checkScheduleProgress(dateCount);
+        }
+
+        return ScheduleResponseList.of(progress, dateCount, scheduleResponseList);
     }
 
-    private Integer calculateDateCount(List<Schedule> scheduleList) {
-        LocalDateTime currentTime = LocalDateTime.now();
-        Integer dateCount = -1;
+    private Integer countDate(LocalDateTime startedAt, LocalDateTime currentTime) {
 
-        int listSize = scheduleList.size();
-        for (int i = listSize - 1; i > 0; i--) {
-            LocalDateTime startedAt = scheduleList.get(i).getStartedAt();
-            LocalDateTime endedAt = scheduleList.get(i).getEndedAt();
+        return Period.between(currentTime.toLocalDate(), startedAt.toLocalDate()).getDays();
+    }
 
-            if (isFinishedSchedule(currentTime, endedAt) || isOngoingSchedule(startedAt, endedAt, currentTime)) {
+    private Integer pickNextScheduleDate(List<ScheduleResponse> scheduleResponseList) {
+        Integer dateCount = 0;
+
+        for (ScheduleResponse scheduleResponse : scheduleResponseList) {
+            if (scheduleResponse.getDatCount() > 0) {
+                dateCount = scheduleResponse.getDatCount();
                 break;
             }
-            dateCount = Period.between(currentTime.toLocalDate(), startedAt.toLocalDate()).getDays();
         }
 
         return dateCount;
     }
 
-    private Boolean isFinishedSchedule(LocalDateTime now, LocalDateTime endedAt) {
-        return now.isAfter(endedAt);
-    }
+    private Progress checkScheduleProgress(Integer dateCount) {
+        Progress progress;
+        if (dateCount == 0) {
+            progress = Progress.DONE;
+        } else {
+            progress = Progress.ON_GOING;
+        }
 
-    private Boolean isOngoingSchedule(LocalDateTime startedAt, LocalDateTime endedAt, LocalDateTime now) {
-        return DateUtil.isInTime(startedAt, endedAt, now);
+        return progress;
     }
 }

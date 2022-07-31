@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.schedule.ScheduleFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
-import kr.mashup.branding.ui.schedule.response.ScheduleResponseListWithProgress;
+import kr.mashup.branding.ui.schedule.response.ScheduleResponseList;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -29,10 +29,10 @@ public class ScheduleController {
 
     @ApiOperation("기수로 스케줄 조회")
     @GetMapping("/generations/{generationNumber}")
-    public ApiResponse<ScheduleResponseListWithProgress> getByGenerationNumber(
+    public ApiResponse<ScheduleResponseList> getByGenerationNumber(
         @PathVariable Integer generationNumber
     ) {
-        ScheduleResponseListWithProgress res =
+        ScheduleResponseList res =
             scheduleFacadeService.getByGenerationNum(generationNumber);
 
         return ApiResponse.success(res);
