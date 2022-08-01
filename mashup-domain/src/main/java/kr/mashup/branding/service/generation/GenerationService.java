@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -23,6 +25,10 @@ public class GenerationService {
     public Generation getByNumberOrThrow(Integer number) {
         return generationRepository.findByNumber(number)
             .orElseThrow(() -> new NotFoundException(ResultCode.GENERATION_NOT_FOUND));
+    }
+
+    public List<Generation> getAll() {
+        return generationRepository.findAll();
     }
 
 }

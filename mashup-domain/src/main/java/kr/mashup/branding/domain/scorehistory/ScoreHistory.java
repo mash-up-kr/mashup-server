@@ -1,16 +1,5 @@
 package kr.mashup.branding.domain.scorehistory;
 
-import java.time.LocalDate;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
@@ -18,20 +7,32 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScoreHistory extends BaseEntity {
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private ScoreType scoreType;
+    @NotBlank
+    private String type;
 
     @NotBlank
-    private String scheduleName;
+    private String name;
 
     @NotNull
-    private LocalDate date;
+    private Double score;
+
+    @NotNull
+    private LocalDateTime date;
+
+    private String scheduleName;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "generation_id")
@@ -41,21 +42,19 @@ public class ScoreHistory extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public static ScoreHistory of(
-        ScoreType scoreType,
-        String scheduleName,
-        LocalDate date,
-        Generation generation,
-        Member member) {
+    public static ScoreHistory of(String type, String name, Double score, LocalDateTime date, String scheduleName,
+                                  Generation generation, Member member) {
 
-        return new ScoreHistory(scoreType, scheduleName, date, generation, member);
+        return new ScoreHistory(type, name, score, date, scheduleName, generation, member);
     }
 
-    private ScoreHistory(ScoreType scoreType, String scheduleName, LocalDate date, Generation generation, Member member
-    ) {
-        this.scoreType = scoreType;
-        this.scheduleName = scheduleName;
+    private ScoreHistory(String type, String name, Double score, LocalDateTime date, String scheduleName,
+                         Generation generation, Member member) {
+        this.type = type;
+        this.name = name;
+        this.score = score;
         this.date = date;
+        this.scheduleName = scheduleName;
         this.generation = generation;
         this.member = member;
     }

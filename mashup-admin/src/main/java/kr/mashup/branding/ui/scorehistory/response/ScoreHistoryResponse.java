@@ -1,10 +1,10 @@
 package kr.mashup.branding.ui.scorehistory.response;
 
-import java.time.LocalDate;
-
 import kr.mashup.branding.domain.scorehistory.ScoreHistory;
 import lombok.Getter;
 import lombok.Value;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Value(staticConstructor = "of")
@@ -14,19 +14,22 @@ public class ScoreHistoryResponse {
 
     String scoreType;
 
-    String scheduleName;
-
-    LocalDate date;
+    String scoreName;
 
     Double score;
+
+    LocalDateTime date;
+
+    String scheduleName;
 
     public static ScoreHistoryResponse from(ScoreHistory scoreHistory) {
         return ScoreHistoryResponse.of(
             scoreHistory.getId(),
-            scoreHistory.getScoreType().getDescription(),
-            scoreHistory.getScheduleName(),
+            scoreHistory.getType(),
+            scoreHistory.getName(),
+            scoreHistory.getScore(),
             scoreHistory.getDate(),
-            scoreHistory.getScoreType().getScore()
+            scoreHistory.getScheduleName()
         );
     }
 }
