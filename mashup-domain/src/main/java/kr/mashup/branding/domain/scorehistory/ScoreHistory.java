@@ -13,12 +13,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScoreHistory extends BaseEntity {
+
+    @NotBlank
+    private String type;
 
     @NotBlank
     private String name;
@@ -27,7 +30,7 @@ public class ScoreHistory extends BaseEntity {
     private Double score;
 
     @NotNull
-    private LocalDate date;
+    private LocalDateTime date;
 
     private String scheduleName;
 
@@ -39,14 +42,15 @@ public class ScoreHistory extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public static ScoreHistory of(String name, Double score, LocalDate date, String scheduleName,
+    public static ScoreHistory of(String type, String name, Double score, LocalDateTime date, String scheduleName,
                                   Generation generation, Member member) {
 
-        return new ScoreHistory(name, score, date, scheduleName, generation, member);
+        return new ScoreHistory(type, name, score, date, scheduleName, generation, member);
     }
 
-    private ScoreHistory(String name, Double score, LocalDate date, String scheduleName,
+    private ScoreHistory(String type, String name, Double score, LocalDateTime date, String scheduleName,
                          Generation generation, Member member) {
+        this.type = type;
         this.name = name;
         this.score = score;
         this.date = date;

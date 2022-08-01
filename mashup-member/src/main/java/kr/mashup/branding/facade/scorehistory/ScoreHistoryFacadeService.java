@@ -48,6 +48,7 @@ public class ScoreHistoryFacadeService {
         scoreHistories.forEach(scoreHistory ->
             scoreDetails.add(
                 ScoreHistoryResponse.ScoreDetail.of(
+                    scoreHistory.getType(),
                     scoreHistory.getName(),
                     scoreHistory.getScore(),
                     totalScore.updateAndGet(v -> v + scoreHistory.getScore()),

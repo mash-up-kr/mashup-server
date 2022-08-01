@@ -38,7 +38,7 @@ public class ScoreHistoryFacadeService {
         Member member = memberService.getOrThrowById(req.getMemberId());
 
         ScoreHistory scoreHistory = scoreHistoryService.save(
-            ScoreHistory.of(name, score, req.getDate(), req.getScheduleName(), generation, member)
+            ScoreHistory.of(req.getScoreType().name(), name, score, req.getDate(), req.getScheduleName(), generation, member)
         );
 
         return ScoreHistoryResponse.from(scoreHistory);
