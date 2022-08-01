@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -37,6 +38,7 @@ public class ScoreHistoryFacadeService {
                     scoreHistoryResponses.add(createScoreHistory(scoreHistories, generation.getNumber()));
                 }
             );
+        Collections.reverse(scoreHistoryResponses);
 
         return scoreHistoryResponses;
     }
@@ -56,6 +58,7 @@ public class ScoreHistoryFacadeService {
                     scoreHistory.getScheduleName()
                 )
             ));
+        Collections.reverse(scoreDetails);
 
         return ScoreHistoryResponse.of(generationNumber, totalScore.get(), scoreDetails);
     }
