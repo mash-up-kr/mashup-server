@@ -166,11 +166,13 @@ public class AttendanceFacadeService {
                 .map(entry -> {
                     Platform platform = entry.getKey();
                     Long totalCount = entry.getValue();
-                    Long attendanceCount = attendanceResult.get(
-                        Pair.of(platform, AttendanceStatus.ATTENDANCE)
+                    Long attendanceCount = attendanceResult.getOrDefault(
+                        Pair.of(platform, AttendanceStatus.ATTENDANCE),
+                        0L
                     );
-                    Long lateCount = attendanceResult.get(
-                        Pair.of(platform, AttendanceStatus.LATE)
+                    Long lateCount = attendanceResult.getOrDefault(
+                        Pair.of(platform, AttendanceStatus.LATE),
+                        0L
                     );
                     return TotalAttendanceResponse.PlatformInfo.of(
                         platform,
