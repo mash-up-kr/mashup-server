@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.scorehistory.ScoreHistoryFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
+import kr.mashup.branding.ui.scorehistory.response.ScoreHistoriesResponse;
 import kr.mashup.branding.ui.scorehistory.response.ScoreHistoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +23,8 @@ public class ScoreHistoryController {
 
     @ApiOperation("점수 히스토리 목록")
     @GetMapping
-    public ApiResponse<List<ScoreHistoryResponse>> getScoreHistory(@ApiIgnore MemberAuth memberAuth) {
+    public ApiResponse<ScoreHistoriesResponse> getScoreHistory(@ApiIgnore MemberAuth memberAuth) {
         List<ScoreHistoryResponse> scoreHistoryResponses = scoreHistoryFacadeService.getScoreHistory(memberAuth.getMemberId());
-        return ApiResponse.success(scoreHistoryResponses);
+        return ApiResponse.success(ScoreHistoriesResponse.of(scoreHistoryResponses));
     }
 }
