@@ -10,6 +10,7 @@ import kr.mashup.branding.domain.schedule.Schedule;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
-	List<Schedule> findByGeneration(Generation generation, Sort sort);
+    List<Schedule> findByGeneration(Generation generation, Sort sort);
 
+    Schedule findFirstByOrderByCreatedAt();
 }
