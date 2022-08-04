@@ -20,7 +20,20 @@ public class AttendanceController {
 
     private final AttendanceFacadeService attendanceFacadeService;
 
-    @ApiOperation("출석 체크")
+    @ApiOperation(
+        value = "출석 체크",
+        notes = """
+            <h2>Error Code</h2>
+            <p>
+            MEMBER_NOT_FOUND</br>
+            EVENT_NOT_FOUND</br>
+            ATTENDANCE_TIME_OVER</br>
+            ATTENDANCE_CODE_NOT_FOUND</br>
+            ATTENDANCE_CODE_INVALID(등록된 코드와 다름)</br>
+            ATTENDANCE_ALREADY_CHECKED
+            </p>
+            """
+    )
     @PostMapping("/check")
     public ApiResponse<AttendanceCheckResponse> check(
             @ApiIgnore MemberAuth auth,
@@ -33,7 +46,16 @@ public class AttendanceController {
         return ApiResponse.success(res);
     }
 
-    @ApiOperation("플랫폼 전체 출석조회")
+    @ApiOperation(
+        value = "플랫폼 전체 출석조회",
+        notes = """
+            <h2>Error Code</h2>
+            <p>
+            SCHEDULE_NOT_FOUND</br>
+            EVENT_NOT_FOUND
+            </p>
+            """
+    )
     @GetMapping("/platforms")
     public ApiResponse<TotalAttendanceResponse> getTotalPlatform(
         @RequestParam Long scheduleId
@@ -43,7 +65,15 @@ public class AttendanceController {
         return ApiResponse.success(res);
     }
 
-    @ApiOperation("플랫폼별 출석조회")
+    @ApiOperation(
+        value = "플랫폼별 출석조회",
+        notes = """
+            <h2>Error Code</h2>
+            <p>
+            SCHEDULE_NOT_FOUND
+            </p>
+            """
+    )
     @GetMapping("/platforms/{platformName}")
     public ApiResponse<PlatformAttendanceResponse> getPlatform(
         @PathVariable Platform platformName,
@@ -54,7 +84,16 @@ public class AttendanceController {
         return ApiResponse.success(res);
     }
 
-    @ApiOperation("세미나별 개인 출석조회")
+    @ApiOperation(
+        value = "세미나별 개인 출석조회",
+        notes = """
+            <h2>Error Code</h2>
+            <p>
+            MEMBER_NOT_FOUND</br>
+            SCHEDULE_NOT_FOUND
+            </p>
+            """
+    )
     @GetMapping("/schedules/{scheduleId}")
     public ApiResponse<PersonalAttendanceResponse> getPersonal(
         @ApiIgnore MemberAuth auth,
