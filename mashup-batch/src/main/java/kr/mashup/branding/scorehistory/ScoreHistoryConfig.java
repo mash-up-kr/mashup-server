@@ -25,7 +25,6 @@ import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.scorehistory.ScoreHistory;
 import kr.mashup.branding.repository.attendance.AttendanceRepository;
-import kr.mashup.branding.repository.generation.GenerationRepository;
 import kr.mashup.branding.repository.member.MemberRepository;
 import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
@@ -47,35 +46,33 @@ public class ScoreHistoryConfig {
 
     private final ScheduleRepository scheduleRepository;
 
-    private final GenerationRepository generationRepository;
-
     @Bean
-    public Job plainTextJob(Step plainTextStep) {
+    public Job scoreHistoryJob(Step scoreHistoryStep) {
         return jobBuilderFactory.get("plainTextJob")
             .incrementer(new RunIdIncrementer())
-            .start(plainTextStep)
+            .start(scoreHistoryStep)
             .build();
     }
 
     @JobScope
     @Bean
-    public Step plainTextStep(
-        ItemReader plainTextReader,
-        ItemProcessor plainTextProcessor,
-        ItemWriter plainTextWriter) {
+    public Step scoreHistoryStep(
+        ItemReader memberReader,
+        ItemProcessor attendanceProcessor,
+        ItemWriter scoreHistoryWriter) {
         return stepBuilderFactory.get("plainTextStep")
             .<Member, ScoreHistory>chunk(5)
-            .reader(plainTextReader)
-            .processor(plainTextProcessor)
-            .writer(plainTextWriter)
+            .reader(memberReader)
+            .processor(attendanceProcessor)
+            .writer(scoreHistoryWriter)
             .build();
     }
 
     @StepScope
     @Bean
-    public RepositoryItemReader<Member> plainTextReader() {
+    public RepositoryItemReader<Member> memberReader() {
         return new RepositoryItemReaderBuilder<Member>()
-            .name("plainTextReader")
+            .name("memberReader")
             .repository(memberRepository)
             .methodName("findBy")
             .pageSize(5)
@@ -86,9 +83,9 @@ public class ScoreHistoryConfig {
 
     @StepScope
     @Bean
-    public ItemProcessor<Member, ScoreHistory> plainTextProcessor() {
+    public ItemProcessor<Member, ScoreHistory> attendanceProcessor() {
         return member -> {
-            Schedule schedule = scheduleRepository.findFirstByOrderByCreatedAt();
+            Schedule schedule = scheduleRepository.findTopByOrderByStartedAtDesc();
 
             List<Attendance> attendances = attendanceRepository.findAllByMember(member);
             List<Attendance> attendanceList = attendances.stream()
@@ -101,7 +98,7 @@ public class ScoreHistoryConfig {
 
     @StepScope
     @Bean
-    public ItemWriter<ScoreHistory> plainTextWriter() {
+    public ItemWriter<ScoreHistory> scoreHistoryWriter() {
         return scoreHistories -> {
             scoreHistories.forEach(
                 scoreHistory -> scoreHistoryService.save(scoreHistory)

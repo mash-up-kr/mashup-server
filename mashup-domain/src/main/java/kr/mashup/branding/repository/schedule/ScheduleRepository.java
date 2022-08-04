@@ -12,5 +12,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     List<Schedule> findByGeneration(Generation generation, Sort sort);
 
-    Schedule findFirstByOrderByCreatedAt();
+    Schedule findTopByOrderByStartedAtDesc();
 }

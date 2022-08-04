@@ -1,6 +1,5 @@
 package kr.mashup.branding.service.scorehistory;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -44,25 +43,31 @@ public class ScoreHistoryService {
         scoreHistoryRepository.deleteById(id);
     }
 
-    public ScoreHistory calculateAttendanceToScoreHistory(List<Attendance> attendanceList, Member member,
-        Schedule schedule) {
-        String type = "ATTENDANCE";
+    public ScoreHistory calculateAttendanceToScoreHistory(
+        List<Attendance> attendances,
+        Member member,
+        Schedule schedule
+    ) {
+        System.out.println(schedule.getName());
         ScoreType scoreType = ScoreType.ATTENDANCE;
-
-        if (attendanceList.size() == 0) {
-            type = "ABSENT";
+        if (attendances.size() == 0) {
             scoreType = ScoreType.ABSENT;
         }
-        for (Attendance attendance : attendanceList) {
+        for (Attendance attendance : attendances) {
             if (attendance.getStatus() == AttendanceStatus.LATE) {
-                type = "LATE";
                 scoreType = ScoreType.LATE;
                 break;
             }
         }
 
-        return ScoreHistory.of(type, scoreType.getName(), scoreType.getScore(), LocalDateTime.now(), schedule.getName(),
+        return ScoreHistory.of(
+            scoreType.toString(),
+            scoreType.getName(),
+            scoreType.getScore(),
+            schedule.getStartedAt(),
+            schedule.getName(),
             member.getGeneration(),
-            member);
+            member
+        );
     }
 }
