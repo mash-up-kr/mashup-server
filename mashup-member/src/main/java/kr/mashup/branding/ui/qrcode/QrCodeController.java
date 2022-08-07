@@ -20,13 +20,12 @@ public class QrCodeController {
 
     @ApiOperation(
         value = "QR 코드 조회",
-        notes = """
-            <h2>Error Code</h2>
-            <p>
-            EVENT_NOT_FOUND</br>
-            ATTENDANCE_CODE_NOT_FOUND
-            </p>
-            """
+        notes =
+            "<h2>Error Code</h2>" +
+                "<p>" +
+                "EVENT_NOT_FOUND</br>" +
+                "ATTENDANCE_CODE_NOT_FOUND" +
+                "</p>"
     )
     @GetMapping("/{eventId}")
     public ApiResponse<QrCodeResponse> getQrCode(
