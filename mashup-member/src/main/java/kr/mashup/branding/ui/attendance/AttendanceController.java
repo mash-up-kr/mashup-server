@@ -1,5 +1,12 @@
 package kr.mashup.branding.ui.attendance;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.facade.attendance.AttendanceFacadeService;
@@ -10,7 +17,6 @@ import kr.mashup.branding.ui.attendance.response.PersonalAttendanceResponse;
 import kr.mashup.branding.ui.attendance.response.PlatformAttendanceResponse;
 import kr.mashup.branding.ui.attendance.response.TotalAttendanceResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
@@ -22,22 +28,22 @@ public class AttendanceController {
 
     @ApiOperation(
         value = "출석 체크",
-        notes = """
-            <h2>Error Code</h2>
-            <p>
-            MEMBER_NOT_FOUND</br>
-            EVENT_NOT_FOUND</br>
-            ATTENDANCE_TIME_OVER</br>
-            ATTENDANCE_CODE_NOT_FOUND</br>
-            ATTENDANCE_CODE_INVALID(등록된 코드와 다름)</br>
-            ATTENDANCE_ALREADY_CHECKED
-            </p>
-            """
+        notes =
+            "<h2>Error Code</h2>" +
+                "<p>" +
+                "MEMBER_NOT_FOUND</br>" +
+                "EVENT_NOT_FOUND</br>" +
+                "ATTENDANCE_TIME_OVER</br>" +
+                "ATTENDANCE_CODE_NOT_FOUND</br>" +
+                "ATTENDANCE_CODE_INVALID(등록된 코드와 다름)</br>" +
+                "ATTENDANCE_ALREADY_CHECKED" +
+                "</p>"
+
     )
     @PostMapping("/check")
     public ApiResponse<AttendanceCheckResponse> check(
-            @ApiIgnore MemberAuth auth,
-            @RequestParam String checkingCode
+        @ApiIgnore MemberAuth auth,
+        @RequestParam String checkingCode
     ) {
         AttendanceCheckResponse res = attendanceFacadeService.checkAttendance(
             auth.getMemberId(),
@@ -48,13 +54,13 @@ public class AttendanceController {
 
     @ApiOperation(
         value = "플랫폼 전체 출석조회",
-        notes = """
-            <h2>Error Code</h2>
-            <p>
-            SCHEDULE_NOT_FOUND</br>
-            EVENT_NOT_FOUND
-            </p>
-            """
+        notes =
+            "<h2>Error Code</h2>" +
+                "<p>" +
+                "SCHEDULE_NOT_FOUND</br>" +
+                "EVENT_NOT_FOUND" +
+                "</p>"
+
     )
     @GetMapping("/platforms")
     public ApiResponse<TotalAttendanceResponse> getTotalPlatform(
@@ -67,12 +73,11 @@ public class AttendanceController {
 
     @ApiOperation(
         value = "플랫폼별 출석조회",
-        notes = """
-            <h2>Error Code</h2>
-            <p>
-            SCHEDULE_NOT_FOUND
-            </p>
-            """
+        notes =
+            "< h2 > Error Code</h2>" +
+                "<p>" +
+                "SCHEDULE_NOT_FOUND" +
+                "</p>"
     )
     @GetMapping("/platforms/{platformName}")
     public ApiResponse<PlatformAttendanceResponse> getPlatform(
@@ -86,13 +91,12 @@ public class AttendanceController {
 
     @ApiOperation(
         value = "세미나별 개인 출석조회",
-        notes = """
-            <h2>Error Code</h2>
-            <p>
-            MEMBER_NOT_FOUND</br>
-            SCHEDULE_NOT_FOUND
-            </p>
-            """
+        notes =
+            "< h2 > Error Code</h2>" +
+                "<p>" +
+                "MEMBER_NOT_FOUND</br>" +
+                "SCHEDULE_NOT_FOUND" +
+                "</p>"
     )
     @GetMapping("/schedules/{scheduleId}")
     public ApiResponse<PersonalAttendanceResponse> getPersonal(
