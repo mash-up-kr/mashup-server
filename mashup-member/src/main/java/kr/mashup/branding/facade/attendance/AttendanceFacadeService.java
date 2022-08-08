@@ -139,10 +139,6 @@ public class AttendanceFacadeService {
     public TotalAttendanceResponse getTotalAttendance(Long scheduleId) {
         final LocalDateTime now = LocalDateTime.now();
         final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
-        final Pair<Event, Integer> eventInfo =
-            getActiveEventInfo(schedule.getEventList(), now);
-        final Event event = eventInfo.getLeft();
-        final Integer eventNum = eventInfo.getRight();
 
         final Map<Platform, Long> totalCountGroupByPlatform =
             Arrays.stream(Platform.values()).collect(
@@ -151,6 +147,33 @@ public class AttendanceFacadeService {
                     memberService::getTotalCountByPlatform
                 )
             );
+
+        // 스케줄 시작 전에는 기본 값을 반환(전체 플랫폼 인원수를 측정해서 줘야하기 때문)
+        if(now.isBefore(schedule.getStartedAt())) {
+            final List<TotalAttendanceResponse.PlatformInfo> defaultPlatformInfos =
+                totalCountGroupByPlatform.entrySet().stream()
+                    .map(entry -> {
+                        Platform platform = entry.getKey();
+                        Long totalCount = entry.getValue();
+                        return TotalAttendanceResponse.PlatformInfo.of(
+                            platform,
+                            totalCount,
+                            0L,
+                            0L
+                        );
+                    }).collect(Collectors.toList());
+
+            return TotalAttendanceResponse.of(
+                defaultPlatformInfos,
+                NOT_START_EVENT_NUM,
+                NOT_START_SCHEDULE
+            );
+        }
+
+        final Pair<Event, Integer> eventInfo =
+            getActiveEventInfo(schedule.getEventList(), now);
+        final Event event = eventInfo.getLeft();
+        final Integer eventNum = eventInfo.getRight();
 
         final Map<Pair<Platform, AttendanceStatus>, Long> attendanceResult =
             attendanceService.getAllByEvent(event).stream().collect(
@@ -181,14 +204,6 @@ public class AttendanceFacadeService {
                     );
                 })
                 .collect(Collectors.toList());
-
-        if(now.isBefore(schedule.getStartedAt())) {
-            return TotalAttendanceResponse.of(
-                platformInfos,
-                NOT_START_EVENT_NUM,
-                NOT_START_SCHEDULE
-            );
-        }
 
         final Boolean isEnd = !DateUtil.isInTime(
             event.getAttendanceCode().getStartedAt(),
