@@ -32,6 +32,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AttendanceFacadeService {
 
+    private final static int LATE_LIMIT_TIME = 10;
+    private final static int NOT_START_EVENT_NUM = 0;
+    private final static boolean NOT_START_SCHEDULE = false;
+
     private final AttendanceService attendanceService;
     private final MemberService memberService;
     private final EventService eventService;
@@ -116,14 +120,15 @@ public class AttendanceFacadeService {
             attendanceCode.getEndedAt(),
             checkTime
         );
+        if (isAttendance) return AttendanceStatus.ATTENDANCE;
+
         final boolean isLate = DateUtil.isInTime(
             attendanceCode.getEndedAt(),
-            attendanceCode.getEndedAt().plusMinutes(10),
+            attendanceCode.getEndedAt().plusMinutes(LATE_LIMIT_TIME),
             checkTime
         );
-
-        if (isAttendance) return AttendanceStatus.ATTENDANCE;
         if (isLate) return AttendanceStatus.LATE;
+
         throw new BadRequestException(ResultCode.ATTENDANCE_TIME_OVER);
     }
 
@@ -138,12 +143,6 @@ public class AttendanceFacadeService {
             getActiveEventInfo(schedule.getEventList(), now);
         final Event event = eventInfo.getLeft();
         final Integer eventNum = eventInfo.getRight();
-
-        final Boolean isEnd = !DateUtil.isInTime(
-            event.getAttendanceCode().getStartedAt(),
-            event.getAttendanceCode().getEndedAt().plusMinutes(10),
-            now
-        );
 
         final Map<Platform, Long> totalCountGroupByPlatform =
             Arrays.stream(Platform.values()).collect(
@@ -182,6 +181,20 @@ public class AttendanceFacadeService {
                     );
                 })
                 .collect(Collectors.toList());
+
+        if(now.isBefore(schedule.getStartedAt())) {
+            return TotalAttendanceResponse.of(
+                platformInfos,
+                NOT_START_EVENT_NUM,
+                NOT_START_SCHEDULE
+            );
+        }
+
+        final Boolean isEnd = !DateUtil.isInTime(
+            event.getAttendanceCode().getStartedAt(),
+            event.getAttendanceCode().getEndedAt().plusMinutes(10),
+            now
+        );
 
         return TotalAttendanceResponse.of(platformInfos, eventNum, isEnd);
     }
