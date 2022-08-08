@@ -19,7 +19,14 @@ public class ScheduleController {
 
     private final ScheduleFacadeService scheduleFacadeService;
 
-    @ApiOperation("스케줄 조회")
+    @ApiOperation(
+        value = "스케줄 조회",
+        notes =
+            "< h2 > Error Code</h2>" +
+                "<p>" +
+                "SCHEDULE_NOT_FOUND" +
+                "</p>"
+    )
     @GetMapping("/{id}")
     public ApiResponse<ScheduleResponse> getById(@PathVariable Long id) {
         ScheduleResponse res = scheduleFacadeService.getById(id);
@@ -27,7 +34,15 @@ public class ScheduleController {
         return ApiResponse.success(res);
     }
 
-    @ApiOperation("기수로 스케줄 조회")
+    @ApiOperation(
+        value = "기수로 스케줄 조회",
+        notes =
+            "< h2 > Error Code</h2>" +
+                "<p>" +
+                "GENERATION_NOT_FOUND</br>" +
+                "SCHEDULE_NOT_FOUND" +
+                "</p>"
+    )
     @GetMapping("/generations/{generationNumber}")
     public ApiResponse<ScheduleResponseList> getByGenerationNumber(
         @PathVariable Integer generationNumber

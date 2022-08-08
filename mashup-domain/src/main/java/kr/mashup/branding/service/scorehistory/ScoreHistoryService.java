@@ -43,12 +43,11 @@ public class ScoreHistoryService {
         scoreHistoryRepository.deleteById(id);
     }
 
-    public ScoreHistory calculateAttendanceToScoreHistory(
+    public ScoreHistory convertAttendanceToScoreHistory(
         List<Attendance> attendances,
         Member member,
         Schedule schedule
     ) {
-        System.out.println(schedule.getName());
         ScoreType scoreType = ScoreType.ATTENDANCE;
         if (attendances.size() == 0) {
             scoreType = ScoreType.ABSENT;
