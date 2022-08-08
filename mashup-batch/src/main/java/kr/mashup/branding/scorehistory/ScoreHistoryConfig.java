@@ -92,7 +92,7 @@ public class ScoreHistoryConfig {
                 .filter(attendance -> attendance.getEvent().getSchedule() == schedule)
                 .collect(Collectors.toList());
 
-            return scoreHistoryService.calculateAttendanceToScoreHistory(attendanceList, member, schedule);
+            return scoreHistoryService.convertAttendanceToScoreHistory(attendanceList, member, schedule);
         };
     }
 
