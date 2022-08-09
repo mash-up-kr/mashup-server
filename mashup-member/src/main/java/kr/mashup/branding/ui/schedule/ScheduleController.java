@@ -22,7 +22,7 @@ public class ScheduleController {
     @ApiOperation(
         value = "스케줄 조회",
         notes =
-            "< h2 > Error Code</h2>" +
+            "<h2> Error Code</h2>" +
                 "<p>" +
                 "SCHEDULE_NOT_FOUND" +
                 "</p>"
@@ -37,7 +37,7 @@ public class ScheduleController {
     @ApiOperation(
         value = "기수로 스케줄 조회",
         notes =
-            "< h2 > Error Code</h2>" +
+            "<h2> Error Code</h2>" +
                 "<p>" +
                 "GENERATION_NOT_FOUND</br>" +
                 "SCHEDULE_NOT_FOUND" +
