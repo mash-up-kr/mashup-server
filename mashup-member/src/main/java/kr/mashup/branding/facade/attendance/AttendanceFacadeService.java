@@ -23,9 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -255,17 +253,48 @@ public class AttendanceFacadeService {
             members.stream()
                 .map(member -> PlatformAttendanceResponse.MemberInfo.of(
                     member.getName(),
-                    getAttendanceInfoByMember(member, schedule.getEventList())
+                    getAttendanceInfoByMember(
+                        member,
+                        schedule.getEventList(),
+                        schedule.getStartedAt()
+                    )
                 ))
                 .collect(Collectors.toList());
 
         return PlatformAttendanceResponse.of(platform, memberInfos);
     }
 
+    /**
+     * 개인별 출석현황 조회
+     */
+    @Transactional(readOnly = true)
+    public PersonalAttendanceResponse getPersonalAttendance(
+        Long memberId,
+        Long scheduleId
+    ) {
+        final Member member = memberService.getOrThrowById(memberId);
+        final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
+
+        final List<AttendanceInfo> attendanceInfos =
+            getAttendanceInfoByMember(
+                member,
+                schedule.getEventList(),
+                schedule.getStartedAt()
+            );
+
+        return PersonalAttendanceResponse.of(member.getName(), attendanceInfos);
+    }
+
     private List<AttendanceInfo> getAttendanceInfoByMember(
         Member member,
-        List<Event> events
+        List<Event> events,
+        LocalDateTime scheduleStartedAt
     ) {
+        // 스케줄 시작 전에는 빈 리스트를 내려준다.
+        if(LocalDateTime.now().isBefore(scheduleStartedAt)) {
+            return Collections.emptyList();
+        }
+
         return events.stream().map(event -> {
             AttendanceStatus status;
             LocalDateTime attendanceAt = null;
@@ -283,20 +312,5 @@ public class AttendanceFacadeService {
                 attendanceAt
             );
         }).collect(Collectors.toList());
-    }
-
-
-    @Transactional(readOnly = true)
-    public PersonalAttendanceResponse getPersonalAttendance(
-        Long memberId,
-        Long scheduleId
-    ) {
-        final Member member = memberService.getOrThrowById(memberId);
-        final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
-
-        final List<AttendanceInfo> attendanceInfos =
-            getAttendanceInfoByMember(member, schedule.getEventList());
-
-        return PersonalAttendanceResponse.of(member.getName(), attendanceInfos);
     }
 }
