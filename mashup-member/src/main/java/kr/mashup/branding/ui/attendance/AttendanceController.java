@@ -1,11 +1,6 @@
 package kr.mashup.branding.ui.attendance;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.domain.member.Platform;
@@ -32,7 +27,6 @@ public class AttendanceController {
             "<h2>Error Code</h2>" +
                 "<p>" +
                 "MEMBER_NOT_FOUND</br>" +
-                "EVENT_NOT_FOUND</br>" +
                 "ATTENDANCE_TIME_OVER</br>" +
                 "ATTENDANCE_CODE_NOT_FOUND</br>" +
                 "ATTENDANCE_CODE_INVALID(등록된 코드와 다름)</br>" +
@@ -43,7 +37,7 @@ public class AttendanceController {
     @PostMapping("/check")
     public ApiResponse<AttendanceCheckResponse> check(
         @ApiIgnore MemberAuth auth,
-        @RequestParam String checkingCode
+        @RequestBody String checkingCode
     ) {
         AttendanceCheckResponse res = attendanceFacadeService.checkAttendance(
             auth.getMemberId(),

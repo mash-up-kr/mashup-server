@@ -53,7 +53,12 @@ public class AttendanceFacadeService {
         final String code = checkingInfo.getRight();
 
         final Member member = memberService.getOrThrowById(memberId);
-        final Event event = eventService.getByIdOrThrow(eventId);
+        Event event;
+        try {
+            event = eventService.getByIdOrThrow(eventId);
+        } catch (NotFoundException e) {
+            throw new BadRequestException(ResultCode.ATTENDANCE_CODE_INVALID);
+        }
         final AttendanceCode attendanceCode = event.getAttendanceCode();
 
         validEventTime(event.getStartedAt(), event.getEndedAt(), checkTime);
