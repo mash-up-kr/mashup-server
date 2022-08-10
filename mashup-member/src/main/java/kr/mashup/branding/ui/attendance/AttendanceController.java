@@ -28,6 +28,7 @@ public class AttendanceController {
             "<h2>Error Code</h2>" +
                 "<p>" +
                 "MEMBER_NOT_FOUND</br>" +
+                "ATTENDANCE_TIME_BEFORE</br>" +
                 "ATTENDANCE_TIME_OVER</br>" +
                 "ATTENDANCE_CODE_NOT_FOUND</br>" +
                 "ATTENDANCE_CODE_INVALID(등록된 코드와 다름)</br>" +

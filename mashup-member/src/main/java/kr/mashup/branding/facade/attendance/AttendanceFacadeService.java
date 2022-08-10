@@ -95,6 +95,10 @@ public class AttendanceFacadeService {
         LocalDateTime endedAt,
         LocalDateTime time
     ) {
+        if (time.isBefore(startedAt)) {
+            throw new BadRequestException(ResultCode.ATTENDANCE_TIME_BEFORE);
+        }
+
         final boolean isActive = DateUtil.isInTime(startedAt, endedAt, time);
         if (!isActive) {
             throw new BadRequestException(ResultCode.ATTENDANCE_TIME_OVER);

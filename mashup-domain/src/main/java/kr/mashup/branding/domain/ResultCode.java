@@ -81,6 +81,7 @@ public enum ResultCode {
     // Attendance (출석)
     ATTENDANCE_NOT_FOUND("출석 정보가 존재하지 않습니다."),
     ATTENDANCE_ALREADY_CHECKED("이미 출석 체크를 했습니다."),
+    ATTENDANCE_TIME_BEFORE("아직 출석 체크 시간이 아닙니다."),
     ATTENDANCE_TIME_OVER("출석 체크 시간이 지났습니다."),
 
     // Invite (초대 코드)
