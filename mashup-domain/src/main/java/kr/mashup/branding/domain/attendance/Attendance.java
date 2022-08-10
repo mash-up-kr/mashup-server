@@ -13,6 +13,14 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+    uniqueConstraints={
+        @UniqueConstraint(
+            name="uk_event_member",
+            columnNames={"event_id", "member_id"}
+        )
+    }
+)
 public class Attendance extends BaseEntity {
 
     @NotNull
