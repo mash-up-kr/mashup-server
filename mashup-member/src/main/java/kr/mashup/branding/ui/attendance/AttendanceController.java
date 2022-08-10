@@ -1,5 +1,6 @@
 package kr.mashup.branding.ui.attendance;
 
+import kr.mashup.branding.ui.attendance.request.AttendanceCheckRequest;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.annotations.ApiOperation;
@@ -37,11 +38,11 @@ public class AttendanceController {
     @PostMapping("/check")
     public ApiResponse<AttendanceCheckResponse> check(
         @ApiIgnore MemberAuth auth,
-        @RequestBody String checkingCode
+        @RequestBody AttendanceCheckRequest req
     ) {
         AttendanceCheckResponse res = attendanceFacadeService.checkAttendance(
             auth.getMemberId(),
-            checkingCode
+            req.getCheckingCode()
         );
         return ApiResponse.success(res);
     }
