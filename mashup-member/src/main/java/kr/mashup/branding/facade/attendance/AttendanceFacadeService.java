@@ -231,7 +231,7 @@ public class AttendanceFacadeService {
             if (isIn) return Pair.of(event, eventNum);
             eventNum++;
         }
-        throw new BadRequestException(ResultCode.EVENT_NOT_FOUND);
+        return Pair.of(events.get(events.size() - 1), eventNum - 1);
     }
 
     private Pair<Platform, AttendanceStatus> getGroupKeyOfPlatformAndStatus(
