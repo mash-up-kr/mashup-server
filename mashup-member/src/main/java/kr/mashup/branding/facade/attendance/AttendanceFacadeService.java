@@ -85,7 +85,7 @@ public class AttendanceFacadeService {
             throw new BadRequestException(ResultCode.ATTENDANCE_CODE_NOT_FOUND);
         }
 
-        if (attendanceCode.getCode().equals(code)) {
+        if (!attendanceCode.getCode().equals(code)) {
             throw new BadRequestException(ResultCode.ATTENDANCE_CODE_INVALID);
         }
     }
