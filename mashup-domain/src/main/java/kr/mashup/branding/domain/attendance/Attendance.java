@@ -16,7 +16,6 @@ import javax.persistence.*;
 @Table(
     uniqueConstraints={
         @UniqueConstraint(
-            name="uk_event_member",
             columnNames={"event_id", "member_id"}
         )
     }
