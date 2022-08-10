@@ -69,7 +69,7 @@ public class AttendanceController {
     @ApiOperation(
         value = "플랫폼별 출석조회",
         notes =
-            "< h2 > Error Code</h2>" +
+            "<h2> Error Code</h2>" +
                 "<p>" +
                 "SCHEDULE_NOT_FOUND" +
                 "</p>"
@@ -87,7 +87,7 @@ public class AttendanceController {
     @ApiOperation(
         value = "세미나별 개인 출석조회",
         notes =
-            "< h2 > Error Code</h2>" +
+            "<h2> Error Code</h2>" +
                 "<p>" +
                 "MEMBER_NOT_FOUND</br>" +
                 "SCHEDULE_NOT_FOUND" +
