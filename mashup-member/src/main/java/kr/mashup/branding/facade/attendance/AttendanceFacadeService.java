@@ -7,6 +7,7 @@ import kr.mashup.branding.domain.attendance.AttendanceStatus;
 import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.NotFoundException;
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.schedule.Schedule;
@@ -146,12 +147,17 @@ public class AttendanceFacadeService {
     public TotalAttendanceResponse getTotalAttendance(Long scheduleId) {
         final LocalDateTime now = LocalDateTime.now();
         final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
+        final Generation curGeneration = schedule.getGeneration();
 
         final Map<Platform, Long> totalCountGroupByPlatform =
             Arrays.stream(Platform.values()).collect(
                 Collectors.toMap(
                     platform -> platform,
-                    memberService::getTotalCountByPlatform
+                    platform ->
+                    memberService.getTotalCountByPlatformAndGeneration(
+                        platform,
+                        curGeneration
+                    )
                 )
             );
 
@@ -256,7 +262,13 @@ public class AttendanceFacadeService {
         Long scheduleId
     ) {
         final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
-        final List<Member> members = memberService.getAllByPlatform(platform);
+        final Generation curGeneration = schedule.getGeneration();
+
+        final List<Member> members =
+            memberService.getAllByPlatformAndGeneration(
+                platform,
+                curGeneration
+            );
 
         final List<PlatformAttendanceResponse.MemberInfo> memberInfos =
             members.stream()

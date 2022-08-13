@@ -2,6 +2,7 @@ package kr.mashup.branding.service.member;
 
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
@@ -101,12 +102,21 @@ public class MemberService {
         memberRepository.delete(member);
     }
 
-    public Long getTotalCountByPlatform(Platform platform) {
-        return memberRepository.countByPlatform(platform);
+    public Long getTotalCountByPlatformAndGeneration(
+        Platform platform,
+        Generation generation
+    ) {
+        return memberRepository.countByPlatformAndGeneration(platform, generation);
     }
 
-    public List<Member> getAllByPlatform(Platform platform) {
-        return memberRepository.findAllByPlatform(platform);
+    public List<Member> getAllByPlatformAndGeneration(
+        Platform platform,
+        Generation generation
+    ) {
+        return memberRepository.findAllByPlatformAndGeneration(
+            platform,
+            generation
+        );
     }
 
 }
