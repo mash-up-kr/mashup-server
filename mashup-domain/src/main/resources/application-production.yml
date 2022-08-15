@@ -5,7 +5,7 @@ spring:
     password: ENC(fxWrJBvyF3X7SoFrGYKbeA4nLuchRIXTbaMahilpJFBSRc28VSLo6BN6PV+W/DVF)
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
 sms:
   toast:
     url: https://api-sms.cloud.toast.com/
