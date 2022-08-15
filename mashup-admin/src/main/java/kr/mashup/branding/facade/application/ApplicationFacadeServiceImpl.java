@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
-import kr.mashup.branding.domain.application.ApplicationService;
+import kr.mashup.branding.service.application.ApplicationService;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import kr.mashup.branding.domain.notification.sms.SmsRequest;
-import kr.mashup.branding.domain.notification.sms.SmsRequestService;
+import kr.mashup.branding.service.notification.sms.SmsRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

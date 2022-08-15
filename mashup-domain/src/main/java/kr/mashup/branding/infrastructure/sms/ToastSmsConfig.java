@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
-import kr.mashup.branding.domain.notification.sms.SmsService;
-import kr.mashup.branding.domain.notification.sms.whitelist.SmsWhitelistService;
+import kr.mashup.branding.service.notification.sms.SmsService;
+import kr.mashup.branding.service.notification.sms.SmsWhitelistService;
 import kr.mashup.branding.util.RequestHeaderInterceptor;
 
 @Profile("sms")

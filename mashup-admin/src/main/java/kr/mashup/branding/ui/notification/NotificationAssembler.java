@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import kr.mashup.branding.domain.application.ApplicationService;
+import kr.mashup.branding.service.application.ApplicationService;
 import kr.mashup.branding.domain.notification.Notification;
 import kr.mashup.branding.domain.notification.NotificationDetailVo;
 import kr.mashup.branding.domain.notification.sms.SmsNotificationStatus;

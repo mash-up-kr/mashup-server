@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
-import kr.mashup.branding.domain.applicant.ApplicantService;
+import kr.mashup.branding.service.applicant.ApplicantService;
 import kr.mashup.branding.domain.applicant.LoginResponseVo;
 import kr.mashup.branding.facade.login.LoginFacadeService;
 import kr.mashup.branding.ui.ApiResponse;

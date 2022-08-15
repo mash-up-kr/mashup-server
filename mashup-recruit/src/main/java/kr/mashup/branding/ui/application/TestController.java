@@ -1,7 +1,7 @@
 package kr.mashup.branding.ui.application;
 
 import kr.mashup.branding.domain.application.Application;
-import kr.mashup.branding.domain.application.ApplicationService;
+import kr.mashup.branding.service.application.ApplicationService;
 import kr.mashup.branding.facade.application.ApplicationFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
 

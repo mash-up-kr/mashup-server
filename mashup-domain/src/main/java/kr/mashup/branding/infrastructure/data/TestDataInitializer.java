@@ -15,32 +15,32 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import kr.mashup.branding.domain.adminmember.AdminMember;
-import kr.mashup.branding.domain.adminmember.AdminMemberRepository;
+import kr.mashup.branding.repository.adminmember.AdminMemberRepository;
 import kr.mashup.branding.domain.adminmember.Position;
 import kr.mashup.branding.domain.applicant.Applicant;
-import kr.mashup.branding.domain.applicant.ApplicantRepository;
+import kr.mashup.branding.repository.applicant.ApplicantRepository;
 import kr.mashup.branding.domain.applicant.ApplicantStatus;
 import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
-import kr.mashup.branding.domain.application.ApplicationService;
+import kr.mashup.branding.service.application.ApplicationService;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
-import kr.mashup.branding.domain.application.form.ApplicationFormService;
+import kr.mashup.branding.service.application.form.ApplicationFormService;
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
 import kr.mashup.branding.domain.application.form.QuestionRequestVo;
 import kr.mashup.branding.domain.application.form.QuestionType;
-import kr.mashup.branding.domain.schedule.RecruitmentSchedule;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleRepository;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentSchedule;
+import kr.mashup.branding.repository.recruitmentschedule.RecruitmentScheduleRepository;
 import kr.mashup.branding.domain.team.CreateTeamVo;
 import kr.mashup.branding.domain.team.Team;
-import kr.mashup.branding.domain.team.TeamService;
+import kr.mashup.branding.service.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Profile({"local"})
+//@Profile({"local"})
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public class TestDataInitializer {
     private final RecruitmentScheduleRepository recruitmentScheduleRepository;
@@ -50,7 +50,7 @@ public class TestDataInitializer {
     private final ApplicantRepository applicantRepository;
     private final AdminMemberRepository adminMemberRepository;
 
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void initialize() {
         AdminMember adminMember = createAdminMember();
         log.info("AdminMember is created. adminMember: {}", adminMember);

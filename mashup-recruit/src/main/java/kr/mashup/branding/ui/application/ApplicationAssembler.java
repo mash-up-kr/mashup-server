@@ -6,7 +6,6 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -16,9 +15,10 @@ import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationSubmitRequestVo;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
+import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
-import kr.mashup.branding.domain.schedule.RecruitmentScheduleService;
+import kr.mashup.branding.service.recruitmentschedule.RecruitmentScheduleService;
 import kr.mashup.branding.ui.applicant.ApplicantAssembler;
 import kr.mashup.branding.ui.team.TeamAssembler;
 import lombok.RequiredArgsConstructor;

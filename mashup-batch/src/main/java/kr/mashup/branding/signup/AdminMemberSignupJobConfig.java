@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import kr.mashup.branding.config.BatchConfig;
-import kr.mashup.branding.domain.adminmember.AdminMemberService;
+import kr.mashup.branding.service.adminmember.AdminMemberService;
 import lombok.RequiredArgsConstructor;
 
 @ConditionalOnProperty(

@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.domain.notification.Notification;
 import kr.mashup.branding.domain.notification.NotificationDetailVo;
-import kr.mashup.branding.domain.notification.NotificationService;
+import kr.mashup.branding.service.notification.NotificationService;
 import kr.mashup.branding.domain.notification.sms.SmsRecipientRequestVo;
-import kr.mashup.branding.domain.notification.sms.SmsRequestService;
+import kr.mashup.branding.service.notification.sms.SmsRequestService;
 import kr.mashup.branding.domain.notification.sms.SmsRequestVo;
 import kr.mashup.branding.domain.notification.sms.SmsSendRequestVo;
 import kr.mashup.branding.domain.notification.sms.SmsSendResultVo;
-import kr.mashup.branding.domain.notification.sms.SmsService;
+import kr.mashup.branding.service.notification.sms.SmsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

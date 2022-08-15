@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.domain.application.Application;
-import kr.mashup.branding.domain.application.ApplicationService;
+import kr.mashup.branding.service.application.ApplicationService;
 import kr.mashup.branding.domain.application.ApplicationSubmitRequestVo;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;

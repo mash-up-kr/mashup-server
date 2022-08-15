@@ -93,7 +93,7 @@ public class Application {
     /**
      * 빈 지원서 생성
      */
-    static Application of(
+    static public Application of(
         Applicant applicant,
         ApplicationForm applicationForm
     ) {
@@ -114,7 +114,7 @@ public class Application {
     /**
      * 지원서 임시 저장
      */
-    void update(UpdateApplicationVo updateApplicationVo) {
+    public void update(UpdateApplicationVo updateApplicationVo) {
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
 
         applicant.update(
@@ -145,7 +145,7 @@ public class Application {
     /**
      * 지원서 제출
      */
-    void submit(ApplicationSubmitRequestVo applicationSubmitRequestVo) {
+    public void submit(ApplicationSubmitRequestVo applicationSubmitRequestVo) {
         applicant.submit(
             applicationSubmitRequestVo.getApplicantName(),
             applicationSubmitRequestVo.getPhoneNumber(),
@@ -219,12 +219,12 @@ public class Application {
     /**
      * 지원서 결과 및 면접시간 수정
      */
-    void updateResult(UpdateApplicationResultVo updateApplicationResultVo) {
+    public void updateResult(UpdateApplicationResultVo updateApplicationResultVo) {
         applicationResult.updateResult(updateApplicationResultVo);
         confirmation.updateFromAdmin(updateApplicationResultVo.getScreeningStatus(), updateApplicationResultVo.getInterviewStatus());
     }
 
-    void updateConfirm(ApplicantConfirmationStatus status, String rejectionReason) {
+    public void updateConfirm(ApplicantConfirmationStatus status, String rejectionReason) {
         confirmation.updateFromApplicant(status, rejectionReason);
     }
 
@@ -232,7 +232,7 @@ public class Application {
         confirmation.updateApplicantConfirmationStatus(status);
     }
 
-    boolean isSubmitted() {
+    public boolean isSubmitted() {
         return status.isSubmitted();
     }
 }

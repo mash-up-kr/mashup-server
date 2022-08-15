@@ -12,9 +12,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.schedule.RecruitmentScheduleCreateRequest;
-import kr.mashup.branding.ui.schedule.RecruitmentScheduleResponse;
-import kr.mashup.branding.ui.schedule.RecruitmentScheduleUpdateRequest;
+import kr.mashup.branding.ui.recruitmentschedule.RecruitmentScheduleCreateRequest;
+import kr.mashup.branding.ui.recruitmentschedule.RecruitmentScheduleResponse;
+import kr.mashup.branding.ui.recruitmentschedule.RecruitmentScheduleUpdateRequest;
 
 public class RecruitmentScheduleApi {
     private final MockMvc mockMvc;

@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import kr.mashup.branding.domain.adminmember.AdminMemberService;
+import kr.mashup.branding.service.adminmember.AdminMemberService;
 import kr.mashup.branding.domain.notification.sms.SmsRequest;
-import kr.mashup.branding.domain.notification.sms.SmsRequestService;
+import kr.mashup.branding.service.notification.sms.SmsRequestService;
 import lombok.RequiredArgsConstructor;
 
 @Service

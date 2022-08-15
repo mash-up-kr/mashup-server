@@ -9,4 +9,9 @@ public class PingController {
 	public String ping() {
 		return "MashUp-Recruit!";
 	}
+
+	@GetMapping("/v2/ping")
+	public Boolean pingV2() {
+		return true;
+	}
 }
