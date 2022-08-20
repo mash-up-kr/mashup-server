@@ -10,3 +10,4 @@ services:
         awslogs-region: ap-northeast-2
         awslogs-group: MashUp-Server-Real
         awslogs-stream: member
+        awslogs-multiline-pattern: '%H:%M:%S.%L'
