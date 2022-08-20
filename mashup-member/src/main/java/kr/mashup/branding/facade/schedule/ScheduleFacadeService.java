@@ -64,7 +64,7 @@ public class ScheduleFacadeService {
         Integer dateCount = 0;
 
         for (ScheduleResponse scheduleResponse : scheduleResponseList) {
-            if (scheduleResponse.getDateCount() > 0) {
+            if (scheduleResponse.getDateCount() >= 0) {
                 dateCount = scheduleResponse.getDateCount();
                 break;
             }
