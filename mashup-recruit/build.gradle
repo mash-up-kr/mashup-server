@@ -21,6 +21,7 @@ dependencies {
     implementation "com.auth0:java-jwt:$javaJwtVersion"
     implementation "com.google.api-client:google-api-client:$googleApiClientVersion"
     implementation "com.google.api-client:google-api-client-jackson2:$googleApiClientVersion"
+    implementation "ca.pjer:logback-awslogs-appender:1.4.0"
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
