@@ -10,6 +10,12 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/www:/var/www/certbot
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-northeast-2
+        awslogs-group: MashUp-Server-Real
+        awslogs-stream: nginx
   certbot:
     container_name: 'certbot'
     image: certbot/certbot:v0.36.0
