@@ -10,4 +10,5 @@ services:
         awslogs-region: ap-northeast-2
         awslogs-group: MashUp-Server-Real
         awslogs-stream: recruit
-        awslogs-multiline-pattern: '%H:%M:%S.%L'
+        awslogs-datetime-format: "%Y-%m-%d %H:%M:%S.%L"
+        awslogs-multiline-pattern: "%Y-%m-%d %H:%M:%S.%L"
