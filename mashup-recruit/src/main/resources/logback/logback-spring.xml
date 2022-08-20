@@ -6,15 +6,18 @@
     <conversionRule conversionWord="wEx"
                     converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
 
+    <property name="LOG_PATTERN"
+              value="${LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){blue} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%file:%line]- %msg%n</pattern>
+            <Pattern>${LOG_PATTERN}</Pattern>
         </layout>
     </appender>
 
     <appender name="cloud_watch_aws_log_dev" class="ca.pjer.logback.AwsLogsAppender">
         <layout>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%file:%line]- %msg%n</pattern>
+            <pattern>[%thread] [%date] [%level] [%file:%line] - %msg%n</pattern>
         </layout>
         <logGroupName>MashUp-Server-Dev</logGroupName>
         <logStreamName>recruit</logStreamName>
