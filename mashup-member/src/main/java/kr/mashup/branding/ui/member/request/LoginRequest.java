@@ -1,15 +1,16 @@
 package kr.mashup.branding.ui.member.request;
 
 import lombok.Getter;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 
 @Getter
 public class LoginRequest {
 
-    @NotBlank(message = "아이디는 비어있을 수 없습니다.")
+    @Length(message = "아이디는 5자 이상 15자 이하여야 합니다.", min = 5, max=15)
     private String identification;
 
-    @NotBlank(message = "비밀번호는 비어있을 수 없습니다.")
+    @Length(message = "비밀번호는 8자 이상 30자 이하여야 합니다.", min = 8, max=30)
     private String password;
 }
