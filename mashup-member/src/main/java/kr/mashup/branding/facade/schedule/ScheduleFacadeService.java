@@ -61,10 +61,10 @@ public class ScheduleFacadeService {
     }
 
     private Integer pickNextScheduleDate(List<ScheduleResponse> scheduleResponseList) {
-        Integer dateCount = 0;
+        Integer dateCount = null;
 
         for (ScheduleResponse scheduleResponse : scheduleResponseList) {
-            if (scheduleResponse.getDateCount() > 0) {
+            if (scheduleResponse.getDateCount() >= 0) {
                 dateCount = scheduleResponse.getDateCount();
                 break;
             }
@@ -75,7 +75,7 @@ public class ScheduleFacadeService {
 
     private Progress checkScheduleProgress(Integer dateCount) {
         Progress progress;
-        if (dateCount == 0) {
+        if (dateCount == null) {
             progress = Progress.DONE;
         } else {
             progress = Progress.ON_GOING;

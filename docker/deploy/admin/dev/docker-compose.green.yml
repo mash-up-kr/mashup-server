@@ -4,9 +4,3 @@ services:
     image: 321148231533.dkr.ecr.ap-northeast-2.amazonaws.com/mashup-admin:develop
     ports:
       - 8091:8080
-    logging:
-      driver: awslogs
-      options:
-        awslogs-region: ap-northeast-2
-        awslogs-group: MashUp-Server-Dev
-        awslogs-stream: adminsoo
