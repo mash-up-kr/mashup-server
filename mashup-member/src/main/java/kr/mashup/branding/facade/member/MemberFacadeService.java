@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class MemberFacadeService {
@@ -43,14 +45,7 @@ public class MemberFacadeService {
         // Token 생성
         final Long memberId = member.getId();
         final String token = jwtService.encode(memberId);
-
-        return AccessResponse.of(
-            memberId,
-            token,
-            member.getName(),
-            member.getPlatform().name(),
-            member.getGeneration().getNumber()
-        );
+        return AccessResponse.of(member,token);
     }
 
 
@@ -79,7 +74,7 @@ public class MemberFacadeService {
         final Member member = memberService.save(memberCreateDto);
         final String token = jwtService.encode(member.getId());
 
-        return AccessResponse.of(member.getId(), token, member.getName(), member.getPlatform().name(), member.getGeneration().getNumber());
+        return AccessResponse.of(member, token);
     }
 
     @Transactional(readOnly = true)

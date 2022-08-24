@@ -65,7 +65,7 @@ public class ScoreHistoryService {
             scoreType.getScore(),
             schedule.getStartedAt(),
             schedule.getName(),
-            member.getGeneration(),
+            schedule.getGeneration(),
             member
         );
     }

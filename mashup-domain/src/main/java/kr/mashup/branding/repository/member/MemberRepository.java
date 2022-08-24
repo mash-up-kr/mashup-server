@@ -6,20 +6,22 @@ import java.util.Optional;
 import kr.mashup.branding.domain.generation.Generation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    @EntityGraph(attributePaths = {"generation"}, type = EntityGraph.EntityGraphType.LOAD)
     Optional<Member> findByIdentification(String identification);
 
-    Long countByPlatformAndGeneration(Platform platform, Generation generation);
+    @Query("select count(m) from Member m join m.memberGenerations mg where mg.generation = :generation and m.platform = :platform")
+    Long countByPlatformAndGeneration(@Param("platform") Platform platform, @Param("generation") Generation generation);
 
-    List<Member> findAllByPlatformAndGeneration(Platform platform, Generation generation);
+    @Query("select m from Member m join m.memberGenerations mg where mg.generation = :generation and m.platform = :platform")
+    List<Member> findAllByPlatformAndGeneration(@Param("platform") Platform platform, @Param("generation") Generation generation);
 
     Boolean existsByIdentification(String identification);
 

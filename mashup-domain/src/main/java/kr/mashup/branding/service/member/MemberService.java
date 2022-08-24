@@ -4,11 +4,13 @@ import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
 import kr.mashup.branding.domain.member.exception.MemberNotFoundException;
 import kr.mashup.branding.dto.member.MemberCreateDto;
 import kr.mashup.branding.dto.member.MemberUpdateDto;
+import kr.mashup.branding.repository.member.MemberGenerationRepository;
 import kr.mashup.branding.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +25,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MemberGenerationRepository memberGenerationRepository;
 
     //1. 회원 생성
     public Member save(MemberCreateDto memberCreateDto) {
@@ -31,6 +34,7 @@ public class MemberService {
         if(isExist){
             throw new BadRequestException(ResultCode.MEMBER_DUPLICATED_IDENTIFICATION);
         }
+        Generation generation = memberCreateDto.getGeneration();
 
         Member member = Member.of(
             memberCreateDto.getName(),
@@ -38,10 +42,15 @@ public class MemberService {
             memberCreateDto.getPassword(),
             passwordEncoder,
             memberCreateDto.getPlatform(),
-            memberCreateDto.getGeneration(),
             memberCreateDto.getPrivatePolicyAgreed()
         );
-        return memberRepository.save(member);
+        memberRepository.save(member);
+
+        MemberGeneration memberGeneration = MemberGeneration.of(member, generation);
+        memberGenerationRepository.save(memberGeneration);
+        member.addMemberGenerations(memberGeneration);
+
+        return member;
     }
 
     //2. 회원 조회
@@ -113,6 +122,7 @@ public class MemberService {
         Platform platform,
         Generation generation
     ) {
+
         return memberRepository.findAllByPlatformAndGeneration(
             platform,
             generation

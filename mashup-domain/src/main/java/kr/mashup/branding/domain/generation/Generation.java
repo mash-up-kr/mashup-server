@@ -4,6 +4,7 @@ import com.sun.istack.NotNull;
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.invite.Invite;
 import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
@@ -35,7 +36,7 @@ public class Generation extends BaseEntity {
     private final List<Schedule> schedules = new ArrayList<>();
 
     @OneToMany(mappedBy = "generation")
-    private final List<Member> members = new ArrayList<>();
+    private final List<MemberGeneration> memberGenerations = new ArrayList<>();
 
     @OneToMany(mappedBy = "generation")
     private final List<Invite> invites = new ArrayList<>();
