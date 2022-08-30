@@ -5,6 +5,9 @@ import kr.mashup.branding.domain.member.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @AllArgsConstructor(staticName = "of")
 public class MemberDto {
@@ -17,15 +20,18 @@ public class MemberDto {
 
     private Platform platform;
 
-    private Integer generation;
+    private List<Integer> generation;
 
-    public static MemberDto from(Member member){
+    public static MemberDto from(Member member) {
         return MemberDto.of(
                 member.getId(),
                 member.getName(),
                 member.getIdentification(),
                 member.getPlatform(),
-                member.getGeneration().getNumber());
+                member.getMemberGenerations()
+                        .stream()
+                        .map(it -> it.getGeneration().getNumber())
+                        .collect(Collectors.toList()));
     }
 
 }

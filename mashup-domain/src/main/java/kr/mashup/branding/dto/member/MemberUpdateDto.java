@@ -12,5 +12,4 @@ public class MemberUpdateDto {
 
     private Platform platform;
 
-    private Generation generation;
 }

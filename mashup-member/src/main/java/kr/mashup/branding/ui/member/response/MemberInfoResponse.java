@@ -4,6 +4,9 @@ import kr.mashup.branding.domain.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @AllArgsConstructor(staticName = "of")
 public class MemberInfoResponse {
@@ -16,15 +19,18 @@ public class MemberInfoResponse {
 
     private String platform;
 
-    private Integer generationNumber;
+    private List<Integer> generations;
 
     public static MemberInfoResponse from(Member member) {
         return MemberInfoResponse.of(
-            member.getId(),
-            member.getName(),
-            member.getIdentification(),
-            member.getPlatform().name(),
-            member.getGeneration().getNumber()
+                member.getId(),
+                member.getName(),
+                member.getIdentification(),
+                member.getPlatform().name(),
+                member.getMemberGenerations()
+                        .stream()
+                        .map(it -> it.getGeneration().getNumber())
+                        .collect(Collectors.toList())
         );
     }
 

@@ -58,6 +58,8 @@ public enum ResultCode {
     MEMBER_NOT_FOUND("회원을 찾을 수 없습니다."),
     MEMBER_NOT_MATCH_PASSWORD("비밀번호가 일치하지 않습니다."),
     MEMBER_INVALID_INVITE("잘못된 가입 코드입니다."),
+    MEMBER_INVALID_EMPTY_NAME("잘못된 이름입니다."),
+
 
     // Platform (플랫폼)
     INVALID_PLATFORM_NAME("잘못된 플랫폼 이름입니다."),
