@@ -27,7 +27,6 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberGenerationRepository memberGenerationRepository;
 
-    //1. 회원 생성
     public Member save(MemberCreateDto memberCreateDto) {
 
         Boolean isExist = memberRepository.existsByIdentification(memberCreateDto.getIdentification());

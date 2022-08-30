@@ -19,7 +19,7 @@ public class MemberInfoResponse {
 
     private String platform;
 
-    private List<Long> generationIds;
+    private List<Integer> generations;
 
     public static MemberInfoResponse from(Member member) {
         return MemberInfoResponse.of(
@@ -29,7 +29,7 @@ public class MemberInfoResponse {
                 member.getPlatform().name(),
                 member.getMemberGenerations()
                         .stream()
-                        .map(it -> it.getGeneration().getId())
+                        .map(it -> it.getGeneration().getNumber())
                         .collect(Collectors.toList())
         );
     }

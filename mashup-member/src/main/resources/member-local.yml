@@ -2,11 +2,11 @@ jwt:
   secretKey: ENC(EXfj1mGmsws/YLOc87IZoiHu0l+vKqtao+CrUR843UD0xWM9asYfSMWkYLI8CYQHlEeHwAh51Kt+/Zn8tS7n0g==)
 
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/recruit?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password: 1234
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/recruit?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+#    username: root
+#    password: 1234
   jpa:
     hibernate:
       ddl-auto: update
