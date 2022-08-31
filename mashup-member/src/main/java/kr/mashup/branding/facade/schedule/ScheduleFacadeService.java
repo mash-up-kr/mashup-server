@@ -15,6 +15,7 @@ import kr.mashup.branding.ui.schedule.response.Progress;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponseList;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class ScheduleFacadeService {
     private final ScheduleService scheduleService;
     private final GenerationService generationService;
 
+    @Transactional(readOnly = true)
     public ScheduleResponse getById(Long id) {
         Schedule schedule = scheduleService.getByIdOrThrow(id);
         Integer dateCount = countDate(schedule.getStartedAt(), LocalDateTime.now());
@@ -30,6 +32,7 @@ public class ScheduleFacadeService {
         return ScheduleResponse.from(schedule, dateCount);
     }
 
+    @Transactional(readOnly = true)
     public ScheduleResponseList getByGenerationNum(Integer number) {
         Generation generation = generationService.getByNumberOrThrow(number);
 
