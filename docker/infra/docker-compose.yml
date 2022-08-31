@@ -10,12 +10,19 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/www:/var/www/certbot
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-northeast-2
+        awslogs-group: MashUp-Server-Real
+        awslogs-stream: nginx
   certbot:
     container_name: 'certbot'
     image: certbot/certbot:v0.36.0
     volumes:
       - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
   jenkins:
     container_name: 'jenkins'
     image: 'jenkins/jenkins:latest'

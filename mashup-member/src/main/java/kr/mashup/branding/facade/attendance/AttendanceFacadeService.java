@@ -6,9 +6,12 @@ import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.attendance.AttendanceStatus;
 import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.domain.exception.BadRequestException;
+import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
+import kr.mashup.branding.domain.exception.InternalServerErrorException;
 import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.service.attendance.AttendanceService;
@@ -61,6 +64,21 @@ public class AttendanceFacadeService {
             throw new BadRequestException(ResultCode.ATTENDANCE_CODE_INVALID);
         }
         final AttendanceCode attendanceCode = event.getAttendanceCode();
+
+        //멤버 기수 확인
+        Integer latestGenerationNumber = member.getMemberGenerations()
+            .stream()
+            .map(MemberGeneration::getGeneration)
+            .max(Comparator.comparingInt(Generation::getNumber))
+            .orElseThrow(GenerationIntegrityFailException::new)
+            .getNumber();
+
+        Integer eventGenerationNumber = event.getSchedule().getGeneration().getNumber();
+
+        if(!eventGenerationNumber.equals(latestGenerationNumber)){
+            throw new NotFoundException(ResultCode.EVENT_NOT_FOUND);
+        }
+
 
         validEventTime(event.getStartedAt(), event.getEndedAt(), checkTime);
         validAttendanceCode(attendanceCode, code);
@@ -148,100 +166,82 @@ public class AttendanceFacadeService {
         final LocalDateTime now = LocalDateTime.now();
         final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
         final Generation curGeneration = schedule.getGeneration();
-
-        final Map<Platform, Long> totalCountGroupByPlatform =
-            Arrays.stream(Platform.values()).collect(
-                Collectors.toMap(
-                    platform -> platform,
-                    platform ->
-                    memberService.getTotalCountByPlatformAndGeneration(
-                        platform,
-                        curGeneration
-                    )
-                )
-            );
-
-        // 스케줄 시작 전에는 기본 값을 반환(전체 플랫폼 인원수를 측정해서 줘야하기 때문)
-        if(now.isBefore(schedule.getStartedAt())) {
-            final List<TotalAttendanceResponse.PlatformInfo> defaultPlatformInfos =
-                totalCountGroupByPlatform.entrySet().stream()
-                    .map(entry -> {
-                        Platform platform = entry.getKey();
-                        Long totalCount = entry.getValue();
-                        return TotalAttendanceResponse.PlatformInfo.of(
-                            platform,
-                            totalCount,
-                            0L,
-                            0L
-                        );
-                    }).collect(Collectors.toList());
-
-            return TotalAttendanceResponse.of(
-                defaultPlatformInfos,
-                NOT_START_EVENT_NUM,
-                NOT_START_SCHEDULE
-            );
-        }
-
-        final Pair<Event, Integer> eventInfo =
-            getActiveEventInfo(schedule.getEventList(), now);
-        final Event event = eventInfo.getLeft();
-        final Integer eventNum = eventInfo.getRight();
-
-        final Map<Pair<Platform, AttendanceStatus>, Long> attendanceResult =
-            attendanceService.getAllByEvent(event).stream().collect(
-                Collectors.groupingBy(
-                    this::getGroupKeyOfPlatformAndStatus,
-                    Collectors.counting()
-                )
-            );
+        final List<Event> startedEvents =
+            filterStartedEvent(schedule.getEventList(), now);
 
         final List<TotalAttendanceResponse.PlatformInfo> platformInfos =
-            totalCountGroupByPlatform.entrySet().stream()
-                .map(entry -> {
-                    Platform platform = entry.getKey();
-                    Long totalCount = entry.getValue();
-                    Long attendanceCount = attendanceResult.getOrDefault(
-                        Pair.of(platform, AttendanceStatus.ATTENDANCE),
-                        0L
-                    );
-                    Long lateCount = attendanceResult.getOrDefault(
-                        Pair.of(platform, AttendanceStatus.LATE),
-                        0L
-                    );
-                    return TotalAttendanceResponse.PlatformInfo.of(
-                        platform,
-                        totalCount,
-                        attendanceCount,
-                        lateCount
-                    );
-                })
-                .collect(Collectors.toList());
+            Arrays.stream(Platform.values()).map(platform -> {
+                // 플랫폼과 기수를 통해 멤버들을 가져옴
+                final List<Member> members = memberService.getAllByPlatformAndGeneration(
+                    platform,
+                    curGeneration
+                );
 
-        final Boolean isEnd = !DateUtil.isInTime(
-            event.getAttendanceCode().getStartedAt(),
-            event.getAttendanceCode().getEndedAt().plusMinutes(10),
-            now
+                // 해당 플랫폼의 출석 정보를 가져옴
+                final Map<String, Long> attendanceStatusCount =
+                    getAttendanceStatusCountOfPlatform(members, startedEvents);
+
+                final Long attendanceCount =
+                    attendanceStatusCount.getOrDefault(
+                        AttendanceStatus.ATTENDANCE.name(),
+                        0L
+                    );
+                final Long lateCount =
+                    attendanceStatusCount.getOrDefault(
+                        AttendanceStatus.LATE.name(),
+                        0L
+                    );
+
+                return TotalAttendanceResponse.PlatformInfo.of(
+                    platform,
+                    (long) members.size(),
+                    attendanceCount,
+                    lateCount
+                );
+            }).collect(Collectors.toList());
+
+        return TotalAttendanceResponse.of(
+            platformInfos,
+            startedEvents.size(),
+            isEndStartedEvent(startedEvents, now)
         );
-
-        return TotalAttendanceResponse.of(platformInfos, eventNum, isEnd);
     }
 
-    private Pair<Event, Integer> getActiveEventInfo(
+    private List<Event> filterStartedEvent(
         List<Event> events,
         LocalDateTime now
     ) {
-        int eventNum = 1;
-        for (Event event : events) {
-            final boolean isIn = DateUtil.isInTime(
-                event.getStartedAt(),
-                event.getEndedAt(),
-                now
-            );
-            if (isIn) return Pair.of(event, eventNum);
-            eventNum++;
-        }
-        return Pair.of(events.get(events.size() - 1), eventNum - 1);
+        return events.stream()
+            .filter(event -> !now.isBefore(event.getStartedAt()))
+            .collect(Collectors.toList());
+    }
+
+    private Map<String, Long> getAttendanceStatusCountOfPlatform(
+        List<Member> members,
+        List<Event> startedEvents
+    ) {
+        return members.stream()
+            .map(member ->
+                attendanceService.getAttendanceStatusByMemberAndStartedEvents(
+                    member,
+                    startedEvents))
+            .collect(Collectors.groupingBy(
+                AttendanceStatus::name,
+                Collectors.counting()
+            ));
+    }
+
+    private boolean isEndStartedEvent(
+        List<Event> startedEvents,
+        LocalDateTime now
+    ) {
+        if (startedEvents.isEmpty()) return false;
+
+        final LocalDateTime attendanceEndTime =
+            startedEvents.get(startedEvents.size() - 1)
+                .getAttendanceCode().getEndedAt().plusMinutes(10);
+
+        return now.isAfter(attendanceEndTime);
     }
 
     private Pair<Platform, AttendanceStatus> getGroupKeyOfPlatformAndStatus(
@@ -312,7 +312,7 @@ public class AttendanceFacadeService {
         LocalDateTime scheduleStartedAt
     ) {
         // 스케줄 시작 전에는 빈 리스트를 내려준다.
-        if(LocalDateTime.now().isBefore(scheduleStartedAt)) {
+        if (LocalDateTime.now().isBefore(scheduleStartedAt)) {
             return Collections.emptyList();
         }
 

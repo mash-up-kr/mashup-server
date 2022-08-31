@@ -1,0 +1,12 @@
+
+${AnsiColor.BRIGHT_BLUE} _   .-')       ('-.       .-')     ('-. .-.                 _ (`-.       ('-.      _ .-') _    _   .-')                   .-') _
+( '.( OO )_    ( OO ).-.  ( OO ).  ( OO )  /                ( (OO  )     ( OO ).-. ( (  OO) )  ( '.( OO )_                ( OO ) )
+${AnsiColor.DEFAULT} ,--.   ,--.)  / . --. / (_)---\_) ,--. ,--.  ,--. ,--.    _.`     \     / . --. /  \     .'_   ,--.   ,--.)  ,-.${AnsiColor.BRIGHT_BLUE}-')${AnsiColor.DEFAULT}  ,--./ ,--,'
+ |   `.'   |   | \-.  \  /    _ |  |  | |  |  |  | |  |   (__...--''     | \-.  \   ,`'--..._)  |   `.'   |   |  |${AnsiColor.BRIGHT_BLUE}OO)${AnsiColor.DEFAULT} |   \ |  |\
+ |         | .-'-'  |  | \  :` `.  |   .|  |  |  | | ${AnsiColor.BRIGHT_BLUE}.-')${AnsiColor.DEFAULT}  |  /  | |   .-'-'  |  |  |  |  \  '  |         |   |  |  \ |    \|  | )
+ |  |'.'|  |  \| |_.'  |  '..`''.) |       |  |  |_|${AnsiColor.BRIGHT_BLUE}( OO )${AnsiColor.DEFAULT} |  |_.' |    \| |_.'  |  |  |   ' |  |  |'.'|  |   |  |(_/ |  .     |/
+ |  |   |  |   |  .-.  | .-._)   \ |  .-.  |  |  | | `-' / |  .___.'     |  .-.  |  |  |   / :  |  |   |  |  ,|  |_.' |  |\    |
+ |  |   |  |   |  | |  | \       / |  | |  | ('  '-'(_.-'  |  |          |  | |  |  |  '--'  /  |  |   |  | (_|  |    |  | \   |
+ `--'   `--'   `--' `--'  `-----'  `--' `--'   `-----'     `--'          `--' `--'  `-------'   `--'   `--'   `--'    `--'  `--'
+
+${AnsiColor.MAGENTA} :: Spring Boot :: ${AnsiColor.DEFAULT}${spring-boot.formatted-version}

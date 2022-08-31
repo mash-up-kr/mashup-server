@@ -58,6 +58,8 @@ public enum ResultCode {
     MEMBER_NOT_FOUND("회원을 찾을 수 없습니다."),
     MEMBER_NOT_MATCH_PASSWORD("비밀번호가 일치하지 않습니다."),
     MEMBER_INVALID_INVITE("잘못된 가입 코드입니다."),
+    MEMBER_INVALID_EMPTY_NAME("잘못된 이름입니다."),
+
 
     // Platform (플랫폼)
     INVALID_PLATFORM_NAME("잘못된 플랫폼 이름입니다."),
@@ -72,6 +74,7 @@ public enum ResultCode {
 
     // Generation (기수)
     GENERATION_NOT_FOUND("기수가 존재하지 않습니다."),
+    MEMBER_GENERATION_NOT_FOUND("사용자의 기수 정보가 존재하지 않습니다."),
 
     // AttendanceCode (출석 코드)
     ATTENDANCE_CODE_DUPLICATED("이미 사용된 코드입니다."),
@@ -86,6 +89,7 @@ public enum ResultCode {
 
     // Invite (초대 코드)
     INVITE_NOT_FOUND("초대 코드가 존재하지 않습니다.");
+
 
     private final String message;
 

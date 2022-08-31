@@ -42,10 +42,13 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Platform platform;
 
-    @NotNull(message = "기수는 비어있을 수 없습니다.")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "generation_id")
-    private Generation generation;
+//    @NotNull(message = "기수는 비어있을 수 없습니다.")
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "generation_id")
+//    private Generation generation;
+    @OneToMany(mappedBy = "member")
+    private final List<MemberGeneration> memberGenerations = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "member")
     private final List<Attendance> attendances = new ArrayList<>();
@@ -53,18 +56,15 @@ public class Member extends BaseEntity {
     @AssertTrue(message = "개인정보 이용에 동의해야만 가입할 수 있습니다.")
     private Boolean privatePolicyAgreed;
 
-    // TODO: soft delete 방식 필요?
 
     public void updateInfo(MemberUpdateDto memberUpdateDto){
 
         final String name = memberUpdateDto.getName();
-        final Generation generation = memberUpdateDto.getGeneration();
         final Platform platform = memberUpdateDto.getPlatform();
 
         checkValidName(name);
 
         this.name = name;
-        this.generation = generation;
         this.platform = platform;
     }
 
@@ -86,9 +86,8 @@ public class Member extends BaseEntity {
             String rawPassword,
             PasswordEncoder encoder,
             Platform platform,
-            Generation generation,
             Boolean privatePolicyAgreed) {
-        return new Member(name, identification, rawPassword, encoder, platform, generation, privatePolicyAgreed);
+        return new Member(name, identification, rawPassword, encoder, platform,  privatePolicyAgreed);
     }
 
     private Member(
@@ -97,7 +96,6 @@ public class Member extends BaseEntity {
             String rawPassword,
             PasswordEncoder encoder,
             Platform platform,
-            Generation generation,
             Boolean privatePolicyAgreed) {
 
         checkAgreePrivacyPolicy(privatePolicyAgreed);
@@ -109,7 +107,6 @@ public class Member extends BaseEntity {
         this.identification = identification;
         this.password = encoder.encode(rawPassword);
         this.platform = platform;
-        this.generation = generation;
         this.privatePolicyAgreed = privatePolicyAgreed;
     }
 
@@ -151,4 +148,7 @@ public class Member extends BaseEntity {
     }
 
 
+    public void addMemberGenerations(MemberGeneration memberGeneration) {
+        this.memberGenerations.add(memberGeneration);
+    }
 }
