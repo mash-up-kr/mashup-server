@@ -6,9 +6,12 @@ import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.attendance.AttendanceStatus;
 import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.domain.exception.BadRequestException;
+import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
+import kr.mashup.branding.domain.exception.InternalServerErrorException;
 import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.service.attendance.AttendanceService;
@@ -61,6 +64,21 @@ public class AttendanceFacadeService {
             throw new BadRequestException(ResultCode.ATTENDANCE_CODE_INVALID);
         }
         final AttendanceCode attendanceCode = event.getAttendanceCode();
+
+        //멤버 기수 확인
+        Integer latestGenerationNumber = member.getMemberGenerations()
+            .stream()
+            .map(MemberGeneration::getGeneration)
+            .max(Comparator.comparingInt(Generation::getNumber))
+            .orElseThrow(GenerationIntegrityFailException::new)
+            .getNumber();
+
+        Integer eventGenerationNumber = event.getSchedule().getGeneration().getNumber();
+
+        if(!eventGenerationNumber.equals(latestGenerationNumber)){
+            throw new NotFoundException(ResultCode.EVENT_NOT_FOUND);
+        }
+
 
         validEventTime(event.getStartedAt(), event.getEndedAt(), checkTime);
         validAttendanceCode(attendanceCode, code);
