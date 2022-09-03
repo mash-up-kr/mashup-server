@@ -322,11 +322,12 @@ public class AttendanceFacadeService {
                 status = attendance.getStatus();
                 attendanceAt = attendance.getCreatedAt();
             } catch (NotFoundException e) {
+                final AttendanceCode code = event.getAttendanceCode();
                 final boolean isBeforeAttendanceCheckTime =
-                    now.isBefore(event.getStartedAt());
+                    now.isBefore(code.getStartedAt());
                 final boolean isAttendanceCheckTime = DateUtil.isInTime(
-                    event.getStartedAt(),
-                    event.getEndedAt().plusMinutes(LATE_LIMIT_TIME),
+                    code.getStartedAt(),
+                    code.getEndedAt().plusMinutes(LATE_LIMIT_TIME),
                     now
                 );
                 // 출석체크 시작 전이거나(2부에서는 해당 조건을 체크),
