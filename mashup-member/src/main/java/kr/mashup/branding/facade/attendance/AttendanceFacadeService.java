@@ -7,7 +7,6 @@ import kr.mashup.branding.domain.attendance.AttendanceStatus;
 import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
-import kr.mashup.branding.domain.exception.InternalServerErrorException;
 import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
@@ -35,9 +34,6 @@ import java.util.stream.Collectors;
 public class AttendanceFacadeService {
 
     private final static int LATE_LIMIT_TIME = 10;
-    private final static int NOT_START_EVENT_NUM = 0;
-    private final static boolean NOT_START_SCHEDULE = false;
-
     private final AttendanceService attendanceService;
     private final MemberService memberService;
     private final EventService eventService;
@@ -311,8 +307,9 @@ public class AttendanceFacadeService {
         List<Event> events,
         LocalDateTime scheduleStartedAt
     ) {
+        final LocalDateTime now = LocalDateTime.now();
         // 스케줄 시작 전에는 빈 리스트를 내려준다.
-        if (LocalDateTime.now().isBefore(scheduleStartedAt)) {
+        if (now.isBefore(scheduleStartedAt)) {
             return Collections.emptyList();
         }
 
@@ -325,7 +322,20 @@ public class AttendanceFacadeService {
                 status = attendance.getStatus();
                 attendanceAt = attendance.getCreatedAt();
             } catch (NotFoundException e) {
-                status = AttendanceStatus.ABSENT;
+                final boolean isBeforeAttendanceCheckTime =
+                    now.isBefore(event.getStartedAt());
+                final boolean isAttendanceCheckTime = DateUtil.isInTime(
+                    event.getStartedAt(),
+                    event.getEndedAt().plusMinutes(LATE_LIMIT_TIME),
+                    now
+                );
+                // 출석체크 시작 전이거나(2부에서는 해당 조건을 체크),
+                // 출석 체크 시간인데 출석을 안했을 때는 결석이 아닌 아직이란 값을 내려줌
+                if (isBeforeAttendanceCheckTime || isAttendanceCheckTime) {
+                    status = AttendanceStatus.NOT_YET;
+                } else {
+                    status = AttendanceStatus.ABSENT;
+                }
             }
 
             return AttendanceInfo.of(
