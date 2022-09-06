@@ -107,6 +107,7 @@ public class MemberService {
     public void deleteMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
+        memberGenerationRepository.deleteByMember(member);
         memberRepository.delete(member);
     }
 
