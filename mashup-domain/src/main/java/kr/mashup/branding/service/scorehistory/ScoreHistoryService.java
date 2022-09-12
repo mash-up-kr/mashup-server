@@ -7,11 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.attendance.AttendanceStatus;
+import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.scorehistory.ScoreHistory;
 import kr.mashup.branding.domain.scorehistory.ScoreType;
+import kr.mashup.branding.repository.event.EventRepository;
 import kr.mashup.branding.repository.scorehistory.ScoreHistoryRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class ScoreHistoryService {
 
     private final ScoreHistoryRepository scoreHistoryRepository;
+    private final EventRepository eventRepository;
 
     @Transactional
     public ScoreHistory save(ScoreHistory scoreHistory) {
@@ -48,7 +51,10 @@ public class ScoreHistoryService {
         Member member,
         Schedule schedule
     ) {
-        ScoreType scoreType = ScoreType.ATTENDANCE;
+        ScoreType scoreType = ScoreType.ABSENT;
+
+        List<Event> eventList = eventRepository.findBySchedule(schedule);
+        int number = 0;
         if (attendances.size() == 0) {
             scoreType = ScoreType.ABSENT;
         }
@@ -57,6 +63,11 @@ public class ScoreHistoryService {
                 scoreType = ScoreType.LATE;
                 break;
             }
+            number++;
+        }
+
+        if (number == eventList.size()) {
+            scoreType = ScoreType.ATTENDANCE;
         }
 
         return ScoreHistory.of(

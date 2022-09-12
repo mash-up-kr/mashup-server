@@ -85,7 +85,7 @@ public class ScoreHistoryConfig {
     @Bean
     public ItemProcessor<Member, ScoreHistory> attendanceProcessor() {
         return member -> {
-            Schedule schedule = scheduleRepository.findTopByOrderByStartedAtDesc();
+            Schedule schedule = scheduleRepository.findById(99999L).orElseThrow();
 
             List<Attendance> attendances = attendanceRepository.findAllByMember(member);
             List<Attendance> attendanceList = attendances.stream()
