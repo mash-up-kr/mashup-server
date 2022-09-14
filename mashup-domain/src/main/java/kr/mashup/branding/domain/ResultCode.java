@@ -59,6 +59,7 @@ public enum ResultCode {
     MEMBER_NOT_MATCH_PASSWORD("비밀번호가 일치하지 않습니다."),
     MEMBER_INVALID_INVITE("잘못된 가입 코드입니다."),
     MEMBER_INVALID_EMPTY_NAME("잘못된 이름입니다."),
+    MEMBER_PENDING_STATUS("가입 승인 대기중입니다."),
 
 
     // Platform (플랫폼)

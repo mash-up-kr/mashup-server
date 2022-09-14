@@ -24,7 +24,7 @@ public class ScoreHistoryFacadeService {
     @Transactional(readOnly = true)
     public List<ScoreHistoryResponse> getScoreHistory(Long memberId) {
         List<ScoreHistoryResponse> scoreHistoryResponses = new ArrayList<>();
-        Member member = memberService.getOrThrowById(memberId);
+        Member member = memberService.getActiveOrThrowById(memberId);
 
         member.getMemberGenerations()
             .forEach(memberGeneration -> {

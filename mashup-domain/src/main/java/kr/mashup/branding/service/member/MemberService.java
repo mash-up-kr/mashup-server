@@ -5,19 +5,22 @@ import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
+import kr.mashup.branding.domain.member.MemberStatus;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
 import kr.mashup.branding.domain.member.exception.MemberNotFoundException;
+import kr.mashup.branding.domain.member.exception.MemberPendingException;
 import kr.mashup.branding.dto.member.MemberCreateDto;
-import kr.mashup.branding.dto.member.MemberUpdateDto;
 import kr.mashup.branding.repository.member.MemberGenerationRepository;
 import kr.mashup.branding.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,33 +43,38 @@ public class MemberService {
             memberCreateDto.getIdentification(),
             memberCreateDto.getPassword(),
             passwordEncoder,
-            memberCreateDto.getPlatform(),
             memberCreateDto.getPrivatePolicyAgreed()
         );
         memberRepository.save(member);
 
-        MemberGeneration memberGeneration = MemberGeneration.of(member, generation);
+        MemberGeneration memberGeneration = MemberGeneration.of(member, generation, memberCreateDto.getPlatform() );
         memberGenerationRepository.save(memberGeneration);
         member.addMemberGenerations(memberGeneration);
 
         return member;
     }
 
-    //2. 회원 조회
-    public Member getOrThrowById(Long memberId) {
-        return memberRepository.findById(memberId)
+
+    //2-1. 회원 조회 - active 상태만
+    public Member getActiveOrThrowById(Long memberId) {
+        Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
+        checkActiveStatus(member);
+        return member;
     }
 
-    public Member getOrThrowByIdentification(String identification) {
-        return memberRepository.findByIdentification(identification)
+    public Member getActiveOrThrowByIdentification(String identification) {
+        Member member = memberRepository.findByIdentification(identification)
             .orElseThrow(MemberNotFoundException::new);
+        checkActiveStatus(member);
+        return member;
     }
+
     public boolean isDuplicatedIdentification(String identification){
         return memberRepository.existsByIdentification(identification);
     }
 
-    public Member getOrThrowByIdentificationAndPassword(
+    public Member getActiveOrThrowByIdentificationAndPassword(
         String identification,
         String password
     ) {
@@ -75,19 +83,54 @@ public class MemberService {
         if (!member.isMatchPassword(password, passwordEncoder)) {
             throw new MemberLoginFailException();
         }
+        checkActiveStatus(member);
         return member;
     }
 
-    //3. 회원 수정
-    public Member updateMemberInfo(
-        Long memberId,
-        MemberUpdateDto memberUpdateDto
-    ) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
-        member.updateInfo(memberUpdateDto);
+    public Page<Member> getActiveAllByGeneration(
+        Generation generation,
+        Pageable pageable
+    ){
+        return memberRepository.findAllActiveByGeneration(generation, pageable);
+    }
 
-        return member;
+    public List<Member> getAllByPlatformAndGeneration(
+        Platform platform,
+        Generation generation
+    ) {
+        return memberRepository.findAllActiveByPlatformAndGeneration(
+            platform,
+            generation
+        );
+    }
+
+    public Page<Member> getAllByPlatformAndGeneration(
+        Platform platform,
+        Generation generation,
+        Pageable pageable
+    ){
+        return memberRepository.findAllActiveByPlatformAndGeneration(
+            platform,
+            generation,
+            pageable
+        );
+    }
+
+    //2-2 회원 조회 - pending 상태만
+    public Page<Member> getPendingMembers(Pageable pageable){
+        return memberRepository.findAllByStatus(MemberStatus.PENDING, pageable);
+    }
+
+
+    //기수 조회
+    public List<MemberGeneration> getMemberGenerations(Member member){
+        return memberGenerationRepository.findByMember(member);
+    }
+
+    public Platform getLatestPlatform(Member member){
+        List<MemberGeneration> memberGenerations = getMemberGenerations(member);
+        memberGenerations.sort(Comparator.comparingInt(it->it.getGeneration().getNumber()));
+        return memberGenerations.get(memberGenerations.size() - 1).getPlatform();
     }
 
     public Member changePassword(
@@ -97,13 +140,23 @@ public class MemberService {
     ) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
+        checkActiveStatus(member);
         member.changePassword(rawPassword, newPassword, passwordEncoder);
 
         return member;
     }
 
+    public Member activate(Long memberId){
 
-    //4. 회원 삭제.
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+        member.activate();
+
+        return member;
+    }
+
+
+    //4. 회원 삭제
     public void deleteMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
@@ -115,18 +168,17 @@ public class MemberService {
         Platform platform,
         Generation generation
     ) {
-        return memberRepository.countByPlatformAndGeneration(platform, generation);
+        return memberRepository.countActiveByPlatformAndGeneration(platform, generation);
     }
 
-    public List<Member> getAllByPlatformAndGeneration(
-        Platform platform,
-        Generation generation
-    ) {
 
-        return memberRepository.findAllByPlatformAndGeneration(
-            platform,
-            generation
-        );
+    private void checkActiveStatus(Member member){
+        if(member.getStatus() != MemberStatus.ACTIVE){
+            throw new MemberPendingException();
+        }
     }
 
+    public Platform getPlatform(Member member, Generation generation) {
+        return memberGenerationRepository.findByMemberAndGeneration(member, generation).get().getPlatform();
+    }
 }

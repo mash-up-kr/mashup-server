@@ -52,7 +52,7 @@ public class AttendanceFacadeService {
         final Long eventId = checkingInfo.getLeft();
         final String code = checkingInfo.getRight();
 
-        final Member member = memberService.getOrThrowById(memberId);
+        final Member member = memberService.getActiveOrThrowById(memberId);
         Event event;
         try {
             event = eventService.getByIdOrThrow(eventId);
@@ -289,7 +289,7 @@ public class AttendanceFacadeService {
         Long memberId,
         Long scheduleId
     ) {
-        final Member member = memberService.getOrThrowById(memberId);
+        final Member member = memberService.getActiveOrThrowById(memberId);
         final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
 
         final List<AttendanceInfo> attendanceInfos =

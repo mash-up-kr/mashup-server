@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.member.response;
 
 import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -21,12 +22,12 @@ public class MemberInfoResponse {
 
     private List<Integer> generations;
 
-    public static MemberInfoResponse from(Member member) {
+    public static MemberInfoResponse from(Member member, Platform platform) {
         return MemberInfoResponse.of(
                 member.getId(),
                 member.getName(),
                 member.getIdentification(),
-                member.getPlatform().name(),
+                platform.name(),
                 member.getMemberGenerations()
                         .stream()
                         .map(it -> it.getGeneration().getNumber())
