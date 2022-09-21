@@ -47,16 +47,16 @@ public class ScoreHistoryConfig {
     private final ScheduleRepository scheduleRepository;
 
     @Bean
-    public Job scoreHistoryJob(Step scoreHistoryStep) {
+    public Job job(Step step) {
         return jobBuilderFactory.get("plainTextJob")
             .incrementer(new RunIdIncrementer())
-            .start(scoreHistoryStep)
+            .start(step)
             .build();
     }
 
     @JobScope
     @Bean
-    public Step scoreHistoryStep(
+    public Step step(
         ItemReader memberReader,
         ItemProcessor attendanceProcessor,
         ItemWriter scoreHistoryWriter) {
@@ -101,7 +101,7 @@ public class ScoreHistoryConfig {
     public ItemWriter<ScoreHistory> scoreHistoryWriter() {
         return scoreHistories -> {
             scoreHistories.forEach(
-                scoreHistory -> scoreHistoryService.save(scoreHistory)
+                scoreHistoryService::save
             );
         };
     }
