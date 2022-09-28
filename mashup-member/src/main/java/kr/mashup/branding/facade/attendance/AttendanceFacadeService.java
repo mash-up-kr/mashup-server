@@ -17,16 +17,23 @@ import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.event.EventService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.schedule.ScheduleService;
-import kr.mashup.branding.ui.attendance.response.*;
+import kr.mashup.branding.ui.attendance.response.AttendanceCheckResponse;
+import kr.mashup.branding.ui.attendance.response.AttendanceInfo;
+import kr.mashup.branding.ui.attendance.response.PersonalAttendanceResponse;
+import kr.mashup.branding.ui.attendance.response.PlatformAttendanceResponse;
+import kr.mashup.branding.ui.attendance.response.TotalAttendanceResponse;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
