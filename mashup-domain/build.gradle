@@ -12,7 +12,8 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
     implementation "mysql:mysql-connector-java:$mysqlVersion"
-    implementation "com.github.napstr:logback-discord-appender:$discordLogbackAppenderVersion"
+    // 찾을 수 없음 오류 - cloud watch만 쓰는 중
+    //implementation "com.github.napstr:logback-discord-appender:$discordLogbackAppenderVersion"
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

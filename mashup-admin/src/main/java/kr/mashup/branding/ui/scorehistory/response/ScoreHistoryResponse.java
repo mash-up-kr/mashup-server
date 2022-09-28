@@ -22,14 +22,23 @@ public class ScoreHistoryResponse {
 
     String scheduleName;
 
-    public static ScoreHistoryResponse from(ScoreHistory scoreHistory) {
+    Boolean isCanceled;
+
+    String memo;
+
+    Double accumulatedScore;
+
+    public static ScoreHistoryResponse from(ScoreHistory scoreHistory, Double accumulatedScore) {
         return ScoreHistoryResponse.of(
             scoreHistory.getId(),
             scoreHistory.getType(),
             scoreHistory.getName(),
             scoreHistory.getScore(),
             scoreHistory.getDate(),
-            scoreHistory.getScheduleName()
+            scoreHistory.getScheduleName(),
+            scoreHistory.isCanceled(),
+            scoreHistory.getMemo(),
+            accumulatedScore
         );
     }
 }

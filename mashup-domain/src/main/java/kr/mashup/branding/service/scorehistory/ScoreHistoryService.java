@@ -2,6 +2,8 @@ package kr.mashup.branding.service.scorehistory;
 
 import java.util.List;
 
+import kr.mashup.branding.domain.ResultCode;
+import kr.mashup.branding.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,21 +20,18 @@ import kr.mashup.branding.repository.scorehistory.ScoreHistoryRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class ScoreHistoryService {
 
     private final ScoreHistoryRepository scoreHistoryRepository;
     private final EventRepository eventRepository;
 
-    @Transactional
     public ScoreHistory save(ScoreHistory scoreHistory) {
 
         scoreHistoryRepository.save(scoreHistory);
-
         return scoreHistory;
     }
-
     public List<ScoreHistory> getByMember(Member member) {
         return scoreHistoryRepository.findByMember(member);
     }
@@ -41,7 +40,10 @@ public class ScoreHistoryService {
         return scoreHistoryRepository.findByMemberAndGenerationOrderByDateAsc(member, generation);
     }
 
-    @Transactional
+    public ScoreHistory getByIdOrThrow(Long id){
+        return scoreHistoryRepository.findById(id).orElseThrow(()-> new NotFoundException(ResultCode.SCOREHISTORY_NOT_FOUND));
+    }
+
     public void deleteById(Long id) {
         scoreHistoryRepository.deleteById(id);
     }
@@ -70,14 +72,6 @@ public class ScoreHistoryService {
             scoreType = ScoreType.ATTENDANCE;
         }
 
-        return ScoreHistory.of(
-            scoreType.toString(),
-            scoreType.getName(),
-            scoreType.getScore(),
-            schedule.getStartedAt(),
-            schedule.getName(),
-            schedule.getGeneration(),
-            member
-        );
+        return ScoreHistory.of(scoreType, schedule, member);
     }
 }

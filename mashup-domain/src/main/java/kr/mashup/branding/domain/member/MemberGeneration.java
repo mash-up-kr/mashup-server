@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -25,15 +27,20 @@ public class MemberGeneration extends BaseEntity {
     @JoinColumn(name = "generation_id")
     private Generation generation;
 
-    public static MemberGeneration of(Member member, Generation generation){
-        return new MemberGeneration(member, generation);
+    @Enumerated(EnumType.STRING)
+    private Platform platform;
+
+    public static MemberGeneration of(Member member, Generation generation, Platform platform){
+        return new MemberGeneration(member, generation, platform);
     }
 
-    private MemberGeneration(Member member, Generation generation) {
+    private MemberGeneration(Member member, Generation generation, Platform platform) {
         Assert.notNull(member, "member should not be null");
         Assert.notNull(generation, "generation should not be null");
+        Assert.notNull(platform, "platform should not be null");
         this.member = member;
         this.generation = generation;
+        this.platform = platform;
     }
 
 

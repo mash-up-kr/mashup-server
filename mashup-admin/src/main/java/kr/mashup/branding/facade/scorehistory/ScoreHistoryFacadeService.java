@@ -7,14 +7,16 @@ import kr.mashup.branding.domain.scorehistory.ScoreType;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
-import kr.mashup.branding.ui.scorehistory.request.ScoreHistoryCreateRequest;
-import kr.mashup.branding.ui.scorehistory.response.ScoreHistoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ScoreHistoryFacadeService {
 
@@ -22,25 +24,17 @@ public class ScoreHistoryFacadeService {
     private final MemberService memberService;
     private final GenerationService generationService;
 
-    @Transactional
-    public ScoreHistoryResponse save(ScoreHistoryCreateRequest req) {
-        String name = req.getScoreType().getName();
-        Double score = req.getScoreType().getScore();
+    public void addScore(Long memberId, Integer generationNumber, ScoreType scoreType, String name, LocalDate date, String memo) {
+        Generation generation = generationService.getByNumberOrThrow(generationNumber);
+        Member member = memberService.getActiveOrThrowById(memberId);
 
-        if (req.getScoreType() == ScoreType.ETC) {
-            Assert.notNull(req.getScoreName(), "For ETC type, 'scoreName' must not be null");
-            Assert.notNull(req.getScore(), "For ETC type, 'score' must not be null");
-            name = req.getScoreName();
-            score = req.getScore();
-        }
-
-        Generation generation = generationService.getByIdOrThrow(req.getGenerationId());
-        Member member = memberService.getOrThrowById(req.getMemberId());
-
-        ScoreHistory scoreHistory = scoreHistoryService.save(
-            ScoreHistory.of(req.getScoreType().name(), name, score, req.getDate(), req.getScheduleName(), generation, member)
-        );
-
-        return ScoreHistoryResponse.from(scoreHistory);
+        ScoreHistory scoreHistory = ScoreHistory.of(scoreType, member, LocalDateTime.of(date, LocalTime.MIN), name, generation, memo);
+        scoreHistoryService.save(scoreHistory);
     }
+
+    public void cancelScore(Long scoreHistoryId, String memo) {
+        ScoreHistory scoreHistory = scoreHistoryService.getByIdOrThrow(scoreHistoryId);
+        scoreHistory.cancel(memo);
+    }
+
 }
