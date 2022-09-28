@@ -38,6 +38,11 @@
         <retentionTimeDays>0</retentionTimeDays>
     </appender>
 
+    <springProfile name="local">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
     <springProfile name="develop">
         <root level="info">
             <appender-ref ref="CONSOLE"/>

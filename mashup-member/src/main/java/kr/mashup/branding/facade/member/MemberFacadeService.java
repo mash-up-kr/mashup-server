@@ -3,6 +3,7 @@ package kr.mashup.branding.facade.member;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.invite.Invite;
 import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberInvalidInviteCodeException;
 import kr.mashup.branding.dto.member.MemberCreateDto;
@@ -17,6 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +33,9 @@ public class MemberFacadeService {
     @Transactional(readOnly = true)
     public MemberInfoResponse getMemberInfo(Long memberId) {
 
-        final Member member = memberService.getOrThrowById(memberId);
-
-        return MemberInfoResponse.from(member);
+        final Member member = memberService.getActiveOrThrowById(memberId);
+        Platform latestPlatform = memberService.getLatestPlatform(member);
+        return MemberInfoResponse.from(member,latestPlatform);
     }
 
     @Transactional(readOnly = true)
@@ -40,11 +44,14 @@ public class MemberFacadeService {
         final String identification = request.getIdentification();
         final String password = request.getPassword();
         final Member member =
-            memberService.getOrThrowByIdentificationAndPassword(identification, password);
+            memberService.getActiveOrThrowByIdentificationAndPassword(identification, password);
         // Token 생성
         final Long memberId = member.getId();
         final String token = jwtService.encode(memberId);
-        return AccessResponse.of(member,token);
+
+        Platform latestPlatform = memberService.getLatestPlatform(member);
+
+        return AccessResponse.of(member,latestPlatform,token);
     }
 
 
@@ -72,8 +79,9 @@ public class MemberFacadeService {
 
         final Member member = memberService.save(memberCreateDto);
         final String token = jwtService.encode(member.getId());
+        Platform latestPlatform = memberService.getLatestPlatform(member);
 
-        return AccessResponse.of(member, token);
+        return AccessResponse.of(member,latestPlatform, token);
     }
 
     @Transactional(readOnly = true)
@@ -100,4 +108,6 @@ public class MemberFacadeService {
         boolean isExist = memberService.isDuplicatedIdentification(identification);
         return ValidResponse.of(!isExist);
     }
+
+
 }
