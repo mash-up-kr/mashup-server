@@ -180,6 +180,6 @@ public class MemberService {
     }
 
     public Platform getPlatform(Member member, Generation generation) {
-        return memberGenerationRepository.findByMemberAndGeneration(member, generation).get().getPlatform();
+        return memberGenerationRepository.findByMemberAndGeneration(member, generation).orElseThrow(MemberNotFoundException::new).getPlatform();
     }
 }
