@@ -1,5 +1,11 @@
 package kr.mashup.branding.domain.scorehistory;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import kr.mashup.branding.domain.ResultCode;
+import kr.mashup.branding.domain.exception.BadRequestException;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public enum ScoreType {
     ATTENDANCE("전체 세미나 출석", 0.0),
     ABSENT("전체 세미나 결석", -1.0),
@@ -26,6 +32,15 @@ public enum ScoreType {
         this.score = score;
     }
 
+    @JsonCreator
+    public static ScoreType from(String s) {
+        try {
+            return ScoreType.valueOf(s.toUpperCase());
+        } catch (Exception e) {
+            log.info("platform type conversion error : {}", e.getMessage());
+            throw new BadRequestException(ResultCode.SCORETYPE_INVALID_NAME);
+        }
+    }
     public String getName() {
         return name;
     }

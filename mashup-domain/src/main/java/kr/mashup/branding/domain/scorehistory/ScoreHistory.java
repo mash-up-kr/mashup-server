@@ -3,6 +3,7 @@ package kr.mashup.branding.domain.scorehistory;
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.schedule.Schedule;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,24 +14,25 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
+@Getter()
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScoreHistory extends BaseEntity {
 
     @NotBlank
-    private String type;
+    private String type; // score type name ex)absent
 
     @NotBlank
-    private String name;
+    private String name;// score type desc ex. 전체세미나 결석
 
     @NotNull
     private Double score;
 
     @NotNull
-    private LocalDateTime date;
+    private LocalDateTime date; // 스케줄 시작시간 기준
 
     private String scheduleName;
 
@@ -42,14 +44,48 @@ public class ScoreHistory extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public static ScoreHistory of(String type, String name, Double score, LocalDateTime date, String scheduleName,
-                                  Generation generation, Member member) {
+    private boolean isCanceled;
 
-        return new ScoreHistory(type, name, score, date, scheduleName, generation, member);
+    private String memo;
+
+
+    public static ScoreHistory of(ScoreType scoreType, Schedule schedule, Member member) {
+
+        return new ScoreHistory(
+            scoreType.toString(),
+            scoreType.getName(),
+            scoreType.getScore(),
+            schedule.getStartedAt(),
+            schedule.getName(),
+            schedule.getGeneration(),
+            member,
+            false,
+            "");
     }
 
+    public static ScoreHistory of(ScoreType scoreType,Member member, LocalDateTime date, String name, Generation generation, String memo) {
+
+        return new ScoreHistory(
+            scoreType.toString(),
+            scoreType.getName(),
+            scoreType.getScore(),
+            date,
+            name,
+            generation,
+            member,
+            false,
+            memo);
+    }
+
+    public void cancel(String memo){
+        isCanceled = true;
+        this.memo = memo;
+    }
+
+
+
     private ScoreHistory(String type, String name, Double score, LocalDateTime date, String scheduleName,
-                         Generation generation, Member member) {
+                         Generation generation, Member member, boolean isCanceled, String memo) {
         this.type = type;
         this.name = name;
         this.score = score;
@@ -57,5 +93,7 @@ public class ScoreHistory extends BaseEntity {
         this.scheduleName = scheduleName;
         this.generation = generation;
         this.member = member;
+        this.isCanceled = isCanceled;
+        this.memo = memo;
     }
 }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +29,10 @@ public class ScoreHistoryFacadeService {
 
         member.getMemberGenerations()
             .forEach(memberGeneration -> {
-                List<ScoreHistory> scoreHistories = scoreHistoryService.getByMemberAndGeneration(member, memberGeneration.getGeneration());
+                List<ScoreHistory> scoreHistories = scoreHistoryService
+                    .getByMemberAndGeneration(member, memberGeneration.getGeneration())
+                    .stream()
+                    .filter(ScoreHistory::isCanceled).collect(Collectors.toList());
                 scoreHistoryResponses.add(createScoreHistory(scoreHistories, memberGeneration.getGeneration().getNumber()));
             });
 

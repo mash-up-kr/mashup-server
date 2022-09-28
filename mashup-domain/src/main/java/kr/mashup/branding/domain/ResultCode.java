@@ -88,6 +88,10 @@ public enum ResultCode {
     ATTENDANCE_TIME_BEFORE("아직 출석 체크 시간이 아닙니다."),
     ATTENDANCE_TIME_OVER("출석 체크 시간이 지났습니다."),
 
+    // Score HISTORY
+    SCORETYPE_INVALID_NAME("잘못된 점수 타입 이름입니다."),
+    SCOREHISTORY_NOT_FOUND("점수가 존재하지 않습니다."),
+
     // Invite (초대 코드)
     INVITE_NOT_FOUND("초대 코드가 존재하지 않습니다.");
 

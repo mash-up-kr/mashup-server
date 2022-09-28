@@ -4,6 +4,7 @@ import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.scorehistory.ScoreHistory;
+import kr.mashup.branding.domain.scorehistory.ScoreType;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 
@@ -28,8 +30,6 @@ public class MemberFacadeService {
     private final MemberService memberService;
     private final GenerationService generationService;
     private final ScoreHistoryService scoreHistoryService;
-
-    // TODO 깔끔하게 고치기
 
     @Transactional(readOnly = true)
     public Page<MemberResponse> getAllActive(Integer generationNumber, Pageable pageable) {
@@ -72,13 +72,29 @@ public class MemberFacadeService {
         final String memberName = member.getName();
         final String identification = member.getIdentification();
         final Platform platform = memberService.getPlatform(member, generation);
+        AtomicReference<Double> accumulatedScore = new AtomicReference<>(0.0);
 
         List<ScoreHistoryResponse> scoreHistories = scoreHistoryService
             .getByMemberAndGeneration(member, generation)
             .stream()
-            .map(ScoreHistoryResponse::from)
+            .sorted(((o1, o2) -> {
+                if (o1.getDate().isAfter(o2.getDate())){
+                    return -1;
+                }else if(o1.getDate().equals(o2.getDate())){
+                    return 0;
+                }else{
+                    return 1;
+                }
+            }))
+            .map(it ->{
+                if(!it.isCanceled()){
+                    accumulatedScore.updateAndGet(v->v+it.getScore());
+                }
+                return ScoreHistoryResponse.from(it, accumulatedScore.get());
+            })
             .collect(Collectors.toList());
 
         return MemberDetailResponse.of(memberName, identification, generationNumber, platform.name(), scoreHistories);
     }
+
 }
