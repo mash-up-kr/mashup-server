@@ -17,6 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneOffset;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -77,15 +80,7 @@ public class MemberFacadeService {
         List<ScoreHistoryResponse> scoreHistories = scoreHistoryService
             .getByMemberAndGeneration(member, generation)
             .stream()
-            .sorted(((o1, o2) -> {
-                if (o1.getDate().isAfter(o2.getDate())){
-                    return -1;
-                }else if(o1.getDate().equals(o2.getDate())){
-                    return 0;
-                }else{
-                    return 1;
-                }
-            }))
+            .sorted(Comparator.comparingLong(it -> it.getDate().toInstant(ZoneOffset.UTC).getEpochSecond()))
             .map(it ->{
                 if(!it.isCanceled()){
                     accumulatedScore.updateAndGet(v->v+it.getScore());
@@ -93,6 +88,7 @@ public class MemberFacadeService {
                 return ScoreHistoryResponse.from(it, accumulatedScore.get());
             })
             .collect(Collectors.toList());
+        Collections.reverse(scoreHistories);
 
         return MemberDetailResponse.of(memberName, identification, generationNumber, platform.name(), scoreHistories);
     }
