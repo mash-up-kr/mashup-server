@@ -21,10 +21,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
 
 import kr.mashup.branding.domain.attendance.Attendance;
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.scorehistory.ScoreHistory;
 import kr.mashup.branding.repository.attendance.AttendanceRepository;
+import kr.mashup.branding.repository.generation.GenerationRepository;
 import kr.mashup.branding.repository.member.MemberRepository;
 import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
@@ -45,6 +47,8 @@ public class ScoreHistoryConfig {
     private final ScoreHistoryService scoreHistoryService;
 
     private final ScheduleRepository scheduleRepository;
+
+    private final GenerationRepository generationRepository;
 
     @Bean
     public Job job(Step step) {
@@ -71,10 +75,13 @@ public class ScoreHistoryConfig {
     @StepScope
     @Bean
     public RepositoryItemReader<Member> memberReader() {
+        Generation generation = generationRepository.findTop1ByOrderByNumberDesc();
+
         return new RepositoryItemReaderBuilder<Member>()
             .name("memberReader")
             .repository(memberRepository)
-            .methodName("findBy")
+            .methodName("findAllActiveByGeneration")
+            .arguments(generation)
             .pageSize(5)
             .arguments(List.of())
             .sorts(Collections.singletonMap("id", Sort.Direction.DESC))
