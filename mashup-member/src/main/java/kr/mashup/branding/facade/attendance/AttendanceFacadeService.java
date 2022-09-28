@@ -240,14 +240,14 @@ public class AttendanceFacadeService {
         return now.isAfter(attendanceEndTime);
     }
 
-    private Pair<Platform, AttendanceStatus> getGroupKeyOfPlatformAndStatus(
-        Attendance attendance
-    ) {
-        return new ImmutablePair<>(
-            attendance.getMember().getPlatform(),
-            attendance.getStatus()
-        );
-    }
+//    private Pair<Platform, AttendanceStatus> getGroupKeyOfPlatformAndStatus(
+//        Attendance attendance
+//    ) {
+//        return new ImmutablePair<>(
+//            attendance.getMember()
+//            attendance.getStatus()
+//        );
+//    }
 
     /**
      * 각 플랫폼 인원별 출석현황 조회
