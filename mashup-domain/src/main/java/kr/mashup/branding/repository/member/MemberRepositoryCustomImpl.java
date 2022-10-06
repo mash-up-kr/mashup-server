@@ -34,7 +34,6 @@ import static kr.mashup.branding.domain.scorehistory.QScoreHistory.scoreHistory;
 public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-    //    @Query("select m from Member m join m.memberGenerations mg on mg.generation = :generation join ScoreHistory sh on sh.member = m where m.status = 'ACTIVE' group by m order by sum(sh.score) desc")
     private final NumberPath<Double> sumAlias = Expressions.numberPath(Double.class, "score");
 
     @Override
@@ -61,12 +60,17 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
             String field = order.getProperty();
             Order qOrder = direction.isAscending() ? Order.ASC : Order.DESC;
 
-            OrderSpecifier orderSpecifier = switch (field) {
-                case "name", "identification" -> new OrderSpecifier(qOrder, Expressions.path(Object.class, member, field));
-                case "platform" -> new OrderSpecifier(qOrder, Expressions.path(Object.class, memberGeneration, field));
-                case "score" -> new OrderSpecifier(qOrder, sumAlias);
-                default -> throw new BadRequestException(ResultCode.BAD_REQUEST);
-            };
+            OrderSpecifier orderSpecifier = null;
+
+            if(field.equals("name") || field.equals("identification")){
+                orderSpecifier = new OrderSpecifier(qOrder, Expressions.path(Object.class, member, field));
+            }else if(field.equals("platform")){
+                orderSpecifier = new OrderSpecifier(qOrder, Expressions.path(Object.class, memberGeneration, field));
+            }else if(field.equals("score")){
+                orderSpecifier = new OrderSpecifier(qOrder, sumAlias);
+            }else{
+                throw new BadRequestException(ResultCode.BAD_REQUEST);
+            }
 
             orderSpecifiers.add(orderSpecifier);
         }
