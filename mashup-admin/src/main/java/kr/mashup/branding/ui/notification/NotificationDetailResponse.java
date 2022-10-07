@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
-import kr.mashup.branding.domain.adminmember.Position;
+import kr.mashup.branding.domain.adminmember.entity.Position;
 import kr.mashup.branding.domain.notification.NotificationStatus;
 import kr.mashup.branding.ui.notification.sms.SmsRequestSimpleResponse;
 import lombok.AllArgsConstructor;

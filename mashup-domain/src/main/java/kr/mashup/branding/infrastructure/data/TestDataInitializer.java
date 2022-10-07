@@ -8,15 +8,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
-import kr.mashup.branding.domain.adminmember.AdminMember;
+import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.repository.adminmember.AdminMemberRepository;
-import kr.mashup.branding.domain.adminmember.Position;
+import kr.mashup.branding.domain.adminmember.entity.Position;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.repository.applicant.ApplicantRepository;
 import kr.mashup.branding.domain.applicant.ApplicantStatus;

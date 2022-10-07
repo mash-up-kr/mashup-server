@@ -1,6 +1,6 @@
 package kr.mashup.branding.domain.notification;
 
-import kr.mashup.branding.domain.adminmember.AdminMember;
+import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import lombok.Value;
 
 @Value(staticConstructor = "of")

@@ -2,6 +2,7 @@ package kr.mashup.branding.signup;
 
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -9,10 +10,10 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import kr.mashup.branding.domain.adminmember.AdminMember;
+import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
-import kr.mashup.branding.domain.adminmember.AdminMemberVo;
-import kr.mashup.branding.domain.adminmember.Position;
+import kr.mashup.branding.domain.adminmember.vo.AdminMemberSignUpCommand;
+import kr.mashup.branding.domain.adminmember.entity.Position;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,15 +43,15 @@ public class AdminMemberSignupTasklet implements Tasklet {
         Assert.hasText(phoneNumber, "'phoneNumber' must not be null, empty or blank");
         Assert.hasText(position, "'position' must not be null, empty or blank");
 
-        AdminMemberVo adminMemberVo = AdminMemberVo.of(
+        AdminMemberSignUpCommand adminMemberSignUpCommand = AdminMemberSignUpCommand.of(
             username,
             password,
             phoneNumber,
             Position.valueOf(position)
         );
-        log.info("adminMemberVo: {}", adminMemberVo);
-        AdminMember adminMember = adminMemberService.signUp(adminMemberVo);
-        log.info("adminMember: {}", adminMember);
+        log.info("adminMemberVo: {}", adminMemberSignUpCommand);
+        AdminMemberVo adminMemberVo = adminMemberService.signUp(adminMemberSignUpCommand);
+        log.info("adminMember: {}", adminMemberVo);
         return RepeatStatus.FINISHED;
     }
 }

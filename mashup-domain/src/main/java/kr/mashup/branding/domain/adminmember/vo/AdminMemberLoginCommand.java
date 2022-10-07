@@ -1,9 +1,9 @@
-package kr.mashup.branding.domain.adminmember;
+package kr.mashup.branding.domain.adminmember.vo;
 
 import lombok.Value;
 
 @Value(staticConstructor = "of")
-public class AdminMemberLoginVo {
+public class AdminMemberLoginCommand {
     String username;
     String password;
 }

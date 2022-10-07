@@ -1,4 +1,4 @@
-package kr.mashup.branding.domain.adminmember;
+package kr.mashup.branding.domain.adminmember.exception;
 
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.NotFoundException;

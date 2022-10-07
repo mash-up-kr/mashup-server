@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.adminmember.exception.AdminMemberNotFoundException;
 import kr.mashup.branding.domain.notification.Notification;
 import kr.mashup.branding.domain.notification.NotificationDetailVo;
 import kr.mashup.branding.domain.notification.NotificationNotFoundException;
 import kr.mashup.branding.domain.notification.NotificationRequestInvalidException;
+import kr.mashup.branding.repository.adminmember.AdminMemberRepository;
 import kr.mashup.branding.repository.notification.NotificationRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +22,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import kr.mashup.branding.domain.adminmember.AdminMember;
+import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
 import kr.mashup.branding.domain.notification.sms.SmsRequest;
 import kr.mashup.branding.service.notification.sms.SmsRequestService;
@@ -34,7 +36,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
-    private final AdminMemberService adminMemberService;
+    private final AdminMemberRepository adminMemberRepository;
     private final SmsRequestService smsRequestService;
 
     @Override
@@ -42,7 +44,7 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationDetailVo create(Long adminMemberId, SmsSendRequestVo smsSendRequestVo) {
         Assert.notNull(adminMemberId, "'adminMemberId' must not be null");
         Assert.notNull(smsSendRequestVo, "'smsSendVo' must not be null");
-        AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
+        AdminMember adminMember = adminMemberRepository.findById(adminMemberId).orElseThrow(AdminMemberNotFoundException::new);
         validate(smsSendRequestVo, adminMember);
         Notification notification = notificationRepository.save(Notification.sms(adminMember, smsSendRequestVo));
         List<SmsRequest> smsRequests = smsRequestService.create(notification, smsSendRequestVo);

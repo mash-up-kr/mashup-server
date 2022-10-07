@@ -2,6 +2,7 @@ package kr.mashup.branding.config.security;
 
 import java.util.Collections;
 
+import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -9,7 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import kr.mashup.branding.config.jwt.JwtService;
-import kr.mashup.branding.domain.adminmember.AdminMember;
+import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -26,11 +27,11 @@ public class PreAuthTokenProvider implements AuthenticationProvider {
             if (adminMemberId == null) {
                 throw new TokenMissingException("Invalid token");
             }
-            AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
+            AdminMemberVo adminMemberVo = adminMemberService.getByAdminMemberId(adminMemberId);
             return new PreAuthenticatedAuthenticationToken(
                 adminMemberId,
                 "",
-                Collections.singletonList(new SimpleGrantedAuthority(adminMember.getPosition().name()))
+                Collections.singletonList(new SimpleGrantedAuthority(adminMemberVo.getPosition().name()))
             );
         }
         return null;

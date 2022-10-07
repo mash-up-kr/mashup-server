@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.ResultCode;
-import kr.mashup.branding.domain.adminmember.AdminMember;
+import kr.mashup.branding.domain.adminmember.entity.AdminMember;
+import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationAlreadySubmittedException;
 import kr.mashup.branding.domain.application.ApplicationCreationRequestInvalidException;
@@ -302,16 +303,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     private void checkAdminMemberAuthority(Long adminMemberId, String teamName) {
-        AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
-        if (Arrays.stream(adminMember.getPosition().getAuthorities())
+        AdminMemberVo adminMemberVo = adminMemberService.getByAdminMemberId(adminMemberId);
+        if (Arrays.stream(adminMemberVo.getPosition().getAuthorities())
             .noneMatch(team -> team.getName().equals(teamName))) {
             throw new ForbiddenException(ResultCode.ADMIN_MEMBER_NO_ACCESS_TEAM, "No Access to other team applications.");
         }
     }
 
     private void checkHelperAdminMember(Long adminMemberId) {
-        AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
-        if (adminMember.getPosition().name().contains("HELPER")) {
+        AdminMemberVo adminMemberVo = adminMemberService.getByAdminMemberId(adminMemberId);
+        if (adminMemberVo.getPosition().name().contains("HELPER")) {
             throw new ForbiddenException(ResultCode.ADMIN_MEMBER_NO_UPDATE_PERMISSION, "Helper is not authorized to update.");
         }
     }
