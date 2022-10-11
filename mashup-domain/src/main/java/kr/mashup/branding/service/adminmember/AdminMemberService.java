@@ -4,7 +4,7 @@ import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.domain.adminmember.exception.AdminMemberLoginFailedException;
 import kr.mashup.branding.domain.adminmember.exception.AdminMemberNotFoundException;
 import kr.mashup.branding.domain.adminmember.exception.AdminMemberUsernameDuplicatedException;
-import kr.mashup.branding.domain.adminmember.vo.AdminMemberLoginCommand;
+import kr.mashup.branding.domain.adminmember.vo.AdminLoginCommand;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberSignUpCommand;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
 import kr.mashup.branding.repository.adminmember.AdminMemberRepository;
@@ -25,7 +25,7 @@ public class AdminMemberService {
     private final AdminMemberRepository adminMemberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AdminMemberVo signUp(final AdminMemberSignUpCommand command) {
+    public AdminMember signUp(final AdminMemberSignUpCommand command) {
 
         checkNotDuplicatedUsername(command);
 
@@ -40,26 +40,29 @@ public class AdminMemberService {
 
         adminMemberRepository.save(adminMember);
 
-        return AdminMemberVo.from(adminMember);
+        return adminMember;
     }
 
 
-    public AdminMemberVo logIn(final AdminMemberLoginCommand adminMemberLoginCommand) {
+    public AdminMember logIn(final AdminLoginCommand adminLoginCommand) {
 
-        final AdminMember adminMember = adminMemberRepository.findByUsername(adminMemberLoginCommand.getUsername())
+        final AdminMember adminMember = adminMemberRepository
+            .findByUsername(adminLoginCommand.getUsername())
             .orElseThrow(AdminMemberNotFoundException::new);
 
-        checkValidPassword(adminMemberLoginCommand, adminMember);
-        return AdminMemberVo.from(adminMember);
+        checkValidPassword(adminLoginCommand, adminMember);
+
+        return adminMember;
     }
 
 
-    public AdminMemberVo getByAdminMemberId(final Long adminMemberId) {
+    public AdminMember getByAdminMemberId(final Long adminMemberId) {
 
-        final AdminMember adminMember = adminMemberRepository.findById(adminMemberId)
+        final AdminMember adminMember = adminMemberRepository
+            .findById(adminMemberId)
             .orElseThrow(AdminMemberNotFoundException::new);
 
-        return AdminMemberVo.from(adminMember);
+        return adminMember;
     }
 
 
@@ -70,9 +73,8 @@ public class AdminMemberService {
         }
     }
 
-
-    private void checkValidPassword(AdminMemberLoginCommand adminMemberLoginCommand, AdminMember adminMember) {
-        if (!passwordEncoder.matches(adminMemberLoginCommand.getPassword(), adminMember.getPassword())) {
+    private void checkValidPassword(AdminLoginCommand adminLoginCommand, AdminMember adminMember) {
+        if (!passwordEncoder.matches(adminLoginCommand.getPassword(), adminMember.getPassword())) {
             throw new AdminMemberLoginFailedException();
         }
     }

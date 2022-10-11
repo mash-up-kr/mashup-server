@@ -50,8 +50,8 @@ public class AdminMemberSignupTasklet implements Tasklet {
             Position.valueOf(position)
         );
         log.info("adminMemberVo: {}", adminMemberSignUpCommand);
-        AdminMemberVo adminMemberVo = adminMemberService.signUp(adminMemberSignUpCommand);
-        log.info("adminMember: {}", adminMemberVo);
+        AdminMember adminMember = adminMemberService.signUp(adminMemberSignUpCommand);
+        log.info("adminMember: {}", adminMember);
         return RepeatStatus.FINISHED;
     }
 }

@@ -12,9 +12,9 @@ public class LoginResponse {
     private String accessToken;
     private AdminMemberResponse adminMemberResponse;
 
-    public static LoginResponse from(LoginResponseVo loginResponseVo){
+    public static LoginResponse from(LoginResponseVo loginResponseVo) {
         AdminMemberVo adminMemberVo = loginResponseVo.getAdminMemberVo();
-        AdminMemberResponse adminMemberResponse = AdminMemberResponse.of(adminMemberVo.getAdminMemberId(), adminMemberVo.getUsername(), adminMemberVo.getPosition(), adminMemberVo.getPhoneNumber());
+        AdminMemberResponse adminMemberResponse = AdminMemberResponse.from(adminMemberVo);
         return new LoginResponse(loginResponseVo.getToken(), adminMemberResponse);
     }
 }
