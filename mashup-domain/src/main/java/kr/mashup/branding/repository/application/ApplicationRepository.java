@@ -25,4 +25,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>,
     boolean existsByApplicationForm_ApplicationFormId(Long applicationFormId);
 
     boolean existsByApplicant_applicantIdAndStatus(Long applicant, ApplicationStatus status);
+
+    List<Application> findApplicationsByApplicantIn(List<Applicant> applicants);
 }

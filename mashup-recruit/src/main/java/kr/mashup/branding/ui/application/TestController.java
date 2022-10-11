@@ -5,6 +5,8 @@ import kr.mashup.branding.service.application.ApplicationService;
 import kr.mashup.branding.facade.application.ApplicationFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
 
+import kr.mashup.branding.ui.application.vo.ApplicationResponse;
+import kr.mashup.branding.ui.application.vo.UpdateConfirmationRequest;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.annotation.Profile;

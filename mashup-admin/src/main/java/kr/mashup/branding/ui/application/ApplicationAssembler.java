@@ -1,17 +1,11 @@
 package kr.mashup.branding.ui.application;
 
-import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
-import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
-import kr.mashup.branding.ui.application.form.ApplicationFormAssembler;
-import kr.mashup.branding.ui.application.vo.ApplicationResultResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationResultStatus;
-import kr.mashup.branding.ui.application.vo.ApplicationSimpleResponse;
-import kr.mashup.branding.ui.application.vo.UpdateApplicationResultRequest;
 import kr.mashup.branding.ui.application.vo.UpdateApplicationResultsRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +19,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ApplicationAssembler {
 
-    private final ApplicationFormAssembler applicationFormAssembler;
 
     public List<UpdateApplicationResultVo> toUpdateApplicationResultsVoList(UpdateApplicationResultsRequest request) {
         ApplicationResultStatus applicationResultStatus = request.getApplicationResultStatus();

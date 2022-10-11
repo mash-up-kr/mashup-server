@@ -1,6 +1,5 @@
-package kr.mashup.branding.ui.application;
+package kr.mashup.branding.ui.application.vo;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 import lombok.Data;

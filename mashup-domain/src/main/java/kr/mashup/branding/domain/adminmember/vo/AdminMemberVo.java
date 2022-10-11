@@ -6,31 +6,31 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import lombok.Value;
 
 import java.time.LocalDateTime;
 
 @Getter
-@RequiredArgsConstructor(staticName = "of")
-@EqualsAndHashCode @ToString
+@Value(staticConstructor = "of")
 public class AdminMemberVo {
 
-    private final Long adminMemberId;
+    Long adminMemberId;
 
-    private final String username;
+    String username;
 
-    private final String phoneNumber;
+    String phoneNumber;
 
-    private final Boolean phoneNumberRegistered = false;
+    Boolean phoneNumberRegistered = false;
 
-    private final Position position;
+    Position position;
 
-    private final String createdBy;
+    String createdBy;
 
-    private final LocalDateTime createdAt;
+    LocalDateTime createdAt;
 
-    private final String updatedBy;
+    String updatedBy;
 
-    private final LocalDateTime updatedAt;
+    LocalDateTime updatedAt;
 
     public static AdminMemberVo from(AdminMember adminMember){
         return AdminMemberVo.of(

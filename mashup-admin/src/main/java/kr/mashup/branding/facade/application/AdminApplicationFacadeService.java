@@ -7,7 +7,7 @@ import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import kr.mashup.branding.domain.notification.sms.SmsRequest;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
 import kr.mashup.branding.service.application.ApplicationService;
-import kr.mashup.branding.service.notification.sms.SmsRequestService;
+import kr.mashup.branding.service.notification.NotificationService;
 import kr.mashup.branding.ui.application.vo.ApplicationDetailResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationSimpleResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class AdminApplicationFacadeService {
 
     private final AdminMemberService adminMemberService;
     private final ApplicationService applicationService;
-    private final SmsRequestService smsRequestService;
+    private final NotificationService notificationService;
 
     public Page<ApplicationSimpleResponse> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo) {
         return applicationService
@@ -38,7 +38,7 @@ public class AdminApplicationFacadeService {
 
         AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
         Application application = applicationService.getApplicationFromAdmin(adminMember, applicationId);
-        List<SmsRequest> smsRequests = smsRequestService.getSmsRequestsByApplicantId(
+        List<SmsRequest> smsRequests = notificationService.getSmsRequestsByApplicantId(
             application.getApplicant().getApplicantId());
 
         return ApplicationDetailResponse.of(application, smsRequests);
@@ -50,6 +50,7 @@ public class AdminApplicationFacadeService {
     ) {
 
         AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
+
         return updateApplicationResultVoList.stream()
             .map(it -> {
                 try {

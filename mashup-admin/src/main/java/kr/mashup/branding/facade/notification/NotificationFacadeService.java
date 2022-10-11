@@ -1,74 +1,96 @@
 package kr.mashup.branding.facade.notification;
 
-import java.util.stream.Collectors;
-
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
+import kr.mashup.branding.domain.applicant.Applicant;
+import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.domain.notification.Notification;
+import kr.mashup.branding.domain.notification.sms.SmsRequest;
+import kr.mashup.branding.domain.notification.sms.vo.SmsSendRequestVo;
+import kr.mashup.branding.domain.notification.sms.vo.SmsSendResultVo;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
+import kr.mashup.branding.service.applicant.ApplicantService;
+import kr.mashup.branding.service.application.ApplicationService;
+import kr.mashup.branding.service.notification.NotificationEvent;
+import kr.mashup.branding.service.notification.NotificationEventPublisher;
+import kr.mashup.branding.service.notification.NotificationEventType;
+import kr.mashup.branding.service.notification.NotificationService;
+import kr.mashup.branding.ui.notification.vo.NotificationDetailResponse;
+import kr.mashup.branding.ui.notification.vo.NotificationSimpleResponse;
+import kr.mashup.branding.ui.notification.vo.SmsSendRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
-import kr.mashup.branding.domain.notification.Notification;
-import kr.mashup.branding.domain.notification.vo.NotificationDetailVo;
-import kr.mashup.branding.service.notification.NotificationService;
-import kr.mashup.branding.domain.notification.sms.vo.SmsRecipientRequestVo;
-import kr.mashup.branding.domain.notification.sms.vo.SmsRequestVo;
-import kr.mashup.branding.domain.notification.sms.vo.SmsSendRequestVo;
-import kr.mashup.branding.domain.notification.sms.vo.SmsSendResultVo;
-import kr.mashup.branding.service.notification.sms.SmsService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class NotificationFacadeService {
     private final AdminMemberService adminMemberService;
     private final NotificationService notificationService;
-    private final SmsService smsService;
+    private final ApplicantService applicantService;
+    private final NotificationEventPublisher notificationEventPublisher;
+    private final ApplicationService applicationService;
 
-    public NotificationDetailVo sendSms(Long adminMemberId, SmsSendRequestVo smsSendRequestVo) {
-        AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
-        // 요청 정보 생성
-        NotificationDetailVo notificationDetailVo = notificationService.create(adminMember, smsSendRequestVo);
-        // 문자 발송 API 호출
-        SmsSendResultVo smsSendResultVo = sendSms(notificationDetailVo);
-        // 결과 상태 변경 (성공, 실패, 전송중, 알수없음 등)
-        notificationService.update(notificationDetailVo.getNotification().getNotificationId(), smsSendResultVo);
-        return notificationDetailVo;
+    public void createSmsNotification(Long adminMemberId, SmsSendRequest smsSendRequest) {
+
+        final AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
+        final List<Applicant> recipientApplicants = applicantService.getApplicants(smsSendRequest.getApplicantIds());
+
+        // 요청 정보 생성 -> Notification CREATED 상태
+        final SmsSendRequestVo smsSendRequestVo = SmsSendRequestVo.of(smsSendRequest.getName(), smsSendRequest.getContent());
+        final Notification notification = notificationService.createSmsNotification(adminMember, recipientApplicants, smsSendRequestVo);
+
+        notificationEventPublisher.publishNotificationEvent(NotificationEvent.of(notification.getNotificationId(), NotificationEventType.CREATED));
     }
 
-    private SmsSendResultVo sendSms(NotificationDetailVo notificationDetailVo) {
-        try {
-            return smsService.send(toSmsRequestVo(notificationDetailVo));
-        } catch (Exception e) {
-            log.error("Failed to send sms. notificationId: {}",
-                notificationDetailVo.getNotification().getNotificationId(), e);
-            return SmsSendResultVo.UNKNOWN;
-        }
+    public void updateSmsStatus(Long notificationId, SmsSendResultVo smsSendResultVo) {
+        notificationService.updateSmsStatus(notificationId, smsSendResultVo);
     }
 
-    private SmsRequestVo toSmsRequestVo(NotificationDetailVo notificationDetailVo) {
-        Notification notification = notificationDetailVo.getNotification();
-        return SmsRequestVo.of(
-            notification.getMessageId(),
-            notification.getSender().getPhoneNumber(),
-            notification.getContent(),
-            notificationDetailVo.getSmsRequests().stream()
-                .map(it -> SmsRecipientRequestVo.of(
-                    it.getMessageId(),
-                    it.getRecipientPhoneNumber()
-                ))
-                .collect(Collectors.toList())
-        );
+    public Page<NotificationSimpleResponse> getNotifications(Long adminMemberId, String searchWord, Pageable pageable) {
+
+        return notificationService
+            .getNotifications(adminMemberId, searchWord, pageable)
+            .map(NotificationSimpleResponse::from);
     }
 
-    public Page<Notification> getNotifications(Long adminMemberId, String searchWord, Pageable pageable) {
-        return notificationService.getNotifications(adminMemberId, searchWord, pageable);
-    }
+    public NotificationDetailResponse getNotificationDetail(Long adminMemberId, Long notificationId) {
 
-    public NotificationDetailVo getNotificationDetail(Long adminMemberId, Long notificationId) {
         Notification notification = notificationService.getNotification(notificationId);
-        return NotificationDetailVo.of(notification, notification.getSmsRequests());
+
+        List<Applicant> recipients = notification
+            .getSmsRequests()
+            .stream()
+            .map(it -> it.getRecipientApplicant()).collect(Collectors.toList());
+
+        Map<Applicant, Application> applicationMap = applicationService.getApplications(recipients);
+
+        return NotificationDetailResponse.of(notification,applicationMap);
     }
+
+
+    /**
+     * 지원자 1명에 대한 문자 발송 이력 조회
+     * @param adminMemberId 어드민 멤버 식별자
+     * @param applicantId 지원자 식별자
+     * @return 지원자에게 발송한 문자 발송 이력
+     */
+    public List<SmsRequest> getSmsRequests(Long adminMemberId, Long applicantId) {
+
+        Assert.notNull(adminMemberId, "'adminMemberId' must not be null");
+        return notificationService.getSmsRequestsByApplicantId(applicantId);
+    }
+
+
+
+
 }

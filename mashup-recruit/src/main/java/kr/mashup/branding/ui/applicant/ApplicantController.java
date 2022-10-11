@@ -1,5 +1,8 @@
 package kr.mashup.branding.ui.applicant;
 
+import kr.mashup.branding.ui.applicant.vo.ApplicantResponse;
+import kr.mashup.branding.ui.applicant.vo.LoginRequest;
+import kr.mashup.branding.ui.applicant.vo.LoginResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;

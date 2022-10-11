@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.applicant;
+package kr.mashup.branding.ui.applicant.vo;
 
 import lombok.Getter;
 import lombok.ToString;

@@ -24,7 +24,6 @@ public class TeamController {
 
         List<TeamResponse> responses = teamFacadeService.getTeams();
 
-
         return ApiResponse.success(responses);
     }
 }

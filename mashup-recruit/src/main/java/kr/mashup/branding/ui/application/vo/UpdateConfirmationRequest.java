@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.application;
+package kr.mashup.branding.ui.application.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;

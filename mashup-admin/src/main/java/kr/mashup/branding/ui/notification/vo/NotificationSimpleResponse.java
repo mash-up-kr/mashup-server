@@ -1,10 +1,15 @@
 package kr.mashup.branding.ui.notification.vo;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.swagger.annotations.ApiModelProperty;
 import kr.mashup.branding.domain.adminmember.entity.Position;
+import kr.mashup.branding.domain.notification.Notification;
 import kr.mashup.branding.domain.notification.NotificationStatus;
+import kr.mashup.branding.domain.notification.sms.SmsNotificationStatus;
+import kr.mashup.branding.domain.notification.sms.SmsRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -37,4 +42,25 @@ public class NotificationSimpleResponse {
 
     @ApiModelProperty(value = "전체 수신자 수", example = "220")
     private Integer totalCount;
+
+    public static NotificationSimpleResponse from(Notification notification){
+        Map<SmsNotificationStatus, Integer> statusCountMap = notification.getSmsRequests()
+            .stream()
+            .collect(Collectors.toMap(
+                SmsRequest::getStatus,
+                it -> 1,
+                Integer::sum
+            ));
+        return new NotificationSimpleResponse(
+            notification.getNotificationId(),
+            notification.getStatus(),
+            notification.getName(),
+            notification.getSenderPhoneNumber(),
+            notification.getSentAt(),
+            notification.getSender().getPosition(),
+            statusCountMap.getOrDefault(SmsNotificationStatus.SUCCESS, 0),
+            statusCountMap.getOrDefault(SmsNotificationStatus.FAILURE, 0),
+            statusCountMap.values().stream().mapToInt(it -> it).sum()
+        );
+    }
 }

@@ -3,6 +3,7 @@ package kr.mashup.branding.service.application;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.ResultCode;
@@ -184,6 +185,7 @@ public class ApplicationService {
         return application;
     }
 
+
     @Transactional
     public Application updateConfirmationForTest(Long applicantId,
                                                  UpdateConfirmationVo updateConfirmationVo) {
@@ -205,6 +207,18 @@ public class ApplicationService {
         applications.forEach(this::updateApplicationResult);
         return applications;
     }
+
+    @Transactional
+    public Map<Applicant, Application> getApplications(List<Applicant> applicants) {
+
+        Map<Applicant, Application> applicationMap = applicationRepository
+            .findApplicationsByApplicantIn(applicants)
+            .stream()
+            .collect(Collectors.toMap(Application::getApplicant, it -> it));
+
+        return applicationMap;
+    }
+
 
     public List<Application> getApplicationsByApplicationStatusAndEventName(ApplicationStatus status, String eventName) {
         LocalDateTime eventOccurredAt = recruitmentScheduleService.getByEventName(eventName).getEventOccurredAt();

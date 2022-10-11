@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.application;
+package kr.mashup.branding.ui.application.vo;
 
 import kr.mashup.branding.domain.application.form.QuestionType;
 import lombok.AllArgsConstructor;

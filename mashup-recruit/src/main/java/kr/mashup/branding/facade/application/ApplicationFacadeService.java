@@ -19,7 +19,7 @@ import kr.mashup.branding.domain.application.ApplicationSubmitRequestVo;
 import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
-import kr.mashup.branding.ui.application.UpdateConfirmationRequest;
+import kr.mashup.branding.ui.application.vo.UpdateConfirmationRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service

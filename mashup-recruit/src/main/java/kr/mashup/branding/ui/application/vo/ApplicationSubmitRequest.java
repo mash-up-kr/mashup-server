@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.application;
+package kr.mashup.branding.ui.application.vo;
 
 import java.time.LocalDate;
 import java.util.List;

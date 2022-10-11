@@ -1,13 +1,23 @@
 package kr.mashup.branding.ui.notification.vo;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import io.swagger.annotations.ApiModelProperty;
+import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.domain.adminmember.entity.Position;
+import kr.mashup.branding.domain.applicant.Applicant;
+import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.domain.notification.Notification;
 import kr.mashup.branding.domain.notification.NotificationStatus;
+import kr.mashup.branding.domain.notification.sms.SmsNotificationStatus;
+import kr.mashup.branding.domain.notification.sms.SmsRequest;
+import kr.mashup.branding.domain.team.Team;
+import kr.mashup.branding.ui.team.vo.TeamResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -45,7 +55,33 @@ public class NotificationDetailResponse {
     @ApiModelProperty(value = "발신 문자 목록")
     private List<SmsRequestSimpleResponse> smsRequests;
 
-    public static NotificationDetailResponse from(){
+    public static NotificationDetailResponse of(final Notification notification, final Map<Applicant, Application> applicationMap){
+        Map<SmsNotificationStatus, Integer> statusCountMap = notification.getSmsRequests()
+            .stream()
+            .collect(Collectors.toMap(
+                SmsRequest::getStatus,
+                it -> 1,
+                Integer::sum
+            ));
+        AdminMember sender = notification.getSender();
 
+        return new NotificationDetailResponse(
+            notification.getNotificationId(),
+            notification.getStatus(),
+            notification.getName(),
+            notification.getContent(),
+            notification.getSenderPhoneNumber(),
+            notification.getSentAt(),
+            sender.getPosition(),
+            statusCountMap.getOrDefault(SmsNotificationStatus.SUCCESS, 0),
+            statusCountMap.getOrDefault(SmsNotificationStatus.FAILURE, 0),
+            statusCountMap.values().stream().mapToInt(it -> it).sum(),
+            notification.getSmsRequests()
+                .stream().map(it->
+                    SmsRequestSimpleResponse.of(it, TeamResponse.from(applicationMap.get(it.getRecipientApplicant()).getApplicationForm().getTeam())))
+                .collect(Collectors.toList())
+
+        );
     }
+
 }

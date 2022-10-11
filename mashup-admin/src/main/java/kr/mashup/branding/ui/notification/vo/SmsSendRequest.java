@@ -19,7 +19,4 @@ public class SmsSendRequest {
     @ApiModelProperty(value = "문자 받을 지원자 ID 목록", example = "[1, 2, 3]")
     private List<Long> applicantIds;
 
-    public SmsSendRequestVo toVo() {
-        return SmsSendRequestVo.of(name, content, applicantIds);
-    }
 }
