@@ -24,7 +24,7 @@ public enum ApplicationStatusResponse {
     /**
      * 서류 마감 전 지원상태
      */
-    static ApplicationStatusResponse submitted(ApplicationStatus status) {
+    public static ApplicationStatusResponse submitted(ApplicationStatus status) {
         if (status.isSubmitted()) {
             return SUBMITTED;
         }
@@ -34,7 +34,7 @@ public enum ApplicationStatusResponse {
     /**
      * 서류 마감 후 ~ 서류 합격 발표 전 지원상태
      */
-    static ApplicationStatusResponse beforeResult(ApplicationStatus status) {
+    public static ApplicationStatusResponse beforeResult(ApplicationStatus status) {
         if (!status.isSubmitted()) {
             return SCREENING_EXPIRED;
         }
@@ -44,7 +44,7 @@ public enum ApplicationStatusResponse {
     /**
      * 서류 합격 발표 후 ~ 면접 합격 발표 전 지원상태
      */
-    static ApplicationStatusResponse screeningResult(
+    public static ApplicationStatusResponse screeningResult(
         ApplicationStatus applicationStatus,
         ApplicationScreeningStatus screeningStatus
     ) {
@@ -67,7 +67,7 @@ public enum ApplicationStatusResponse {
     /**
      * 면접 합격 발표 후 지원상태
      */
-    static ApplicationStatusResponse interviewResult(
+    public static ApplicationStatusResponse interviewResult(
         ApplicationScreeningStatus screeningStatus,
         ApplicationInterviewStatus interviewStatus,
         ApplicantConfirmationStatus confirmationStatus

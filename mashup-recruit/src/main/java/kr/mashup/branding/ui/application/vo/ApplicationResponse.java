@@ -3,6 +3,7 @@ package kr.mashup.branding.ui.application.vo;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationStatus;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.ui.applicant.vo.ApplicantResponse;

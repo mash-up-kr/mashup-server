@@ -2,7 +2,9 @@ package kr.mashup.branding.ui.application.vo;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -37,4 +39,17 @@ public class UpdateApplicationRequest {
      * 개인정보처리방침 동의여부
      */
     private Boolean privacyPolicyAgreed;
+
+    public UpdateApplicationVo toVo(){
+        return UpdateApplicationVo.of(
+            applicantName,
+            phoneNumber,
+            birthdate,
+            department,
+            residence,
+            answers.stream()
+                .map(AnswerRequest::toVo)
+                .collect(Collectors.toList()),
+            privacyPolicyAgreed);
+    }
 }

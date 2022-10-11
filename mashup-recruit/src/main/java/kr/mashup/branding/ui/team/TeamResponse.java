@@ -1,7 +1,6 @@
 package kr.mashup.branding.ui.team;
 
 import kr.mashup.branding.domain.team.Team;
-import kr.mashup.branding.service.team.TeamVo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

@@ -1,4 +1,27 @@
-package kr.mashup.branding.ui.application;
+package kr.mashup.branding.facade.application;
+
+import kr.mashup.branding.domain.application.Answer;
+import kr.mashup.branding.domain.application.AnswerRequestVo;
+import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.domain.application.ApplicationSubmitRequestVo;
+import kr.mashup.branding.domain.application.UpdateApplicationVo;
+import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
+import kr.mashup.branding.domain.application.form.Question;
+import kr.mashup.branding.domain.application.result.ApplicationResult;
+import kr.mashup.branding.service.recruitmentschedule.RecruitmentScheduleService;
+import kr.mashup.branding.ui.applicant.vo.ApplicantResponse;
+import kr.mashup.branding.ui.application.vo.AnswerRequest;
+import kr.mashup.branding.ui.application.vo.AnswerResponse;
+import kr.mashup.branding.ui.application.vo.ApplicationResponse;
+import kr.mashup.branding.ui.application.vo.ApplicationResultResponse;
+import kr.mashup.branding.ui.application.vo.ApplicationStatusResponse;
+import kr.mashup.branding.ui.application.vo.ApplicationSubmitRequest;
+import kr.mashup.branding.ui.application.vo.QuestionResponse;
+import kr.mashup.branding.ui.application.vo.UpdateApplicationRequest;
+import kr.mashup.branding.ui.team.TeamResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -6,50 +29,17 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import kr.mashup.branding.ui.application.vo.AnswerRequest;
-import kr.mashup.branding.ui.application.vo.AnswerResponse;
-import kr.mashup.branding.ui.application.vo.ApplicationResponse;
-import kr.mashup.branding.ui.application.vo.ApplicationResultResponse;
-import kr.mashup.branding.ui.application.vo.ApplicationStatusResponse;
-import kr.mashup.branding.ui.application.vo.ApplicationSubmitRequest;
-import kr.mashup.branding.ui.application.vo.CreateApplicationRequest;
-import kr.mashup.branding.ui.application.vo.QuestionResponse;
-import kr.mashup.branding.ui.application.vo.UpdateApplicationRequest;
-import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
-
-import kr.mashup.branding.domain.application.Answer;
-import kr.mashup.branding.domain.application.AnswerRequestVo;
-import kr.mashup.branding.domain.application.Application;
-import kr.mashup.branding.domain.application.ApplicationSubmitRequestVo;
-import kr.mashup.branding.domain.application.CreateApplicationVo;
-import kr.mashup.branding.domain.application.UpdateApplicationVo;
-import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
-import kr.mashup.branding.domain.application.form.Question;
-import kr.mashup.branding.domain.application.result.ApplicationResult;
-import kr.mashup.branding.service.recruitmentschedule.RecruitmentScheduleService;
-import kr.mashup.branding.ui.applicant.ApplicantAssembler;
-import kr.mashup.branding.ui.team.TeamAssembler;
-import lombok.RequiredArgsConstructor;
-
 @Component
 @RequiredArgsConstructor
 public class ApplicationAssembler {
-    private final ApplicantAssembler applicantAssembler;
-    private final TeamAssembler teamAssembler;
     private final RecruitmentScheduleService recruitmentScheduleService;
-
-    CreateApplicationVo toCreateApplicationVo(CreateApplicationRequest createApplicationRequest) {
-        Assert.notNull(createApplicationRequest, "'createApplicationRequest' must not be null");
-        return new CreateApplicationVo(createApplicationRequest.getTeamId());
-    }
 
     ApplicationResponse toApplicationResponse(Application application) {
         Assert.notNull(application, "'application' must not be null");
         return new ApplicationResponse(
             application.getApplicationId(),
-            applicantAssembler.toApplicantResponse(application.getApplicant()),
-            teamAssembler.toTeamResponse(application.getApplicationForm().getTeamVo()),
+            ApplicantResponse.from(application.getApplicant()),
+            TeamResponse.from(application.getApplicationForm().getTeam()),
             toApplicantConfirmationStatus(application.getConfirmation().getStatus()),
             application.getConfirmation().getRejectionReason(),
             application.getStatus(),

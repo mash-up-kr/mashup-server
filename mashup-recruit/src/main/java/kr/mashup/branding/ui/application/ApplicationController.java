@@ -3,6 +3,7 @@ package kr.mashup.branding.ui.application;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.ui.application.vo.ApplicationResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationSubmitRequest;
 import kr.mashup.branding.ui.application.vo.CreateApplicationRequest;
@@ -30,7 +31,6 @@ import springfox.documentation.annotations.ApiIgnore;
 public class ApplicationController {
 
     private final ApplicationFacadeService applicationFacadeService;
-    private final ApplicationAssembler applicationAssembler;
 
     /**
      * 팀 id(or name) 받아서 만들기
@@ -39,15 +39,11 @@ public class ApplicationController {
     @PostMapping
     public ApiResponse<ApplicationResponse> create(
         @ApiIgnore @ModelAttribute("applicantId") Long applicantId,
-        @RequestBody CreateApplicationRequest createApplicationRequest
+        @RequestBody CreateApplicationRequest request
     ) {
-        Application application = applicationFacadeService.create(
-            applicantId,
-            applicationAssembler.toCreateApplicationVo(createApplicationRequest)
-        );
-        return ApiResponse.success(
-            applicationAssembler.toApplicationResponse(application)
-        );
+        ApplicationResponse response = applicationFacadeService.create(applicantId, request.getTeamId());
+
+        return ApiResponse.success(response);
     }
 
     /**
@@ -60,13 +56,12 @@ public class ApplicationController {
         @PathVariable Long applicationId,
         @RequestBody UpdateApplicationRequest updateApplicationRequest
     ) {
-        Application application = applicationFacadeService.update(
+        ApplicationResponse response = applicationFacadeService.update(
             applicantId,
             applicationId,
-            applicationAssembler.toUpdateApplicationVo(updateApplicationRequest));
-        return ApiResponse.success(
-            applicationAssembler.toApplicationResponse(application)
-        );
+            updateApplicationRequest.toVo());
+
+        return ApiResponse.success(response);
     }
 
     /**
@@ -81,14 +76,13 @@ public class ApplicationController {
         @PathVariable Long applicationId,
         @RequestBody ApplicationSubmitRequest applicationSubmitRequest
     ) {
-        Application application = applicationFacadeService.submit(
+        ApplicationResponse response = applicationFacadeService.submit(
             applicantId,
             applicationId,
-            applicationAssembler.toApplicationSubmitRequestVo(applicationSubmitRequest)
+            applicationSubmitRequest.toVo()
         );
-        return ApiResponse.success(
-            applicationAssembler.toApplicationResponse(application)
-        );
+
+        return ApiResponse.success(response);
     }
 
     @ApiOperation("내 지원서 목록 조회")
@@ -96,12 +90,9 @@ public class ApplicationController {
     public ApiResponse<List<ApplicationResponse>> getApplications(
         @ApiIgnore @ModelAttribute("applicantId") Long applicantId
     ) {
-        List<Application> applications = applicationFacadeService.getApplications(applicantId);
-        return ApiResponse.success(
-            applications.stream()
-                .map(applicationAssembler::toApplicationResponse)
-                .collect(Collectors.toList())
-        );
+        List<ApplicationResponse> responses = applicationFacadeService.getApplications(applicantId);
+
+        return ApiResponse.success(responses);
     }
 
     @ApiOperation("내 지원서 상세 조회")
@@ -110,10 +101,9 @@ public class ApplicationController {
         @ApiIgnore @ModelAttribute("applicantId") Long applicantId,
         @PathVariable Long applicationId
     ) {
-        Application application = applicationFacadeService.getApplication(applicantId, applicationId);
-        return ApiResponse.success(
-            applicationAssembler.toApplicationResponse(application)
-        );
+        ApplicationResponse response = applicationFacadeService.getApplication(applicantId, applicationId);
+
+        return ApiResponse.success(response);
     }
 
     @ApiOperation("지원자 응답")
@@ -123,8 +113,9 @@ public class ApplicationController {
         @PathVariable Long applicationId,
         @RequestBody UpdateConfirmationRequest updateConfirmationRequest
     ) {
-        Application application = applicationFacadeService
+        ApplicationResponse response = applicationFacadeService
             .updateConfirm(applicantId, applicationId, updateConfirmationRequest);
-        return ApiResponse.success(applicationAssembler.toApplicationResponse(application));
+
+        return ApiResponse.success(response);
     }
 }

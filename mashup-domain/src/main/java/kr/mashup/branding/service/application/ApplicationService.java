@@ -8,10 +8,8 @@ import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
-import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationAlreadySubmittedException;
-import kr.mashup.branding.domain.application.ApplicationCreationRequestInvalidException;
 import kr.mashup.branding.domain.application.ApplicationModificationNotAllowedException;
 import kr.mashup.branding.domain.application.ApplicationNotFoundException;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
@@ -19,7 +17,6 @@ import kr.mashup.branding.domain.application.ApplicationScheduleValidator;
 import kr.mashup.branding.domain.application.ApplicationStatus;
 import kr.mashup.branding.domain.application.ApplicationSubmitRequestInvalidException;
 import kr.mashup.branding.domain.application.ApplicationSubmitRequestVo;
-import kr.mashup.branding.domain.application.CreateApplicationVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.repository.application.ApplicationRepository;
@@ -33,14 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import kr.mashup.branding.domain.applicant.Applicant;
-import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
-import kr.mashup.branding.service.applicant.ApplicantService;
 import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
-import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
-import kr.mashup.branding.domain.team.TeamNotFoundException;
-import kr.mashup.branding.service.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

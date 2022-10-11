@@ -23,17 +23,4 @@ public class ApplicantAssembler {
             applicant.getStatus()
         );
     }
-
-    LoginRequestVo toLoginRequestVo(LoginRequest loginRequest) {
-        return LoginRequestVo.of(
-            loginRequest.getGoogleIdToken()
-        );
-    }
-
-    LoginResponse toLoginResponse(LoginResponseVo loginResponseVo) {
-        return new LoginResponse(
-            loginResponseVo.getAccessToken(),
-            toApplicantResponse(loginResponseVo.getApplicant())
-        );
-    }
 }

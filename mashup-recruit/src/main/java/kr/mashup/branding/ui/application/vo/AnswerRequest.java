@@ -1,5 +1,6 @@
 package kr.mashup.branding.ui.application.vo;
 
+import kr.mashup.branding.domain.application.AnswerRequestVo;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -18,4 +19,8 @@ public class AnswerRequest {
      * 답변 내용
      */
     private String content;
+
+    public AnswerRequestVo toVo(){
+        return AnswerRequestVo.of(answerId, questionId, content);
+    }
 }

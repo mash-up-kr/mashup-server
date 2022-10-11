@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.application;
 
 import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.facade.application.ApplicationAssembler;
 import kr.mashup.branding.service.application.ApplicationService;
 import kr.mashup.branding.facade.application.ApplicationFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
@@ -42,8 +43,9 @@ public class TestController {
         @PathVariable Long applicationId,
         @RequestBody UpdateConfirmationRequest updateConfirmationRequest
     ) {
-        Application application = applicationFacadeService
+        ApplicationResponse response = applicationFacadeService
             .updateConfirmForTest(applicantId, applicationId, updateConfirmationRequest);
-        return ApiResponse.success(applicationAssembler.toApplicationResponse(application));
+
+        return ApiResponse.success(response);
     }
 }
