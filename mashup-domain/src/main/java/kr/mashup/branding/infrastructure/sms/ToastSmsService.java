@@ -17,10 +17,10 @@ import org.springframework.web.client.RestTemplate;
 
 import kr.mashup.branding.domain.notification.NotificationStatus;
 import kr.mashup.branding.domain.notification.sms.SmsNotificationStatus;
-import kr.mashup.branding.domain.notification.sms.SmsRequestVo;
-import kr.mashup.branding.domain.notification.sms.SmsSendFailedException;
-import kr.mashup.branding.domain.notification.sms.SmsSendResultRecipientVo;
-import kr.mashup.branding.domain.notification.sms.SmsSendResultVo;
+import kr.mashup.branding.domain.notification.sms.vo.SmsRequestVo;
+import kr.mashup.branding.domain.notification.sms.exception.SmsSendFailedException;
+import kr.mashup.branding.domain.notification.sms.vo.SmsSendResultRecipientVo;
+import kr.mashup.branding.domain.notification.sms.vo.SmsSendResultVo;
 import kr.mashup.branding.service.notification.sms.SmsService;
 import kr.mashup.branding.service.notification.sms.SmsWhitelistService;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
  * @see <a href="https://docs.toast.com/ko/Notification/SMS/ko/api-guide/">https://docs.toast.com/ko/Notification/SMS/ko/api-guide/</a>
  */
 @Slf4j
-@RequiredArgsConstructor
+@RequiredArgsConstructor // Configured by ToastSmsConfig
 public class ToastSmsService implements SmsService {
     private static final Charset CHARSET_EUC_KR = Charset.forName("euc-kr");
     private static final int SMS_MAX_LENGTH = 90;

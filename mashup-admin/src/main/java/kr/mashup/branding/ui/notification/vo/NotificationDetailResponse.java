@@ -1,6 +1,7 @@
-package kr.mashup.branding.ui.notification;
+package kr.mashup.branding.ui.notification.vo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
 import kr.mashup.branding.domain.adminmember.entity.Position;
@@ -10,7 +11,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class NotificationSimpleResponse {
+public class NotificationDetailResponse {
     @ApiModelProperty(value = "발송 내역 식별자", example = "1")
     private Long notificationId;
 
@@ -19,6 +20,9 @@ public class NotificationSimpleResponse {
 
     @ApiModelProperty(value = "발송 메모", example = "스프링팀 서류 합격 문자 안내")
     private String name;
+
+    @ApiModelProperty(value = "발송 내용", example = "합격을 축하행~!")
+    private String content;
 
     @ApiModelProperty(value = "발송 번호", example = "01012341234")
     private String senderPhoneNumber;
@@ -37,4 +41,11 @@ public class NotificationSimpleResponse {
 
     @ApiModelProperty(value = "전체 수신자 수", example = "220")
     private Integer totalCount;
+
+    @ApiModelProperty(value = "발신 문자 목록")
+    private List<SmsRequestSimpleResponse> smsRequests;
+
+    public static NotificationDetailResponse from(){
+
+    }
 }

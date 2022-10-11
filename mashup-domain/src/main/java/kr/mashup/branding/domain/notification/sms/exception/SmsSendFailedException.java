@@ -1,4 +1,4 @@
-package kr.mashup.branding.domain.notification.sms;
+package kr.mashup.branding.domain.notification.sms.exception;
 
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.ServiceUnavailableException;

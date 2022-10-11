@@ -1,9 +1,11 @@
-package kr.mashup.branding.ui.notification.sms;
+package kr.mashup.branding.ui.notification.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import kr.mashup.branding.domain.adminmember.entity.Position;
 import kr.mashup.branding.domain.notification.sms.SmsNotificationStatus;
-import kr.mashup.branding.ui.team.TeamResponse;
+import kr.mashup.branding.domain.notification.sms.SmsRequest;
+import kr.mashup.branding.domain.team.Team;
+import kr.mashup.branding.ui.team.vo.TeamResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -35,4 +37,17 @@ public class SmsRequestDetailResponse {
 
     @ApiModelProperty(value = "수신자 지원 플랫폼")
     private TeamResponse team;
+
+    public static SmsRequestDetailResponse of(SmsRequest smsRequest, Team team){
+        return new SmsRequestDetailResponse(
+            smsRequest.getSmsRequestId(),
+            smsRequest.getNotification().getName(),
+            smsRequest.getNotification().getSenderPhoneNumber(),
+            smsRequest.getNotification().getSender().getPosition(),
+            smsRequest.getNotification().getContent(),
+            smsRequest.getStatus(),
+            smsRequest.getCreatedAt(),
+            TeamResponse.from(team)
+        );
+    }
 }

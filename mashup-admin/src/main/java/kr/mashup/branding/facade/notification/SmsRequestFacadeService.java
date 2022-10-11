@@ -1,4 +1,4 @@
-package kr.mashup.branding.facade.notification.sms;
+package kr.mashup.branding.facade.notification;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class SmsRequestFacadeServiceImpl implements SmsRequestFacadeService {
+public class SmsRequestFacadeService {
     private final SmsRequestService smsRequestService;
     private final AdminMemberService adminMemberService;
 
@@ -22,7 +22,6 @@ public class SmsRequestFacadeServiceImpl implements SmsRequestFacadeService {
      * @param applicantId 지원자 식별자
      * @return 지원자에게 발송한 문자 발송 이력
      */
-    @Override
     public List<SmsRequest> getSmsRequests(Long adminMemberId, Long applicantId) {
         Assert.notNull(adminMemberId, "'adminMemberId' must not be null");
         return smsRequestService.getSmsRequestsByApplicantId(applicantId);

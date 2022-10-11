@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.notification.sms.SmsRequest;
-import kr.mashup.branding.domain.notification.sms.SmsSendRequestVo;
+import kr.mashup.branding.domain.notification.sms.vo.SmsSendRequestVo;
 import kr.mashup.branding.repository.notification.sms.SmsRequestRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

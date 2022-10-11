@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.notification.sms.whitelist;
+package kr.mashup.branding.ui.notification;
 
 import java.util.List;
 

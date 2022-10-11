@@ -1,4 +1,4 @@
-package kr.mashup.branding.domain.notification.sms;
+package kr.mashup.branding.domain.notification.sms.vo;
 
 import lombok.Value;
 

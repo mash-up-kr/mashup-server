@@ -2,6 +2,8 @@ package kr.mashup.branding.ui.notification;
 
 import java.util.List;
 
+import kr.mashup.branding.ui.notification.vo.NotificationDetailResponse;
+import kr.mashup.branding.ui.notification.vo.NotificationSimpleResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import kr.mashup.branding.domain.notification.NotificationDetailVo;
+import kr.mashup.branding.domain.notification.vo.NotificationDetailVo;
 import kr.mashup.branding.facade.notification.NotificationFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.notification.sms.SmsSendRequest;
+import kr.mashup.branding.ui.notification.vo.SmsSendRequest;
 import lombok.RequiredArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -37,7 +39,7 @@ public class NotificationController {
     ) {
         NotificationDetailVo notificationDetailVo = notificationFacadeService.sendSms(
             adminMemberId,
-            notificationAssembler.toSmsSendVo(smsSendRequest)
+            smsSendRequest.toVo()
         );
         return ApiResponse.success(
             notificationAssembler.toNotificationDetailResponse(notificationDetailVo)
@@ -63,10 +65,12 @@ public class NotificationController {
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long notificationId
     ) {
-        NotificationDetailVo notificationDetailVo = notificationFacadeService.getNotificationDetail(
-            adminMemberId, notificationId);
+        NotificationDetailVo detailVo = notificationFacadeService.getNotificationDetail(adminMemberId, notificationId);
+
+
+
         return ApiResponse.success(
-            notificationAssembler.toNotificationDetailResponse(notificationDetailVo)
+            notificationAssembler.toNotificationDetailResponse(detailVo)
         );
     }
 }

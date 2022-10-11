@@ -1,8 +1,8 @@
-package kr.mashup.branding.ui.notification.sms;
+package kr.mashup.branding.ui.notification.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import kr.mashup.branding.domain.notification.sms.SmsNotificationStatus;
-import kr.mashup.branding.ui.team.TeamResponse;
+import kr.mashup.branding.ui.team.vo.TeamResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

@@ -1,8 +1,9 @@
-package kr.mashup.branding.ui.notification.sms;
+package kr.mashup.branding.ui.notification.vo;
 
 import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
+import kr.mashup.branding.domain.notification.sms.vo.SmsSendRequestVo;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -17,4 +18,8 @@ public class SmsSendRequest {
 
     @ApiModelProperty(value = "문자 받을 지원자 ID 목록", example = "[1, 2, 3]")
     private List<Long> applicantIds;
+
+    public SmsSendRequestVo toVo() {
+        return SmsSendRequestVo.of(name, content, applicantIds);
+    }
 }
