@@ -1,8 +1,9 @@
 package kr.mashup.branding.ui.team;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import kr.mashup.branding.ui.team.vo.CreateTeamRequest;
+import kr.mashup.branding.ui.team.vo.TeamResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,9 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.mashup.branding.domain.team.CreateTeamVo;
-import kr.mashup.branding.domain.team.Team;
-import kr.mashup.branding.facade.team.TeamFacadeService;
+import kr.mashup.branding.facade.team.AdminTeamFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
@@ -20,20 +19,16 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequestMapping("/api/v1/teams")
 @RequiredArgsConstructor
-public class TeamController {
-    private final TeamFacadeService teamFacadeService;
-    private final TeamAssembler teamAssembler;
+public class AdminTeamController {
+    private final AdminTeamFacadeService adminTeamFacadeService;
 
     @GetMapping
     public ApiResponse<List<TeamResponse>> getTeams(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId
     ) {
-        return ApiResponse.success(
-            teamFacadeService.getTeams(adminMemberId)
-                .stream()
-                .map(teamAssembler::toTeamResponse)
-                .collect(Collectors.toList())
-        );
+
+        List<TeamResponse> responses = adminTeamFacadeService.getTeams(adminMemberId);
+        return ApiResponse.success(responses);
     }
 
     @PostMapping
@@ -41,10 +36,8 @@ public class TeamController {
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @RequestBody CreateTeamRequest createTeamRequest
     ) {
-        CreateTeamVo createTeamVo = teamAssembler.toCreateTeamVo(createTeamRequest);
-        Team team = teamFacadeService.create(adminMemberId, createTeamVo);
-        return ApiResponse.success(
-            teamAssembler.toTeamResponse(team)
-        );
+
+        TeamResponse response =  adminTeamFacadeService.create(adminMemberId, createTeamRequest.toCreateTeamVo());
+        return ApiResponse.success(response);
     }
 }

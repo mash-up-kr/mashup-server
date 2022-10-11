@@ -1,7 +1,8 @@
-package kr.mashup.branding.ui.team;
+package kr.mashup.branding.ui.team.vo;
 
 import java.time.LocalDateTime;
 
+import kr.mashup.branding.domain.team.Team;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -14,4 +15,8 @@ public class TeamResponse {
     private LocalDateTime createdAt;
     private String updatedBy;
     private LocalDateTime updatedAt;
+
+    static public TeamResponse from(Team team){
+        return new TeamResponse(team.getTeamId(), team.getName(), team.getCreatedBy(), team.getCreatedAt(), team.getUpdatedBy(), team.getUpdatedAt());
+    }
 }
