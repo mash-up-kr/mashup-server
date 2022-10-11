@@ -40,7 +40,7 @@ public class ApplicationAssembler {
         return new ApplicationResponse(
             application.getApplicationId(),
             applicantAssembler.toApplicantResponse(application.getApplicant()),
-            teamAssembler.toTeamResponse(application.getApplicationForm().getTeam()),
+            teamAssembler.toTeamResponse(application.getApplicationForm().getTeamVo()),
             toApplicantConfirmationStatus(application.getConfirmation().getStatus()),
             application.getConfirmation().getRejectionReason(),
             application.getStatus(),

@@ -1,4 +1,4 @@
-package kr.mashup.branding.service.application.form;
+package kr.mashup.branding.service.application;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,15 +15,16 @@ import kr.mashup.branding.domain.application.form.ApplicationFormScheduleValidat
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
 import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.form.UpdateApplicationFormVo;
+import kr.mashup.branding.domain.team.Team;
+import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.repository.application.form.ApplicationFormRepository;
+import kr.mashup.branding.repository.team.TeamRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.mashup.branding.repository.application.ApplicationRepository;
-import kr.mashup.branding.domain.team.Team;
-import kr.mashup.branding.service.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,20 +32,20 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ApplicationFormServiceImpl implements ApplicationFormService {
-    private final TeamService teamService;
+public class ApplicationFormService {
     private final ApplicationFormRepository applicationFormRepository;
     private final ApplicationRepository applicationRepository;
     private final ApplicationFormScheduleValidator applicationFormScheduleValidator;
 
-    @Override
     @Transactional
-    public ApplicationForm create(Long adminMemberId, CreateApplicationFormVo createApplicationFormVo) {
-        validateDate(adminMemberId);
-        Team team = teamService.getTeam(createApplicationFormVo.getTeamId());
+    public ApplicationForm create(Long adminMemberId, Team team, CreateApplicationFormVo createApplicationFormVo) {
+
+        validateDate(adminMemberId); // 모집시간 전에만 지원서를 수정할 수 있다.
+
         if (applicationFormRepository.existsByTeam_teamId(team.getTeamId())) {
             throw new ApplicationFormAlreadyExistException("해당 팀에 다른 설문지가 이미 존재합니다. teamId: " + team.getTeamId());
         }
+
         if (applicationFormRepository.existsByNameLike(createApplicationFormVo.getName())) {
             throw new ApplicationFormNameDuplicatedException(
                 "ApplicationForm 'name' is already used. name: " + createApplicationFormVo.getName());
@@ -71,7 +72,6 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         }
     }
 
-    @Override
     @Transactional
     public ApplicationForm update(
         Long adminMemberId,
@@ -89,9 +89,9 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
         return applicationForm;
     }
 
-    @Override
     @Transactional
     public void delete(Long adminMemberId, Long applicationFormId) {
+
         validateDate(adminMemberId);
         if (applicationRepository.existsByApplicationForm_ApplicationFormId(applicationFormId)) {
             throw new ApplicationFormDeleteFailedException();
@@ -101,7 +101,6 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
             .ifPresent(applicationFormRepository::delete);
     }
 
-    @Override
     public ApplicationForm getApplicationFormById(Long applicationFormId) {
         return applicationFormRepository.findById(applicationFormId).map(
             it -> {
@@ -112,17 +111,14 @@ public class ApplicationFormServiceImpl implements ApplicationFormService {
             .orElseThrow(ApplicationFormNotFoundException::new);
     }
 
-    @Override
     public List<ApplicationForm> getApplicationFormsByTeamId(Long teamId) {
         return applicationFormRepository.findByTeam_teamId(teamId);
     }
 
-    @Override
     public Page<ApplicationForm> getApplicationForms(ApplicationFormQueryVo applicationFormQueryVo) {
         return applicationFormRepository.findByApplicationFormQueryVo(applicationFormQueryVo);
     }
 
-    @Override
     public Page<ApplicationForm> getApplicationForms(Long teamId, Pageable pageable) {
         return applicationFormRepository.findByTeam_teamId(teamId, pageable);
     }

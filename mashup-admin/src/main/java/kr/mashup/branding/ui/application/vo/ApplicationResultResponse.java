@@ -1,7 +1,8 @@
-package kr.mashup.branding.ui.application;
+package kr.mashup.branding.ui.application.vo;
 
 import java.time.LocalDateTime;
 
+import kr.mashup.branding.domain.application.result.ApplicationResult;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -24,4 +25,12 @@ public class ApplicationResultResponse {
      * 면접 안내 링크 (오픈채팅방 링크 or 화상미팅 링크)
      */
     private String interviewGuideLink;
+
+    public static ApplicationResultResponse from(ApplicationResult result){
+        return new ApplicationResultResponse(
+            ApplicationResultStatus.of(result.getScreeningStatus(), result.getInterviewStatus()),
+            result.getInterviewStartedAt(),
+            result.getInterviewEndedAt(),
+            result.getInterviewGuideLink());
+    }
 }

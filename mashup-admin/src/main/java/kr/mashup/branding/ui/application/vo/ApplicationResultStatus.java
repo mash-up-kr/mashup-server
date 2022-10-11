@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.application;
+package kr.mashup.branding.ui.application.vo;
 
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;

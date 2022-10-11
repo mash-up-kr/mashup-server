@@ -1,15 +1,5 @@
 package kr.mashup.branding.ui.application;
 
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import kr.mashup.branding.domain.notification.sms.SmsRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
-
-import kr.mashup.branding.domain.application.Answer;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
@@ -17,63 +7,25 @@ import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
-import kr.mashup.branding.facade.application.ApplicationDetailVo;
-import kr.mashup.branding.ui.applicant.ApplicantAssembler;
 import kr.mashup.branding.ui.application.form.ApplicationFormAssembler;
-import kr.mashup.branding.ui.notification.sms.SmsRequestAssembler;
-import kr.mashup.branding.ui.team.TeamAssembler;
+import kr.mashup.branding.ui.application.vo.ApplicationResultResponse;
+import kr.mashup.branding.ui.application.vo.ApplicationResultStatus;
+import kr.mashup.branding.ui.application.vo.ApplicationSimpleResponse;
+import kr.mashup.branding.ui.application.vo.UpdateApplicationResultRequest;
+import kr.mashup.branding.ui.application.vo.UpdateApplicationResultsRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class ApplicationAssembler {
-    private final ApplicantAssembler applicantAssembler;
+
     private final ApplicationFormAssembler applicationFormAssembler;
-    private final SmsRequestAssembler smsRequestAssembler;
-    private final TeamAssembler teamAssembler;
-
-    ApplicationSimpleResponse toApplicationSimpleResponse(Application application) {
-        return new ApplicationSimpleResponse(
-            application.getApplicationId(),
-            applicantAssembler.toApplicantResponse(application.getApplicant()),
-            teamAssembler.toTeamResponse(application.getApplicationForm().getTeam()),
-            application.getConfirmation().getStatus(),
-            application.getConfirmation().getRejectionReason(),
-            toApplicationResultResponse(application.getApplicationResult()),
-            application.getSubmittedAt(),
-            application.getCreatedAt(),
-            application.getUpdatedAt()
-        );
-    }
-
-    ApplicationDetailResponse toApplicationDetailResponse(ApplicationDetailVo applicationDetailVo) {
-        Application application = applicationDetailVo.getApplication();
-        return new ApplicationDetailResponse(
-            application.getApplicationId(),
-            applicantAssembler.toApplicantResponse(application.getApplicant()),
-            teamAssembler.toTeamResponse(application.getApplicationForm().getTeam()),
-            application.getApplicationForm().getQuestions()
-                .stream()
-                .map(applicationFormAssembler::toQuestionResponse)
-                .collect(Collectors.toList()),
-            application.getAnswers()
-                .stream()
-                .map(this::toAnswerResponse)
-                .collect(Collectors.toList()),
-            application.getConfirmation().getStatus(),
-            application.getConfirmation().getRejectionReason(),
-            toApplicationResultResponse(application.getApplicationResult()),
-            application.getSubmittedAt(),
-            application.getCreatedAt(),
-            application.getUpdatedAt(),
-            applicationDetailVo.getSmsRequests()
-                .stream()
-                .sorted(Comparator.comparing(SmsRequest::getCreatedAt).reversed())
-                .map(it -> smsRequestAssembler.toSmsRequestDetailResponse(it,
-                    application.getApplicationForm().getTeam()))
-                .collect(Collectors.toList())
-        );
-    }
 
     public List<UpdateApplicationResultVo> toUpdateApplicationResultsVoList(UpdateApplicationResultsRequest request) {
         ApplicationResultStatus applicationResultStatus = request.getApplicationResultStatus();
@@ -117,19 +69,6 @@ public class ApplicationAssembler {
                 return UpdateApplicationResultVo.interviewPassed(applicationId);
         }
         throw new IllegalStateException();
-    }
-
-    UpdateApplicationResultVo toUpdateApplicationResultVo(
-        Long applicationId,
-        UpdateApplicationResultRequest request
-    ) {
-        return toUpdateApplicationResultVo(
-            applicationId,
-            request.getApplicationResultStatus(),
-            request.getInterviewStartedAt(),
-            request.getInterviewEndedAt(),
-            request.getInterviewGuideLink()
-        );
     }
 
     ApplicationQueryVo toApplicationQueryVo(
@@ -194,23 +133,5 @@ public class ApplicationAssembler {
         throw new IllegalStateException();
     }
 
-    private AnswerResponse toAnswerResponse(Answer answer) {
-        return new AnswerResponse(
-            answer.getAnswerId(),
-            answer.getQuestion().getQuestionId(),
-            answer.getContent()
-        );
-    }
 
-    private ApplicationResultResponse toApplicationResultResponse(ApplicationResult applicationResult) {
-        return new ApplicationResultResponse(
-            ApplicationResultStatus.of(
-                applicationResult.getScreeningStatus(),
-                applicationResult.getInterviewStatus()
-            ),
-            applicationResult.getInterviewStartedAt(),
-            applicationResult.getInterviewEndedAt(),
-            applicationResult.getInterviewGuideLink()
-        );
-    }
 }

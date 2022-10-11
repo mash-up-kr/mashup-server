@@ -3,6 +3,7 @@ package kr.mashup.branding.ui.application;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationStatus;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.ui.applicant.ApplicantResponse;
@@ -24,4 +25,6 @@ public class ApplicationResponse {
     private List<AnswerResponse> answers;
     private ApplicationResultResponse result;
     private Boolean privacyPolicyAgreed;
+
+
 }

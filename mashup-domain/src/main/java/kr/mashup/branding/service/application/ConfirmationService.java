@@ -1,4 +1,4 @@
-package kr.mashup.branding.service.application.confirmation;
+package kr.mashup.branding.service.application;
 
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.service.application.ApplicationService;
@@ -17,12 +17,11 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ConfirmationServiceImpl implements ConfirmationService {
+public class ConfirmationService {
     private static final String RECRUITMENT_ENDED = "RECRUITMENT_ENDED";
 
     private final ApplicationService applicationService;
 
-    @Override
     @Transactional
     public void updateToBeDeterminedToNotApplicable() {
         List<Application> applications = applicationService.getApplicationsByApplicationStatusAndEventName(
@@ -39,7 +38,6 @@ public class ConfirmationServiceImpl implements ConfirmationService {
             );
     }
 
-    @Override
     @Transactional
     public void updateInterviewConfirmWaitingToRejected() {
         List<Application> applications = applicationService.getApplicationsByApplicationStatusAndEventName(
@@ -57,7 +55,6 @@ public class ConfirmationServiceImpl implements ConfirmationService {
             );
     }
 
-    @Override
     @Transactional
     public void updateFinalConfirmWaitingToRejected() {
         List<Application> applications = applicationService.getApplicationsByApplicationStatusAndEventName(

@@ -1,10 +1,12 @@
-package kr.mashup.branding.ui.application.form;
+package kr.mashup.branding.ui.application.form.vo;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.swagger.annotations.ApiModelProperty;
-import kr.mashup.branding.ui.team.TeamResponse;
+import kr.mashup.branding.domain.application.form.ApplicationForm;
+import kr.mashup.branding.ui.team.vo.TeamResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -26,4 +28,20 @@ public class ApplicationFormResponse {
     private LocalDateTime updatedAt;
     @ApiModelProperty(name = "마지막 수정자")
     private String updatedBy;
+
+    public static ApplicationFormResponse from(ApplicationForm applicationForm) {
+        return new ApplicationFormResponse(
+            applicationForm.getApplicationFormId(),
+            applicationForm.getName(),
+            TeamResponse.from(applicationForm.getTeam()),
+            applicationForm.getQuestions()
+                .stream()
+                .map(QuestionResponse::from)
+                .collect(Collectors.toList()),
+            applicationForm.getCreatedAt(),
+            applicationForm.getCreatedBy(),
+            applicationForm.getUpdatedAt(),
+            applicationForm.getUpdatedBy()
+        );
+    }
 }
