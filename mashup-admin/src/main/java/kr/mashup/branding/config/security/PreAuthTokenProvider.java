@@ -27,11 +27,11 @@ public class PreAuthTokenProvider implements AuthenticationProvider {
             if (adminMemberId == null) {
                 throw new TokenMissingException("Invalid token");
             }
-            AdminMemberVo adminMemberVo = adminMemberService.getByAdminMemberId(adminMemberId);
+            AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
             return new PreAuthenticatedAuthenticationToken(
                 adminMemberId,
                 "",
-                Collections.singletonList(new SimpleGrantedAuthority(adminMemberVo.getPosition().name()))
+                Collections.singletonList(new SimpleGrantedAuthority(adminMember.getPosition().name()))
             );
         }
         return null;
