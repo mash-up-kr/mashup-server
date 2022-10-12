@@ -42,9 +42,12 @@ public class NotificationService {
         Assert.notNull(smsSendRequestVo, "'smsSendVo' must not be null");
         validateSmsRequest(adminMember, recipientApplicants, smsSendRequestVo);
 
-        Notification notification = notificationRepository.save(Notification.sms(adminMember, smsSendRequestVo));
+        final Notification notification
+            = notificationRepository.save(Notification.sms(adminMember, smsSendRequestVo));
 
-        List<SmsRequest> smsRequests = recipientApplicants.stream()
+        final List<SmsRequest> smsRequests
+            = recipientApplicants
+            .stream()
             .map(it -> SmsRequest.of(notification, it))
             .collect(Collectors.toList());
 
@@ -61,7 +64,9 @@ public class NotificationService {
         Assert.notNull(notificationId, "'notificationId' must not be null");
         Assert.notNull(smsSendResultVo, "'smsSendResultVo' must not be null");
 
-        Notification notification = notificationRepository.findById(notificationId)
+        final Notification notification
+            = notificationRepository
+            .findById(notificationId)
             .orElseThrow(() -> new NotificationNotFoundException(notificationId));
 
         if (smsSendResultVo == SmsSendResultVo.UNKNOWN) {
@@ -75,10 +80,13 @@ public class NotificationService {
             smsSendResultVo.getResultCode(),
             smsSendResultVo.getResultMessage()
         );
-        Map<String, SmsSendResultRecipientVo> resultRecipientVoMap = smsSendResultVo.getRecipientResultVos()
+        final Map<String, SmsSendResultRecipientVo> resultRecipientVoMap
+            = smsSendResultVo.getRecipientResultVos()
             .stream()
             .collect(Collectors.toMap(SmsSendResultRecipientVo::getMessageId, it -> it));
-        List<SmsRequest> smsRequests = notification.getSmsRequests();
+
+        final List<SmsRequest> smsRequests = notification.getSmsRequests();
+
         smsRequests.forEach(it -> it.setResult(resultRecipientVoMap.get(it.getMessageId())));
 
         return notification;
@@ -119,9 +127,13 @@ public class NotificationService {
         SmsSendRequestVo smsSendRequestVo) {
 
         validatedNotDuplicatedNotificationName(smsSendRequestVo);
+
         validateNotEmptyContents(smsSendRequestVo);
+
         validateNotEmptyRecipient(recipientApplicants);
-        validateAdminPhoneNumberRegisteredToExteranlService(adminMember);
+
+        validateAdminPhoneNumberRegisteredToExternalService(adminMember);
+
         validateNotEmptyAdminPhoneNumber(adminMember);
     }
 
@@ -131,7 +143,7 @@ public class NotificationService {
         }
     }
 
-    private void validateAdminPhoneNumberRegisteredToExteranlService(AdminMember adminMember) {
+    private void validateAdminPhoneNumberRegisteredToExternalService(AdminMember adminMember) {
         if (adminMember.getPhoneNumberRegistered() != Boolean.TRUE) {
             throw new NotificationRequestInvalidException(
                 "Sender's phoneNumber must be registered to NHN Cloud Notification Service");
