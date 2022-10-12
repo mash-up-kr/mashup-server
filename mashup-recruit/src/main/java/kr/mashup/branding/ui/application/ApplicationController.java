@@ -41,7 +41,8 @@ public class ApplicationController {
         @ApiIgnore @ModelAttribute("applicantId") Long applicantId,
         @RequestBody CreateApplicationRequest request
     ) {
-        ApplicationResponse response = applicationFacadeService.create(applicantId, request.getTeamId());
+        final ApplicationResponse response
+            = applicationFacadeService.create(applicantId, request.getTeamId());
 
         return ApiResponse.success(response);
     }
@@ -56,10 +57,8 @@ public class ApplicationController {
         @PathVariable Long applicationId,
         @RequestBody UpdateApplicationRequest updateApplicationRequest
     ) {
-        ApplicationResponse response = applicationFacadeService.update(
-            applicantId,
-            applicationId,
-            updateApplicationRequest.toVo());
+        final ApplicationResponse response
+            = applicationFacadeService.update(applicantId, applicationId, updateApplicationRequest.toVo());
 
         return ApiResponse.success(response);
     }
@@ -76,11 +75,8 @@ public class ApplicationController {
         @PathVariable Long applicationId,
         @RequestBody ApplicationSubmitRequest applicationSubmitRequest
     ) {
-        ApplicationResponse response = applicationFacadeService.submit(
-            applicantId,
-            applicationId,
-            applicationSubmitRequest.toVo()
-        );
+        final ApplicationResponse response
+            = applicationFacadeService.submit(applicantId, applicationId, applicationSubmitRequest.toVo());
 
         return ApiResponse.success(response);
     }
@@ -90,7 +86,8 @@ public class ApplicationController {
     public ApiResponse<List<ApplicationResponse>> getApplications(
         @ApiIgnore @ModelAttribute("applicantId") Long applicantId
     ) {
-        List<ApplicationResponse> responses = applicationFacadeService.getApplications(applicantId);
+        final List<ApplicationResponse> responses
+            = applicationFacadeService.getApplications(applicantId);
 
         return ApiResponse.success(responses);
     }
@@ -101,7 +98,8 @@ public class ApplicationController {
         @ApiIgnore @ModelAttribute("applicantId") Long applicantId,
         @PathVariable Long applicationId
     ) {
-        ApplicationResponse response = applicationFacadeService.getApplication(applicantId, applicationId);
+        final ApplicationResponse response
+            = applicationFacadeService.getApplication(applicantId, applicationId);
 
         return ApiResponse.success(response);
     }
@@ -113,8 +111,8 @@ public class ApplicationController {
         @PathVariable Long applicationId,
         @RequestBody UpdateConfirmationRequest updateConfirmationRequest
     ) {
-        ApplicationResponse response = applicationFacadeService
-            .updateConfirm(applicantId, applicationId, updateConfirmationRequest);
+        final ApplicationResponse response
+            = applicationFacadeService.updateConfirm(applicantId, applicationId, updateConfirmationRequest);
 
         return ApiResponse.success(response);
     }

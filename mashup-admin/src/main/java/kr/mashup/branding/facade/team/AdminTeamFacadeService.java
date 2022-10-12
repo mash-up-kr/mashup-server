@@ -18,7 +18,7 @@ public class AdminTeamFacadeService {
     private final TeamService teamService;
 
     public TeamResponse create(Long adminMemberId, CreateTeamVo createTeamVo) {
-        Team team = teamService.create(createTeamVo);
+        final Team team = teamService.create(createTeamVo);
         return TeamResponse.from(team);
     }
 

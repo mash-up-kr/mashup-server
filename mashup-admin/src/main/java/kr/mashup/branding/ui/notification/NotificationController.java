@@ -52,7 +52,8 @@ public class NotificationController {
         @RequestParam(required = false) String searchWord,
         Pageable pageable
     ) {
-        Page<NotificationSimpleResponse> responses = notificationFacadeService.getNotifications(adminMemberId, searchWord, pageable);
+        final Page<NotificationSimpleResponse> responses
+            = notificationFacadeService.getNotifications(adminMemberId, searchWord, pageable);
 
         return ApiResponse.success(responses);
     }
@@ -63,7 +64,8 @@ public class NotificationController {
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long notificationId
     ) {
-        NotificationDetailResponse response = notificationFacadeService.getNotificationDetail(adminMemberId, notificationId);
+        final NotificationDetailResponse response
+            = notificationFacadeService.getNotificationDetail(adminMemberId, notificationId);
 
         return ApiResponse.success(response);
     }

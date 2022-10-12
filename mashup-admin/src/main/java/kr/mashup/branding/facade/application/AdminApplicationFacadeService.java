@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AdminApplicationFacadeService {
 
@@ -38,20 +38,22 @@ public class AdminApplicationFacadeService {
 
     public ApplicationDetailResponse getApplicationDetail(Long adminMemberId, Long applicationId) {
 
-        AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
-        Application application = applicationService.getApplicationFromAdmin(adminMember, applicationId);
-        List<SmsRequest> smsRequests = notificationService.getSmsRequestsByApplicantId(
-            application.getApplicant().getApplicantId());
+        final AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
+        final Application application = applicationService.getApplicationFromAdmin(adminMember, applicationId);
+
+        final List<SmsRequest> smsRequests
+            = notificationService.getSmsRequestsByApplicantId(application.getApplicant().getApplicantId());
 
         return ApplicationDetailResponse.of(application, smsRequests);
     }
 
+    @Transactional
     public List<ApplicationSimpleResponse> updateResults(
         Long adminMemberId,
         List<UpdateApplicationResultVo> updateApplicationResultVoList
     ) {
 
-        AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
+        final AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
 
         return updateApplicationResultVoList.stream()
             .map(it -> {
@@ -66,10 +68,11 @@ public class AdminApplicationFacadeService {
             .map(ApplicationSimpleResponse::from)
             .collect(Collectors.toList());
     }
-
+    @Transactional
     public ApplicationSimpleResponse updateResult(Long adminMemberId, UpdateApplicationResultVo updateApplicationResultVo) {
-        AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
-        Application application = applicationService.updateResult(adminMember, updateApplicationResultVo);
+
+        final AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
+        final Application application = applicationService.updateResult(adminMember, updateApplicationResultVo);
 
         return ApplicationSimpleResponse.from(application);
     }

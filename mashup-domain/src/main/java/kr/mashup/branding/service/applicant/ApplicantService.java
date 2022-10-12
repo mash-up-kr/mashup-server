@@ -33,10 +33,10 @@ public class ApplicantService {
     public Applicant join(JoinRequestVo joinRequestVo) {
         Assert.notNull(joinRequestVo, "'joinRequestVo' must not be null");
 
-        Applicant applicant = applicantRepository
+        final Applicant applicant
+            = applicantRepository
             .findByGoogleUserId(joinRequestVo.getGoogleUserId())
-            .orElseGet(() -> applicantRepository.save(
-                Applicant.of(joinRequestVo.getEmail(), joinRequestVo.getGoogleUserId())));
+            .orElseGet(() -> applicantRepository.save(Applicant.of(joinRequestVo.getEmail(), joinRequestVo.getGoogleUserId())));
 
         return applicant;
     }

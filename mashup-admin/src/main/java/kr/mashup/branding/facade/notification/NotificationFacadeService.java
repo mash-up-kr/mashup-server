@@ -46,10 +46,15 @@ public class NotificationFacadeService {
         final List<Applicant> recipientApplicants = applicantService.getApplicants(smsSendRequest.getApplicantIds());
 
         // 요청 정보 생성 -> Notification CREATED 상태
-        final SmsSendRequestVo smsSendRequestVo = SmsSendRequestVo.of(smsSendRequest.getName(), smsSendRequest.getContent());
-        final Notification notification = notificationService.createSmsNotification(adminMember, recipientApplicants, smsSendRequestVo);
+        final SmsSendRequestVo smsSendRequestVo
+            = SmsSendRequestVo.of(smsSendRequest.getName(), smsSendRequest.getContent());
+        final Notification notification
+            = notificationService.createSmsNotification(adminMember, recipientApplicants, smsSendRequestVo);
 
-        notificationEventPublisher.publishNotificationEvent(NotificationEvent.of(notification.getNotificationId(), NotificationEventType.CREATED));
+        // 문자 발송 비동기 이벤트 퍼블리싱
+        final NotificationEvent notificationEvent
+            = NotificationEvent.of(notification.getNotificationId(), NotificationEventType.CREATED);
+        notificationEventPublisher.publishNotificationEvent(notificationEvent);
     }
 
     public void updateSmsStatus(Long notificationId, SmsSendResultVo smsSendResultVo) {
@@ -65,23 +70,24 @@ public class NotificationFacadeService {
 
     public NotificationDetailResponse getNotificationDetail(Long adminMemberId, Long notificationId) {
 
-        Notification notification = notificationService.getNotification(notificationId);
+        final Notification notification = notificationService.getNotification(notificationId);
 
-        List<Applicant> recipients = notification
+        final List<Applicant> recipients = notification
             .getSmsRequests()
             .stream()
             .map(it -> it.getRecipientApplicant()).collect(Collectors.toList());
 
-        Map<Applicant, Application> applicationMap = applicationService.getApplications(recipients);
+        final Map<Applicant, Application> applicationMap = applicationService.getApplications(recipients);
 
-        return NotificationDetailResponse.of(notification,applicationMap);
+        return NotificationDetailResponse.of(notification, applicationMap);
     }
 
 
     /**
      * 지원자 1명에 대한 문자 발송 이력 조회
+     *
      * @param adminMemberId 어드민 멤버 식별자
-     * @param applicantId 지원자 식별자
+     * @param applicantId   지원자 식별자
      * @return 지원자에게 발송한 문자 발송 이력
      */
     public List<SmsRequest> getSmsRequests(Long adminMemberId, Long applicantId) {
@@ -89,8 +95,6 @@ public class NotificationFacadeService {
         Assert.notNull(adminMemberId, "'adminMemberId' must not be null");
         return notificationService.getSmsRequestsByApplicantId(applicantId);
     }
-
-
 
 
 }

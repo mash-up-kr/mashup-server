@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AdminApplicationFormFacadeService {
     private final TeamService teamService;
@@ -25,6 +25,7 @@ public class AdminApplicationFormFacadeService {
     private final ApplicationService applicationService;
     private final ProfileService profileService;
 
+    @Transactional
     public ApplicationFormResponse create(Long adminMemberId,Long teamId, CreateApplicationFormVo createApplicationFormVo) {
         Team team = teamService.getTeam(teamId);
         ApplicationForm applicationForm = applicationFormService.create(adminMemberId, team, createApplicationFormVo);
@@ -32,6 +33,7 @@ public class AdminApplicationFormFacadeService {
         return ApplicationFormResponse.from(applicationForm);
     }
 
+    @Transactional
     public ApplicationFormResponse update(
         Long adminMemberId,
         Long applicationFormId,
@@ -52,6 +54,7 @@ public class AdminApplicationFormFacadeService {
         return ApplicationFormResponse.from(applicationForm);
     }
 
+    @Transactional
     public void delete(Long adminMemberId, Long applicationFormId) {
         // 개발 환경에서는 설문지 삭제 시도시 지원서를 모두 삭제 후 설문지까지 삭제 한다.
         if (profileService.isLocal() || profileService.isDevelop()) {

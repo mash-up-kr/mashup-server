@@ -2,6 +2,7 @@ package kr.mashup.branding.ui.application;
 
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
+import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import kr.mashup.branding.facade.application.AdminApplicationFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationDetailResponse;
@@ -43,9 +44,11 @@ public class ApplicationController {
         Pageable pageable
     ) {
 
-        ApplicationQueryVo queryVo = applicationAssembler.toApplicationQueryVo(searchWord, teamId, confirmStatus, resultStatus, isShowAll, pageable);
+        final ApplicationQueryVo queryVo
+            = applicationAssembler.toApplicationQueryVo(searchWord, teamId, confirmStatus, resultStatus, isShowAll, pageable);
 
-        Page<ApplicationSimpleResponse> responses = adminApplicationFacadeService.getApplications(adminMemberId, queryVo);
+        final Page<ApplicationSimpleResponse> responses
+            = adminApplicationFacadeService.getApplications(adminMemberId, queryVo);
 
         return ApiResponse.success(responses);
     }
@@ -55,7 +58,8 @@ public class ApplicationController {
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long applicationId
     ) {
-        ApplicationDetailResponse response = adminApplicationFacadeService.getApplicationDetail(adminMemberId, applicationId);
+        final ApplicationDetailResponse response
+            = adminApplicationFacadeService.getApplicationDetail(adminMemberId, applicationId);
 
         return ApiResponse.success(response);
     }
@@ -69,10 +73,10 @@ public class ApplicationController {
         @RequestBody UpdateApplicationResultsRequest updateApplicationResultsRequest
     ) {
 
-        List<ApplicationSimpleResponse> responses =  adminApplicationFacadeService.updateResults(
-                adminMemberId,
-                applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
-            );
+        List<ApplicationSimpleResponse> responses = adminApplicationFacadeService.updateResults(
+            adminMemberId,
+            applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
+        );
 
         return ApiResponse.success(responses);
     }
@@ -86,10 +90,10 @@ public class ApplicationController {
         @PathVariable Long applicationId,
         @RequestBody UpdateApplicationResultRequest updateApplicationResultRequest
     ) {
-        ApplicationSimpleResponse response = adminApplicationFacadeService.updateResult(
-            adminMemberId,
-            updateApplicationResultRequest.toVo(applicationId)
-        );
+        final UpdateApplicationResultVo updateVo = updateApplicationResultRequest.toVo(applicationId);
+
+        final ApplicationSimpleResponse response
+            = adminApplicationFacadeService.updateResult(adminMemberId, updateVo);
 
         return ApiResponse.success(response);
     }

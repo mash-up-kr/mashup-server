@@ -22,7 +22,7 @@ public class TeamController {
     @GetMapping
     public ApiResponse<List<TeamResponse>> getTeams() {
 
-        List<TeamResponse> responses = teamFacadeService.getTeams();
+        final List<TeamResponse> responses = teamFacadeService.getTeams();
 
         return ApiResponse.success(responses);
     }

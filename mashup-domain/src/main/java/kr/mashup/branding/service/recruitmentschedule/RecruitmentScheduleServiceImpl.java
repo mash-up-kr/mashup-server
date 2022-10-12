@@ -25,18 +25,25 @@ public class RecruitmentScheduleServiceImpl implements RecruitmentScheduleServic
     private static final String INTERVIEW_RESULT_ANNOUNCED = "INTERVIEW_RESULT_ANNOUNCED";
 
     private final RecruitmentScheduleRepository recruitmentScheduleRepository;
-
+    /**
+     * 채용 일정 목록 조회
+     */
     @Override
     public List<RecruitmentSchedule> getAll() {
         return recruitmentScheduleRepository.findAll();
     }
-
+    /**
+     * 채용 일정 조회
+     */
     @Override
     public RecruitmentSchedule getByEventName(String eventName) {
         return recruitmentScheduleRepository.findByEventName(eventName)
             .orElseThrow(RecruitmentScheduleNotFoundException::new);
     }
 
+    /**
+     * 채용 일정 생성
+     */
     @Override
     @Transactional
     public RecruitmentSchedule create(RecruitmentScheduleCreateVo recruitmentScheduleCreateVo) {
@@ -50,7 +57,9 @@ public class RecruitmentScheduleServiceImpl implements RecruitmentScheduleServic
             RecruitmentSchedule.from(recruitmentScheduleCreateVo)
         );
     }
-
+    /**
+     * 채용 일정 생성
+     */
     @Override
     @Transactional
     public RecruitmentSchedule update(
@@ -65,6 +74,9 @@ public class RecruitmentScheduleServiceImpl implements RecruitmentScheduleServic
             .orElseThrow(RecruitmentScheduleNotFoundException::new);
     }
 
+    /**
+     * 채용 일정 삭제
+     */
     @Override
     @Transactional
     public void delete(Long recruitmentScheduleId) {
@@ -72,6 +84,9 @@ public class RecruitmentScheduleServiceImpl implements RecruitmentScheduleServic
             .ifPresent(recruitmentScheduleRepository::delete);
     }
 
+    /**
+     * 모집 시작했는지
+     */
     @Override
     public boolean isRecruitStarted(LocalDateTime localDateTime) {
         LocalDateTime recruitStartedAt = recruitmentScheduleRepository.findByEventName(RECRUITMENT_STARTED)
@@ -80,6 +95,9 @@ public class RecruitmentScheduleServiceImpl implements RecruitmentScheduleServic
         return !localDateTime.isBefore(recruitStartedAt);
     }
 
+    /**
+     * 서류 제출 가능한 시각인지
+     */
     @Override
     public boolean isRecruitAvailable(LocalDateTime localDateTime) {
         LocalDateTime recruitStartedAt = recruitmentScheduleRepository.findByEventName(RECRUITMENT_STARTED)
@@ -91,6 +109,9 @@ public class RecruitmentScheduleServiceImpl implements RecruitmentScheduleServic
         return !localDateTime.isBefore(recruitStartedAt) && !localDateTime.isAfter(recruitEndedAt);
     }
 
+    /**
+     * 서류 결과 보여주어도 되는 시각인지
+     */
     @Override
     public boolean canAnnounceScreeningResult(LocalDateTime localDateTime) {
         LocalDateTime screeningResultAnnouncedAt = recruitmentScheduleRepository.findByEventName(
@@ -100,6 +121,9 @@ public class RecruitmentScheduleServiceImpl implements RecruitmentScheduleServic
         return !localDateTime.isBefore(screeningResultAnnouncedAt);
     }
 
+    /**
+     * 면접 결과 보여주어도 되는 시각인지
+     */
     @Override
     public boolean canAnnounceInterviewResult(LocalDateTime localDateTime) {
         LocalDateTime interviewResultAnnouncedAt = recruitmentScheduleRepository.findByEventName(

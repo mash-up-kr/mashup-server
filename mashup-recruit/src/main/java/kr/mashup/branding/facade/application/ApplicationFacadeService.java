@@ -35,7 +35,6 @@ public class ApplicationFacadeService {
     private final ApplicationAssembler applicationAssembler;
 
 
-
     /**
      * 각 팀의 지원서 상세페이지 접근시 빈 지원서 생성 또는 기존 지원서 조회
      */
@@ -64,7 +63,9 @@ public class ApplicationFacadeService {
             throw new ApplicationCreationRequestInvalidException(
                 "ApplicationForm not found. teamId: " + teamId, e);
         }
-        Application application = applicationService.create(applicantId, applicant, applicationForm);
+
+        final Application application
+            = applicationService.create(applicantId, applicant, applicationForm);
 
         return applicationAssembler.toApplicationResponse(application);
     }
@@ -74,7 +75,8 @@ public class ApplicationFacadeService {
      */
     public ApplicationResponse update(Long applicantId, Long applicationId, UpdateApplicationVo updateApplicationVo) {
 
-        Application application = applicationService.update(applicantId, applicationId, updateApplicationVo);
+        final Application application
+            = applicationService.update(applicantId, applicationId, updateApplicationVo);
 
         return applicationAssembler.toApplicationResponse(application);
     }
@@ -87,7 +89,8 @@ public class ApplicationFacadeService {
         Long applicationId,
         ApplicationSubmitRequestVo applicationSubmitRequestVo
     ) {
-        Application application = applicationService.submit(applicantId, applicationId, applicationSubmitRequestVo);
+        final Application application
+            = applicationService.submit(applicantId, applicationId, applicationSubmitRequestVo);
 
         return applicationAssembler.toApplicationResponse(application);
     }
@@ -106,7 +109,9 @@ public class ApplicationFacadeService {
      */
     public ApplicationResponse getApplication(Long applicantId, Long applicationId) {
 
-        Application application = applicationService.getApplication(applicantId, applicationId);
+        final Application application
+            = applicationService.getApplication(applicantId, applicationId);
+
         return applicationAssembler.toApplicationResponse(application);
     }
 
@@ -114,10 +119,12 @@ public class ApplicationFacadeService {
      * 인터뷰, 최종합격에 대한 지원자 응답
      */
     public ApplicationResponse updateConfirm(Long applicantId, Long applicationId,
-                                     UpdateConfirmationRequest updateRequest) {
-        Application application = applicationService.updateConfirmationFromApplicant(
-            applicantId,
-            UpdateConfirmationVo.of(applicationId, updateRequest.getStatus(), updateRequest.getRejectionReason()));
+                                             UpdateConfirmationRequest updateRequest) {
+        final UpdateConfirmationVo updateConfirmationVo
+            = UpdateConfirmationVo.of(applicationId, updateRequest.getStatus(), updateRequest.getRejectionReason());
+
+        final Application application
+            = applicationService.updateConfirmationFromApplicant(applicantId, updateConfirmationVo);
 
         return applicationAssembler.toApplicationResponse(application);
     }
@@ -126,10 +133,13 @@ public class ApplicationFacadeService {
      * (Test용) 인터뷰, 최종합격에 대한 지원자 응답
      */
     public ApplicationResponse updateConfirmForTest(Long applicantId, Long applicationId,
-                                            UpdateConfirmationRequest updateRequest) {
-        Application application = applicationService.updateConfirmationForTest(
-            applicantId,
-            UpdateConfirmationVo.of(applicationId, updateRequest.getStatus(), updateRequest.getRejectionReason()));
+                                                    UpdateConfirmationRequest updateRequest) {
+
+        final UpdateConfirmationVo updateConfirmationVo
+            = UpdateConfirmationVo.of(applicationId, updateRequest.getStatus(), updateRequest.getRejectionReason());
+
+        final Application application
+            = applicationService.updateConfirmationForTest(applicantId,updateConfirmationVo);
 
         return applicationAssembler.toApplicationResponse(application);
     }

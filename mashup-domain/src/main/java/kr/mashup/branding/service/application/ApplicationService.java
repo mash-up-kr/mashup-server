@@ -60,7 +60,8 @@ public class ApplicationService {
 
         validateDate(applicantId);
 
-        List<Application> applications = applicationRepository.findByApplicantAndApplicationForm(applicant, applicationForm);
+        final List<Application> applications
+            = applicationRepository.findByApplicantAndApplicationForm(applicant, applicationForm);
 
         // TODO: unique index (applicantId, applicationFormId)
         if (!applications.isEmpty()) {
@@ -82,13 +83,14 @@ public class ApplicationService {
         validateDate(applicantId);
         validateSubmittedApplicationExists(applicantId, applicationId);
 
-        Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(applicationId,
-            applicantId).orElseThrow(ApplicationNotFoundException::new);
+        final Application application = findByApplicantIdAndApplicationId(applicantId, applicationId);
 
         application.update(updateApplicationVo);
 
         return application;
     }
+
+
 
     @Transactional
     public Application submit(
@@ -101,8 +103,8 @@ public class ApplicationService {
         validateDate(applicantId);
         validateSubmittedApplicationExists(applicantId, applicationId);
 
-        Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(applicationId,
-            applicantId).orElseThrow(ApplicationNotFoundException::new);
+        final Application application = findByApplicantIdAndApplicationId(applicantId, applicationId);
+
         try {
             application.submit(applicationSubmitRequestVo);
         } catch (IllegalArgumentException e) {
@@ -148,11 +150,10 @@ public class ApplicationService {
 
         Assert.notNull(updateApplicationResultVo, "'updateApplicationResultVo' must not be null");
 
-        Long applicationId = updateApplicationResultVo.getApplicationId();
+        final Long applicationId = updateApplicationResultVo.getApplicationId();
         Assert.notNull(applicationId, "'applicationId' must not be null");
 
-        Application application = applicationRepository.findById(applicationId)
-            .orElseThrow(ApplicationNotFoundException::new);
+        final Application application = findApplicationById(applicationId);
 
         checkAdminMemberAuthority(adminMember, application.getApplicationForm().getTeam().getName());
 
@@ -165,9 +166,7 @@ public class ApplicationService {
                                                        UpdateConfirmationVo updateConfirmationVo) {
         final Long applicationId = updateConfirmationVo.getApplicationId();
 
-        Application application = applicationRepository.findByApplicationIdAndApplicant_applicantId(
-                applicationId, applicantId)
-            .orElseThrow(ApplicationNotFoundException::new);
+        final Application application = findByApplicantIdAndApplicationId(applicantId, applicationId);
 
         final ApplicantConfirmationStatus updateStatus = updateConfirmationVo.getStatus();
         final String rejectReason = updateConfirmationVo.getRejectionReason();
@@ -183,9 +182,7 @@ public class ApplicationService {
                                                  UpdateConfirmationVo updateConfirmationVo) {
         final Long applicationId = updateConfirmationVo.getApplicationId();
 
-        Application application = applicationRepository
-            .findByApplicationIdAndApplicant_applicantId(applicationId, applicantId)
-            .orElseThrow(ApplicationNotFoundException::new);
+        final Application application = findByApplicantIdAndApplicationId(applicantId, applicationId);
 
         application.updateConfirmationStatus(updateConfirmationVo.getStatus());
 
@@ -194,16 +191,22 @@ public class ApplicationService {
 
     @Transactional
     public List<Application> getApplications(Long applicantId) {
-        List<Application> applications = applicationRepository.findByApplicant_applicantIdAndStatusIn(
-            applicantId, ApplicationStatus.validSet());
+
+        final List<Application> applications
+            = applicationRepository
+            .findByApplicant_applicantIdAndStatusIn(
+                applicantId, ApplicationStatus.validSet());
+
         applications.forEach(this::updateApplicationResult);
+
         return applications;
     }
 
     @Transactional
     public Map<Applicant, Application> getApplications(List<Applicant> applicants) {
 
-        Map<Applicant, Application> applicationMap = applicationRepository
+        final Map<Applicant, Application> applicationMap
+            = applicationRepository
             .findApplicationsByApplicantIn(applicants)
             .stream()
             .collect(Collectors.toMap(Application::getApplicant, it -> it));
@@ -213,7 +216,10 @@ public class ApplicationService {
 
 
     public List<Application> getApplicationsByApplicationStatusAndEventName(ApplicationStatus status, String eventName) {
-        LocalDateTime eventOccurredAt = recruitmentScheduleService.getByEventName(eventName).getEventOccurredAt();
+
+        final LocalDateTime eventOccurredAt
+            = recruitmentScheduleService.getByEventName(eventName).getEventOccurredAt();
+
         return applicationRepository.findByStatusAndCreatedAtBefore(status, eventOccurredAt);
     }
 
@@ -223,26 +229,28 @@ public class ApplicationService {
         Assert.notNull(applicantId, "'applicantId' must not be null");
         Assert.notNull(applicationId, "'applicationId' must not be null");
 
-        Application application = applicationRepository.findById(applicationId)
-            .orElseThrow(ApplicationNotFoundException::new);
+        final Application application = findApplicationById(applicationId);
+
         updateApplicationResult(application);
 
         if (!applicantId.equals(application.getApplicant().getApplicantId())) {
             throw new ForbiddenException(ResultCode.APPLICATION_NO_ACCESS, "No Access application.");
         }
+
         return application;
     }
 
     public Application getApplicationFromAdmin(AdminMember adminMember, Long applicationId) {
         Assert.notNull(applicationId, "'applicationId' must not be null");
 
-        Application application = applicationRepository.findById(applicationId)
-            .orElseThrow(ApplicationNotFoundException::new);
+        final Application application = findApplicationById(applicationId);
 
         checkAdminMemberAuthority(adminMember, application.getApplicationForm().getTeam().getName());
 
         return application;
     }
+
+
 
     public Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo) {
         return applicationRepository.findBy(applicationQueryVo);
@@ -290,4 +298,14 @@ public class ApplicationService {
             throw new ForbiddenException(ResultCode.ADMIN_MEMBER_NO_UPDATE_PERMISSION, "Helper is not authorized to update.");
         }
     }
+
+    private Application findApplicationById(Long applicationId) {
+        return applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundException::new);
+    }
+    private Application findByApplicantIdAndApplicationId(Long applicantId, Long applicationId) {
+        return applicationRepository
+            .findByApplicationIdAndApplicant_applicantId(applicationId, applicantId)
+            .orElseThrow(ApplicationNotFoundException::new);
+    }
+
 }

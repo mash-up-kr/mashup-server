@@ -24,8 +24,8 @@ public class ContentController {
     public ApiResponse<ContentResponse> create(
         @RequestBody ContentCreateRequest contentCreateRequest
     ) {
-        ContentResponse res = contentFacadeService.create(contentCreateRequest);
+        final ContentResponse response = contentFacadeService.create(contentCreateRequest);
 
-        return ApiResponse.success(res);
+        return ApiResponse.success(response);
     }
 }

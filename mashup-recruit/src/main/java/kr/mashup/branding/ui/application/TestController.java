@@ -24,7 +24,6 @@ import springfox.documentation.annotations.ApiIgnore;
 public class TestController {
     private final ApplicationService applicationService;
     private final ApplicationFacadeService applicationFacadeService;
-    private final ApplicationAssembler applicationAssembler;
 
     /**
      * 개발서버에서 지원서 삭제

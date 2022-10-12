@@ -51,12 +51,16 @@ public class ApplicationFormService {
                 "ApplicationForm 'name' is already used. name: " + createApplicationFormVo.getName());
         }
 
-        ApplicationForm applicationForm = ApplicationForm.of(team, createApplicationFormVo.getName());
-        List<Question> questions = createApplicationFormVo.getQuestionRequestVoList()
+        final ApplicationForm applicationForm = ApplicationForm.of(team, createApplicationFormVo.getName());
+
+        final List<Question> questions
+            = createApplicationFormVo.getQuestionRequestVoList()
             .stream()
             .map(it -> Question.of(applicationForm, it))
             .collect(Collectors.toList());
+
         applicationForm.addQuestions(questions);
+
         return applicationFormRepository.save(applicationForm);
     }
 
@@ -79,13 +83,18 @@ public class ApplicationFormService {
         UpdateApplicationFormVo updateApplicationFormVo
     ) {
         validateDate(adminMemberId);
-        ApplicationForm applicationForm = applicationFormRepository.findByApplicationFormId(applicationFormId)
+
+        final ApplicationForm applicationForm
+            = applicationFormRepository.findByApplicationFormId(applicationFormId)
             .orElseThrow(ApplicationFormNotFoundException::new);
+
         applicationForm.update(updateApplicationFormVo);
+
         if (applicationFormRepository.countByNameLike(applicationForm.getName()) > 1) {
             throw new ApplicationFormNameDuplicatedException(
                 "ApplicationForm 'name' is already used. name: " + applicationForm.getName());
         }
+
         return applicationForm;
     }
 
@@ -93,21 +102,23 @@ public class ApplicationFormService {
     public void delete(Long adminMemberId, Long applicationFormId) {
 
         validateDate(adminMemberId);
+
         if (applicationRepository.existsByApplicationForm_ApplicationFormId(applicationFormId)) {
             throw new ApplicationFormDeleteFailedException();
         }
 
-        applicationFormRepository.findByApplicationFormId(applicationFormId)
+        applicationFormRepository
+            .findByApplicationFormId(applicationFormId)
             .ifPresent(applicationFormRepository::delete);
     }
 
     public ApplicationForm getApplicationFormById(Long applicationFormId) {
         return applicationFormRepository.findById(applicationFormId).map(
-            it -> {
-                log.info("ApplicationForm {}", it);
-                return it;
-            }
-        )
+                it -> {
+                    log.info("ApplicationForm {}", it);
+                    return it;
+                }
+            )
             .orElseThrow(ApplicationFormNotFoundException::new);
     }
 

@@ -11,14 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AdminMemberFacadeService {
 
     private final JwtService jwtService;
     private final AdminMemberService adminMemberService;
 
-    @Transactional(readOnly = true)
     public LoginResponseVo login(AdminLoginCommand adminLoginCommand) {
 
         final AdminMember adminMember = adminMemberService.logIn(adminLoginCommand);
@@ -28,7 +27,6 @@ public class AdminMemberFacadeService {
         return LoginResponseVo.of(token, adminMemberVo);
     }
 
-    @Transactional(readOnly = true)
     public AdminMemberVo getAdminMember(Long adminMemberId) {
 
         final AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
