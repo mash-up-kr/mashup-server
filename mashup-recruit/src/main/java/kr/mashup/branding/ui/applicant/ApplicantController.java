@@ -31,7 +31,7 @@ public class ApplicantController {
     public ApiResponse<LoginResponse> login(
         @RequestBody LoginRequest loginRequest
     ) {
-        LoginResponse response = loginFacadeService.login(loginRequest.getGoogleIdToken());
+        final LoginResponse response = loginFacadeService.login(loginRequest.getGoogleIdToken());
 
         return ApiResponse.success(response);
     }
@@ -41,7 +41,7 @@ public class ApplicantController {
     public ApiResponse<ApplicantResponse> getMe(
         @ApiIgnore @ModelAttribute("applicantId") Long applicantId
     ) {
-        ApplicantResponse response = applicantFacadeService.getApplicant(applicantId);
+        final ApplicantResponse response = applicantFacadeService.getApplicant(applicantId);
 
         return ApiResponse.success(response);
     }

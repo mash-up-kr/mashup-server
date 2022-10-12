@@ -45,7 +45,8 @@ public class TestController {
         @PathVariable Long applicationId,
         @RequestBody UpdateConfirmationRequest updateConfirmationRequest
     ) {
-        ApplicationResponse response = applicationFacadeService
+        final ApplicationResponse response
+            = applicationFacadeService
             .updateConfirmForTest(applicantId, applicationId, updateConfirmationRequest);
 
         return ApiResponse.success(response);

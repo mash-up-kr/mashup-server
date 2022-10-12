@@ -1,7 +1,6 @@
 package kr.mashup.branding.service.application;
 
 import kr.mashup.branding.domain.application.Application;
-import kr.mashup.branding.service.application.ApplicationService;
 import kr.mashup.branding.domain.application.ApplicationStatus;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
@@ -24,10 +23,12 @@ public class ConfirmationService {
 
     @Transactional
     public void updateToBeDeterminedToNotApplicable() {
-        List<Application> applications = applicationService.getApplicationsByApplicationStatusAndEventName(
-            ApplicationStatus.WRITING, RECRUITMENT_ENDED
-        );
-        applications.stream()
+
+        final List<Application> applications
+            = applicationService.getApplicationsByStatusAndEventName(ApplicationStatus.WRITING, RECRUITMENT_ENDED);
+
+        applications
+            .stream()
             .filter(application ->
                 application.getConfirmation().getStatus().equals(ApplicantConfirmationStatus.TO_BE_DETERMINED)
             )
@@ -40,10 +41,12 @@ public class ConfirmationService {
 
     @Transactional
     public void updateInterviewConfirmWaitingToRejected() {
-        List<Application> applications = applicationService.getApplicationsByApplicationStatusAndEventName(
-            ApplicationStatus.SUBMITTED, RECRUITMENT_ENDED
-        );
-        applications.stream()
+
+        final List<Application> applications
+            = applicationService.getApplicationsByStatusAndEventName(ApplicationStatus.SUBMITTED, RECRUITMENT_ENDED);
+
+        applications
+            .stream()
             .filter(application ->
                 application.getApplicationResult().getScreeningStatus().equals(ApplicationScreeningStatus.PASSED) &&
                     application.getConfirmation().getStatus().equals(ApplicantConfirmationStatus.INTERVIEW_CONFIRM_WAITING)
@@ -57,10 +60,12 @@ public class ConfirmationService {
 
     @Transactional
     public void updateFinalConfirmWaitingToRejected() {
-        List<Application> applications = applicationService.getApplicationsByApplicationStatusAndEventName(
-            ApplicationStatus.SUBMITTED, RECRUITMENT_ENDED
-        );
-        applications.stream()
+
+        final List<Application> applications
+            = applicationService.getApplicationsByStatusAndEventName(ApplicationStatus.SUBMITTED, RECRUITMENT_ENDED);
+
+        applications
+            .stream()
             .filter(application ->
                 application.getApplicationResult().getInterviewStatus().equals(ApplicationInterviewStatus.PASSED) &&
                     application.getConfirmation().getStatus().equals(ApplicantConfirmationStatus.FINAL_CONFIRM_WAITING)

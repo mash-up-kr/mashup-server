@@ -15,7 +15,7 @@ public class ApplicantFacadeService {
 
     @Transactional(readOnly = true)
     public ApplicantResponse getApplicant(Long applicantId) {
-        Applicant applicant = applicantService.getApplicant(applicantId);
+        final Applicant applicant = applicantService.getApplicant(applicantId);
         return ApplicantResponse.from(applicant);
     }
 }

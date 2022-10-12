@@ -49,10 +49,11 @@ public class LoginFacadeService {
     }
 
     private GoogleIdToken verifyToken(String googleIdToken) {
-        GoogleIdTokenVerifier googleIdTokenVerifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
-            GsonFactory.getDefaultInstance())
+        final GoogleIdTokenVerifier googleIdTokenVerifier
+            = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance())
             .setAudience(Collections.singletonList(clientId))
             .build();
+
         try {
             return googleIdTokenVerifier.verify(googleIdToken);
         } catch (GeneralSecurityException | IOException e) {

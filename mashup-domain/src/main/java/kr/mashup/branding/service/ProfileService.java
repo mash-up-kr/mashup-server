@@ -1,4 +1,4 @@
-package kr.mashup.branding.facade;
+package kr.mashup.branding.service;
 
 import java.util.Arrays;
 

@@ -215,7 +215,7 @@ public class ApplicationService {
     }
 
 
-    public List<Application> getApplicationsByApplicationStatusAndEventName(ApplicationStatus status, String eventName) {
+    public List<Application> getApplicationsByStatusAndEventName(ApplicationStatus status, String eventName) {
 
         final LocalDateTime eventOccurredAt
             = recruitmentScheduleService.getByEventName(eventName).getEventOccurredAt();

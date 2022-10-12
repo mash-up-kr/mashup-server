@@ -12,7 +12,7 @@ import kr.mashup.branding.domain.application.form.ApplicationFormQueryVo;
 import kr.mashup.branding.service.application.ApplicationFormService;
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
 import kr.mashup.branding.domain.application.form.UpdateApplicationFormVo;
-import kr.mashup.branding.facade.ProfileService;
+import kr.mashup.branding.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 

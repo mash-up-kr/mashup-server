@@ -54,11 +54,10 @@ public class ToastSmsService implements SmsService {
 
     @Override
     public SmsSendResultVo send(SmsRequestVo smsRequestVo) {
-        ToastSmsRequest toastSmsRequest = toToastSmsRequest(smsRequestVo);
-        HttpEntity<ToastSmsRequest> httpEntity = new HttpEntity<>(
-            toastSmsRequest,
-            new HttpHeaders()
-        );
+
+        final ToastSmsRequest toastSmsRequest = toToastSmsRequest(smsRequestVo);
+        final HttpEntity<ToastSmsRequest> httpEntity
+            = new HttpEntity<>(toastSmsRequest, new HttpHeaders());
 
         final ResponseEntity<ToastSmsResponse> responseEntity;
         try {
@@ -77,7 +76,7 @@ public class ToastSmsService implements SmsService {
         }
         // 응답 잘 받았고, 내용이 성공
         // 응답 잘 받았고, 내용이 실패
-        ToastSmsResponse toastSmsResponse = responseEntity.getBody();
+        final ToastSmsResponse toastSmsResponse = responseEntity.getBody();
         if (toastSmsResponse == null || !toastSmsResponse.isSuccess()) {
             log.error(
                 "Failed to send SMS. toastSmsResponse: " + toastSmsResponse + ", toastSmsRequest: " + toastSmsRequest);
@@ -157,11 +156,11 @@ public class ToastSmsService implements SmsService {
     }
 
     private NotificationStatus toNotificationStatus(ToastSmsResponse toastSmsResponse) {
-        boolean isSuccess = toastSmsResponse.getHeader().getIsSuccessful();
+        final boolean isSuccess = toastSmsResponse.getHeader().getIsSuccessful();
         if (!isSuccess) {
             return NotificationStatus.FAILURE;
         }
-        Integer toastSmsStatusCode = Optional.ofNullable(toastSmsResponse)
+        final Integer toastSmsStatusCode = Optional.ofNullable(toastSmsResponse)
             .map(ToastSmsResponse::getBody)
             .map(ToastSmsResponse.ToastSmsResponseBody::getData)
             .map(ToastSmsResponse.ToastSmsResponseBodyData::getStatusCode)
