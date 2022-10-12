@@ -31,14 +31,4 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 
     Page<Member> findAllByStatus(MemberStatus status, Pageable pageable);
 
-
-    @Query("select m from Member m join m.memberGenerations mg on mg.generation = :generation join ScoreHistory sh on sh.member = m where m.status = 'ACTIVE' group by m order by sum(sh.score) asc")
-    Page<Member> findAllActiveByGenerationOrderByScoreAsc(@Param("generation") Generation generation, Pageable pageable);
-
-    @Query("select m from Member m join m.memberGenerations mg on mg.generation = :generation join ScoreHistory sh on sh.member = m where m.status = 'ACTIVE' and m.name = :name group by m order by sum(sh.score) desc")
-    Page<Member> findAllActiveByGenerationOrderByScoreDescWithName(@Param("generation") Generation generation, @Param("name") String name, Pageable pageable);
-
-    @Query("select m from Member m join m.memberGenerations mg on mg.generation = :generation join ScoreHistory sh on sh.member = m where m.status = 'ACTIVE' and m.name = :name group by m order by sum(sh.score) asc")
-    Page<Member> findAllActiveByGenerationOrderByScoreAscWithName(@Param("generation") Generation generation,@Param("name") String name, Pageable pageable);
-
 }

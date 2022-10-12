@@ -7,7 +7,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
@@ -15,7 +14,6 @@ import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberStatus;
 import kr.mashup.branding.domain.member.Platform;
-import kr.mashup.branding.domain.member.QMemberGeneration;
 import kr.mashup.branding.util.QueryUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -38,14 +36,19 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     @Override
     public Page<MemberScoreQueryResult> findAllActiveByGeneration(Generation generation, Platform platform, String searchName, Pageable pageable) {
+        //기본 정렬은 이름 기준
+        Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "name"));
+
         QueryResults<MemberScoreQueryResult> results = queryFactory
+            // score sum 은 numberPath sumAlias 로 접근한다. 정렬 필드에 score 가 있을 시에도 사용
             .select(Projections.constructor(MemberScoreQueryResult.class, member, memberGeneration.platform, scoreHistory.score.sum().coalesce(0d).as(sumAlias)))
             .from(member)
+            // 점수가 없는 멤버도 있을 수 있으니 left join, 취소 여부는 on 절에서 판단해서 where 절에서 삭제되지 않게끔 함
             .leftJoin(scoreHistory).on(scoreHistory.member.eq(member).and(scoreHistory.generation.eq(generation)).and(scoreHistory.isCanceled.eq(false)))
             .join(memberGeneration).on(memberGeneration.member.eq(member).and(memberGeneration.generation.eq(generation)))
             .where(nameContains(searchName), member.status.eq(MemberStatus.ACTIVE), platformEq(platform))
             .groupBy(member, memberGeneration)
-            .orderBy(getOrderSpecifier(pageable))
+            .orderBy(getOrderSpecifier(sort))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetchResults();
@@ -53,9 +56,9 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return QueryUtils.toPage(results, pageable);
     }
 
-    private OrderSpecifier[] getOrderSpecifier(Pageable pageable) {
+    private OrderSpecifier[] getOrderSpecifier(Sort sort) {
         List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
-        for (Sort.Order order : pageable.getSort()) {
+        for (Sort.Order order : sort) {
             Sort.Direction direction = order.getDirection();
             String field = order.getProperty();
             Order qOrder = direction.isAscending() ? Order.ASC : Order.DESC;
