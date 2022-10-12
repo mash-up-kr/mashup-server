@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class ProfileFacadeService {
+public class ProfileService {
     private final static String LOCAL = "local";
     private final static String DEVELOP = "develop";
     private final static String PRODUCTION = "production";

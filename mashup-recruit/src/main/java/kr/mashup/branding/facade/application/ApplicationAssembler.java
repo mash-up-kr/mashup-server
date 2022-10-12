@@ -3,8 +3,6 @@ package kr.mashup.branding.facade.application;
 import kr.mashup.branding.domain.application.Answer;
 import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
-import kr.mashup.branding.domain.application.ApplicationSubmitRequestVo;
-import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
@@ -15,9 +13,7 @@ import kr.mashup.branding.ui.application.vo.AnswerResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationResultResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationStatusResponse;
-import kr.mashup.branding.ui.application.vo.ApplicationSubmitRequest;
 import kr.mashup.branding.ui.application.vo.QuestionResponse;
-import kr.mashup.branding.ui.application.vo.UpdateApplicationRequest;
 import kr.mashup.branding.ui.team.TeamResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -26,7 +22,6 @@ import org.springframework.util.Assert;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -110,25 +105,6 @@ public class ApplicationAssembler {
         );
     }
 
-    UpdateApplicationVo toUpdateApplicationVo(UpdateApplicationRequest updateApplicationRequest) {
-        Assert.notNull(updateApplicationRequest, "'updateApplicationRequest' must not be null");
-        Assert.hasText(updateApplicationRequest.getApplicantName(), "'applicantName' must not be blank");
-        Assert.hasText(updateApplicationRequest.getPhoneNumber(), "'phoneNumber' must not be blank");
-        Assert.notNull(updateApplicationRequest.getBirthdate(), "'birthdate' must not be null");
-        return UpdateApplicationVo.of(
-            updateApplicationRequest.getApplicantName(),
-            updateApplicationRequest.getPhoneNumber(),
-            updateApplicationRequest.getBirthdate(),
-            updateApplicationRequest.getDepartment(),
-            updateApplicationRequest.getResidence(),
-            Optional.ofNullable(updateApplicationRequest.getAnswers())
-                .map(it -> it.stream()
-                    .map(this::toAnswerRequestVo)
-                    .collect(Collectors.toList())
-                ).orElse(null),
-            updateApplicationRequest.getPrivacyPolicyAgreed()
-        );
-    }
 
     private AnswerRequestVo toAnswerRequestVo(AnswerRequest answerRequest) {
         Assert.notNull(answerRequest, "'answerRequest' must not be null");
@@ -158,26 +134,6 @@ public class ApplicationAssembler {
         );
     }
 
-    ApplicationSubmitRequestVo toApplicationSubmitRequestVo(ApplicationSubmitRequest applicationSubmitRequest) {
-        Assert.hasText(applicationSubmitRequest.getApplicantName(), "'applicantName' must not be blank");
-        Assert.hasText(applicationSubmitRequest.getPhoneNumber(), "'phoneNumber' must not be blank");
-        Assert.notNull(applicationSubmitRequest.getBirthdate(), "'birthdate' must not be null");
-        Assert.hasText(applicationSubmitRequest.getResidence(), "'residence' must not be blank");
-        Assert.hasText(applicationSubmitRequest.getDepartment(), "'department' must not be blank");
-        return ApplicationSubmitRequestVo.of(
-            applicationSubmitRequest.getApplicantName(),
-            applicationSubmitRequest.getPhoneNumber(),
-            applicationSubmitRequest.getBirthdate(),
-            applicationSubmitRequest.getDepartment(),
-            applicationSubmitRequest.getResidence(),
-            Optional.ofNullable(applicationSubmitRequest.getAnswers())
-                .map(it -> it.stream()
-                    .map(this::toAnswerRequestVo)
-                    .collect(Collectors.toList()))
-                .orElse(null),
-            applicationSubmitRequest.getPrivacyPolicyAgreed()
-        );
-    }
 
     private ZonedDateTime convertToZonedDateTime(LocalDateTime localDateTime) {
         if (localDateTime == null) {

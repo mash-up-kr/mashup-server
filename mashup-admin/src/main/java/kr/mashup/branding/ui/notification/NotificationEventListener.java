@@ -25,6 +25,7 @@ public class NotificationEventListener {
     private final NotificationFacadeService notificationFacadeService;
     private final SmsService smsService;
 
+    // 문자 발송 비동기 이벤트 처리 로직
     @Async(value = ThreadPoolName.SMS_ASYNC_POOL)
     @Transactional(propagation = Propagation.NEVER)
     @TransactionalEventListener(

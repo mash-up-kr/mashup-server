@@ -1,10 +1,8 @@
 package kr.mashup.branding.ui.application;
 
-import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.facade.application.AdminApplicationFacadeService;
-import kr.mashup.branding.facade.application.ApplicationDetailVo;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationDetailResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationResultStatus;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/applications")
@@ -77,7 +74,7 @@ public class ApplicationController {
                 applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
             );
 
-        return ApiResponse.success();
+        return ApiResponse.success(responses);
     }
 
     /**
