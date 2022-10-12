@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.domain.notification.Notification;
+import kr.mashup.branding.domain.notification.exception.NotificationRequestInvalidException;
 import lombok.Value;
 
 @Value(staticConstructor = "of")
@@ -17,6 +18,7 @@ public class SmsRequestVo {
     public static SmsRequestVo from(final Notification notification){
 
         final AdminMember sender = notification.getSender();
+
         final List<SmsRecipientRequestVo> SmsRecipientRequestVos = notification
             .getSmsRequests()
             .stream()

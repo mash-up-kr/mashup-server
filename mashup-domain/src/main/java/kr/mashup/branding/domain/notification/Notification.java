@@ -126,6 +126,9 @@ public class Notification {
         AdminMember adminMember,
         SmsSendRequestVo smsSendRequestVo
     ) {
+        if(!adminMember.getPhoneNumberRegistered()){
+            throw new NotificationRequestInvalidException("Sender's phoneNumber must be registered to NHN Cloud Notification Service");
+        }
         Notification notification = new Notification();
         notification.sender = adminMember;
         notification.senderValue = adminMember.getPhoneNumber();
