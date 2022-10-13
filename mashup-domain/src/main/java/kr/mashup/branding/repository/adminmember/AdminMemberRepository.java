@@ -10,3 +10,7 @@ public interface AdminMemberRepository extends JpaRepository<AdminMember, Long> 
 
     boolean existsByUsername(String username);
 }
+/**
+ * AdminMember 연관관계
+ * 없음
+ */

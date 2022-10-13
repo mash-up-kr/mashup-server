@@ -87,3 +87,9 @@ public class ApplicationRepositoryImpl extends QuerydslRepositorySupport impleme
         return booleanExpressions.stream().reduce(BooleanExpression::and);
     }
 }
+/**
+ * Applicant 연관관계
+ * many to one: applicant, applicationForm
+ * one to one : applicationResult, confirmation
+ */
+
