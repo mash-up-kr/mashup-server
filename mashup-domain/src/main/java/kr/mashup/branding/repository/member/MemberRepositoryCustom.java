@@ -11,3 +11,7 @@ public interface MemberRepositoryCustom {
 
     Page<MemberScoreQueryResult> findAllActiveByGeneration(Generation generation, Platform platform, String searchName, Pageable pageable);
 }
+/**
+ * Member 연관관계
+ * one to many : memberGeneration, attendance
+ */

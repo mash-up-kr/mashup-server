@@ -13,3 +13,7 @@ public interface ScoreHistoryRepository extends JpaRepository<ScoreHistory, Long
 
     List<ScoreHistory> findByMemberAndGenerationOrderByDateAsc(Member member, Generation generation);
 }
+/**
+ * ScoreHistory 연관관계
+ * many to one : generation, member
+ */

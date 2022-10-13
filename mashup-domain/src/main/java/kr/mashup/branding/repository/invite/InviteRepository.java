@@ -14,3 +14,7 @@ public interface InviteRepository extends JpaRepository<Invite, Long> {
 
     Optional<Invite> findByPlatformAndGeneration(Platform platform, Generation generation);
 }
+/**
+ * Invite 연관관계
+ * many to one : generation
+ */

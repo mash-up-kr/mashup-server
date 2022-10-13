@@ -23,3 +23,8 @@ public interface ApplicationFormRepository
 
     long countByNameLike(String name);
 }
+/**
+ * applicationForm 연관관계
+ * many to one: team
+ * one to many: questions
+ */

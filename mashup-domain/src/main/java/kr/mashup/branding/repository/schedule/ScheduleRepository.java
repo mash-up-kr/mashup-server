@@ -14,3 +14,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     Schedule findTopByOrderByStartedAtDesc();
 }
+/**
+ * Schedule 연관관계
+ * many to one: generation
+ * one to many: event
+ */

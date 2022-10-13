@@ -32,3 +32,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     Page<Member> findAllByStatus(MemberStatus status, Pageable pageable);
 
 }
+/**
+ * Member 연관관계
+ * one to many : memberGeneration, attendance
+ */

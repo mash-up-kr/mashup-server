@@ -13,3 +13,7 @@ public interface SmsRequestRepository extends JpaRepository<SmsRequest, Long> {
 
     List<SmsRequest> findByRecipientApplicant_applicantId(Long applicantId);
 }
+/**
+ * Sms Request 연관관계
+ * many to one : notification, applicant
+ */

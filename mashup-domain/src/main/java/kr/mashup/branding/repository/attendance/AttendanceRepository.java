@@ -14,3 +14,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     List<Attendance> findAllByMember(Member member);
     List<Attendance> findAllByEvent(Event Event);
 }
+/**
+ * Attendance 연관관계
+ * many to one: member, event
+ */

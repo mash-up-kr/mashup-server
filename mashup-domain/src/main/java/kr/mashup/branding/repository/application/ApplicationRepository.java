@@ -28,3 +28,8 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>,
 
     List<Application> findApplicationsByApplicantIn(List<Applicant> applicants);
 }
+/**
+ * Applicant 연관관계
+ * many to one: applicant, applicationForm
+ * one to one : applicationResult, confirmation
+ */

@@ -9,3 +9,7 @@ public interface GenerationRepository extends JpaRepository<Generation, Long> {
 
 	Optional<Generation> findByNumber(Integer number);
 }
+/**
+ * Generation 연관관계
+ * one to many : schedule, memberGeneration, invites
+ */

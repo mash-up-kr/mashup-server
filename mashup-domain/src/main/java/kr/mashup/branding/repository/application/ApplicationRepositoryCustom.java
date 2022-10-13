@@ -7,3 +7,8 @@ import org.springframework.data.domain.Page;
 public interface ApplicationRepositoryCustom {
     Page<Application> findBy(ApplicationQueryVo applicationQueryVo);
 }
+/**
+ * Applicant 연관관계
+ * many to one: applicant, applicationForm
+ * one to one : applicationResult, confirmation
+ */

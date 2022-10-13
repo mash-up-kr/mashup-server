@@ -12,3 +12,8 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     Page<Notification> findByNameContainsOrSenderValueContains(String nameContains, String senderValueContains,
         Pageable pageable);
 }
+/**
+ * Notification 연관관계
+ * one to many : smsRequest
+ * many to one : adminMember
+ */
