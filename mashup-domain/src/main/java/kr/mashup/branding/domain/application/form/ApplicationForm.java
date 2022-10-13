@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -37,7 +38,7 @@ public class ApplicationForm {
     @GeneratedValue
     private Long applicationFormId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Team team;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "applicationForm", orphanRemoval = true)

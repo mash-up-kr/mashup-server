@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -50,18 +51,18 @@ public class Application {
     @GeneratedValue
     private Long applicationId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "applicant_id")
     private Applicant applicant;
-
-    @ManyToOne
+    //이하 optional false 생성 로직 변경 시 수정 필요
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "application_form_id")
     private ApplicationForm applicationForm;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "application")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "application", optional = false)
     private ApplicationResult applicationResult;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "application")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "application", optional = false)
     private Confirmation confirmation;
 
     /**
@@ -70,7 +71,7 @@ public class Application {
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL) // cascade all로 agg root, fk 는 answer에 있음
     @JoinColumn(name = "application_id")
     private final List<Answer> answers = new ArrayList<>();
 

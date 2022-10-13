@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -36,7 +37,7 @@ public class ApplicationResult {
     @GeneratedValue
     private Long applicationResultId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "application_id")
     private Application application;
 
