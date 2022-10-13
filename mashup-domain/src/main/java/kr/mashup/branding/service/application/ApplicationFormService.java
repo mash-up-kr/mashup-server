@@ -16,9 +16,7 @@ import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
 import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.form.UpdateApplicationFormVo;
 import kr.mashup.branding.domain.team.Team;
-import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.repository.application.form.ApplicationFormRepository;
-import kr.mashup.branding.repository.team.TeamRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,7 +38,7 @@ public class ApplicationFormService {
     @Transactional
     public ApplicationForm create(Long adminMemberId, Team team, CreateApplicationFormVo createApplicationFormVo) {
 
-        validateDate(adminMemberId); // 모집시간 전에만 지원서를 수정할 수 있다.
+        validateRecrutingSchedule(adminMemberId); // 모집시간 전에만 지원서를 수정할 수 있다.
 
         if (applicationFormRepository.existsByTeam_teamId(team.getTeamId())) {
             throw new ApplicationFormAlreadyExistException("해당 팀에 다른 설문지가 이미 존재합니다. teamId: " + team.getTeamId());
@@ -54,7 +52,8 @@ public class ApplicationFormService {
         final ApplicationForm applicationForm = ApplicationForm.of(team, createApplicationFormVo.getName());
 
         final List<Question> questions
-            = createApplicationFormVo.getQuestionRequestVoList()
+            = createApplicationFormVo
+            .getQuestionRequestVoList()
             .stream()
             .map(it -> Question.of(applicationForm, it))
             .collect(Collectors.toList());
@@ -67,7 +66,7 @@ public class ApplicationFormService {
     /**
      * 설문지를 생성, 수정 및 삭제할 수 있는지 검증
      */
-    private void validateDate(Long adminMemberId) {
+    private void validateRecrutingSchedule(Long adminMemberId) {
         try {
             applicationFormScheduleValidator.validate(LocalDateTime.now());
         } catch (ApplicationFormModificationNotAllowedException e) {
@@ -82,10 +81,12 @@ public class ApplicationFormService {
         Long applicationFormId,
         UpdateApplicationFormVo updateApplicationFormVo
     ) {
-        validateDate(adminMemberId);
+
+        validateRecrutingSchedule(adminMemberId);
 
         final ApplicationForm applicationForm
-            = applicationFormRepository.findByApplicationFormId(applicationFormId)
+            = applicationFormRepository
+            .findByApplicationFormId(applicationFormId)
             .orElseThrow(ApplicationFormNotFoundException::new);
 
         applicationForm.update(updateApplicationFormVo);
@@ -101,7 +102,7 @@ public class ApplicationFormService {
     @Transactional
     public void delete(Long adminMemberId, Long applicationFormId) {
 
-        validateDate(adminMemberId);
+        validateRecrutingSchedule(adminMemberId);
 
         if (applicationRepository.existsByApplicationForm_ApplicationFormId(applicationFormId)) {
             throw new ApplicationFormDeleteFailedException();
