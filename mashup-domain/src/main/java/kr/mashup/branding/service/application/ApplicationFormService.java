@@ -38,7 +38,7 @@ public class ApplicationFormService {
     @Transactional
     public ApplicationForm create(Long adminMemberId, Team team, CreateApplicationFormVo createApplicationFormVo) {
 
-        validateRecrutingSchedule(adminMemberId); // 모집시간 전에만 지원서를 수정할 수 있다.
+        validateRecruitingSchedule(adminMemberId); // 모집시간 전에만 지원서를 수정할 수 있다.
 
         if (applicationFormRepository.existsByTeam_teamId(team.getTeamId())) {
             throw new ApplicationFormAlreadyExistException("해당 팀에 다른 설문지가 이미 존재합니다. teamId: " + team.getTeamId());
@@ -66,7 +66,7 @@ public class ApplicationFormService {
     /**
      * 설문지를 생성, 수정 및 삭제할 수 있는지 검증
      */
-    private void validateRecrutingSchedule(Long adminMemberId) {
+    private void validateRecruitingSchedule(Long adminMemberId) {
         try {
             applicationFormScheduleValidator.validate(LocalDateTime.now());
         } catch (ApplicationFormModificationNotAllowedException e) {
@@ -82,7 +82,7 @@ public class ApplicationFormService {
         UpdateApplicationFormVo updateApplicationFormVo
     ) {
 
-        validateRecrutingSchedule(adminMemberId);
+        validateRecruitingSchedule(adminMemberId);
 
         final ApplicationForm applicationForm
             = applicationFormRepository
@@ -102,7 +102,7 @@ public class ApplicationFormService {
     @Transactional
     public void delete(Long adminMemberId, Long applicationFormId) {
 
-        validateRecrutingSchedule(adminMemberId);
+        validateRecruitingSchedule(adminMemberId);
 
         if (applicationRepository.existsByApplicationForm_ApplicationFormId(applicationFormId)) {
             throw new ApplicationFormDeleteFailedException();
@@ -114,7 +114,9 @@ public class ApplicationFormService {
     }
 
     public ApplicationForm getApplicationFormById(Long applicationFormId) {
-        return applicationFormRepository.findById(applicationFormId).map(
+        return applicationFormRepository
+            .findById(applicationFormId)
+            .map(
                 it -> {
                     log.info("ApplicationForm {}", it);
                     return it;
