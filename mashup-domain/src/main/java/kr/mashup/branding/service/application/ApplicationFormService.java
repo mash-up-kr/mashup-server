@@ -104,7 +104,7 @@ public class ApplicationFormService {
 
         validateRecruitingSchedule(adminMemberId);
 
-        if (applicationRepository.existsByApplicationForm_ApplicationFormId(applicationFormId)) {
+        if (applicationRepository.existByApplicationForm(applicationFormId)) {
             throw new ApplicationFormDeleteFailedException();
         }
 

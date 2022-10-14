@@ -22,10 +22,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>,
 
     List<Application> findByStatusAndCreatedAtBefore(ApplicationStatus status, LocalDateTime eventOccurredAt);
 
-    boolean existsByApplicationForm_ApplicationFormId(Long applicationFormId);
-
-    boolean existsByApplicant_applicantIdAndStatus(Long applicant, ApplicationStatus status);
-
     List<Application> findApplicationsByApplicantIn(List<Applicant> applicants);
 }
 /**

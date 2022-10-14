@@ -31,6 +31,7 @@ import com.querydsl.jpa.JPQLQuery;
 import kr.mashup.branding.util.QueryUtils;
 
 import static kr.mashup.branding.domain.applicant.QApplicant.*;
+import static kr.mashup.branding.domain.application.QApplication.*;
 import static kr.mashup.branding.domain.application.QApplication.application;
 import static kr.mashup.branding.domain.application.confirmation.QConfirmation.*;
 import static kr.mashup.branding.domain.application.form.QApplicationForm.*;
@@ -78,7 +79,6 @@ public class ApplicationRepositoryImpl implements ApplicationRepositoryCustom {
         return QueryUtils.toPage(query.fetchResults(), applicationQueryVo.getPageable());
     }
 
-
     private BooleanExpression screeningStatusEq(ApplicationScreeningStatus screeningStatus) {
         List<BooleanExpression> booleanExpressions = new ArrayList<>();
         if (screeningStatus != null) {
@@ -91,28 +91,43 @@ public class ApplicationRepositoryImpl implements ApplicationRepositoryCustom {
         }
         return booleanExpressions.stream().reduce(BooleanExpression::and).orElse(null);
     }
-
     private BooleanExpression teamIdEq(Long teamId) {
         return teamId != null ? application.applicationForm.team.teamId.eq(teamId) : null;
     }
-
     private BooleanExpression interviewStatusEq(ApplicationInterviewStatus interviewStatus) {
         return interviewStatus != null ? application.applicationResult.interviewStatus.eq(interviewStatus) : null;
     }
-
     private BooleanExpression confirmationStatusEq(ApplicantConfirmationStatus confirmationStatus) {
         return confirmationStatus != null ? application.confirmation.status.eq(confirmationStatus) : null;
     }
-
     private BooleanExpression searchWordContains(String searchWord) {
         return StringUtils.hasText(searchWord) ?
             application.applicant.name.contains(searchWord)
                 .or(application.applicant.phoneNumber.contains(searchWord)) : null;
     }
-
     private BooleanExpression isShowAllEq(Boolean isShowAll) {
         return (isShowAll != null && !isShowAll) ? application.status.eq(ApplicationStatus.SUBMITTED) : null;
     }
+
+
+    @Override
+    public boolean existByApplicationForm(Long applicationFormId) {
+        Application fetchFirst = queryFactory
+            .selectFrom(application)
+            .where(application.applicationForm.applicationFormId.eq(applicationFormId))
+            .fetchFirst();
+        return fetchFirst != null;
+    }
+
+    @Override
+    public boolean existByApplicantAndApplicationStatus(Long applicantId, ApplicationStatus status) {
+        Application fetchFirst = queryFactory.selectFrom(QApplication.application)
+            .where(QApplication.application.applicant.applicantId.eq(applicantId)
+                .and(QApplication.application.status.eq(status)))
+            .fetchFirst();
+        return fetchFirst != null;
+    }
+
 
 }
 /**

@@ -133,7 +133,7 @@ public class ApplicationService {
      * @param applicationId 지원서 식별자
      */
     private void validateSubmittedApplicationExists(Long applicantId, Long applicationId) {
-        if (applicationRepository.existsByApplicant_applicantIdAndStatus(applicantId, ApplicationStatus.SUBMITTED)) {
+        if (applicationRepository.existByApplicantAndApplicationStatus(applicantId, ApplicationStatus.SUBMITTED)) {
             throw new ApplicationAlreadySubmittedException(
                 "Failed to submit application. applicationId: " + applicationId);
         }
