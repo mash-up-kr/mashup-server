@@ -194,7 +194,7 @@ public class ApplicationService {
 
         final List<Application> applications
             = applicationRepository
-            .findByApplicant_applicantIdAndStatusIn(
+            .findByIdAndStatusIn(
                 applicantId, ApplicationStatus.validSet());
 
         applications.forEach(this::updateApplicationResult);
@@ -268,7 +268,7 @@ public class ApplicationService {
     @Transactional
     public void deleteByApplicationFormId(Long applicationFormId) {
         List<Application> applications = applicationRepository
-            .findByApplicationForm_ApplicationFormId(applicationFormId);
+            .findByApplicationForm(applicationFormId);
 
         List<Long> applicationIds = applications.stream()
             .map(Application::getApplicationId)
@@ -304,7 +304,7 @@ public class ApplicationService {
     }
     private Application findByApplicantIdAndApplicationId(Long applicantId, Long applicationId) {
         return applicationRepository
-            .findByApplicationIdAndApplicant_applicantId(applicationId, applicantId)
+            .findByApplicationAndApplicant(applicationId, applicantId)
             .orElseThrow(ApplicationNotFoundException::new);
     }
 
