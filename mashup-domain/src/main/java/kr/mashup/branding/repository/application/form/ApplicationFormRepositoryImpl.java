@@ -1,15 +1,20 @@
 package kr.mashup.branding.repository.application.form;
 
+import static kr.mashup.branding.domain.application.form.QApplicationForm.applicationForm;
 import static kr.mashup.branding.util.QueryUtils.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormQueryVo;
 import kr.mashup.branding.domain.application.form.QApplicationForm;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.util.CollectionUtils;
@@ -21,42 +26,44 @@ import com.querydsl.jpa.JPQLQuery;
 
 import kr.mashup.branding.util.QueryUtils;
 
-public class ApplicationFormRepositoryImpl extends QuerydslRepositorySupport
-    implements ApplicationFormRepositoryCustom {
+@RequiredArgsConstructor
+public class ApplicationFormRepositoryImpl implements ApplicationFormRepositoryCustom {
 
-    private final QApplicationForm qApplicationForm = QApplicationForm.applicationForm;
-
-    public ApplicationFormRepositoryImpl() {
-        super(ApplicationForm.class);
-    }
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public Page<ApplicationForm> findByApplicationFormQueryVo(ApplicationFormQueryVo applicationFormQueryVo) {
-        JPQLQuery<ApplicationForm> query = from(qApplicationForm);
-        resolveCondition(applicationFormQueryVo).ifPresent(query::where);
-        query.offset(applicationFormQueryVo.getPageable().getOffset());
-        query.limit(applicationFormQueryVo.getPageable().getPageSize());
-        List<OrderSpecifier> orderSpecifiers = toOrderSpecifiers(
-            qApplicationForm,
+
+        final Long teamId = applicationFormQueryVo.getTeamId();
+        final String searchWord = applicationFormQueryVo.getSearchWord();
+        final Pageable pageable = applicationFormQueryVo.getPageable();
+        final Long offset = pageable.getOffset();
+        final int pageSize = pageable.getPageSize();
+        final List<OrderSpecifier> orderSpecifiers
+            = toOrderSpecifiers(
+            applicationForm,
             applicationFormQueryVo.getPageable().getSortOr(Sort.by(Sort.Order.desc("updatedAt")))
         );
-        if (!CollectionUtils.isEmpty(orderSpecifiers)) {
-            query.orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]));
-        }
-        int pageSize = applicationFormQueryVo.getPageable().getPageSize();
-        query.offset(applicationFormQueryVo.getPageable().getOffset());
-        query.limit(pageSize);
-        return QueryUtils.toPage(query.fetchResults(), applicationFormQueryVo.getPageable());
+
+        QueryResults<ApplicationForm> fetchResults = queryFactory
+            .selectFrom(applicationForm)
+            .join(applicationForm.team)
+            .fetchJoin()
+            .where(teamIdEq(teamId), searchWordContains(searchWord))
+            .orderBy(orderSpecifiers.isEmpty() ? null : orderSpecifiers.toArray(new OrderSpecifier[0]))
+            .offset(offset)
+            .limit(pageSize)
+            .fetchResults();
+
+        return QueryUtils.toPage(fetchResults, pageable);
     }
 
-    private Optional<BooleanExpression> resolveCondition(ApplicationFormQueryVo applicationFormQueryVo) {
-        List<BooleanExpression> booleanExpressions = new ArrayList<>();
-        if (applicationFormQueryVo.getTeamId() != null) {
-            booleanExpressions.add(qApplicationForm.team.teamId.eq(applicationFormQueryVo.getTeamId()));
-        }
-        if (StringUtils.hasText(applicationFormQueryVo.getSearchWord())) {
-            booleanExpressions.add(qApplicationForm.name.contains(applicationFormQueryVo.getSearchWord()));
-        }
-        return booleanExpressions.stream().reduce(BooleanExpression::and);
+    private BooleanExpression teamIdEq(Long teamId) {
+        return teamId != null ? applicationForm.team.teamId.eq(teamId) : null;
     }
+    private BooleanExpression searchWordContains(String searchWord) {
+        return StringUtils.hasText(searchWord) ? applicationForm.name.contains(searchWord) : null;
+    }
+
+
 }

@@ -176,11 +176,11 @@ public class ApplicationRepositoryImpl implements ApplicationRepositoryCustom {
     private JPAQuery<Application> selectFromApplicantWithAllOfToOneEntity() {
         return queryFactory
             .selectFrom(application)
-            .from(QApplication.application)
-            .join(applicant).fetchJoin()
-            .join(applicationForm).fetchJoin()
-            .join(applicationResult).fetchJoin()
-            .join(confirmation).fetchJoin();
+            .from(application)
+            .join(application.applicant).fetchJoin()
+            .join(application.applicationForm).fetchJoin()
+            .join(application.applicationResult).fetchJoin()
+            .join(application.confirmation).fetchJoin();
     }
 
 
