@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 
 public interface ApplicationRepositoryCustom {
     Page<Application> findBy(ApplicationQueryVo applicationQueryVo);
+
 }
 /**
  * Applicant 연관관계
