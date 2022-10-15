@@ -33,20 +33,7 @@ public class Generation extends BaseEntity {
     private LocalDate endedAt;
 
     @OneToMany(mappedBy = "generation")
-    private final List<Schedule> schedules = new ArrayList<>();
-
-    @OneToMany(mappedBy = "generation")
-    private final List<MemberGeneration> memberGenerations = new ArrayList<>();
-
-    @OneToMany(mappedBy = "generation")
     private final List<Invite> invites = new ArrayList<>();
-
-    public void addSchedule(Schedule schedule){
-        if(schedules.contains(schedule)){
-            return;
-        }
-        this.schedules.add(schedule);
-    }
 
     public static Generation of(Integer number, DateRange dateRange){
         return new Generation(number, dateRange);
@@ -88,4 +75,15 @@ public class Generation extends BaseEntity {
         this.endedAt = newEndedDate;
     }
 
+    @Override
+    public String toString() {
+        return "Generation{" +
+            "createdAt=" + createdAt +
+            ", updatedAt=" + updatedAt +
+            ", number=" + number +
+            ", startedAt=" + startedAt +
+            ", endedAt=" + endedAt +
+            ", invites=" + invites +
+            '}';
+    }
 }

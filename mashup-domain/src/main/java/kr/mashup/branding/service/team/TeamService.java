@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.team.CreateTeamVo;
 import kr.mashup.branding.domain.team.Team;
 import kr.mashup.branding.domain.team.TeamNotFoundException;
@@ -39,8 +40,8 @@ public class TeamService {
 
 
     @Transactional(readOnly = true)
-    public List<Team> findAllTeams() {
+    public List<Team> findAllTeamsByGeneration(Generation generation) {
 
-        return teamRepository.findAll();
+        return teamRepository.findByGeneration(generation);
     }
 }

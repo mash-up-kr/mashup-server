@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.mashup.branding.facade.team.AdminTeamFacadeService;
@@ -24,11 +25,12 @@ public class AdminTeamController {
 
     @GetMapping
     public ApiResponse<List<TeamResponse>> getTeams(
-        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
+        @RequestParam(defaultValue = "12") Integer generationNumber
     ) {
 
         final List<TeamResponse> responses
-            = adminTeamFacadeService.getTeams(adminMemberId);
+            = adminTeamFacadeService.getTeams(adminMemberId, generationNumber);
 
         return ApiResponse.success(responses);
     }
@@ -40,7 +42,7 @@ public class AdminTeamController {
     ) {
 
         final TeamResponse response
-            =  adminTeamFacadeService.create(adminMemberId, createTeamRequest.toCreateTeamVo());
+            =  adminTeamFacadeService.create(adminMemberId, createTeamRequest);
 
         return ApiResponse.success(response);
     }

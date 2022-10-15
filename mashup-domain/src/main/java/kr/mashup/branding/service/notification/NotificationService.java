@@ -2,6 +2,7 @@ package kr.mashup.branding.service.notification;
 
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.domain.applicant.Applicant;
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.notification.Notification;
 import kr.mashup.branding.domain.notification.exception.NotificationNotFoundException;
 import kr.mashup.branding.domain.notification.exception.NotificationRequestInvalidException;
@@ -36,6 +37,7 @@ public class NotificationService {
     @Transactional
     public Notification createSmsNotification(
         AdminMember adminMember,
+        Generation generation,
         List<Applicant> recipientApplicants,
         SmsSendRequestVo smsSendRequestVo) {
 
@@ -43,7 +45,7 @@ public class NotificationService {
         validateSmsRequest(adminMember, recipientApplicants, smsSendRequestVo);
 
         final Notification notification
-            = notificationRepository.save(Notification.sms(adminMember, smsSendRequestVo));
+            = notificationRepository.save(Notification.sms(adminMember,generation, smsSendRequestVo));
 
         final List<SmsRequest> smsRequests
             = recipientApplicants

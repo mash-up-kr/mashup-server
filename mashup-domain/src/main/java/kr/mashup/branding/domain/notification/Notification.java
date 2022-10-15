@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.notification.exception.NotificationRequestInvalidException;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -38,7 +39,7 @@ import lombok.ToString;
 @Entity
 @Getter
 @ToString(of = {"notificationId", "senderValue", "sentAt", "name", "content", "status", "type", "messageId", "resultId",
-    "resultCode", "resultMessage", "createdAt", "updatedAt"})
+    "resultCode", "resultMessage", "createdAt", "updatedAt", "generation"})
 @EqualsAndHashCode(of = "notificationId")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
@@ -53,6 +54,12 @@ public class Notification {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "admin_member_id")
     private AdminMember sender;
+
+    @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL)
+    private final List<SmsRequest> smsRequests = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Generation generation;
 
     /**
      * 발송자 번호
@@ -108,8 +115,7 @@ public class Notification {
      */
     private String resultMessage;
 
-    @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL)
-    private final List<SmsRequest> smsRequests = new ArrayList<>();
+
 
     @CreatedBy
     private String createdBy;
@@ -125,6 +131,7 @@ public class Notification {
 
     public static Notification sms(
         AdminMember adminMember,
+        Generation generation,
         SmsSendRequestVo smsSendRequestVo
     ) {
         if(!adminMember.getPhoneNumberRegistered()){
@@ -132,6 +139,7 @@ public class Notification {
         }
         Notification notification = new Notification();
         notification.sender = adminMember;
+        notification.generation = generation;
         notification.senderValue = adminMember.getPhoneNumber();
         notification.sentAt = LocalDateTime.now();
         notification.messageId = UUID.randomUUID().toString();

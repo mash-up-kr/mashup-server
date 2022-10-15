@@ -37,9 +37,10 @@ public class NotificationController {
     @PostMapping("/sms/send")
     public ApiResponse<EmptyResponse> sendSms(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
+        @RequestParam(defaultValue = "12") Integer generationNumber,
         @RequestBody SmsSendRequest smsSendRequest
     ) {
-        notificationFacadeService.createSmsNotification(adminMemberId, smsSendRequest);
+        notificationFacadeService.createSmsNotification(adminMemberId, generationNumber, smsSendRequest);
 
         return ApiResponse.success(EmptyResponse.of());
     }
@@ -49,11 +50,12 @@ public class NotificationController {
     @GetMapping
     public ApiResponse<List<NotificationSimpleResponse>> getNotifications(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
+        @RequestParam(defaultValue = "12") Integer generationNumber,
         @RequestParam(required = false) String searchWord,
         Pageable pageable
     ) {
         final Page<NotificationSimpleResponse> responses
-            = notificationFacadeService.getNotifications(adminMemberId, searchWord, pageable);
+            = notificationFacadeService.getNotifications(adminMemberId,generationNumber, searchWord, pageable);
 
         return ApiResponse.success(responses);
     }
