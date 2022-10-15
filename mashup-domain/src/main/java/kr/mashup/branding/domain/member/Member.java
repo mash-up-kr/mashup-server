@@ -42,7 +42,6 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private final List<MemberGeneration> memberGenerations = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "member")
     private final List<Attendance> attendances = new ArrayList<>();
 

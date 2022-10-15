@@ -29,8 +29,8 @@ public class ScoreHistoryController {
     public ApiResponse<EmptyResponse> addScore(
         @RequestBody ScoreAddRequest request
     ) {
-        LocalDate date = LocalDate.parse(request.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        scoreHistoryFacadeService.addScore(request.getMemberId(), request.getGenerationNumber(), request.getScoreType(), request.getName(), date, request.getMemo());
+
+        scoreHistoryFacadeService.addScore(request.getMemberId(), request.getGenerationNumber(), request.getScoreType(), request.getName(), request.getDate(), request.getMemo());
         return ApiResponse.success(EmptyResponse.of());
     }
 

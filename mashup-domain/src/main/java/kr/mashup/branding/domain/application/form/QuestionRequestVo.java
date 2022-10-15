@@ -9,4 +9,5 @@ public class QuestionRequestVo {
     String description;
     Boolean required;
     QuestionType questionType;
+
 }

@@ -5,6 +5,7 @@ import java.security.Principal;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.HttpMediaTypeException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -47,6 +48,13 @@ public class AdminControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<?> handleBadRequest(MethodArgumentTypeMismatchException e) {
         log.info("handleMethodArgumentTypeMismatchException: {}", e.getMessage(), e);
+        return ApiResponse.failure(ResultCode.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ApiResponse<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.info("handleMethodArgumentNotValidException: {}", e.getMessage(), e);
         return ApiResponse.failure(ResultCode.BAD_REQUEST, e.getMessage());
     }
 

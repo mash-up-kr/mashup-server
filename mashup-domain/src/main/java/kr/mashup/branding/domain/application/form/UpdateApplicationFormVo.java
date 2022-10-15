@@ -8,4 +8,5 @@ import lombok.Value;
 public class UpdateApplicationFormVo {
     List<QuestionRequestVo> questions;
     String name;
+
 }

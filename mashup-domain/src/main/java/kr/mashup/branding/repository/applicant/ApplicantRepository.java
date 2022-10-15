@@ -12,3 +12,7 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
 
     List<Applicant> findByApplicantIdIn(Collection<Long> applicantIds);
 }
+/**
+ * Applicant 연관관계
+ * 없음
+ */

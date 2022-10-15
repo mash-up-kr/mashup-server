@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ScoreHistoryFacadeService {
 
@@ -24,16 +24,21 @@ public class ScoreHistoryFacadeService {
     private final MemberService memberService;
     private final GenerationService generationService;
 
+    @Transactional
     public void addScore(Long memberId, Integer generationNumber, ScoreType scoreType, String name, LocalDate date, String memo) {
-        Generation generation = generationService.getByNumberOrThrow(generationNumber);
-        Member member = memberService.getActiveOrThrowById(memberId);
 
-        ScoreHistory scoreHistory = ScoreHistory.of(scoreType, member, LocalDateTime.of(date, LocalTime.MIN), name, generation, memo);
+        final Generation generation = generationService.getByNumberOrThrow(generationNumber);
+        final Member member = memberService.getActiveOrThrowById(memberId);
+
+        final ScoreHistory scoreHistory = ScoreHistory.of(scoreType, member, LocalDateTime.of(date, LocalTime.MIN), name, generation, memo);
+
         scoreHistoryService.save(scoreHistory);
     }
-
+    @Transactional
     public void cancelScore(Long scoreHistoryId, String memo) {
-        ScoreHistory scoreHistory = scoreHistoryService.getByIdOrThrow(scoreHistoryId);
+
+        final ScoreHistory scoreHistory = scoreHistoryService.getByIdOrThrow(scoreHistoryId);
+
         scoreHistory.cancel(memo);
     }
 

@@ -1,8 +1,17 @@
 package kr.mashup.branding.ui.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import kr.mashup.branding.domain.application.ApplicationQueryVo;
+import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
+import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
+import kr.mashup.branding.facade.application.AdminApplicationFacadeService;
+import kr.mashup.branding.ui.ApiResponse;
+import kr.mashup.branding.ui.application.vo.ApplicationDetailResponse;
+import kr.mashup.branding.ui.application.vo.ApplicationResultStatus;
+import kr.mashup.branding.ui.application.vo.ApplicationSimpleResponse;
+import kr.mashup.branding.ui.application.vo.UpdateApplicationResultRequest;
+import kr.mashup.branding.ui.application.vo.UpdateApplicationResultsRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -12,20 +21,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import kr.mashup.branding.domain.application.Application;
-import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
-import kr.mashup.branding.facade.application.ApplicationDetailVo;
-import kr.mashup.branding.facade.application.ApplicationFacadeService;
-import kr.mashup.branding.ui.ApiResponse;
-import lombok.RequiredArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/applications")
 @RequiredArgsConstructor
 public class ApplicationController {
-    private final ApplicationFacadeService applicationFacadeService;
+
+    private final AdminApplicationFacadeService adminApplicationFacadeService;
     private final ApplicationAssembler applicationAssembler;
 
     @GetMapping
@@ -38,19 +43,14 @@ public class ApplicationController {
         @RequestParam(required = false) Boolean isShowAll,
         Pageable pageable
     ) {
-        return ApiResponse.success(
-            applicationFacadeService.getApplications(
-                adminMemberId,
-                applicationAssembler.toApplicationQueryVo(
-                    searchWord,
-                    teamId,
-                    confirmStatus,
-                    resultStatus,
-                    isShowAll,
-                    pageable
-                )
-            ).map(applicationAssembler::toApplicationSimpleResponse)
-        );
+
+        final ApplicationQueryVo queryVo
+            = applicationAssembler.toApplicationQueryVo(searchWord, teamId, confirmStatus, resultStatus, isShowAll, pageable);
+
+        final Page<ApplicationSimpleResponse> responses
+            = adminApplicationFacadeService.getApplications(adminMemberId, queryVo);
+
+        return ApiResponse.success(responses);
     }
 
     @GetMapping("/{applicationId}")
@@ -58,10 +58,10 @@ public class ApplicationController {
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long applicationId
     ) {
-        ApplicationDetailVo applicationDetailVo = applicationFacadeService.getApplicationDetail(adminMemberId, applicationId);
-        return ApiResponse.success(
-            applicationAssembler.toApplicationDetailResponse(applicationDetailVo)
-        );
+        final ApplicationDetailResponse response
+            = adminApplicationFacadeService.getApplicationDetail(adminMemberId, applicationId);
+
+        return ApiResponse.success(response);
     }
 
     /**
@@ -72,14 +72,13 @@ public class ApplicationController {
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @RequestBody UpdateApplicationResultsRequest updateApplicationResultsRequest
     ) {
-        return ApiResponse.success(
-            applicationFacadeService.updateResults(
-                    adminMemberId,
-                    applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
-                ).stream()
-                .map(applicationAssembler::toApplicationSimpleResponse)
-                .collect(Collectors.toList())
+
+        List<ApplicationSimpleResponse> responses = adminApplicationFacadeService.updateResults(
+            adminMemberId,
+            applicationAssembler.toUpdateApplicationResultsVoList(updateApplicationResultsRequest)
         );
+
+        return ApiResponse.success(responses);
     }
 
     /**
@@ -91,12 +90,12 @@ public class ApplicationController {
         @PathVariable Long applicationId,
         @RequestBody UpdateApplicationResultRequest updateApplicationResultRequest
     ) {
-        Application application = applicationFacadeService.updateResult(
-            adminMemberId,
-            applicationAssembler.toUpdateApplicationResultVo(applicationId, updateApplicationResultRequest)
-        );
-        return ApiResponse.success(
-            applicationAssembler.toApplicationSimpleResponse(application)
-        );
+        final UpdateApplicationResultVo updateVo = updateApplicationResultRequest.toVo(applicationId);
+
+        final ApplicationSimpleResponse response
+            = adminApplicationFacadeService.updateResult(adminMemberId, updateVo);
+
+        return ApiResponse.success(response);
     }
+
 }

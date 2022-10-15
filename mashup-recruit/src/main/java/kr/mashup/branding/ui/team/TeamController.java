@@ -17,15 +17,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TeamController {
     private final TeamFacadeService teamFacadeService;
-    private final TeamAssembler teamAssembler;
 
     @ApiOperation("팀 목록 조회")
     @GetMapping
     public ApiResponse<List<TeamResponse>> getTeams() {
-        return ApiResponse.success(
-            teamFacadeService.getTeams().stream()
-                .map(teamAssembler::toTeamResponse)
-                .collect(Collectors.toList())
-        );
+
+        final List<TeamResponse> responses = teamFacadeService.getTeams();
+
+        return ApiResponse.success(responses);
     }
 }

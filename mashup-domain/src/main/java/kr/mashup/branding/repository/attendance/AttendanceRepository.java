@@ -12,5 +12,8 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     boolean existsAttendanceByMemberAndEvent(Member member, Event event);
     Optional<Attendance> findByMemberAndEvent(Member member, Event event);
     List<Attendance> findAllByMember(Member member);
-    List<Attendance> findAllByEvent(Event Event);
 }
+/**
+ * Attendance 연관관계
+ * many to one: member, event
+ */

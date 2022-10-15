@@ -2,8 +2,18 @@ package kr.mashup.branding.facade.application.form;
 
 import java.util.List;
 
-import kr.mashup.branding.domain.application.form.ApplicationForm;
+import org.springframework.stereotype.Service;
 
-public interface ApplicationFormFacadeService {
-    List<ApplicationForm> getByTeamId(Long teamId);
+import kr.mashup.branding.domain.application.form.ApplicationForm;
+import kr.mashup.branding.service.application.ApplicationFormService;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class ApplicationFormFacadeService {
+    private final ApplicationFormService applicationFormService;
+
+    public List<ApplicationForm> getByTeamId(Long teamId) {
+        return applicationFormService.getApplicationFormsByTeamId(teamId);
+    }
 }

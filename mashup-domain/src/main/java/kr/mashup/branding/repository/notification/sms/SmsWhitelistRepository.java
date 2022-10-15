@@ -10,3 +10,6 @@ public interface SmsWhitelistRepository extends JpaRepository<SmsWhitelist, Long
 
     Optional<SmsWhitelist> findByPhoneNumber(String phoneNumber);
 }
+/**
+ * 연관관계 없음
+ */

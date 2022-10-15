@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.team.Team;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,6 @@ import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.form.QuestionRequestVo;
 import kr.mashup.branding.domain.application.form.QuestionType;
 import kr.mashup.branding.domain.team.CreateTeamVo;
-import kr.mashup.branding.domain.team.Team;
 
 class ApplicationTest {
     @DisplayName("개인정보처리방침 동의여부가 false 이면 제출시 예외발생")
@@ -83,8 +83,8 @@ class ApplicationTest {
     }
 
     private ApplicationForm createApplicationForm() {
-        Team team = Team.of(CreateTeamVo.of("teamName"));
-        ApplicationForm applicationForm = ApplicationForm.of(team, "applicationFormName");
+        Team teamVo = Team.of(CreateTeamVo.of("teamName"));
+        ApplicationForm applicationForm = ApplicationForm.of(teamVo, "applicationFormName");
         List<Question> questions = Arrays.asList(
             Question.of(applicationForm, QuestionRequestVo.of(
                 "이름을 입력해 주세요",

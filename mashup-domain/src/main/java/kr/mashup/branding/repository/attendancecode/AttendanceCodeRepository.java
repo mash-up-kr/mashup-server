@@ -8,3 +8,7 @@ import java.util.Optional;
 
 public interface AttendanceCodeRepository extends JpaRepository<AttendanceCode, Long> {
 }
+/**
+ * AttendanceCode 연관관계
+ * 없음
+ */

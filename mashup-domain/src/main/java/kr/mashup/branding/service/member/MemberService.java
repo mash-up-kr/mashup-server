@@ -13,7 +13,6 @@ import kr.mashup.branding.domain.member.exception.MemberPendingException;
 import kr.mashup.branding.dto.member.MemberCreateDto;
 import kr.mashup.branding.repository.member.MemberGenerationRepository;
 import kr.mashup.branding.repository.member.MemberRepository;
-import kr.mashup.branding.repository.member.MemberRepositoryCustomImpl;
 import kr.mashup.branding.repository.member.MemberRepositoryCustomImpl.MemberScoreQueryResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -103,7 +102,7 @@ public class MemberService {
         Platform platform,
         Generation generation
     ) {
-        return memberRepository.findAllActiveByPlatformAndGeneration(
+        return memberRepository.findActiveByPlatformAndGeneration(
             platform,
             generation
         );
@@ -114,7 +113,7 @@ public class MemberService {
         Generation generation,
         Pageable pageable
     ) {
-        return memberRepository.findAllActiveByPlatformAndGeneration(
+        return memberRepository.findActiveByPlatformAndGeneration(
             platform,
             generation,
             pageable

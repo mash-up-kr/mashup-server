@@ -9,8 +9,11 @@ import java.util.List;
 
 public interface ScoreHistoryRepository extends JpaRepository<ScoreHistory, Long> {
 
-    // TODO: N+1 고려하면서 쿼리 짜기
     List<ScoreHistory> findByMember(Member member);
 
     List<ScoreHistory> findByMemberAndGenerationOrderByDateAsc(Member member, Generation generation);
 }
+/**
+ * ScoreHistory 연관관계
+ * many to one : generation, member
+ */

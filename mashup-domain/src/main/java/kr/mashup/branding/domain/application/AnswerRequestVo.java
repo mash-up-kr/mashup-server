@@ -7,4 +7,6 @@ public class AnswerRequestVo {
     Long answerId;
     Long questionId;
     String content;
+
+
 }

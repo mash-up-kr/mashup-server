@@ -15,3 +15,7 @@ public interface MemberGenerationRepository extends JpaRepository<MemberGenerati
     List<MemberGeneration> findByMember(Member member);
 
 }
+/**
+ * MemberGeneration 연관관계
+ * many to one: member, generation
+ */

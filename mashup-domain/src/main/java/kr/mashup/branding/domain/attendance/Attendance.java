@@ -28,13 +28,14 @@ public class Attendance extends BaseEntity {
     private Member member;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    private AttendanceStatus status;
-
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name ="event_id")
     private Event event;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private AttendanceStatus status;
+
 
     public static Attendance of(Member member, AttendanceStatus status, Event event){
         return new Attendance(member, status, event);
