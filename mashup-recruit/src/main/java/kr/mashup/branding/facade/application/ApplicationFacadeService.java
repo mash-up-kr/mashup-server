@@ -47,10 +47,10 @@ public class ApplicationFacadeService {
             throw new ApplicationCreationRequestInvalidException("Applicant not found. applicantId: " + applicantId, e);
         }
 
-        try {
-            teamService.getTeam(teamId);
-        } catch (TeamNotFoundException e) {
-            throw new ApplicationCreationRequestInvalidException("Team not found. teamId: " + teamId, e);
+        final boolean isExistTeam = teamService.isExistTeam(teamId);
+        if(!isExistTeam){
+            throw new ApplicationCreationRequestInvalidException("Team not found. teamId: " + teamId);
+
         }
 
         final ApplicationForm applicationForm;
@@ -99,9 +99,11 @@ public class ApplicationFacadeService {
      * 내 지원서 목록 보기
      */
     public List<ApplicationResponse> getApplications(Long applicantId) {
-        return applicationService.getApplications(applicantId)
+        return applicationService
+            .getApplications(applicantId)
             .stream()
-            .map(applicationAssembler::toApplicationResponse).collect(Collectors.toList());
+            .map(applicationAssembler::toApplicationResponse)
+            .collect(Collectors.toList());
     }
 
     /**

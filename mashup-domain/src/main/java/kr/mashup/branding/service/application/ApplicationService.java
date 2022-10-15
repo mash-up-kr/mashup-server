@@ -165,11 +165,10 @@ public class ApplicationService {
     public Application updateConfirmationFromApplicant(Long applicantId,
                                                        UpdateConfirmationVo updateConfirmationVo) {
         final Long applicationId = updateConfirmationVo.getApplicationId();
-
-        final Application application = findByApplicantIdAndApplicationId(applicantId, applicationId);
-
         final ApplicantConfirmationStatus updateStatus = updateConfirmationVo.getStatus();
         final String rejectReason = updateConfirmationVo.getRejectionReason();
+
+        final Application application = findByApplicantIdAndApplicationId(applicantId, applicationId);
 
         application.updateConfirm(updateStatus, rejectReason);
 

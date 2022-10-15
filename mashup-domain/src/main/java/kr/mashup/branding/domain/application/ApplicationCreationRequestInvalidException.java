@@ -7,4 +7,7 @@ public class ApplicationCreationRequestInvalidException extends BadRequestExcept
     public ApplicationCreationRequestInvalidException(String message, Throwable cause) {
         super(ResultCode.APPLICATION_CREATION_REQUEST_INVALID, message, cause);
     }
+    public ApplicationCreationRequestInvalidException(String message) {
+        super(ResultCode.APPLICATION_CREATION_REQUEST_INVALID, message);
+    }
 }
