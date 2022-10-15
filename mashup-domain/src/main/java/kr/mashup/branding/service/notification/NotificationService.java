@@ -100,10 +100,7 @@ public class NotificationService {
             pageable.getSortOr(Sort.by(Sort.Order.desc("sentAt")))
         );
 
-        if (searchWord == null) {
-            return notificationRepository.findAll(pageable);
-        }
-        return notificationRepository.findByNameContainsOrSenderValueContains(searchWord, searchWord, pageable);
+        return notificationRepository.findWithSearchWord(searchWord,  pageable);
     }
 
 
@@ -115,7 +112,7 @@ public class NotificationService {
 
     public List<SmsRequest> getSmsRequestsByApplicantId(Long applicantId) {
         Assert.notNull(applicantId, "'applicantId' must not be null");
-        return smsRequestRepository.findByRecipientApplicant_applicantId(applicantId);
+        return smsRequestRepository.findByRecipient(applicantId);
     }
 
     /**

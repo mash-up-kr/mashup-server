@@ -56,6 +56,14 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return QueryUtils.toPage(results, pageable);
     }
 
+    private BooleanExpression nameContains(String searchName) {
+        return searchName != null ? member.name.contains(searchName) : null;
+    }
+
+    private BooleanExpression platformEq(Platform platform) {
+        return platform != null ? memberGeneration.platform.eq(platform) : null;
+    }
+
     private OrderSpecifier[] getOrderSpecifier(Sort sort) {
         List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
         for (Sort.Order order : sort) {
@@ -65,28 +73,19 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
             OrderSpecifier orderSpecifier = null;
 
-            if(field.equals("name") || field.equals("identification")){
+            if (field.equals("name") || field.equals("identification")) {
                 orderSpecifier = new OrderSpecifier(qOrder, Expressions.path(Object.class, member, field));
-            }else if(field.equals("platform")){
+            } else if (field.equals("platform")) {
                 orderSpecifier = new OrderSpecifier(qOrder, Expressions.path(Object.class, memberGeneration, field));
-            }else if(field.equals("score")){
+            } else if (field.equals("score")) {
                 orderSpecifier = new OrderSpecifier(qOrder, sumAlias);
-            }else{
+            } else {
                 throw new BadRequestException(ResultCode.BAD_REQUEST);
             }
 
             orderSpecifiers.add(orderSpecifier);
         }
         return orderSpecifiers.toArray(new OrderSpecifier[0]);
-    }
-
-    private BooleanExpression nameContains(String searchName) {
-
-        return searchName != null ? member.name.contains(searchName) : null;
-    }
-
-    private BooleanExpression platformEq(Platform platform) {
-        return platform != null ? memberGeneration.platform.eq(platform) : null;
     }
 
     @Getter
@@ -96,5 +95,46 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         private final Platform platform;
         private final Double score;
     }
+
+    @Override
+    public Long countActiveByPlatformAndGeneration(Platform platform, Generation generation) {
+        Integer count = queryFactory
+            .select(member.count())
+            .from(member)
+            .join(memberGeneration).on(memberGeneration.member.eq(member))
+            .where(memberGeneration.platform.eq(platform)
+                .and(memberGeneration.generation.eq(generation))
+                .and(member.status.eq(MemberStatus.ACTIVE)))
+            .fetch().size();
+        return count.longValue();
+    }
+
+    @Override
+    public List<Member> findActiveByPlatformAndGeneration(Platform platform, Generation generation) {
+        return queryFactory
+            .selectFrom(member)
+            .join(memberGeneration).on(memberGeneration.member.eq(member))
+            .where(memberGeneration.platform.eq(platform)
+                .and(memberGeneration.generation.eq(generation))
+                .and(member.status.eq(MemberStatus.ACTIVE)))
+            .fetch();
+    }
+
+    @Override
+    public Page<Member> findActiveByPlatformAndGeneration(Platform platform, Generation generation, Pageable pageable) {
+        List<OrderSpecifier> orderSpecifiers = QueryUtils.toOrderSpecifiers(member, pageable.getSortOr(Sort.by(Sort.Order.asc("name"))));
+        QueryResults<Member> fetchResults = queryFactory
+            .selectFrom(member)
+            .join(memberGeneration).on(memberGeneration.member.eq(member))
+            .where(memberGeneration.platform.eq(platform)
+                .and(memberGeneration.generation.eq(generation))
+                .and(member.status.eq(MemberStatus.ACTIVE)))
+            .orderBy(orderSpecifiers.isEmpty() ? null : orderSpecifiers.toArray(new OrderSpecifier[0]))
+            .fetchResults();
+
+        return QueryUtils.toPage(fetchResults, pageable);
+    }
+
+
 }
 

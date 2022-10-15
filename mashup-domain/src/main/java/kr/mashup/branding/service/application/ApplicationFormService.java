@@ -18,7 +18,6 @@ import kr.mashup.branding.domain.application.form.UpdateApplicationFormVo;
 import kr.mashup.branding.domain.team.Team;
 import kr.mashup.branding.repository.application.form.ApplicationFormRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,7 +85,7 @@ public class ApplicationFormService {
 
         final ApplicationForm applicationForm
             = applicationFormRepository
-            .findByApplicationFormId(applicationFormId)
+            .findByApplicationForm(applicationFormId)
             .orElseThrow(ApplicationFormNotFoundException::new);
 
         applicationForm.update(updateApplicationFormVo);
@@ -109,7 +108,7 @@ public class ApplicationFormService {
         }
 
         applicationFormRepository
-            .findByApplicationFormId(applicationFormId)
+            .findByApplicationForm(applicationFormId)
             .ifPresent(applicationFormRepository::delete);
     }
 
@@ -126,14 +125,10 @@ public class ApplicationFormService {
     }
 
     public List<ApplicationForm> getApplicationFormsByTeamId(Long teamId) {
-        return applicationFormRepository.findByTeam_teamId(teamId);
+        return applicationFormRepository.findByTeam(teamId);
     }
 
     public Page<ApplicationForm> getApplicationForms(ApplicationFormQueryVo applicationFormQueryVo) {
         return applicationFormRepository.findByApplicationFormQueryVo(applicationFormQueryVo);
-    }
-
-    public Page<ApplicationForm> getApplicationForms(Long teamId, Pageable pageable) {
-        return applicationFormRepository.findByTeam_teamId(teamId, pageable);
     }
 }

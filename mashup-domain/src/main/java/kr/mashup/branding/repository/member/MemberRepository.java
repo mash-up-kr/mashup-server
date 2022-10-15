@@ -18,15 +18,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 
     Optional<Member> findByIdentification(String identification);
 
-    @Query("select count(m) from Member m join m.memberGenerations mg where mg.generation = :generation and mg.platform = :platform  and m.status = 'ACTIVE'")
-    Long countActiveByPlatformAndGeneration(@Param("platform") Platform platform, @Param("generation") Generation generation);
-
-    @Query("select m from Member m join m.memberGenerations mg where mg.generation = :generation and mg.platform = :platform and m.status = 'ACTIVE'")
-    List<Member> findAllActiveByPlatformAndGeneration(@Param("platform") Platform platform, @Param("generation") Generation generation);
-
-    @Query("select m from Member m join m.memberGenerations mg where mg.generation = :generation and mg.platform = :platform  and m.status = 'ACTIVE'")
-    Page<Member> findAllActiveByPlatformAndGeneration(@Param("platform") Platform platform, @Param("generation") Generation generation, Pageable pageable);
-
     Boolean existsByIdentification(String identification);
 
     Page<Member> findAllByStatus(MemberStatus status, Pageable pageable);

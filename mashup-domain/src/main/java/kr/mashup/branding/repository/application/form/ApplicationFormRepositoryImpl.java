@@ -57,12 +57,30 @@ public class ApplicationFormRepositoryImpl implements ApplicationFormRepositoryC
 
         return QueryUtils.toPage(fetchResults, pageable);
     }
-
     private BooleanExpression teamIdEq(Long teamId) {
         return teamId != null ? applicationForm.team.teamId.eq(teamId) : null;
     }
     private BooleanExpression searchWordContains(String searchWord) {
         return StringUtils.hasText(searchWord) ? applicationForm.name.contains(searchWord) : null;
+    }
+
+    @Override
+    public List<ApplicationForm> findByTeam(Long teamId) {
+        return queryFactory
+            .selectFrom(applicationForm)
+            .join(applicationForm.team).fetchJoin()
+            .where(applicationForm.team.teamId.eq(teamId))
+            .fetch();
+    }
+
+    @Override
+    public Optional<ApplicationForm> findByApplicationForm(Long applicationFormId) {
+        ApplicationForm applicationForm = queryFactory
+            .selectFrom(QApplicationForm.applicationForm)
+            .join(QApplicationForm.applicationForm.team).fetchJoin()
+            .where(QApplicationForm.applicationForm.applicationFormId.eq(applicationFormId))
+            .fetchFirst();
+        return applicationForm != null? Optional.of(applicationForm) : Optional.empty();
     }
 
 

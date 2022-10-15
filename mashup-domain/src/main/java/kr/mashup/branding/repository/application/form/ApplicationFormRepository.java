@@ -13,12 +13,6 @@ public interface ApplicationFormRepository
 
     boolean existsByTeam_teamId(Long teamId);
 
-    List<ApplicationForm> findByTeam_teamId(Long teamId);
-
-    Page<ApplicationForm> findByTeam_teamId(Long teamId, Pageable pageable);
-
-    Optional<ApplicationForm> findByApplicationFormId(Long applicationFormId);
-
     boolean existsByNameLike(String name);
 
     long countByNameLike(String name);

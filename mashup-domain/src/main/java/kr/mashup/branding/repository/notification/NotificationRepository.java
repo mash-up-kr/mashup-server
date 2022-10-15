@@ -5,12 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface NotificationRepository extends JpaRepository<Notification, Long> {
+public interface NotificationRepository extends JpaRepository<Notification, Long>, NotificationRepositoryCustom  {
     boolean existsByName(String name);
 
-    // TODO: 발송자 조건 추가
-    Page<Notification> findByNameContainsOrSenderValueContains(String nameContains, String senderValueContains,
-        Pageable pageable);
 }
 /**
  * Notification 연관관계
