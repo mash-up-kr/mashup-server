@@ -4,9 +4,16 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
+import kr.mashup.branding.domain.generation.Generation;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -19,13 +26,18 @@ import lombok.ToString;
 
 @Entity
 @Getter
-@ToString(of = {"teamId", "name", "createdBy", "createdAt", "updatedBy", "updatedAt"})
+@ToString(of = {"teamId", "name", "createdBy", "createdAt", "updatedBy", "updatedAt", "generation"})
 @EqualsAndHashCode(of = "teamId")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Team {
     @Id
     @GeneratedValue
     private Long teamId;
+
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "generation_id")
+    private Generation generation;
 
     private String name;
 
@@ -42,8 +54,13 @@ public class Team {
     private LocalDateTime updatedAt;
 
     public static Team of(CreateTeamVo createTeamVo) {
-        Team team = new Team();
-        team.name = createTeamVo.getName();
-        return team;
+        String name = createTeamVo.getName();
+        Generation generation = createTeamVo.getGeneration();
+        return new Team(generation, name);
+    }
+
+    private Team(Generation generation, String name) {
+        this.generation = generation;
+        this.name = name;
     }
 }

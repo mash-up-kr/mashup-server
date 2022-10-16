@@ -1,55 +1,140 @@
 package kr.mashup.branding.service.recruitmentschedule;
 
-import kr.mashup.branding.domain.recruitmentschedule.RecruitmentSchedule;
-import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleCreateVo;
-import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleUpdateVo;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface RecruitmentScheduleService {
+import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentSchedule;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleCreateVo;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleDuplicatedException;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleEventName;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleNotFoundException;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleUpdateVo;
+import kr.mashup.branding.repository.recruitmentschedule.RecruitmentScheduleRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+
+import lombok.RequiredArgsConstructor;
+
+import static kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleEventName.*;
+
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class RecruitmentScheduleService {
+
+    private final RecruitmentScheduleRepository recruitmentScheduleRepository;
+
     /**
      * 채용 일정 목록 조회
      */
-    List<RecruitmentSchedule> getAll();
-
-    /**
-     * 채용 일정 조회
-     */
-    RecruitmentSchedule getByEventName(String eventName);
+    public List<RecruitmentSchedule> getAll(Generation generation) {
+        return recruitmentScheduleRepository.findAllByGeneration(generation);
+    }
 
     /**
      * 채용 일정 생성
      */
-    RecruitmentSchedule create(RecruitmentScheduleCreateVo recruitmentScheduleCreateVo);
+    @Transactional
+    public RecruitmentSchedule create(Generation generation, RecruitmentScheduleCreateVo recruitmentScheduleCreateVo) {
+        Assert.notNull(recruitmentScheduleCreateVo, "'createRecruitmentScheduleVo' must not be null");
+
+        if (recruitmentScheduleRepository.
+            existsByGenerationAndEventName(generation, recruitmentScheduleCreateVo.getEventName())) {
+
+            throw new RecruitmentScheduleDuplicatedException(
+                "'eventName' is already in use. eventName: " + recruitmentScheduleCreateVo.getEventName());
+        }
+        return recruitmentScheduleRepository.save(
+            RecruitmentSchedule.from(recruitmentScheduleCreateVo)
+        );
+    }
 
     /**
      * 채용 일정 생성
      */
-    RecruitmentSchedule update(Long recruitmentScheduleId, RecruitmentScheduleUpdateVo recruitmentScheduleUpdateVo);
+    @Transactional
+    public RecruitmentSchedule update(
+        Long recruitmentScheduleId,
+        RecruitmentScheduleUpdateVo recruitmentScheduleUpdateVo
+    ) {
+        Assert.notNull(recruitmentScheduleId, "'recruitmentScheduleId' must not be null");
+        Assert.notNull(recruitmentScheduleUpdateVo, "'updateRecruitmentScheduleVo' must not be null");
+
+        return recruitmentScheduleRepository.findById(recruitmentScheduleId)
+            .map(it -> it.update(recruitmentScheduleUpdateVo))
+            .orElseThrow(RecruitmentScheduleNotFoundException::new);
+    }
 
     /**
      * 채용 일정 삭제
      */
-    void delete(Long recruitmentScheduleId);
+    @Transactional
+    public void delete(Long recruitmentScheduleId) {
+        recruitmentScheduleRepository
+            .findById(recruitmentScheduleId)
+            .ifPresent(recruitmentScheduleRepository::delete);
+    }
 
     /**
      * 모집 시작했는지
      */
-    boolean isRecruitStarted(LocalDateTime localDateTime);
+    public boolean isRecruitStarted(Generation generation, LocalDateTime localDateTime) {
+        final LocalDateTime recruitStartedAt
+            = recruitmentScheduleRepository.findByEventName(generation, RECRUITMENT_STARTED)
+            .map(RecruitmentSchedule::getEventOccurredAt)
+            .orElseThrow(RecruitmentScheduleNotFoundException::new);
+
+        return !localDateTime.isBefore(recruitStartedAt);
+    }
 
     /**
      * 서류 제출 가능한 시각인지
      */
-    boolean isRecruitAvailable(LocalDateTime localDateTime);
+    public boolean isRecruitAvailable(Generation generation, LocalDateTime localDateTime) {
+        final LocalDateTime recruitStartedAt
+            = recruitmentScheduleRepository.findByEventName(generation, RECRUITMENT_STARTED)
+            .map(RecruitmentSchedule::getEventOccurredAt)
+            .orElseThrow(RecruitmentScheduleNotFoundException::new);
+
+        final LocalDateTime recruitEndedAt = recruitmentScheduleRepository.findByEventName(generation, RECRUITMENT_ENDED)
+            .map(RecruitmentSchedule::getEventOccurredAt)
+            .orElseThrow(RecruitmentScheduleNotFoundException::new);
+
+        return !localDateTime.isBefore(recruitStartedAt) && !localDateTime.isAfter(recruitEndedAt);
+    }
 
     /**
      * 서류 결과 보여주어도 되는 시각인지
      */
-    boolean canAnnounceScreeningResult(LocalDateTime localDateTime);
+    public boolean canAnnounceScreeningResult(Generation generation, LocalDateTime localDateTime) {
+
+        final LocalDateTime screeningResultAnnouncedAt
+            = recruitmentScheduleRepository.findByEventName(generation, SCREENING_RESULT_ANNOUNCED)
+            .map(RecruitmentSchedule::getEventOccurredAt)
+            .orElseThrow(RecruitmentScheduleNotFoundException::new);
+
+        return !localDateTime.isBefore(screeningResultAnnouncedAt);
+    }
 
     /**
      * 면접 결과 보여주어도 되는 시각인지
      */
-    boolean canAnnounceInterviewResult(LocalDateTime localDateTime);
+    public boolean canAnnounceInterviewResult(Generation generation, LocalDateTime localDateTime) {
+
+        final LocalDateTime interviewResultAnnouncedAt
+            = recruitmentScheduleRepository.findByEventName(generation, INTERVIEW_RESULT_ANNOUNCED)
+            .map(RecruitmentSchedule::getEventOccurredAt)
+            .orElseThrow(RecruitmentScheduleNotFoundException::new);
+
+        return !localDateTime.isBefore(interviewResultAnnouncedAt);
+    }
+
+    public RecruitmentSchedule getByEventName(Generation generation, RecruitmentScheduleEventName eventName) {
+        return recruitmentScheduleRepository
+            .findByEventName(generation, eventName)
+            .orElseThrow(RecruitmentScheduleNotFoundException::new);
+    }
+
 }

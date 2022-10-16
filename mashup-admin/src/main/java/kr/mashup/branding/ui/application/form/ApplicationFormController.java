@@ -4,6 +4,7 @@ import kr.mashup.branding.domain.application.form.ApplicationFormQueryVo;
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
 import kr.mashup.branding.facade.application.form.AdminApplicationFormFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
+import kr.mashup.branding.ui.application.form.vo.ApplicationFormQueryRequest;
 import kr.mashup.branding.ui.application.form.vo.ApplicationFormResponse;
 import kr.mashup.branding.ui.application.form.vo.CreateApplicationFormRequest;
 import kr.mashup.branding.ui.application.form.vo.UpdateApplicationFormRequest;
@@ -39,12 +40,15 @@ public class ApplicationFormController {
      */
     @GetMapping
     public ApiResponse<List<ApplicationFormResponse>> getApplicationForms(
+        @RequestParam(defaultValue = "12", required = false) Integer generationNumber,
         @RequestParam(required = false) Long teamId,
         @RequestParam(required = false) String searchWord,
         Pageable pageable // TODO Pageable default
     ) {
-        final ApplicationFormQueryVo queryVo = ApplicationFormQueryVo.of(teamId, searchWord, pageable);
-        final Page<ApplicationFormResponse> responses = adminApplicationFormFacadeService.getApplicationForms(queryVo);
+        final ApplicationFormQueryRequest request
+            = ApplicationFormQueryRequest.of(generationNumber, teamId, searchWord, pageable);
+
+        final Page<ApplicationFormResponse> responses = adminApplicationFormFacadeService.getApplicationForms(request);
         return ApiResponse.success(responses);
     }
 

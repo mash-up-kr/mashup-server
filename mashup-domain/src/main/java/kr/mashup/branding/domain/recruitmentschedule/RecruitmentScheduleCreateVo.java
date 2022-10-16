@@ -6,6 +6,6 @@ import lombok.Value;
 
 @Value(staticConstructor = "of")
 public class RecruitmentScheduleCreateVo {
-    String eventName;
+    RecruitmentScheduleEventName eventName;
     LocalDateTime eventOccurredAt;
 }

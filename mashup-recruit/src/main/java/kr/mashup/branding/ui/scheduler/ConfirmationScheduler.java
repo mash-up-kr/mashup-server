@@ -19,7 +19,7 @@ public class ConfirmationScheduler {
     @Scheduled(cron = "0 0 0 30 3 ?") // 2022-03-30 00:00:00
     public void updateConfirmationAtRecruitmentEnded() {
         log.info("[ConfirmationScheduler] updateConfirmationAtRecruitmentEnded >>> start");
-        confirmationFacadeService.updateToBeDeterminedToNotApplicable();
+        confirmationFacadeService.updateToBeDeterminedToNotApplicable(12);
         log.info("[ConfirmationScheduler] updateConfirmationAtRecruitmentEnded >>> end");
     }
 
@@ -30,7 +30,7 @@ public class ConfirmationScheduler {
     @Scheduled(cron = "0 0 10 4 4 ?") // 2022-04-03 10:00:00 24시간 뒤인 04-04 10:00:00
     public void updateConfirmationAtScreeningEnded() {
         log.info("[ConfirmationScheduler] updateConfirmationAtScreeningEnded >>> start");
-        confirmationFacadeService.updateInterviewConfirmWaitingToRejected();
+        confirmationFacadeService.updateInterviewConfirmWaitingToRejected(12);
         log.info("[ConfirmationScheduler] updateConfirmationAtScreeningEnded >>> end");
     }
 
@@ -41,7 +41,7 @@ public class ConfirmationScheduler {
     @Scheduled(cron = "0 0 19 13 4 ?") // 2022-04-12 19:00:00 24시간 뒤인 04-13 19:00:00
     public void updateConfirmationAtInterviewEnded() {
         log.info("[ConfirmationScheduler] updateConfirmationAtInterviewEnded >>> start");
-        confirmationFacadeService.updateFinalConfirmWaitingToRejected();
+        confirmationFacadeService.updateFinalConfirmWaitingToRejected(12);
         log.info("[ConfirmationScheduler] updateConfirmationAtInterviewEnded >>> end");
     }
 }

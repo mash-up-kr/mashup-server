@@ -1,7 +1,10 @@
 package kr.mashup.branding.facade.application.form;
 
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.team.Team;
+import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.team.TeamService;
+import kr.mashup.branding.ui.application.form.vo.ApplicationFormQueryRequest;
 import kr.mashup.branding.ui.application.form.vo.ApplicationFormResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AdminApplicationFormFacadeService {
     private final TeamService teamService;
+    private final GenerationService generationService;
     private final ApplicationFormService applicationFormService;
     private final ApplicationService applicationService;
     private final ProfileService profileService;
@@ -47,9 +51,12 @@ public class AdminApplicationFormFacadeService {
         return ApplicationFormResponse.from(applicationForm);
     }
 
-    public Page<ApplicationFormResponse> getApplicationForms(ApplicationFormQueryVo applicationFormQueryVo) {
+    public Page<ApplicationFormResponse> getApplicationForms(ApplicationFormQueryRequest request) {
+        final Generation generation = generationService.getByNumberOrThrow(request.getGenerationNumber());
+        final ApplicationFormQueryVo applicationFormQueryVo
+            = ApplicationFormQueryVo.of(request.getTeamId(), request.getSearchWord(), request.getPageable());
         return applicationFormService
-            .getApplicationForms(applicationFormQueryVo)
+            .getApplicationForms(generation, applicationFormQueryVo)
             .map(ApplicationFormResponse::from);
     }
 

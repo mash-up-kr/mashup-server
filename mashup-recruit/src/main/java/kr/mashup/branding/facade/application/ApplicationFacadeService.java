@@ -8,9 +8,11 @@ import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
 import kr.mashup.branding.domain.application.ApplicationCreationRequestInvalidException;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.service.applicant.ApplicantService;
 import kr.mashup.branding.service.application.ApplicationFormService;
+import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.team.TeamService;
 import kr.mashup.branding.ui.application.vo.ApplicationResponse;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ApplicationFacadeService {
     private final TeamService teamService;
+    private final GenerationService generationService;
     private final ApplicantService applicantService;
     private final ApplicationService applicationService;
     private final ApplicationFormService applicationFormService;
@@ -66,6 +69,7 @@ public class ApplicationFacadeService {
 
         final Application application
             = applicationService.create(applicantId, applicant, applicationForm);
+
 
         return applicationAssembler.toApplicationResponse(application);
     }

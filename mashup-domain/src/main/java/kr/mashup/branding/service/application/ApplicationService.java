@@ -1,13 +1,8 @@
 package kr.mashup.branding.service.application;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
+import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationAlreadySubmittedException;
 import kr.mashup.branding.domain.application.ApplicationModificationNotAllowedException;
@@ -19,22 +14,28 @@ import kr.mashup.branding.domain.application.ApplicationSubmitRequestInvalidExce
 import kr.mashup.branding.domain.application.ApplicationSubmitRequestVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
+import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
+import kr.mashup.branding.domain.application.form.ApplicationForm;
+import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
+import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
+import kr.mashup.branding.domain.exception.ForbiddenException;
+import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleEventName;
 import kr.mashup.branding.repository.application.ApplicationRepository;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
-import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
-import kr.mashup.branding.domain.exception.ForbiddenException;
 import kr.mashup.branding.service.recruitmentschedule.RecruitmentScheduleService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import kr.mashup.branding.domain.applicant.Applicant;
-import kr.mashup.branding.domain.application.confirmation.UpdateConfirmationVo;
-import kr.mashup.branding.domain.application.form.ApplicationForm;
-import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -57,8 +58,8 @@ public class ApplicationService {
     @Transactional
     public Application create(Long applicantId, Applicant applicant, ApplicationForm applicationForm) {
         Assert.notNull(applicantId, "'applicantId' must not be null");
-
-        validateDate(applicantId);
+        final Generation generation = applicationForm.getTeam().getGeneration();
+        validateDate(generation, applicantId);
 
         final List<Application> applications
             = applicationRepository.findByApplicantAndApplicationForm(applicant, applicationForm);
@@ -80,10 +81,11 @@ public class ApplicationService {
         Assert.notNull(applicationId, "'applicationId' must not be null");
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
 
-        validateDate(applicantId);
-        validateSubmittedApplicationExists(applicantId, applicationId);
-
         final Application application = findByApplicantIdAndApplicationId(applicantId, applicationId);
+        final Generation generation = application.getApplicationForm().getTeam().getGeneration();
+
+        validateDate(generation, applicantId);
+        validateSubmittedApplicationExists(applicantId, applicationId);
 
         application.update(updateApplicationVo);
 
@@ -100,10 +102,12 @@ public class ApplicationService {
     ) {
         Assert.notNull(applicationId, "'applicationId' must not be null");
 
-        validateDate(applicantId);
+        final Application application = findByApplicantIdAndApplicationId(applicantId, applicationId);
+        final Generation generation = application.getApplicationForm().getTeam().getGeneration();
+
+        validateDate(generation, applicantId);
         validateSubmittedApplicationExists(applicantId, applicationId);
 
-        final Application application = findByApplicantIdAndApplicationId(applicantId, applicationId);
 
         try {
             application.submit(applicationSubmitRequestVo);
@@ -117,9 +121,9 @@ public class ApplicationService {
     /**
      * 지원서 생성, 수정, 제출 가능한 시각인지 검증
      */
-    private void validateDate(Long applicantId) {
+    private void validateDate(Generation generation, Long applicantId) {
         try {
-            applicationScheduleValidator.validate(LocalDateTime.now());
+            applicationScheduleValidator.validate(generation, LocalDateTime.now());
         } catch (ApplicationModificationNotAllowedException e) {
             log.info("Failed to modify application. applicantId: {}", applicantId);
             throw e;
@@ -133,6 +137,7 @@ public class ApplicationService {
      * @param applicationId 지원서 식별자
      */
     private void validateSubmittedApplicationExists(Long applicantId, Long applicationId) {
+        // TODO: 기수 정보 적용 필요
         if (applicationRepository.existByApplicantAndApplicationStatus(applicantId, ApplicationStatus.SUBMITTED)) {
             throw new ApplicationAlreadySubmittedException(
                 "Failed to submit application. applicationId: " + applicationId);
@@ -158,6 +163,7 @@ public class ApplicationService {
         checkAdminMemberAuthority(adminMember, application.getApplicationForm().getTeam().getName());
 
         application.updateResult(updateApplicationResultVo);
+
         return application;
     }
 
@@ -193,8 +199,7 @@ public class ApplicationService {
 
         final List<Application> applications
             = applicationRepository
-            .findByIdAndStatusIn(
-                applicantId, ApplicationStatus.validSet());
+            .findByIdAndStatusIn(applicantId, ApplicationStatus.validSet());
 
         applications.forEach(this::updateApplicationResult);
 
@@ -214,10 +219,11 @@ public class ApplicationService {
     }
 
 
-    public List<Application> getApplicationsByStatusAndEventName(ApplicationStatus status, String eventName) {
+    public List<Application> getApplicationsByStatusAndEventName(Generation generation, ApplicationStatus status,
+                                                                 RecruitmentScheduleEventName eventName) {
 
         final LocalDateTime eventOccurredAt
-            = recruitmentScheduleService.getByEventName(eventName).getEventOccurredAt();
+            = recruitmentScheduleService.getByEventName(generation, eventName).getEventOccurredAt();
 
         return applicationRepository.findByStatusAndCreatedAtBefore(status, eventOccurredAt);
     }
@@ -251,13 +257,16 @@ public class ApplicationService {
 
 
 
-    public Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo) {
-        return applicationRepository.findBy(applicationQueryVo);
+    public Page<Application> getApplications(Long adminMemberId, Generation generation,
+                                             ApplicationQueryVo applicationQueryVo) {
+
+        return applicationRepository.findBy(generation, applicationQueryVo);
     }
 
     public void updateApplicationResult(Application application) {
+        Generation generation = application.getApplicationForm().getTeam().getGeneration();
         // 서류 제출 기간이 지난 경우에도 지원서를 제출하지 않았다면(생성됨, 작성중의 상태) 서류 평가 대상이 아님을 업데이트 한다.
-        if (!recruitmentScheduleService.isRecruitAvailable(LocalDateTime.now()) && !application.getStatus().isSubmitted()
+        if (!recruitmentScheduleService.isRecruitAvailable(generation, LocalDateTime.now()) && !application.getStatus().isSubmitted()
             && (application.getApplicationResult().getScreeningStatus() != ApplicationScreeningStatus.NOT_APPLICABLE)
         ) {
             application.getApplicationResult().updateScreeningStatus(ApplicationScreeningStatus.NOT_APPLICABLE);

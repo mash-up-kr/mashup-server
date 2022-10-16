@@ -5,6 +5,7 @@ import kr.mashup.branding.domain.application.ApplicationStatus;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleEventName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,15 +18,11 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ConfirmationService {
-    private static final String RECRUITMENT_ENDED = "RECRUITMENT_ENDED";
-
-    private final ApplicationService applicationService;
+    private static final RecruitmentScheduleEventName RECRUITMENT_ENDED =
+        RecruitmentScheduleEventName.RECRUITMENT_ENDED;
 
     @Transactional
-    public void updateToBeDeterminedToNotApplicable() {
-
-        final List<Application> applications
-            = applicationService.getApplicationsByStatusAndEventName(ApplicationStatus.WRITING, RECRUITMENT_ENDED);
+    public void updateToBeDeterminedToNotApplicable(List<Application> applications) {
 
         applications
             .stream()
@@ -40,10 +37,7 @@ public class ConfirmationService {
     }
 
     @Transactional
-    public void updateInterviewConfirmWaitingToRejected() {
-
-        final List<Application> applications
-            = applicationService.getApplicationsByStatusAndEventName(ApplicationStatus.SUBMITTED, RECRUITMENT_ENDED);
+    public void updateInterviewConfirmWaitingToRejected(List<Application> applications) {
 
         applications
             .stream()
@@ -59,10 +53,7 @@ public class ConfirmationService {
     }
 
     @Transactional
-    public void updateFinalConfirmWaitingToRejected() {
-
-        final List<Application> applications
-            = applicationService.getApplicationsByStatusAndEventName(ApplicationStatus.SUBMITTED, RECRUITMENT_ENDED);
+    public void updateFinalConfirmWaitingToRejected(List<Application> applications) {
 
         applications
             .stream()

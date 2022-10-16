@@ -26,5 +26,4 @@ public class ApplicationResponse {
     private ApplicationResultResponse result;
     private Boolean privacyPolicyAgreed;
 
-
 }

@@ -1,6 +1,6 @@
 package kr.mashup.branding.ui.application;
 
-import kr.mashup.branding.domain.application.ApplicationQueryVo;
+import kr.mashup.branding.domain.application.ApplicationQueryRequest;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
@@ -64,7 +64,8 @@ public class ApplicationAssembler {
         throw new IllegalStateException();
     }
 
-    ApplicationQueryVo toApplicationQueryVo(
+    ApplicationQueryRequest toApplicationQueryRequest(
+        Integer generationNumber,
         String searchWord,
         Long teamId,
         ApplicantConfirmationStatus confirmStatus,
@@ -74,7 +75,8 @@ public class ApplicationAssembler {
     ) {
         if(isShowAll == null) isShowAll = false;
 
-        return ApplicationQueryVo.of(
+        return ApplicationQueryRequest.of(
+            generationNumber,
             searchWord,
             teamId,
             confirmStatus,

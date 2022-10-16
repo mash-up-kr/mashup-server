@@ -3,6 +3,7 @@ package kr.mashup.branding.facade.notification;
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.notification.Notification;
 import kr.mashup.branding.domain.notification.sms.SmsRequest;
 import kr.mashup.branding.domain.notification.sms.vo.SmsSendRequestVo;
@@ -10,6 +11,7 @@ import kr.mashup.branding.domain.notification.sms.vo.SmsSendResultVo;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
 import kr.mashup.branding.service.applicant.ApplicantService;
 import kr.mashup.branding.service.application.ApplicationService;
+import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.notification.NotificationEvent;
 import kr.mashup.branding.service.notification.NotificationEventPublisher;
 import kr.mashup.branding.service.notification.NotificationEventType;
@@ -37,10 +39,11 @@ public class NotificationFacadeService {
     private final AdminMemberService adminMemberService;
     private final NotificationService notificationService;
     private final ApplicantService applicantService;
+    private final GenerationService generationService;
     private final NotificationEventPublisher notificationEventPublisher;
     private final ApplicationService applicationService;
 
-    public void createSmsNotification(Long adminMemberId, SmsSendRequest smsSendRequest) {
+    public void createSmsNotification(Long adminMemberId, Integer generationNumber, SmsSendRequest smsSendRequest) {
 
         final AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
         final List<Applicant> recipientApplicants = applicantService.getApplicants(smsSendRequest.getApplicantIds());
@@ -48,9 +51,9 @@ public class NotificationFacadeService {
         // 요청 정보 생성 -> Notification CREATED 상태
         final SmsSendRequestVo smsSendRequestVo
             = SmsSendRequestVo.of(smsSendRequest.getName(), smsSendRequest.getContent());
+        final Generation generation = generationService.getByNumberOrThrow(generationNumber);
         final Notification notification
-            = notificationService.createSmsNotification(adminMember, recipientApplicants, smsSendRequestVo);
-
+            = notificationService.createSmsNotification(adminMember, generation, recipientApplicants, smsSendRequestVo);
         // 문자 발송 비동기 이벤트 퍼블리싱
         final NotificationEvent notificationEvent
             = NotificationEvent.of(notification.getNotificationId(), NotificationEventType.CREATED);
@@ -61,7 +64,11 @@ public class NotificationFacadeService {
         notificationService.updateSmsStatus(notificationId, smsSendResultVo);
     }
 
-    public Page<NotificationSimpleResponse> getNotifications(Long adminMemberId, String searchWord, Pageable pageable) {
+    public Page<NotificationSimpleResponse> getNotifications(
+        Long adminMemberId,
+        Integer generationNumber,
+        String searchWord,
+        Pageable pageable) {
 
         return notificationService
             .getNotifications(adminMemberId, searchWord, pageable)

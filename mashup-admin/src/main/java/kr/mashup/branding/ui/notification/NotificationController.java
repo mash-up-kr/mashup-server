@@ -37,9 +37,10 @@ public class NotificationController {
     @PostMapping("/sms/send")
     public ApiResponse<EmptyResponse> sendSms(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
+        @RequestParam(defaultValue = "12", required = false) Integer generationNumber,
         @RequestBody SmsSendRequest smsSendRequest
     ) {
-        notificationFacadeService.createSmsNotification(adminMemberId, smsSendRequest);
+        notificationFacadeService.createSmsNotification(adminMemberId, generationNumber, smsSendRequest);
 
         return ApiResponse.success(EmptyResponse.of());
     }
@@ -49,15 +50,16 @@ public class NotificationController {
     @GetMapping
     public ApiResponse<List<NotificationSimpleResponse>> getNotifications(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
+        @RequestParam(defaultValue = "12", required = false) Integer generationNumber,
         @RequestParam(required = false) String searchWord,
         Pageable pageable
     ) {
         final Page<NotificationSimpleResponse> responses
-            = notificationFacadeService.getNotifications(adminMemberId, searchWord, pageable);
+            = notificationFacadeService.getNotifications(adminMemberId,generationNumber, searchWord, pageable);
 
         return ApiResponse.success(responses);
     }
-
+    //지원 이력이 없는 사람에게 문자 보낼 시 오류 발생
     @ApiOperation("발송내역 상세조회")
     @GetMapping("/{notificationId}")
     public ApiResponse<NotificationDetailResponse> getNotification(

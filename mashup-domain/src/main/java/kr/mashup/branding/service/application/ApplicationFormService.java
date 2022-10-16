@@ -1,9 +1,5 @@
 package kr.mashup.branding.service.application;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormAlreadyExistException;
 import kr.mashup.branding.domain.application.form.ApplicationFormDeleteFailedException;
@@ -15,15 +11,20 @@ import kr.mashup.branding.domain.application.form.ApplicationFormScheduleValidat
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
 import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.form.UpdateApplicationFormVo;
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.team.Team;
+import kr.mashup.branding.repository.application.ApplicationRepository;
 import kr.mashup.branding.repository.application.form.ApplicationFormRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.mashup.branding.repository.application.ApplicationRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -36,8 +37,8 @@ public class ApplicationFormService {
 
     @Transactional
     public ApplicationForm create(Long adminMemberId, Team team, CreateApplicationFormVo createApplicationFormVo) {
-
-        validateRecruitingSchedule(adminMemberId); // 모집시간 전에만 지원서를 수정할 수 있다.
+        final Generation generation = team.getGeneration();
+        validateRecruitingSchedule(generation, adminMemberId); // 모집시간 전에만 지원서를 수정할 수 있다.
 
         if (applicationFormRepository.existsByTeam_teamId(team.getTeamId())) {
             throw new ApplicationFormAlreadyExistException("해당 팀에 다른 설문지가 이미 존재합니다. teamId: " + team.getTeamId());
@@ -65,9 +66,9 @@ public class ApplicationFormService {
     /**
      * 설문지를 생성, 수정 및 삭제할 수 있는지 검증
      */
-    private void validateRecruitingSchedule(Long adminMemberId) {
+    private void validateRecruitingSchedule(Generation generation,Long adminMemberId) {
         try {
-            applicationFormScheduleValidator.validate(LocalDateTime.now());
+            applicationFormScheduleValidator.validate(generation, LocalDateTime.now());
         } catch (ApplicationFormModificationNotAllowedException e) {
             log.info("Failed to modify applicationForm. adminMemberId: {}", adminMemberId);
             throw e;
@@ -81,12 +82,14 @@ public class ApplicationFormService {
         UpdateApplicationFormVo updateApplicationFormVo
     ) {
 
-        validateRecruitingSchedule(adminMemberId);
 
         final ApplicationForm applicationForm
             = applicationFormRepository
             .findByApplicationForm(applicationFormId)
             .orElseThrow(ApplicationFormNotFoundException::new);
+
+        final Generation generation = applicationForm.getTeam().getGeneration();
+        validateRecruitingSchedule(generation,adminMemberId);
 
         applicationForm.update(updateApplicationFormVo);
 
@@ -101,15 +104,18 @@ public class ApplicationFormService {
     @Transactional
     public void delete(Long adminMemberId, Long applicationFormId) {
 
-        validateRecruitingSchedule(adminMemberId);
 
         if (applicationRepository.existByApplicationForm(applicationFormId)) {
             throw new ApplicationFormDeleteFailedException();
         }
 
-        applicationFormRepository
-            .findByApplicationForm(applicationFormId)
-            .ifPresent(applicationFormRepository::delete);
+        final ApplicationForm applicationForm = applicationFormRepository
+            .findByApplicationForm(applicationFormId).orElseThrow(ApplicationFormNotFoundException::new);
+        final Generation generation = applicationForm.getTeam().getGeneration();
+
+        validateRecruitingSchedule(generation, adminMemberId);
+
+        applicationFormRepository.delete(applicationForm);
     }
 
     public ApplicationForm getApplicationFormById(Long applicationFormId) {
@@ -128,7 +134,7 @@ public class ApplicationFormService {
         return applicationFormRepository.findByTeam(teamId);
     }
 
-    public Page<ApplicationForm> getApplicationForms(ApplicationFormQueryVo applicationFormQueryVo) {
-        return applicationFormRepository.findByApplicationFormQueryVo(applicationFormQueryVo);
+    public Page<ApplicationForm> getApplicationForms(Generation generation, ApplicationFormQueryVo applicationFormQueryVo) {
+        return applicationFormRepository.findByApplicationFormQueryVo(generation, applicationFormQueryVo);
     }
 }
