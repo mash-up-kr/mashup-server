@@ -8,5 +8,4 @@ import lombok.ToString;
 public class CreateTeamRequest {
     private Integer generationNumber;
     private String name;
-
 }

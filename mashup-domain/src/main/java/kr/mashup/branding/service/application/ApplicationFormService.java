@@ -15,6 +15,7 @@ import kr.mashup.branding.domain.application.form.ApplicationFormScheduleValidat
 import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
 import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.form.UpdateApplicationFormVo;
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.team.Team;
 import kr.mashup.branding.repository.application.form.ApplicationFormRepository;
 import org.springframework.data.domain.Page;
@@ -128,7 +129,7 @@ public class ApplicationFormService {
         return applicationFormRepository.findByTeam(teamId);
     }
 
-    public Page<ApplicationForm> getApplicationForms(ApplicationFormQueryVo applicationFormQueryVo) {
-        return applicationFormRepository.findByApplicationFormQueryVo(applicationFormQueryVo);
+    public Page<ApplicationForm> getApplicationForms(Generation generation, ApplicationFormQueryVo applicationFormQueryVo) {
+        return applicationFormRepository.findByApplicationFormQueryVo(generation, applicationFormQueryVo);
     }
 }

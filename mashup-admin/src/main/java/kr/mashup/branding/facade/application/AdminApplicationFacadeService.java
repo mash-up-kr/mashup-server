@@ -2,11 +2,14 @@ package kr.mashup.branding.facade.application;
 
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.domain.application.ApplicationQueryRequest;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.notification.sms.SmsRequest;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
 import kr.mashup.branding.service.application.ApplicationService;
+import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.notification.NotificationService;
 import kr.mashup.branding.ui.application.vo.ApplicationDetailResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationSimpleResponse;
@@ -28,11 +31,16 @@ public class AdminApplicationFacadeService {
 
     private final AdminMemberService adminMemberService;
     private final ApplicationService applicationService;
+    private final GenerationService generationService;
     private final NotificationService notificationService;
 
-    public Page<ApplicationSimpleResponse> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo) {
+    public Page<ApplicationSimpleResponse> getApplications(Long adminMemberId, ApplicationQueryRequest applicationQueryRequest) {
+        final Generation generation =
+            generationService.getByNumberOrThrow(applicationQueryRequest.getGenerationNumber());
+        final ApplicationQueryVo queryVo = applicationQueryRequest.toVo();
+
         return applicationService
-            .getApplications(adminMemberId, applicationQueryVo)
+            .getApplications(adminMemberId, generation, queryVo)
             .map(ApplicationSimpleResponse::from);
     }
 

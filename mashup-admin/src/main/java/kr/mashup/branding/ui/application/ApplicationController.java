@@ -1,6 +1,6 @@
 package kr.mashup.branding.ui.application;
 
-import kr.mashup.branding.domain.application.ApplicationQueryVo;
+import kr.mashup.branding.domain.application.ApplicationQueryRequest;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import kr.mashup.branding.facade.application.AdminApplicationFacadeService;
@@ -36,6 +36,7 @@ public class ApplicationController {
     @GetMapping
     public ApiResponse<List<ApplicationSimpleResponse>> getApplications(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
+        @RequestParam(defaultValue = "12") Integer generationNumber,
         @RequestParam(required = false) String searchWord,
         @RequestParam(required = false) Long teamId,
         @RequestParam(required = false) ApplicantConfirmationStatus confirmStatus,
@@ -44,11 +45,12 @@ public class ApplicationController {
         Pageable pageable
     ) {
 
-        final ApplicationQueryVo queryVo
-            = applicationAssembler.toApplicationQueryVo(searchWord, teamId, confirmStatus, resultStatus, isShowAll, pageable);
+        final ApplicationQueryRequest queryRequest
+            = applicationAssembler.toApplicationQueryRequest(
+                generationNumber, searchWord, teamId, confirmStatus, resultStatus, isShowAll, pageable);
 
         final Page<ApplicationSimpleResponse> responses
-            = adminApplicationFacadeService.getApplications(adminMemberId, queryVo);
+            = adminApplicationFacadeService.getApplications(adminMemberId, queryRequest);
 
         return ApiResponse.success(responses);
     }

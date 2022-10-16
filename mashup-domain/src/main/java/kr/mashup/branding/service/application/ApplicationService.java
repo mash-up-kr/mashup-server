@@ -12,6 +12,7 @@ import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationAlreadySubmittedException;
 import kr.mashup.branding.domain.application.ApplicationModificationNotAllowedException;
 import kr.mashup.branding.domain.application.ApplicationNotFoundException;
+import kr.mashup.branding.domain.application.ApplicationQueryRequest;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.ApplicationScheduleValidator;
 import kr.mashup.branding.domain.application.ApplicationStatus;
@@ -19,6 +20,7 @@ import kr.mashup.branding.domain.application.ApplicationSubmitRequestInvalidExce
 import kr.mashup.branding.domain.application.ApplicationSubmitRequestVo;
 import kr.mashup.branding.domain.application.UpdateApplicationVo;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.repository.application.ApplicationRepository;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
@@ -251,8 +253,10 @@ public class ApplicationService {
 
 
 
-    public Page<Application> getApplications(Long adminMemberId, ApplicationQueryVo applicationQueryVo) {
-        return applicationRepository.findBy(applicationQueryVo);
+    public Page<Application> getApplications(Long adminMemberId, Generation generation,
+                                             ApplicationQueryVo applicationQueryVo) {
+
+        return applicationRepository.findBy(generation, applicationQueryVo);
     }
 
     public void updateApplicationResult(Application application) {

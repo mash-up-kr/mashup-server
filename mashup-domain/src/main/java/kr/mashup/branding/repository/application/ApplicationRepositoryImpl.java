@@ -10,6 +10,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.Application;
+import kr.mashup.branding.domain.application.ApplicationQueryRequest;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.ApplicationStatus;
 import kr.mashup.branding.domain.application.QApplication;
@@ -17,6 +18,7 @@ import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationS
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
+import kr.mashup.branding.domain.generation.Generation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -28,11 +30,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 
 import kr.mashup.branding.util.QueryUtils;
 
-import static kr.mashup.branding.domain.applicant.QApplicant.applicant;
 import static kr.mashup.branding.domain.application.QApplication.application;
-import static kr.mashup.branding.domain.application.confirmation.QConfirmation.*;
-import static kr.mashup.branding.domain.application.form.QApplicationForm.applicationForm;
-import static kr.mashup.branding.domain.application.result.QApplicationResult.*;
 
 @RequiredArgsConstructor
 public class ApplicationRepositoryImpl implements ApplicationRepositoryCustom {
@@ -40,8 +38,7 @@ public class ApplicationRepositoryImpl implements ApplicationRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Application> findBy(ApplicationQueryVo applicationQueryVo) {
-
+    public Page<Application> findBy(Generation generation, ApplicationQueryVo applicationQueryVo) {
         final Long teamId = applicationQueryVo.getTeamId(); // team 필터링
         final ApplicationScreeningStatus screeningStatus = applicationQueryVo.getScreeningStatus(); // 서류 조건 필터링
         final ApplicationInterviewStatus interviewStatus = applicationQueryVo.getInterviewStatus(); // 면접 조건 필터링
@@ -62,7 +59,8 @@ public class ApplicationRepositoryImpl implements ApplicationRepositoryCustom {
                     interviewStatusEq(interviewStatus),
                     confirmationStatusEq(confirmationStatus),
                     searchWordContains(searchWord),
-                    isShowAllEq(isShowAll))
+                    isShowAllEq(isShowAll),
+                    application.applicationForm.team.generation.eq(generation))
                 .orderBy(CollectionUtils.isEmpty(orderSpecifiers) ? null : orderSpecifiers.toArray(new OrderSpecifier[0]))
                 .offset(offset)
                 .limit(pageSize);
@@ -178,7 +176,7 @@ public class ApplicationRepositoryImpl implements ApplicationRepositoryCustom {
             .selectFrom(application)
             .from(application)
             .join(application.applicant).fetchJoin()
-            .join(application.applicationForm).fetchJoin()
+            .join(application.applicationForm.team.generation).fetchJoin()
             .join(application.applicationResult).fetchJoin()
             .join(application.confirmation).fetchJoin();
     }
