@@ -22,7 +22,7 @@ public class TeamController {
     @ApiOperation("팀 목록 조회")
     @GetMapping
     public ApiResponse<List<TeamResponse>> getTeams(
-        @RequestParam(defaultValue = "12") Integer generationNumber
+        @RequestParam(defaultValue = "12", required = false) Integer generationNumber
     ) {
 
         final List<TeamResponse> responses = teamFacadeService.getTeams(generationNumber);

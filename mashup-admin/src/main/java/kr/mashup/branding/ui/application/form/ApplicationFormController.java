@@ -40,7 +40,7 @@ public class ApplicationFormController {
      */
     @GetMapping
     public ApiResponse<List<ApplicationFormResponse>> getApplicationForms(
-        @RequestParam(defaultValue = "12") Integer generationNumber,
+        @RequestParam(defaultValue = "12", required = false) Integer generationNumber,
         @RequestParam(required = false) Long teamId,
         @RequestParam(required = false) String searchWord,
         Pageable pageable // TODO Pageable default
