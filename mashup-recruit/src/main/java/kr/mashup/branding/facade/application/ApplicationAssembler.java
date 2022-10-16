@@ -6,6 +6,7 @@ import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.service.recruitmentschedule.RecruitmentScheduleService;
 import kr.mashup.branding.ui.applicant.vo.ApplicantResponse;
 import kr.mashup.branding.ui.application.vo.AnswerRequest;
@@ -30,69 +31,82 @@ public class ApplicationAssembler {
     private final RecruitmentScheduleService recruitmentScheduleService;
 
     ApplicationResponse toApplicationResponse(Application application) {
+
+        final Generation generation = application.getApplicationForm().getTeam().getGeneration();
+
         Assert.notNull(application, "'application' must not be null");
         return new ApplicationResponse(
             application.getApplicationId(),
             ApplicantResponse.from(application.getApplicant()),
             TeamResponse.from(application.getApplicationForm().getTeam()),
-            toApplicantConfirmationStatus(application.getConfirmation().getStatus()),
+            toApplicantConfirmationStatus(generation, application.getConfirmation().getStatus()),
             application.getConfirmation().getRejectionReason(),
             application.getStatus(),
             application.getSubmittedAt(),
             application.getApplicationForm().getQuestions()
                 .stream()
-                .map(this::toQuestionResponse)
+                .map(QuestionResponse::from)
                 .collect(Collectors.toList()),
             application.getAnswers()
                 .stream()
-                .map(this::toAnswerResponse)
+                .map(AnswerResponse::from)
                 .collect(Collectors.toList()),
-            toApplicationResultResponse(application.getApplicationResult()),
+            toApplicationResultResponse(generation, application.getApplicationResult()),
             application.getPrivacyPolicyAgreed()
         );
     }
 
-    ApplicantConfirmationStatus toApplicantConfirmationStatus(ApplicantConfirmationStatus applicantConfirmationStatus) {
+    ApplicantConfirmationStatus toApplicantConfirmationStatus(
+        Generation generation,
+        ApplicantConfirmationStatus applicantConfirmationStatus) {
+
         LocalDateTime now = LocalDateTime.now();
-        if (!recruitmentScheduleService.canAnnounceScreeningResult(now)) {
+
+        if (!recruitmentScheduleService.canAnnounceScreeningResult(generation, now)) {
             return ApplicantConfirmationStatus.TO_BE_DETERMINED;
         }
-        if (!recruitmentScheduleService.canAnnounceInterviewResult(now) &&
+        if (!recruitmentScheduleService.canAnnounceInterviewResult(generation, now) &&
             applicantConfirmationStatus == ApplicantConfirmationStatus.FINAL_CONFIRM_WAITING) {
             return ApplicantConfirmationStatus.INTERVIEW_CONFIRM_ACCEPTED;
         }
         return applicantConfirmationStatus;
     }
 
-    ApplicationResultResponse toApplicationResultResponse(ApplicationResult applicationResult) {
+    ApplicationResultResponse toApplicationResultResponse(
+        Generation generation,
+        ApplicationResult applicationResult) {
+
         LocalDateTime interviewStartedAt = applicationResult.getInterviewStartedAt();
         LocalDateTime interviewEndedAt = applicationResult.getInterviewEndedAt();
         String interviewGuideLink = applicationResult.getInterviewGuideLink();
 
-        if (!recruitmentScheduleService.canAnnounceScreeningResult(LocalDateTime.now())) {
+        if (!recruitmentScheduleService.canAnnounceScreeningResult(generation, LocalDateTime.now())) {
             interviewStartedAt = null;
             interviewEndedAt = null;
             interviewGuideLink = null;
         }
         return new ApplicationResultResponse(
-            toApplicationStatusResponse(applicationResult),
+            toApplicationStatusResponse(generation, applicationResult),
             convertToZonedDateTime(interviewStartedAt),
             convertToZonedDateTime(interviewEndedAt),
             interviewGuideLink
         );
     }
 
-    private ApplicationStatusResponse toApplicationStatusResponse(ApplicationResult applicationResult) {
+    private ApplicationStatusResponse toApplicationStatusResponse(
+        Generation generation,
+        ApplicationResult applicationResult) {
+
         // TODO: 13기 생기면 기수별로 일정 관리해야함
         LocalDateTime now = LocalDateTime.now();
 
-        if (recruitmentScheduleService.isRecruitAvailable(now)) { // 서류 마감 전
+        if (recruitmentScheduleService.isRecruitAvailable(generation, now)) { // 서류 마감 전
             return ApplicationStatusResponse.submitted(applicationResult.getApplication().getStatus());
         }
-        if (!recruitmentScheduleService.canAnnounceScreeningResult(now)) { // 서류 마감 후 ~ 서류 발표 전
+        if (!recruitmentScheduleService.canAnnounceScreeningResult(generation, now)) { // 서류 마감 후 ~ 서류 발표 전
             return ApplicationStatusResponse.beforeResult(applicationResult.getApplication().getStatus());
         }
-        if (!recruitmentScheduleService.canAnnounceInterviewResult(now)) { // 서류 발표 후 ~ 면접 발표 전
+        if (!recruitmentScheduleService.canAnnounceInterviewResult(generation, now)) { // 서류 발표 후 ~ 면접 발표 전
             return ApplicationStatusResponse.screeningResult(
                 applicationResult.getApplication().getStatus(),
                 applicationResult.getScreeningStatus()
@@ -102,35 +116,6 @@ public class ApplicationAssembler {
             applicationResult.getScreeningStatus(),
             applicationResult.getInterviewStatus(),
             applicationResult.getApplication().getConfirmation().getStatus()
-        );
-    }
-
-
-    private AnswerRequestVo toAnswerRequestVo(AnswerRequest answerRequest) {
-        Assert.notNull(answerRequest, "'answerRequest' must not be null");
-        return AnswerRequestVo.of(
-            answerRequest.getAnswerId(),
-            answerRequest.getQuestionId(),
-            answerRequest.getContent()
-        );
-    }
-
-    private AnswerResponse toAnswerResponse(Answer answer) {
-        return new AnswerResponse(
-            answer.getAnswerId(),
-            answer.getQuestion().getQuestionId(),
-            answer.getContent()
-        );
-    }
-
-    private QuestionResponse toQuestionResponse(Question question) {
-        return new QuestionResponse(
-            question.getQuestionId(),
-            question.getContent(),
-            question.getMaxContentLength(),
-            question.getDescription(),
-            question.getRequired(),
-            question.getQuestionType()
         );
     }
 
