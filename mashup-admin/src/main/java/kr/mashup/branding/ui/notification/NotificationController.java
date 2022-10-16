@@ -59,7 +59,7 @@ public class NotificationController {
 
         return ApiResponse.success(responses);
     }
-
+    //지원 이력이 없는 사람에게 문자 보낼 시 오류 발생
     @ApiOperation("발송내역 상세조회")
     @GetMapping("/{notificationId}")
     public ApiResponse<NotificationDetailResponse> getNotification(
