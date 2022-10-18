@@ -9,6 +9,7 @@ import kr.mashup.branding.service.notification.NotificationEvent;
 import kr.mashup.branding.service.notification.sms.SmsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -30,7 +31,7 @@ public class NotificationEventListener {
     @Transactional(propagation = Propagation.NEVER)
     @TransactionalEventListener(
         phase = TransactionPhase.AFTER_COMMIT,
-        condition = "#{${event.type} eq T(kr.mashup.branding.service.notification.NotificationEventType).CREATED }")
+        condition = "#event.type eq T(kr.mashup.branding.service.notification.NotificationEventType).CREATED")
     public void handleSendSms(NotificationEvent event){
         log.info("handle send sms notification event with notification id : {}", event.getNotificationId());
         final Long notificationId = event.getNotificationId();
