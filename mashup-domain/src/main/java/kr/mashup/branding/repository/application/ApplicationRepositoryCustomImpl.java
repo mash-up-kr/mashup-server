@@ -16,9 +16,12 @@ import kr.mashup.branding.domain.application.ApplicationStatus;
 import kr.mashup.branding.domain.application.QApplication;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
+import kr.mashup.branding.domain.application.form.QApplicationForm;
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
 import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.generation.QGeneration;
+import kr.mashup.branding.domain.team.QTeam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -30,10 +33,14 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 
 import kr.mashup.branding.util.QueryUtils;
 
+import static kr.mashup.branding.domain.applicant.QApplicant.applicant;
 import static kr.mashup.branding.domain.application.QApplication.application;
+import static kr.mashup.branding.domain.application.form.QApplicationForm.*;
+import static kr.mashup.branding.domain.generation.QGeneration.generation;
+import static kr.mashup.branding.domain.team.QTeam.team;
 
 @RequiredArgsConstructor
-public class ApplicationRepositoryImpl implements ApplicationRepositoryCustom {
+public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
@@ -175,8 +182,10 @@ public class ApplicationRepositoryImpl implements ApplicationRepositoryCustom {
         return queryFactory
             .selectFrom(application)
             .from(application)
-            .join(application.applicant).fetchJoin()
-            .join(application.applicationForm.team.generation).fetchJoin()
+            .join(application.applicant, applicant).fetchJoin()
+            .join(application.applicationForm, applicationForm).fetchJoin()
+            .join(applicationForm.team, team).fetchJoin()
+            .join(team.generation, generation).fetchJoin()
             .join(application.applicationResult).fetchJoin()
             .join(application.confirmation).fetchJoin();
     }
