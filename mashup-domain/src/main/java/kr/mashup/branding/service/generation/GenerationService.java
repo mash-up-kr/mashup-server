@@ -31,4 +31,15 @@ public class GenerationService {
         return generationRepository.findAll();
     }
 
+    public void create(){
+
+    }
+
+    public void delete() {
+
+    }
+
+    public void update() {
+
+    }
 }
