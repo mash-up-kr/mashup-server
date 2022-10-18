@@ -78,13 +78,13 @@ public class NotificationFacadeService {
     public NotificationDetailResponse getNotificationDetail(Long adminMemberId, Long notificationId) {
 
         final Notification notification = notificationService.getNotification(notificationId);
-
+        final Generation generation = notification.getGeneration();
         final List<Applicant> recipients = notification
             .getSmsRequests()
             .stream()
             .map(it -> it.getRecipientApplicant()).collect(Collectors.toList());
-
-        final Map<Applicant, Application> applicationMap = applicationService.getApplications(recipients);
+        // 1기수 1지원 가정
+        final Map<Applicant, Application> applicationMap = applicationService.getApplications(generation, recipients);
 
         return NotificationDetailResponse.of(notification, applicationMap);
     }

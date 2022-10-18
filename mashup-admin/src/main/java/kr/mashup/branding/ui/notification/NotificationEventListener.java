@@ -30,9 +30,9 @@ public class NotificationEventListener {
     @Transactional(propagation = Propagation.NEVER)
     @TransactionalEventListener(
         phase = TransactionPhase.AFTER_COMMIT,
-        condition = "#{${event.type} eq ${NotificationEventType.CREATED}}")
+        condition = "#{${event.type} eq T(kr.mashup.branding.service.notification.NotificationEventType).CREATED }")
     public void handleSendSms(NotificationEvent event){
-
+        log.info("handle send sms notification event with notification id : {}", event.getNotificationId());
         final Long notificationId = event.getNotificationId();
         final SmsRequestVo smsRequestVo = smsFacadeService.getSmsMetaData(notificationId);
 

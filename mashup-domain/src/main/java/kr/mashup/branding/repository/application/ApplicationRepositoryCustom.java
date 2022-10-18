@@ -32,7 +32,7 @@ public interface ApplicationRepositoryCustom {
 
     List<Application> findByStatusAndCreatedAtBefore(ApplicationStatus status, LocalDateTime eventOccurredAt);
 
-    List<Application> findApplicationsByApplicantIn(List<Applicant> applicants);
+    List<Application> findApplicationsByApplicantIn(Generation generation, List<Applicant> applicants);
 
 }
 /**

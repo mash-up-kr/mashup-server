@@ -207,13 +207,13 @@ public class ApplicationService {
     }
 
     @Transactional
-    public Map<Applicant, Application> getApplications(List<Applicant> applicants) {
+    public Map<Applicant, Application> getApplications(Generation generation, List<Applicant> applicants) {
 
         final Map<Applicant, Application> applicationMap
             = applicationRepository
-            .findApplicationsByApplicantIn(applicants)
+            .findApplicationsByApplicantIn(generation, applicants) // 기수당 1지원 정책 가정, 재지원 필터링위해서 generation 사용
             .stream()
-            .collect(Collectors.toMap(Application::getApplicant, it -> it));
+            .collect(Collectors.toMap(Application::getApplicant, it -> it, (applicant1, applicant2)->applicant1));
 
         return applicationMap;
     }
