@@ -223,7 +223,7 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
     }
 
     @Override
-    public List<Application> findApplicationsByApplicantIn(List<Applicant> applicants) {
+    public List<Application> findApplicationsByApplicantIn(Generation _generation, List<Applicant> applicants) {
         return queryFactory
             .selectFrom(application)
                 .join(application.applicant, applicant).fetchJoin()
@@ -232,7 +232,7 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
                 .join(team.generation, generation).fetchJoin()
                 .join(application.applicationResult, applicationResult).fetchJoin()
                 .join(application.confirmation, confirmation).fetchJoin()
-            .where(applicant.in(applicants))
+            .where(applicant.in(applicants).and(generation.eq(_generation)))
             .fetch();
     }
 
