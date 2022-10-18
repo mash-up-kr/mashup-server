@@ -1,6 +1,8 @@
 package kr.mashup.branding.repository.application.form;
 
 import static kr.mashup.branding.domain.application.form.QApplicationForm.applicationForm;
+import static kr.mashup.branding.domain.generation.QGeneration.generation;
+import static kr.mashup.branding.domain.team.QTeam.team;
 import static kr.mashup.branding.util.QueryUtils.*;
 
 import java.util.ArrayList;
@@ -13,6 +15,8 @@ import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormQueryVo;
 import kr.mashup.branding.domain.application.form.QApplicationForm;
 import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.generation.QGeneration;
+import kr.mashup.branding.domain.team.QTeam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +38,7 @@ public class ApplicationFormRepositoryImpl implements ApplicationFormRepositoryC
 
     @Override
     public Page<ApplicationForm> findByApplicationFormQueryVo(
-        Generation generation, ApplicationFormQueryVo applicationFormQueryVo) {
+        Generation _generation, ApplicationFormQueryVo applicationFormQueryVo) {
 
         final Long teamId = applicationFormQueryVo.getTeamId();
         final String searchWord = applicationFormQueryVo.getSearchWord();
@@ -49,8 +53,9 @@ public class ApplicationFormRepositoryImpl implements ApplicationFormRepositoryC
 
         QueryResults<ApplicationForm> fetchResults = queryFactory
             .selectFrom(applicationForm)
-            .join(applicationForm.team.generation).fetchJoin() // TODO 객체그래프 따라서 모두 fetch 되는지 확인 필요
-            .where(teamIdEq(teamId), searchWordContains(searchWord), applicationForm.team.generation.eq(generation))
+            .join(applicationForm.team, team).fetchJoin()
+            .join(team.generation, generation).fetchJoin()
+            .where(teamIdEq(teamId), searchWordContains(searchWord), generation.eq(_generation))
             .orderBy(orderSpecifiers.isEmpty() ? null : orderSpecifiers.toArray(new OrderSpecifier[0]))
             .offset(offset)
             .limit(pageSize)
@@ -59,7 +64,7 @@ public class ApplicationFormRepositoryImpl implements ApplicationFormRepositoryC
         return QueryUtils.toPage(fetchResults, pageable);
     }
     private BooleanExpression teamIdEq(Long teamId) {
-        return teamId != null ? applicationForm.team.teamId.eq(teamId) : null;
+        return teamId != null ? team.teamId.eq(teamId) : null;
     }
     private BooleanExpression searchWordContains(String searchWord) {
         return StringUtils.hasText(searchWord) ? applicationForm.name.contains(searchWord) : null;
@@ -69,19 +74,19 @@ public class ApplicationFormRepositoryImpl implements ApplicationFormRepositoryC
     public List<ApplicationForm> findByTeam(Long teamId) {
         return queryFactory
             .selectFrom(applicationForm)
-            .join(applicationForm.team).fetchJoin()
-            .where(applicationForm.team.teamId.eq(teamId))
+            .join(applicationForm.team, team).fetchJoin()
+            .where(team.teamId.eq(teamId))
             .fetch();
     }
 
     @Override
     public Optional<ApplicationForm> findByApplicationForm(Long applicationFormId) {
-        ApplicationForm applicationForm = queryFactory
-            .selectFrom(QApplicationForm.applicationForm)
-            .join(QApplicationForm.applicationForm.team).fetchJoin()
-            .where(QApplicationForm.applicationForm.applicationFormId.eq(applicationFormId))
+        ApplicationForm fetchFirst = queryFactory
+            .selectFrom(applicationForm)
+            .join(applicationForm.team, team).fetchJoin()
+            .where(applicationForm.applicationFormId.eq(applicationFormId))
             .fetchFirst();
-        return applicationForm != null? Optional.of(applicationForm) : Optional.empty();
+        return fetchFirst != null? Optional.of(fetchFirst) : Optional.empty();
     }
 
 
