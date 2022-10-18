@@ -5,14 +5,12 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import kr.mashup.branding.config.async.ThreadPoolName;
 import kr.mashup.branding.service.notification.sms.SmsWhitelistServiceImpl;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
