@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+import static kr.mashup.branding.domain.generation.QGeneration.generation;
 import static kr.mashup.branding.domain.recruitmentschedule.QRecruitmentSchedule.recruitmentSchedule;
 
 @RequiredArgsConstructor
@@ -18,20 +19,22 @@ public class RecruitmentScheduleRepositoryCustomImpl implements RecruitmentSched
 
 
     @Override
-    public List<RecruitmentSchedule> findAllByGeneration(Generation generation) {
+    public List<RecruitmentSchedule> findAllByGeneration(Generation _generation) {
         return queryFactory
             .selectFrom(recruitmentSchedule)
-            .join(recruitmentSchedule.generation).fetchJoin()
-            .where(recruitmentSchedule.generation.eq(generation))
+            .join(recruitmentSchedule.generation, generation).fetchJoin()
+            .where(generation.eq(_generation))
             .fetch();
     }
 
     @Override
-    public Optional<RecruitmentSchedule> findByEventName(Generation generation, RecruitmentScheduleEventName eventName) {
+    public Optional<RecruitmentSchedule> findByEventName(Generation _generation,
+                                                         RecruitmentScheduleEventName eventName) {
         RecruitmentSchedule fetchOne = queryFactory
             .selectFrom(recruitmentSchedule)
-            .join(recruitmentSchedule.generation).fetchJoin()
-            .where(recruitmentSchedule.generation.eq(generation).and(recruitmentSchedule.eventName.eq(eventName)))
+            .join(recruitmentSchedule.generation, generation).fetchJoin()
+            .where(generation.eq(_generation)
+                .and(recruitmentSchedule.eventName.eq(eventName)))
             .fetchOne();
 
         return fetchOne != null? Optional.of(fetchOne) : Optional.empty();
