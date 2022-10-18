@@ -15,10 +15,12 @@ import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.ApplicationStatus;
 import kr.mashup.branding.domain.application.QApplication;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
+import kr.mashup.branding.domain.application.confirmation.QConfirmation;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.QApplicationForm;
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
+import kr.mashup.branding.domain.application.result.QApplicationResult;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.generation.QGeneration;
 import kr.mashup.branding.domain.team.QTeam;
@@ -35,7 +37,9 @@ import kr.mashup.branding.util.QueryUtils;
 
 import static kr.mashup.branding.domain.applicant.QApplicant.applicant;
 import static kr.mashup.branding.domain.application.QApplication.application;
+import static kr.mashup.branding.domain.application.confirmation.QConfirmation.confirmation;
 import static kr.mashup.branding.domain.application.form.QApplicationForm.*;
+import static kr.mashup.branding.domain.application.result.QApplicationResult.applicationResult;
 import static kr.mashup.branding.domain.generation.QGeneration.generation;
 import static kr.mashup.branding.domain.team.QTeam.team;
 
@@ -45,7 +49,7 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Application> findBy(Generation generation, ApplicationQueryVo applicationQueryVo) {
+    public Page<Application> findBy(Generation _generation, ApplicationQueryVo applicationQueryVo) {
         final Long teamId = applicationQueryVo.getTeamId(); // team 필터링
         final ApplicationScreeningStatus screeningStatus = applicationQueryVo.getScreeningStatus(); // 서류 조건 필터링
         final ApplicationInterviewStatus interviewStatus = applicationQueryVo.getInterviewStatus(); // 면접 조건 필터링
@@ -59,7 +63,15 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
             applicationQueryVo.getPageable().getSortOr(Sort.by(Sort.Order.desc("submittedAt"))));
 
         JPAQuery<Application> query =
-            selectFromApplicantWithAllOfToOneEntity()
+            queryFactory
+                .selectFrom(application)
+                .from(application)
+                    .join(application.applicant, applicant).fetchJoin()
+                    .join(application.applicationForm, applicationForm).fetchJoin()
+                    .join(applicationForm.team, team).fetchJoin()
+                    .join(team.generation, generation).fetchJoin()
+                    .join(application.applicationResult, applicationResult).fetchJoin()
+                    .join(application.confirmation, confirmation).fetchJoin()
                 .where(
                     teamIdEq(teamId),
                     screeningStatusEq(screeningStatus),
@@ -67,7 +79,7 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
                     confirmationStatusEq(confirmationStatus),
                     searchWordContains(searchWord),
                     isShowAllEq(isShowAll),
-                    application.applicationForm.team.generation.eq(generation))
+                    generation.eq(_generation))
                 .orderBy(CollectionUtils.isEmpty(orderSpecifiers) ? null : orderSpecifiers.toArray(new OrderSpecifier[0]))
                 .offset(offset)
                 .limit(pageSize);
@@ -79,32 +91,32 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
     private BooleanExpression screeningStatusEq(ApplicationScreeningStatus screeningStatus) {
         List<BooleanExpression> booleanExpressions = new ArrayList<>();
         if (screeningStatus != null) {
-            booleanExpressions.add(application.applicationResult.screeningStatus.eq(screeningStatus));
+            booleanExpressions.add(applicationResult.screeningStatus.eq(screeningStatus));
 
             // 서류 합격일 경우에 최종 합격도 서류 합격에 속하기 때문에 필터링에 같이 추출, 따라서 인터뷰 결과가 패스는 제거
             if (screeningStatus == ApplicationScreeningStatus.PASSED) {
-                booleanExpressions.add(application.applicationResult.interviewStatus.ne(ApplicationInterviewStatus.PASSED));
+                booleanExpressions.add(applicationResult.interviewStatus.ne(ApplicationInterviewStatus.PASSED));
             }
         }
         return booleanExpressions.stream().reduce(BooleanExpression::and).orElse(null);
     }
 
     private BooleanExpression teamIdEq(Long teamId) {
-        return teamId != null ? application.applicationForm.team.teamId.eq(teamId) : null;
+        return teamId != null ? team.teamId.eq(teamId) : null;
     }
 
     private BooleanExpression interviewStatusEq(ApplicationInterviewStatus interviewStatus) {
-        return interviewStatus != null ? application.applicationResult.interviewStatus.eq(interviewStatus) : null;
+        return interviewStatus != null ? applicationResult.interviewStatus.eq(interviewStatus) : null;
     }
 
     private BooleanExpression confirmationStatusEq(ApplicantConfirmationStatus confirmationStatus) {
-        return confirmationStatus != null ? application.confirmation.status.eq(confirmationStatus) : null;
+        return confirmationStatus != null ? confirmation.status.eq(confirmationStatus) : null;
     }
 
     private BooleanExpression searchWordContains(String searchWord) {
         return StringUtils.hasText(searchWord) ?
-            application.applicant.name.contains(searchWord)
-                .or(application.applicant.phoneNumber.contains(searchWord)) : null;
+            applicant.name.contains(searchWord)
+                .or(applicant.phoneNumber.contains(searchWord)) : null;
     }
 
     private BooleanExpression isShowAllEq(Boolean isShowAll) {
@@ -116,55 +128,95 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
     public boolean existByApplicationForm(Long applicationFormId) {
         Application fetchFirst = queryFactory
             .selectFrom(application)
-            .where(application.applicationForm.applicationFormId.eq(applicationFormId))
+            .where(applicationForm.applicationFormId.eq(applicationFormId))
             .fetchFirst();
         return fetchFirst != null;
     }
 
     @Override
     public boolean existByApplicantAndApplicationStatus(Long applicantId, ApplicationStatus status) {
-        Application fetchFirst = queryFactory.selectFrom(QApplication.application)
-            .where(QApplication.application.applicant.applicantId.eq(applicantId)
-                .and(QApplication.application.status.eq(status)))
+        Application fetchFirst = queryFactory
+            .selectFrom(application)
+            .join(application.applicant, applicant)
+            .where(applicant.applicantId.eq(applicantId)
+                .and(application.status.eq(status)))
             .fetchFirst();
         return fetchFirst != null;
     }
 
     @Override
     public List<Application> findByIdAndStatusIn(Long applicantId, Collection<ApplicationStatus> statuses) {
-        return selectFromApplicantWithAllOfToOneEntity()
-            .where(application.applicant.applicantId.eq(applicantId)
+        return queryFactory
+            .selectFrom(application)
+            .from(application)
+                .join(application.applicant, applicant).fetchJoin()
+                .join(application.applicationForm, applicationForm).fetchJoin()
+                .join(applicationForm.team, team).fetchJoin()
+                .join(team.generation, generation).fetchJoin()
+                .join(application.applicationResult, applicationResult).fetchJoin()
+                .join(application.confirmation, confirmation).fetchJoin()
+            .where(applicant.applicantId.eq(applicantId)
                 .and(application.status.in(statuses)))
             .fetch();
     }
 
     @Override
     public List<Application> findByApplicantAndApplicationForm(Applicant _applicant, ApplicationForm _applicationForm) {
-        return selectFromApplicantWithAllOfToOneEntity()
-            .where(application.applicant.eq(_applicant).and(application.applicationForm.eq(_applicationForm)))
+        return queryFactory
+            .selectFrom(application)
+                .join(application.applicant, applicant).fetchJoin()
+                .join(application.applicationForm, applicationForm).fetchJoin()
+                .join(applicationForm.team, team).fetchJoin()
+                .join(team.generation, generation).fetchJoin()
+                .join(application.applicationResult, applicationResult).fetchJoin()
+                .join(application.confirmation, confirmation).fetchJoin()
+            .where(applicant.eq(_applicant)
+                .and(applicationForm.eq(_applicationForm)))
             .fetch();
     }
 
     @Override
     public Optional<Application> findByApplicationAndApplicant(Long applicationId, Long applicantId) {
         Application fetchOne
-            = selectFromApplicantWithAllOfToOneEntity()
-            .where(QApplication.application.applicationId.eq(applicationId)
-                .and(QApplication.application.applicant.applicantId.eq(applicantId)))
+            = queryFactory
+            .selectFrom(application)
+            .from(application)
+            .join(application.applicant, applicant).fetchJoin()
+            .join(application.applicationForm, applicationForm).fetchJoin()
+            .join(applicationForm.team, team).fetchJoin()
+            .join(team.generation, generation).fetchJoin()
+            .join(application.applicationResult, applicationResult).fetchJoin()
+            .join(application.confirmation, confirmation).fetchJoin()
+            .where(application.applicationId.eq(applicationId)
+                .and(applicant.applicantId.eq(applicantId)))
             .fetchOne();
         return fetchOne != null ? Optional.of(fetchOne) : Optional.empty();
     }
 
     @Override
     public List<Application> findByApplicationForm(Long applicationFormId) {
-        return selectFromApplicantWithAllOfToOneEntity()
-            .where(application.applicationForm.applicationFormId.eq(applicationFormId))
+        return queryFactory
+            .selectFrom(application)
+                .join(application.applicant, applicant).fetchJoin()
+                .join(application.applicationForm, applicationForm).fetchJoin()
+                .join(applicationForm.team, team).fetchJoin()
+                .join(team.generation, generation).fetchJoin()
+                .join(application.applicationResult, applicationResult).fetchJoin()
+                .join(application.confirmation, confirmation).fetchJoin()
+            .where(applicationForm.applicationFormId.eq(applicationFormId))
             .fetch();
     }
 
     @Override
     public List<Application> findByStatusAndCreatedAtBefore(ApplicationStatus status, LocalDateTime eventOccurredAt) {
-        return selectFromApplicantWithAllOfToOneEntity()
+        return queryFactory
+            .selectFrom(application)
+                .join(application.applicant, applicant).fetchJoin()
+                .join(application.applicationForm, applicationForm).fetchJoin()
+                .join(applicationForm.team, team).fetchJoin()
+                .join(team.generation, generation).fetchJoin()
+                .join(application.applicationResult, applicationResult).fetchJoin()
+                .join(application.confirmation, confirmation).fetchJoin()
             .where(application.status.eq(status)
                 .and(application.createdAt.before(eventOccurredAt)))
             .fetch();
@@ -172,24 +224,17 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
 
     @Override
     public List<Application> findApplicationsByApplicantIn(List<Applicant> applicants) {
-        return selectFromApplicantWithAllOfToOneEntity()
-            .where(application.applicant.in(applicants))
-            .fetch();
-    }
-
-    // to one 관계 모두 fetch join
-    private JPAQuery<Application> selectFromApplicantWithAllOfToOneEntity() {
         return queryFactory
             .selectFrom(application)
-            .from(application)
-            .join(application.applicant, applicant).fetchJoin()
-            .join(application.applicationForm, applicationForm).fetchJoin()
-            .join(applicationForm.team, team).fetchJoin()
-            .join(team.generation, generation).fetchJoin()
-            .join(application.applicationResult).fetchJoin()
-            .join(application.confirmation).fetchJoin();
+                .join(application.applicant, applicant).fetchJoin()
+                .join(application.applicationForm, applicationForm).fetchJoin()
+                .join(applicationForm.team, team).fetchJoin()
+                .join(team.generation, generation).fetchJoin()
+                .join(application.applicationResult, applicationResult).fetchJoin()
+                .join(application.confirmation, confirmation).fetchJoin()
+            .where(applicant.in(applicants))
+            .fetch();
     }
-
 
 }
 /**
