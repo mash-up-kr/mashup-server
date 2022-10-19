@@ -8,8 +8,10 @@ import java.util.Optional;
 public interface GenerationRepository extends JpaRepository<Generation, Long> {
 
 	Optional<Generation> findByNumber(Integer number);
+
+	boolean existsByNumber(Integer number);
 }
 /**
  * Generation 연관관계
- * one to many : schedule, memberGeneration, invites
+ * one to many : 없음
  */

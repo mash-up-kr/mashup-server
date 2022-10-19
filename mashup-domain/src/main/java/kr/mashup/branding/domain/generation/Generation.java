@@ -54,6 +54,11 @@ public class Generation extends BaseEntity {
             throw new IllegalArgumentException();
         }
     }
+    public void changeDate(DateRange dateRange){
+        this.startedAt = dateRange.getStart().toLocalDate();
+        this.endedAt = dateRange.getEnd().toLocalDate();
+    }
+
 
     public void changeStartDate(LocalDate newStartDate){
 
