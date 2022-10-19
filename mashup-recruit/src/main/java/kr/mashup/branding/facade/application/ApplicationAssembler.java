@@ -14,6 +14,7 @@ import kr.mashup.branding.ui.application.vo.AnswerResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationResultResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationStatusResponse;
+import kr.mashup.branding.ui.application.vo.GenerationResponse;
 import kr.mashup.branding.ui.application.vo.QuestionResponse;
 import kr.mashup.branding.ui.team.TeamResponse;
 import lombok.RequiredArgsConstructor;
@@ -52,11 +53,15 @@ public class ApplicationAssembler {
                 .map(AnswerResponse::from)
                 .collect(Collectors.toList()),
             toApplicationResultResponse(generation, application.getApplicationResult()),
-            application.getPrivacyPolicyAgreed()
+            application.getPrivacyPolicyAgreed(),
+            GenerationResponse.from(generation)
         );
     }
 
-    ApplicantConfirmationStatus toApplicantConfirmationStatus(
+    /**
+     * 이하 Private Method
+     */
+    private ApplicantConfirmationStatus toApplicantConfirmationStatus(
         Generation generation,
         ApplicantConfirmationStatus applicantConfirmationStatus) {
 
