@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -44,7 +45,7 @@ public class GenerationController {
     @ApiOperation("기수 생성")
     @PostMapping
     public ApiResponse<EmptyResponse> createGeneration(
-        @RequestBody GenerationCreateRequest request)
+        @Valid @RequestBody GenerationCreateRequest request)
     {
         generationFacadeService.create(request);
 
@@ -54,21 +55,11 @@ public class GenerationController {
     @ApiOperation("기수 정보 변경")
     @PostMapping("update")
     public ApiResponse<EmptyResponse> updateGeneration(
-        @RequestBody GenerationUpdateRequest request){
+        @Valid @RequestBody GenerationUpdateRequest request){
 
         generationFacadeService.update(request);
 
         return ApiResponse.success(EmptyResponse.of());
     }
 
-    @ApiOperation("기수 삭제")
-    @DeleteMapping
-    public ApiResponse<EmptyResponse> deleteGeneration(
-        @RequestBody GenerationDeleteRequest request
-        ){
-
-        generationFacadeService.delete(request);
-
-        return ApiResponse.success(EmptyResponse.of());
-    }
 }

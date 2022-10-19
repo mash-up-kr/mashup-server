@@ -9,10 +9,10 @@ import kr.mashup.branding.domain.generation.Generation;
 public interface GenerationRepository extends JpaRepository<Generation, Long> {
 
 	Optional<Generation> findByNumber(Integer number);
-
 	Generation findTop1ByOrderByNumberDesc();
+	boolean existsByNumber(Integer number);
 }
 /**
  * Generation 연관관계
- * one to many : schedule, memberGeneration, invites
+ * one to many : 없음
  */
