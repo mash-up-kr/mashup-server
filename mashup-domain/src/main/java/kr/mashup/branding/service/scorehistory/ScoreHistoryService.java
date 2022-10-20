@@ -2,14 +2,14 @@ package kr.mashup.branding.service.scorehistory;
 
 import java.util.List;
 
-import kr.mashup.branding.domain.ResultCode;
-import kr.mashup.branding.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.attendance.AttendanceStatus;
 import kr.mashup.branding.domain.event.Event;
+import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.schedule.Schedule;
@@ -48,30 +48,36 @@ public class ScoreHistoryService {
         scoreHistoryRepository.deleteById(id);
     }
 
-    public ScoreHistory convertAttendanceToScoreHistory(
-        List<Attendance> attendances,
+    public ScoreHistory createByAttendances(
         Member member,
-        Schedule schedule
+        Schedule schedule,
+        List<Attendance> attendances
     ) {
-        ScoreType scoreType = ScoreType.ABSENT;
-
-        List<Event> eventList = eventRepository.findBySchedule(schedule);
-        int number = 0;
-        if (attendances.size() == 0) {
-            scoreType = ScoreType.ABSENT;
-        }
-        for (Attendance attendance : attendances) {
-            if (attendance.getStatus() == AttendanceStatus.LATE) {
-                scoreType = ScoreType.LATE;
-                break;
-            }
-            number++;
-        }
-
-        if (number == eventList.size()) {
-            scoreType = ScoreType.ATTENDANCE;
-        }
+        List<Event> events = eventRepository.findBySchedule(schedule);
+        ScoreType scoreType = getScoreTypeByAttendances(events, attendances);
 
         return ScoreHistory.of(scoreType, schedule, member);
+    }
+
+    private ScoreType getScoreTypeByAttendances(
+        List<Event> events,
+        List<Attendance> attendances
+    ) {
+        ScoreType scoreType = null;
+
+        final long attendanceNumber = attendances.stream()
+            .filter(attendance -> attendance.getStatus() == AttendanceStatus.ATTENDANCE)
+            .count();
+        final long lateNumber = attendances.size() - attendanceNumber;
+        final long absentNumber = events.size() - attendances.size();
+
+        if(attendanceNumber == events.size()){      // 출석한 개수와 이벤트 개수가 같은 경우
+            scoreType = ScoreType.ATTENDANCE;
+        } else if (absentNumber > 0) {              // 결석이 하나 이상인 경우
+            scoreType = ScoreType.ABSENT;
+        } else if (lateNumber > 0) {                // 지각이 하나 이상인 경우
+            scoreType = ScoreType.LATE;
+        }
+        return scoreType;
     }
 }

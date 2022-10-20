@@ -33,7 +33,4 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select m from Member m join m.memberGenerations mg where mg.generation = :generation  and m.status = 'ACTIVE'")
     Page<Member> findAllActiveByGeneration(@Param("generation") Generation generation, Pageable pageable);
-
-    @Query("select m from Member m join m.memberGenerations mg where mg.generation = :generation  and m.status = 'ACTIVE'")
-    List<Member> findAllActiveByGeneration(@Param("generation") Generation generation);
 }
