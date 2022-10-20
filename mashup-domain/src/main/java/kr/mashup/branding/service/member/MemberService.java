@@ -13,10 +13,10 @@ import kr.mashup.branding.domain.member.exception.MemberPendingException;
 import kr.mashup.branding.dto.member.MemberCreateDto;
 import kr.mashup.branding.repository.member.MemberGenerationRepository;
 import kr.mashup.branding.repository.member.MemberRepository;
+import kr.mashup.branding.repository.member.MemberRepositoryCustomImpl.MemberScoreQueryResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +34,7 @@ public class MemberService {
     public Member save(MemberCreateDto memberCreateDto) {
 
         Boolean isExist = memberRepository.existsByIdentification(memberCreateDto.getIdentification());
-        if(isExist){
+        if (isExist) {
             throw new BadRequestException(ResultCode.MEMBER_DUPLICATED_IDENTIFICATION);
         }
         Generation generation = memberCreateDto.getGeneration();
@@ -48,7 +48,7 @@ public class MemberService {
         );
         memberRepository.save(member);
 
-        MemberGeneration memberGeneration = MemberGeneration.of(member, generation, memberCreateDto.getPlatform() );
+        MemberGeneration memberGeneration = MemberGeneration.of(member, generation, memberCreateDto.getPlatform());
         memberGenerationRepository.save(memberGeneration);
         member.addMemberGenerations(memberGeneration);
 
@@ -71,7 +71,7 @@ public class MemberService {
         return member;
     }
 
-    public boolean isDuplicatedIdentification(String identification){
+    public boolean isDuplicatedIdentification(String identification) {
         return memberRepository.existsByIdentification(identification);
     }
 
@@ -88,18 +88,21 @@ public class MemberService {
         return member;
     }
 
-    public Page<Member> getActiveAllByGeneration(
+    public Page<MemberScoreQueryResult> getActiveAllByGeneration(
         Generation generation,
+        Platform platform,
+        String searchName,
         Pageable pageable
-    ){
-        return memberRepository.findAllActiveByGeneration(generation, pageable);
+        ) {
+
+        return memberRepository.findAllActiveByGeneration(generation,platform, searchName, pageable);
     }
 
     public List<Member> getAllByPlatformAndGeneration(
         Platform platform,
         Generation generation
     ) {
-        return memberRepository.findAllActiveByPlatformAndGeneration(
+        return memberRepository.findActiveByPlatformAndGeneration(
             platform,
             generation
         );
@@ -109,8 +112,8 @@ public class MemberService {
         Platform platform,
         Generation generation,
         Pageable pageable
-    ){
-        return memberRepository.findAllActiveByPlatformAndGeneration(
+    ) {
+        return memberRepository.findActiveByPlatformAndGeneration(
             platform,
             generation,
             pageable
@@ -118,19 +121,19 @@ public class MemberService {
     }
 
     //2-2 회원 조회 - pending 상태만
-    public Page<Member> getPendingMembers(Pageable pageable){
+    public Page<Member> getPendingMembers(Pageable pageable) {
         return memberRepository.findAllByStatus(MemberStatus.PENDING, pageable);
     }
 
 
     //기수 조회
-    public List<MemberGeneration> getMemberGenerations(Member member){
+    public List<MemberGeneration> getMemberGenerations(Member member) {
         return memberGenerationRepository.findByMember(member);
     }
 
-    public Platform getLatestPlatform(Member member){
+    public Platform getLatestPlatform(Member member) {
         List<MemberGeneration> memberGenerations = getMemberGenerations(member);
-        memberGenerations.sort(Comparator.comparingInt(it->it.getGeneration().getNumber()));
+        memberGenerations.sort(Comparator.comparingInt(it -> it.getGeneration().getNumber()));
         return memberGenerations.get(memberGenerations.size() - 1).getPlatform();
     }
 
@@ -147,7 +150,7 @@ public class MemberService {
         return member;
     }
 
-    public Member activate(Long memberId){
+    public Member activate(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
@@ -173,8 +176,8 @@ public class MemberService {
     }
 
 
-    private void checkActiveStatus(Member member){
-        if(member.getStatus() != MemberStatus.ACTIVE){
+    private void checkActiveStatus(Member member) {
+        if (member.getStatus() != MemberStatus.ACTIVE) {
             throw new MemberPendingException();
         }
     }

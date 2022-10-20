@@ -43,7 +43,7 @@ public class Event extends BaseEntity {
     @OrderBy("startedAt")
     private final List<Content> contentList = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne// optional true 이다.
     @JoinColumn(name = "attendance_code_id")
     private AttendanceCode attendanceCode;
 

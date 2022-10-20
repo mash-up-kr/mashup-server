@@ -20,11 +20,10 @@ public class ContentFacadeService {
 
     @Transactional
     public ContentResponse create(ContentCreateRequest req) {
-        Event event = eventService.getByIdOrThrow(req.getEventId());
+        final Event event = eventService.getByIdOrThrow(req.getEventId());
+        final Content content = Content.of(req.getTitle(), req.getContent(), req.getStartedAt(), event);
 
-        Content content = contentService.save(
-            Content.of(req.getTitle(), req.getContent(), req.getStartedAt(), event)
-        );
+        contentService.save(content);
 
         return ContentResponse.from(content);
     }

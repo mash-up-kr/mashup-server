@@ -21,15 +21,10 @@ public class EventFacadeService {
 
     @Transactional
     public EventResponse create(EventCreateRequest req) {
-        Schedule schedule = scheduleService.getByIdOrThrow(req.getScheduleId());
-        DateRange dateRange = DateRange.of(
-            req.getStartedAt(),
-            req.getEndedAt()
-        );
+        final Schedule schedule = scheduleService.getByIdOrThrow(req.getScheduleId());
+        final DateRange dateRange = DateRange.of(req.getStartedAt(), req.getEndedAt());
 
-        Event event = eventService.save(
-            Event.of(schedule, dateRange)
-        );
+        final Event event = eventService.save(Event.of(schedule, dateRange));
 
         return EventResponse.from(event);
     }

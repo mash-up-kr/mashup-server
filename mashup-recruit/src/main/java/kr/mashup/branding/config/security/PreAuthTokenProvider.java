@@ -2,6 +2,7 @@ package kr.mashup.branding.config.security;
 
 import java.util.Collections;
 
+import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -23,8 +24,12 @@ public class PreAuthTokenProvider implements AuthenticationProvider {
         if (authentication instanceof PreAuthenticatedAuthenticationToken) {
             String token = authentication.getPrincipal().toString();
             Long applicantId = jwtService.decode(token);
-            // TODO: 지원자 조회 실패하는 경우, AuthenticationException 으로 예외번역
-            Applicant applicant = applicantService.getApplicant(applicantId);
+            Applicant applicant;
+            try{
+                applicant = applicantService.getApplicant(applicantId);
+            }catch (ApplicantNotFoundException e){
+                throw new ApplicantUnauthenticatedException();
+            }
             return new PreAuthenticatedAuthenticationToken(
                 applicant.getApplicantId(),
                 "",

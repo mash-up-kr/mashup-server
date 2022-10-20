@@ -7,11 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import kr.mashup.branding.domain.notification.sms.vo.SmsSendResultRecipientVo;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -40,11 +42,11 @@ public class SmsRequest {
     @GeneratedValue
     private Long smsRequestId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "notification_id")
     private Notification notification;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "recipient_applicant_id")
     private Applicant recipientApplicant;
 

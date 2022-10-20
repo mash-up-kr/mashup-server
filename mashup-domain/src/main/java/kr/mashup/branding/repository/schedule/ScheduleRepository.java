@@ -17,3 +17,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Query("SELECT s FROM Schedule s WHERE s.isCounted = :isCounted")
     List<Schedule> findAllByIsCounted(@Param("isCounted") boolean isCounted);
 }
+/**
+ * Schedule 연관관계
+ * many to one: generation
+ * one to many: event
+ */

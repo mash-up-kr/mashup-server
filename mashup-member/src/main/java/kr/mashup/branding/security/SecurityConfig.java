@@ -1,8 +1,5 @@
 package kr.mashup.branding.security;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -18,8 +15,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.mashup.branding.domain.ResultCode;
-import kr.mashup.branding.domain.adminmember.Position;
-import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 

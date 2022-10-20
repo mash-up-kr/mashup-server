@@ -265,12 +265,12 @@ public class AttendanceFacadeService {
         Long scheduleId
     ) {
         final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
-        final Generation curGeneration = schedule.getGeneration();
+        final Generation currentGeneration = schedule.getGeneration();
 
         final List<Member> members =
             memberService.getAllByPlatformAndGeneration(
                 platform,
-                curGeneration
+                currentGeneration
             );
 
         final List<PlatformAttendanceResponse.MemberInfo> memberInfos =

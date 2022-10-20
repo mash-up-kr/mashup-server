@@ -5,6 +5,8 @@ import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.scorehistory.ScoreHistory;
 import kr.mashup.branding.domain.scorehistory.ScoreType;
+import kr.mashup.branding.repository.member.MemberRepositoryCustomImpl;
+import kr.mashup.branding.repository.member.MemberRepositoryCustomImpl.MemberScoreQueryResult;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
@@ -13,11 +15,13 @@ import kr.mashup.branding.ui.member.response.MemberResponse;
 import kr.mashup.branding.ui.scorehistory.response.ScoreHistoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -35,35 +39,30 @@ public class MemberFacadeService {
     private final ScoreHistoryService scoreHistoryService;
 
     @Transactional(readOnly = true)
-    public Page<MemberResponse> getAllActive(Integer generationNumber, Pageable pageable) {
-        Generation generation = generationService.getByNumberOrThrow(generationNumber);
-        return memberService
-            .getActiveAllByGeneration(generation, pageable)
-            .map(member -> {
-                double score = scoreHistoryService
-                    .getByMemberAndGeneration(member, generation)
-                    .stream()
-                    .map(ScoreHistory::getScore)
-                    .reduce(0d, Double::sum);
-                return MemberResponse.of(member.getId(), member.getName(), member.getIdentification(), memberService.getLatestPlatform(member).name(), score);
-            });
-    }
-    @Transactional(readOnly = true)
-    public Page<MemberResponse> getAllActiveByPlatform(Integer generationNumber, Platform platform, Pageable pageable) {
-        Generation generation = generationService.getByNumberOrThrow(generationNumber);
+    public Page<MemberResponse> getAllActive(Integer generationNumber, Platform platform, String searchName, Pageable pageable) {
 
-        return memberService
-            .getAllByPlatformAndGeneration(platform, generation, pageable)
-            .map(member -> {
-                double score = scoreHistoryService
-                    .getByMemberAndGeneration(member, generation)
-                    .stream()
-                    .map(ScoreHistory::getScore)
-                    .reduce(0d, Double::sum);
-                Platform latestPlatform = memberService.getLatestPlatform(member);
-                return MemberResponse.of(member.getId(), member.getName(), member.getIdentification(), latestPlatform.name(), score);
-            });
+        final Generation generation = generationService.getByNumberOrThrow(generationNumber);
+
+        final Page<MemberScoreQueryResult> queryResults = memberService.getActiveAllByGeneration(generation, platform, searchName, pageable);
+
+        final List<MemberResponse> response = new ArrayList<>();
+
+        for (final MemberScoreQueryResult result : queryResults) {
+
+            Member member = result.getMember();
+
+            final MemberResponse memberResponse = MemberResponse.of(member.getId(),
+                member.getName(),
+                member.getIdentification(),
+                result.getPlatform().name(),
+                result.getScore());
+
+            response.add(memberResponse);
+        }
+
+        return new PageImpl<>(response,pageable, queryResults.getTotalElements());
     }
+
 
     @Transactional(readOnly = true)
     public MemberDetailResponse getAttendance(Integer generationNumber, Long memberId) {
@@ -81,9 +80,9 @@ public class MemberFacadeService {
             .getByMemberAndGeneration(member, generation)
             .stream()
             .sorted(Comparator.comparingLong(it -> it.getDate().toInstant(ZoneOffset.UTC).getEpochSecond()))
-            .map(it ->{
-                if(!it.isCanceled()){
-                    accumulatedScore.updateAndGet(v->v+it.getScore());
+            .map(it -> {
+                if (!it.isCanceled()) {
+                    accumulatedScore.updateAndGet(v -> v + it.getScore());
                 }
                 return ScoreHistoryResponse.from(it, accumulatedScore.get());
             })

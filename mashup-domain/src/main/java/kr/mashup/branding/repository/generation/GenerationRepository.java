@@ -12,3 +12,7 @@ public interface GenerationRepository extends JpaRepository<Generation, Long> {
 
 	Generation findTop1ByOrderByNumberDesc();
 }
+/**
+ * Generation 연관관계
+ * one to many : schedule, memberGeneration, invites
+ */

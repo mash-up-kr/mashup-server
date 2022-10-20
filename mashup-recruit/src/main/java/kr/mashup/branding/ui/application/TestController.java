@@ -1,14 +1,20 @@
 package kr.mashup.branding.ui.application;
 
-import kr.mashup.branding.domain.application.Application;
-import kr.mashup.branding.service.application.ApplicationService;
+import kr.mashup.branding.facade.application.ApplicationAssembler;
 import kr.mashup.branding.facade.application.ApplicationFacadeService;
+import kr.mashup.branding.service.application.ApplicationService;
 import kr.mashup.branding.ui.ApiResponse;
-
+import kr.mashup.branding.ui.application.vo.ApplicationResponse;
+import kr.mashup.branding.ui.application.vo.UpdateConfirmationRequest;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Profile("!production")
@@ -18,7 +24,6 @@ import springfox.documentation.annotations.ApiIgnore;
 public class TestController {
     private final ApplicationService applicationService;
     private final ApplicationFacadeService applicationFacadeService;
-    private final ApplicationAssembler applicationAssembler;
 
     /**
      * 개발서버에서 지원서 삭제
@@ -40,8 +45,10 @@ public class TestController {
         @PathVariable Long applicationId,
         @RequestBody UpdateConfirmationRequest updateConfirmationRequest
     ) {
-        Application application = applicationFacadeService
+        final ApplicationResponse response
+            = applicationFacadeService
             .updateConfirmForTest(applicantId, applicationId, updateConfirmationRequest);
-        return ApiResponse.success(applicationAssembler.toApplicationResponse(application));
+
+        return ApiResponse.success(response);
     }
 }

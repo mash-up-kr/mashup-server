@@ -11,4 +11,9 @@ import kr.mashup.branding.domain.member.Member;
 public interface AttendanceRepository extends JpaRepository<Attendance, Long>, CustomAttendanceRepository{
     boolean existsAttendanceByMemberAndEvent(Member member, Event event);
     Optional<Attendance> findByMemberAndEvent(Member member, Event event);
+    List<Attendance> findAllByMember(Member member);
 }
+/**
+ * Attendance 연관관계
+ * many to one: member, event
+ */

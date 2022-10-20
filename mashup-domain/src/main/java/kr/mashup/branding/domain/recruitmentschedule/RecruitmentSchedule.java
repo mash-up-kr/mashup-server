@@ -1,15 +1,19 @@
 package kr.mashup.branding.domain.recruitmentschedule;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
+import kr.mashup.branding.domain.generation.Generation;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -33,8 +37,13 @@ public class RecruitmentSchedule {
     @GeneratedValue
     private Long recruitmentScheduleId;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name ="generation_id")
+    private Generation generation;
+
     @Column(unique = true)
-    private String eventName;
+    @Enumerated(EnumType.STRING)
+    private RecruitmentScheduleEventName eventName;
 
     private LocalDateTime eventOccurredAt;
 
@@ -50,52 +59,6 @@ public class RecruitmentSchedule {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    /**
-     * 12기 모집 시작 시각 (inclusive)
-     */
-    private static final RecruitmentSchedule RECRUITMENT_STARTED;
-
-    /**
-     * 12기 모집 종료 날짜 (inclusive)
-     */
-    private static final RecruitmentSchedule RECRUITMENT_ENDED;
-
-    /**
-     * 12기 서류 결과 발표 시각 (inclusive)
-     */
-    private static final RecruitmentSchedule SCREENING_RESULT_ANNOUNCED;
-
-    /**
-     * 12기 면접 결과 발표 시각 (inclusive)
-     */
-    private static final RecruitmentSchedule INTERVIEW_RESULT_ANNOUNCED;
-
-    static {
-        RECRUITMENT_STARTED = new RecruitmentSchedule();
-        RECRUITMENT_STARTED.eventName = "RECRUITMENT_STARTED";
-        RECRUITMENT_STARTED.eventOccurredAt = LocalDateTime.of(2022, 3, 2, 0, 0);
-
-        RECRUITMENT_ENDED = new RecruitmentSchedule();
-        RECRUITMENT_ENDED.eventName = "RECRUITMENT_ENDED";
-        RECRUITMENT_ENDED.eventOccurredAt = LocalDateTime.of(2022, 3, 2, 0, 0);
-
-        SCREENING_RESULT_ANNOUNCED = new RecruitmentSchedule();
-        SCREENING_RESULT_ANNOUNCED.eventName = "SCREENING_RESULT_ANNOUNCED";
-        SCREENING_RESULT_ANNOUNCED.eventOccurredAt = LocalDateTime.of(2022, 3, 2, 0, 0);
-
-        INTERVIEW_RESULT_ANNOUNCED = new RecruitmentSchedule();
-        INTERVIEW_RESULT_ANNOUNCED.eventName = "INTERVIEW_RESULT_ANNOUNCED";
-        INTERVIEW_RESULT_ANNOUNCED.eventOccurredAt = LocalDateTime.of(2022, 3, 2, 0, 0);
-    }
-
-    public static List<RecruitmentSchedule> get12thRecruitSchedules() {
-        return Arrays.asList(
-            RECRUITMENT_STARTED,
-            RECRUITMENT_ENDED,
-            SCREENING_RESULT_ANNOUNCED,
-            INTERVIEW_RESULT_ANNOUNCED
-        );
-    }
 
     public static RecruitmentSchedule from(RecruitmentScheduleCreateVo recruitmentScheduleCreateVo) {
         RecruitmentSchedule recruitmentSchedule = new RecruitmentSchedule();

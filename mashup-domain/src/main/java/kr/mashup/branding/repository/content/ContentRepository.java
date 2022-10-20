@@ -6,3 +6,7 @@ import kr.mashup.branding.domain.content.Content;
 
 public interface ContentRepository extends JpaRepository<Content, Long> {
 }
+/**
+ * content 연관관계
+ * many to one: event
+ */

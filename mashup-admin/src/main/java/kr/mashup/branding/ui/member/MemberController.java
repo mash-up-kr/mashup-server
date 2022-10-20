@@ -31,15 +31,10 @@ public class MemberController {
     public ApiResponse<List<MemberResponse>> getAllByGeneration(
         @PageableDefault Pageable pageable,
         @PathVariable Integer generationNumber,
-        @RequestParam(value = "platform", required = false) Platform platformName
+        @RequestParam(value = "platform", required = false) Platform platform,
+        @RequestParam(value = "searchName", required = false) String searchName
     ) {
-        Page<MemberResponse> response;
-
-        if (platformName == null) {
-            response = memberFacadeService.getAllActive(generationNumber, pageable);
-        }else{
-            response = memberFacadeService.getAllActiveByPlatform(generationNumber, platformName, pageable);
-        }
+        Page<MemberResponse> response = memberFacadeService.getAllActive(generationNumber, platform, searchName, pageable);
 
         return ApiResponse.success(response);
     }

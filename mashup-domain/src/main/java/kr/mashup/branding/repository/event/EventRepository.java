@@ -11,3 +11,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findBySchedule(Schedule schedule);
 }
+/**
+ * Event 연관관계
+ * many to one : schedule
+ * one to many : content
+ * one to one: attendanceCode
+ */

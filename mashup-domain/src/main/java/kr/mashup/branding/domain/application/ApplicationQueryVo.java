@@ -1,11 +1,10 @@
 package kr.mashup.branding.domain.application;
 
-import org.springframework.data.domain.Pageable;
-
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
 import lombok.Value;
+import org.springframework.data.domain.Pageable;
 
 /**
  * 지원서 목록 조회

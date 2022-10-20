@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.mashup.branding.config.jwt.JwtService;
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
-import kr.mashup.branding.domain.adminmember.Position;
+import kr.mashup.branding.domain.adminmember.entity.Position;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 

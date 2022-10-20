@@ -14,18 +14,9 @@ import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberStatus;
 import kr.mashup.branding.domain.member.Platform;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
     Optional<Member> findByIdentification(String identification);
-
-    @Query("select count(m) from Member m join m.memberGenerations mg where mg.generation = :generation and mg.platform = :platform  and m.status = 'ACTIVE'")
-    Long countActiveByPlatformAndGeneration(@Param("platform") Platform platform, @Param("generation") Generation generation);
-
-    @Query("select m from Member m join m.memberGenerations mg where mg.generation = :generation and mg.platform = :platform and m.status = 'ACTIVE'")
-    List<Member> findAllActiveByPlatformAndGeneration(@Param("platform") Platform platform, @Param("generation") Generation generation);
-
-    @Query("select m from Member m join m.memberGenerations mg where mg.generation = :generation and mg.platform = :platform  and m.status = 'ACTIVE'")
-    Page<Member> findAllActiveByPlatformAndGeneration(@Param("platform") Platform platform, @Param("generation") Generation generation, Pageable pageable);
 
     Boolean existsByIdentification(String identification);
 
@@ -34,3 +25,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m from Member m join m.memberGenerations mg where mg.generation = :generation  and m.status = 'ACTIVE'")
     Page<Member> findAllActiveByGeneration(@Param("generation") Generation generation, Pageable pageable);
 }
+/**
+ * Member 연관관계
+ * one to many : memberGeneration, attendance
+ */
