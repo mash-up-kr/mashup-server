@@ -1,7 +1,6 @@
 package kr.mashup.branding.repository.schedule;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +14,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     List<Schedule> findByGeneration(Generation generation, Sort sort);
 
-    @Query("select s from Schedule s join m.memberGenerations mg where mg.generation = :generation  and m.status = 'ACTIVE'")
-    Optional<Schedule> findAllActiveByGeneration(@Param("generation") Generation generation);
+    @Query("SELECT s FROM Schedule s WHERE s.isCounted = :isCounted")
+    List<Schedule> findAllByIsCounted(@Param("isCounted") boolean isCounted);
 }

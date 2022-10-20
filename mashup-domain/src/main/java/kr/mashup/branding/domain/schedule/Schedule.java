@@ -100,4 +100,7 @@ public class Schedule extends BaseEntity {
         }
     }
 
+    public void changeIsCounted(Boolean isCounted) {
+        this.isCounted = isCounted;
+    }
 }
