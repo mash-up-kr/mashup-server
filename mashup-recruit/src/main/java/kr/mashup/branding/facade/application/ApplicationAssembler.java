@@ -1,15 +1,11 @@
 package kr.mashup.branding.facade.application;
 
-import kr.mashup.branding.domain.application.Answer;
-import kr.mashup.branding.domain.application.AnswerRequestVo;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
-import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.application.result.ApplicationResult;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.service.recruitmentschedule.RecruitmentScheduleService;
 import kr.mashup.branding.ui.applicant.vo.ApplicantResponse;
-import kr.mashup.branding.ui.application.vo.AnswerRequest;
 import kr.mashup.branding.ui.application.vo.AnswerResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationResultResponse;
@@ -102,7 +98,6 @@ public class ApplicationAssembler {
         Generation generation,
         ApplicationResult applicationResult) {
 
-        // TODO: 13기 생기면 기수별로 일정 관리해야함
         LocalDateTime now = LocalDateTime.now();
 
         if (recruitmentScheduleService.isRecruitAvailable(generation, now)) { // 서류 마감 전
