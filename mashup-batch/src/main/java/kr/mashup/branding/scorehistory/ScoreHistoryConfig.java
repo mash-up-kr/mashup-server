@@ -16,11 +16,13 @@ import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class ScoreHistoryConfig {
-    static final String JOB_NAME = "score-history-save";
+    static final String JOB_NAME = "score-history-create";
     private static final String STEP_NAME = JOB_NAME + "-step";
 
     private final JobBuilderFactory jobBuilderFactory;

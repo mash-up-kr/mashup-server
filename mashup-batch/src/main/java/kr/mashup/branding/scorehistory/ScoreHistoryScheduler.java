@@ -1,7 +1,7 @@
 package kr.mashup.branding.scorehistory;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -17,22 +17,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
+@Component
 public class ScoreHistoryScheduler {
 
 	private final JobLauncher jobLauncher;
 	private final ScoreHistoryConfig scoreHistoryConfig;
 
-	@Scheduled(cron = "* * * * 0")
+	@Scheduled(cron = "* * 23 * 5")
 	public void runJob() {
-		JobParameters jobParameters = new JobParametersBuilder()
-			.addDate("date", new Date())
+		JobParameters params = new JobParametersBuilder()
+			.addString("datetime", LocalDateTime.now().toString())
 			.toJobParameters();
 
 		try {
-			jobLauncher.run(scoreHistoryConfig.scoreHistoryJob(), jobParameters);
-		}catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException | JobParametersInvalidException | JobRestartException e){
+			jobLauncher.run(scoreHistoryConfig.scoreHistoryJob(), params);
+		} catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException | JobParametersInvalidException | JobRestartException e) {
 			log.error("[ScoreHistory Batch Error] date = {}, message = {}", LocalDate.now(), e.getMessage());
 		}
 	}
