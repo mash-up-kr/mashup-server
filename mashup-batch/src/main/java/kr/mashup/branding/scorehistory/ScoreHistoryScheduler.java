@@ -1,8 +1,7 @@
 package kr.mashup.branding.scorehistory;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -13,8 +12,8 @@ import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,6 +23,7 @@ public class ScoreHistoryScheduler {
 	private final JobLauncher jobLauncher;
 	private final ScoreHistoryConfig scoreHistoryConfig;
 
+	// TODO: 젠킨스 파라미터로 스케줄링 시간 조정할 수 있도록 변경 필요
 	@Scheduled(cron = "* * 23 * 5")
 	public void runJob() {
 		JobParameters params = new JobParametersBuilder()
