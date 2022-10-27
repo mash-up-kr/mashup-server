@@ -16,8 +16,6 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.util.Assert;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.domain.generation.Generation;
@@ -49,6 +47,11 @@ public class Schedule extends BaseEntity {
     @OrderBy("startedAt")
     private final List<Event> eventList = new ArrayList<>();
 
+    /*
+    ScoreHistory 배치가 수행된 스케줄인지의 여부를 판단하기 위한 컬럼
+     */
+    private Boolean isCounted;
+
     @CreatedBy
     private String createdBy;
 
@@ -66,6 +69,7 @@ public class Schedule extends BaseEntity {
         this.name = name;
         this.startedAt = dateRange.getStart();
         this.endedAt = dateRange.getEnd();
+        this.isCounted = false; // 기본값은 false 로 설정(배치가 수행되지 않음)
     }
 
     public void addEvent(Event event) {
@@ -96,4 +100,7 @@ public class Schedule extends BaseEntity {
         }
     }
 
+    public void changeIsCounted(Boolean isCounted) {
+        this.isCounted = isCounted;
+    }
 }
