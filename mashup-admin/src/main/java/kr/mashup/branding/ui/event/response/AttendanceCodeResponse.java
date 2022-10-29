@@ -16,6 +16,9 @@ public class AttendanceCodeResponse {
     private final LocalDateTime endedAt;
 
     public static AttendanceCodeResponse from(AttendanceCode attendanceCode) {
+        if(attendanceCode == null){
+            return new AttendanceCodeResponse(null, null, null, null, null);
+        }
         return new AttendanceCodeResponse(
             attendanceCode.getId(),
             attendanceCode.getEventId(),

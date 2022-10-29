@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,7 +20,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.util.Assert;
 
 import kr.mashup.branding.domain.BaseEntity;
-import kr.mashup.branding.domain.event.Event;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
@@ -43,14 +45,17 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "generation_id")
     private Generation generation;
 
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("startedAt")
-    private final List<Event> eventList = new ArrayList<>();
+    private List<Event> eventList = new ArrayList<>();
 
     /*
     ScoreHistory 배치가 수행된 스케줄인지의 여부를 판단하기 위한 컬럼
      */
     private Boolean isCounted;
+
+    @Enumerated(EnumType.STRING)
+    private ScheduleStatus status;
 
     @CreatedBy
     private String createdBy;
@@ -69,13 +74,24 @@ public class Schedule extends BaseEntity {
         this.name = name;
         this.startedAt = dateRange.getStart();
         this.endedAt = dateRange.getEnd();
+        this.status = ScheduleStatus.ADMIN_ONLY;
         this.isCounted = false; // 기본값은 false 로 설정(배치가 수행되지 않음)
     }
 
-    public void addEvent(Event event) {
-        if (eventList.contains(event)) {
-            return;
-        }
+    public void publishSchedule(){
+        this.status = ScheduleStatus.PUBLIC;
+    }
+
+    public void hideSchedule(){
+        this.status = ScheduleStatus.ADMIN_ONLY;
+    }
+
+
+    public void configureEvents(List<Event> events){
+        this.eventList = events;
+    }
+
+    public void addEvent(Event event){
         this.eventList.add(event);
     }
 
@@ -103,4 +119,6 @@ public class Schedule extends BaseEntity {
     public void changeIsCounted(Boolean isCounted) {
         this.isCounted = isCounted;
     }
+
+
 }

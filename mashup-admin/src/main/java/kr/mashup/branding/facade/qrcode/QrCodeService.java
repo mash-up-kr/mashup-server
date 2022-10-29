@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.mashup.branding.domain.attendance.AttendanceCode;
-import kr.mashup.branding.domain.event.Event;
+import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.service.attendance.AttendanceCodeService;
 import kr.mashup.branding.service.event.EventService;
 import kr.mashup.branding.ui.qrcode.request.QrCreateRequest;

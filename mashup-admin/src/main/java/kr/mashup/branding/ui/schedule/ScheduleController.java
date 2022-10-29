@@ -2,9 +2,12 @@ package kr.mashup.branding.ui.schedule;
 
 import javax.validation.Valid;
 
+import kr.mashup.branding.EmptyResponse;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
@@ -22,12 +25,24 @@ public class ScheduleController {
     private final ScheduleFacadeService scheduleFacadeService;
 
     @ApiOperation("스케줄 생성")
-    @PostMapping("/")
+    @PostMapping
     public ApiResponse<ScheduleResponse> create(
+        @RequestParam(defaultValue = "12", required = false) Integer generationNumber,
         @Valid @RequestBody ScheduleCreateRequest scheduleCreateRequest
     ) {
-        ScheduleResponse res = scheduleFacadeService.create(scheduleCreateRequest);
+        final ScheduleResponse response
+            = scheduleFacadeService.create(generationNumber,scheduleCreateRequest);
 
-        return ApiResponse.success(res);
+        return ApiResponse.success(response);
+    }
+
+    @ApiOperation("스케줄 배포")
+    @PostMapping("/{id}")
+    public ApiResponse<EmptyResponse> publish(
+        @PathVariable("id") Long scheduleId
+    ){
+        scheduleFacadeService.publishSchedule(scheduleId);
+
+        return ApiResponse.success(EmptyResponse.of());
     }
 }

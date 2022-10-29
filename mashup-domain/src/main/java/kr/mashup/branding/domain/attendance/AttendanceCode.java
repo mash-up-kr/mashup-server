@@ -1,7 +1,7 @@
 package kr.mashup.branding.domain.attendance;
 
 import kr.mashup.branding.domain.BaseEntity;
-import kr.mashup.branding.domain.event.Event;
+import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;

@@ -3,8 +3,8 @@ package kr.mashup.branding.facade.content;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.mashup.branding.domain.content.Content;
-import kr.mashup.branding.domain.event.Event;
+import kr.mashup.branding.domain.schedule.Content;
+import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.service.content.ContentService;
 import kr.mashup.branding.service.event.EventService;
 import kr.mashup.branding.ui.content.request.ContentCreateRequest;

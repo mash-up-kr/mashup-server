@@ -1,9 +1,10 @@
-package kr.mashup.branding.domain.event;
+package kr.mashup.branding.domain.schedule;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -11,13 +12,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
+import javax.validation.constraints.NotBlank;
 
 import com.sun.istack.NotNull;
 
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
-import kr.mashup.branding.domain.content.Content;
-import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
@@ -29,6 +29,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Event extends BaseEntity {
 
+    @NotBlank
+    private String eventName;
+
     @NotNull
     private LocalDateTime startedAt;
 
@@ -39,7 +42,7 @@ public class Event extends BaseEntity {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("startedAt")
     private final List<Content> contentList = new ArrayList<>();
 
@@ -47,16 +50,17 @@ public class Event extends BaseEntity {
     @JoinColumn(name = "attendance_code_id")
     private AttendanceCode attendanceCode;
 
-    public static Event of(Schedule schedule, DateRange dateRange) {
-        return new Event(schedule, dateRange);
+    public static Event of(Schedule schedule,String eventName, DateRange dateRange) {
+        return new Event(schedule, eventName, dateRange);
     }
 
-    private Event(Schedule schedule, DateRange dateRange) {
-        checkEventPeriod(schedule, dateRange.getStart(), dateRange.getEnd());
+    private Event(Schedule schedule,String eventName, DateRange dateRange) {
+        validateEventPeriod(schedule, dateRange.getStart(), dateRange.getEnd());
+        validateEventName(eventName);
+        this.eventName = eventName;
         this.schedule = schedule;
         this.startedAt = dateRange.getStart();
         this.endedAt = dateRange.getEnd();
-        schedule.addEvent(this);
     }
 
     public void addContent(Content content) {
@@ -72,17 +76,21 @@ public class Event extends BaseEntity {
 
     public void changeStartDate(LocalDateTime newStartedAt) {
         checkStartBeforeOrEqualEnd(newStartedAt, endedAt);
-        checkEventPeriod(schedule, newStartedAt, endedAt);
+        validateEventPeriod(schedule, newStartedAt, endedAt);
         this.startedAt = newStartedAt;
     }
 
     public void changeEndDate(LocalDateTime newEndedAt) {
         checkStartBeforeOrEqualEnd(startedAt, newEndedAt);
-        checkEventPeriod(schedule, startedAt, newEndedAt);
+        validateEventPeriod(schedule, startedAt, newEndedAt);
         this.endedAt = newEndedAt;
     }
 
-    private void checkEventPeriod(Schedule schedule, LocalDateTime startedAt, LocalDateTime endedAt) {
+    private void validateEventName(String eventName){
+        // TODO: 타이틀 입력폼(글자수 제한)에서 글자수 제한 상세 기획 필요
+    }
+
+    private void validateEventPeriod(Schedule schedule, LocalDateTime startedAt, LocalDateTime endedAt) {
         if (!DateUtil.isContainDateRange(DateRange.of(schedule.getStartedAt(), schedule.getEndedAt()),
             DateRange.of(startedAt, endedAt))) {
             throw new IllegalArgumentException();

@@ -4,7 +4,7 @@ import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.attendance.AttendanceStatus;
-import kr.mashup.branding.domain.event.Event;
+import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
 import kr.mashup.branding.domain.exception.NotFoundException;

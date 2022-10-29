@@ -1,7 +1,9 @@
 package kr.mashup.branding.ui.schedule.request;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
@@ -20,6 +22,6 @@ public class ScheduleCreateRequest {
     @NotNull
     private LocalDateTime endedAt;
 
-    @NotNull
-    private Integer generationNumber;
+    @NotEmpty
+    private List<EventCreateRequest> eventsCreateRequests;
 }

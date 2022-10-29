@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.attendance.AttendanceStatus;
-import kr.mashup.branding.domain.event.Event;
+import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.schedule.Schedule;

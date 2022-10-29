@@ -2,7 +2,7 @@ package kr.mashup.branding.ui.content.response;
 
 import java.time.LocalDateTime;
 
-import kr.mashup.branding.domain.content.Content;
+import kr.mashup.branding.domain.schedule.Content;
 import lombok.Getter;
 import lombok.Value;
 
@@ -22,7 +22,7 @@ public class ContentResponse {
         return ContentResponse.of(
             content.getId(),
             content.getTitle(),
-            content.getContent(),
+            content.getDesc(),
             content.getStartedAt()
         );
     }

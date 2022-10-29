@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kr.mashup.branding.domain.event.Event;
+import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.ui.attendance.response.AttendanceCodeResponse;
 import lombok.Getter;
 import lombok.Value;
