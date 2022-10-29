@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
 
+import kr.mashup.branding.domain.schedule.exception.ScheduleAlreadyPublishedException;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.util.Assert;
@@ -79,10 +80,19 @@ public class Schedule extends BaseEntity {
     }
 
     public void publishSchedule(){
+        if(status == ScheduleStatus.ADMIN_ONLY){
+            throw new ScheduleAlreadyPublishedException();
+        }
         this.status = ScheduleStatus.PUBLIC;
     }
 
-    public void hideSchedule(){
+    public void hide(){
+        if(status != ScheduleStatus.PUBLIC){
+
+        }
+        if(startedAt.isBefore(LocalDateTime.now())){
+
+        }
         this.status = ScheduleStatus.ADMIN_ONLY;
     }
 

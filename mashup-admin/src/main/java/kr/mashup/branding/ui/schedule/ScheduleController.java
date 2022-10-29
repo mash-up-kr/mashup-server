@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.schedule.ScheduleFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.schedule.request.ScheduleCreateRequest;
+import kr.mashup.branding.ui.schedule.request.ScheduleUpdateRequest;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -28,10 +28,10 @@ public class ScheduleController {
     @PostMapping
     public ApiResponse<ScheduleResponse> create(
         @RequestParam(defaultValue = "12", required = false) Integer generationNumber,
-        @Valid @RequestBody ScheduleCreateRequest scheduleCreateRequest
+        @Valid @RequestBody ScheduleUpdateRequest scheduleUpdateRequest
     ) {
         final ScheduleResponse response
-            = scheduleFacadeService.create(generationNumber,scheduleCreateRequest);
+            = scheduleFacadeService.create(generationNumber, scheduleUpdateRequest);
 
         return ApiResponse.success(response);
     }

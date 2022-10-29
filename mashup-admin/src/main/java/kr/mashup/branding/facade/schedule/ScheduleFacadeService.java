@@ -10,11 +10,12 @@ import kr.mashup.branding.service.schedule.EventCreateDto;
 import kr.mashup.branding.service.schedule.ScheduleService;
 import kr.mashup.branding.ui.schedule.request.ContentsCreateRequest;
 import kr.mashup.branding.ui.schedule.request.EventCreateRequest;
-import kr.mashup.branding.ui.schedule.request.ScheduleCreateRequest;
 import kr.mashup.branding.ui.schedule.request.ScheduleUpdateRequest;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
 import kr.mashup.branding.util.DateRange;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,10 +28,14 @@ public class ScheduleFacadeService {
     private final ScheduleService scheduleService;
     private final GenerationService generationService;
 
-    // TODO: 스케줄 목록 조회
+    public Page<ScheduleResponse> getSchedules(Integer generationNumber, Pageable pageable){
+        final Generation generation
+            = generationService.getByNumberOrThrow(generationNumber);
+        scheduleService.getByGeneration(generation, pageable);
+    }
 
     @Transactional
-    public ScheduleResponse create(Integer generationNumber, ScheduleCreateRequest request) {
+    public ScheduleResponse create(Integer generationNumber, ScheduleUpdateRequest request) {
         final Generation generation =
             generationService.getByNumberOrThrow(generationNumber);
         final DateRange dateRange
@@ -38,6 +43,45 @@ public class ScheduleFacadeService {
         final Schedule schedule
             = scheduleService.create(generation, ScheduleCreateDto.of(request.getName(), dateRange));
 
+        doUpdateSchedule(schedule, request);
+
+        return ScheduleResponse.from(schedule);
+    }
+
+    @Transactional
+    public void publishSchedule(Long scheduleId) {
+        final Schedule schedule
+            = scheduleService.getByIdOrThrow(scheduleId);
+        scheduleService.publishSchedule(schedule);
+    }
+
+    @Transactional
+    public void hideSchedule(Long scheduleId){
+        final Schedule schedule
+            = scheduleService.getByIdOrThrow(scheduleId);
+        scheduleService.hideSchedule(schedule);
+    }
+
+    @Transactional
+    public ScheduleResponse updateSchedule(Long scheduleId, ScheduleUpdateRequest request){
+        final Schedule schedule
+            = scheduleService.getByIdOrThrow(scheduleId);
+
+        doUpdateSchedule(schedule, request);
+
+        return ScheduleResponse.from(schedule);
+    }
+
+    @Transactional
+    public void deleteSchedule(Long scheduleId){
+        final Schedule schedule
+            = scheduleService.getByIdOrThrow(scheduleId);
+
+        scheduleService.deleteSchedule(schedule);
+
+    }
+
+    private void doUpdateSchedule(Schedule schedule,ScheduleUpdateRequest request){
         final List<EventCreateRequest> eventsCreateRequests
             = request.getEventsCreateRequests();
         for(EventCreateRequest eventCreateRequest : eventsCreateRequests){
@@ -55,27 +99,5 @@ public class ScheduleFacadeService {
             }
         }
 
-        return ScheduleResponse.from(schedule);
-    }
-
-    @Transactional
-    public void publishSchedule(Long scheduleId) {
-        scheduleService.publishSchedule(scheduleId);
-    }
-
-    @Transactional
-    public ScheduleResponse updateSchedule(Long scheduleId, ScheduleUpdateRequest scheduleUpdateRequest){
-        final Schedule schedule
-            = scheduleService.getByIdOrThrow(scheduleId);
-        // TODO
-        // 배포 취소 상태에만 수정이 가능한가?
-    }
-
-    @Transactional
-    public void deleteSchedule(Long scheduleId){
-        final Schedule schedule
-            = scheduleService.getByIdOrThrow(scheduleId);
-        // TODO
-        // 이미 진행된 스케줄이라면?
     }
 }

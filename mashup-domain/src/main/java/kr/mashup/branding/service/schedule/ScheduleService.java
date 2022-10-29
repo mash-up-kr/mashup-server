@@ -1,8 +1,7 @@
 package kr.mashup.branding.service.schedule;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.schedule.Content;
 import kr.mashup.branding.domain.schedule.ContentsCreateDto;
@@ -10,7 +9,8 @@ import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.schedule.ScheduleCreateDto;
 import kr.mashup.branding.domain.schedule.ScheduleStatus;
 import kr.mashup.branding.domain.schedule.exception.ScheduleAlreadyPublishedException;
-import kr.mashup.branding.domain.schedule.exception.ScheduleNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -37,13 +37,18 @@ public class ScheduleService {
     }
 
     public List<Schedule> getByGeneration(Generation generation) {
-        return scheduleRepository.findByGeneration(
-            generation,
-            Sort.by(Sort.Direction.ASC, "startedAt")
-        );
+        return scheduleRepository.findByGeneration(generation,Pageable.unpaged());
+    }
+
+    public Page<Schedule> getByGeneration(Generation generation, Pageable pageable) {
+        return scheduleRepository
+            .findByGeneration(generation, pageable);
     }
 
     public Event addEvents(Schedule schedule, EventCreateDto dto){
+        if(schedule.getStatus() == ScheduleStatus.PUBLIC){
+
+        }
         final Event event
             = Event.of(schedule, dto.getEventName(), dto.getDateRange());
         schedule.addEvent(event);
@@ -52,20 +57,32 @@ public class ScheduleService {
 
 
     public Content addContent(Event event, ContentsCreateDto dto) {
+        final Schedule schedule = event.getSchedule();
+        if(schedule.getStatus() == ScheduleStatus.PUBLIC){
+
+        }
         final Content content
             = Content.of(event, dto.getTitle(), dto.getDesc(), dto.getStartedAt());
         event.addContent(content);
         return content;
     }
 
-    public Schedule publishSchedule(Long scheduleId) {
-        final Schedule schedule
-            = scheduleRepository.findById(scheduleId).orElseThrow(ScheduleNotFoundException::new);
-        if(schedule.getStatus() == ScheduleStatus.ADMIN_ONLY){
-            throw new ScheduleAlreadyPublishedException();
-        }
+    public Schedule publishSchedule(Schedule schedule) {
         schedule.publishSchedule();
-
         return schedule;
+    }
+
+    public void deleteSchedule(Schedule schedule) {
+        if(schedule.getStatus() == ScheduleStatus.PUBLIC){
+
+        }
+        if(schedule.getStartedAt().isBefore(LocalDateTime.now())){
+
+        }
+        scheduleRepository.delete(schedule);
+    }
+
+    public void hideSchedule(Schedule schedule) {
+        schedule.hide();
     }
 }
