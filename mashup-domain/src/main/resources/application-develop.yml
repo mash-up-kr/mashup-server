@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: ENV(1AcqFbpi4lVx6jDmLutchPPBEKVbCQYqYxju9ol6iBqR1L+Q4XOpU5N3ng//P0Kqdep/SXR6myVYcU6Qg+I11f04JoAqXIAtsLWKvI3IESx9IVK8rmPO/xW5IyQxL2mfIgNX7ag8s4FjgwK9NW1jwiKs0et7Bo6/KP1O0T6JTUJZoc6eE/qyDjvAs6KO1Cx/2QITLgqNhmoLLdpzOaLmoYUvfSMyOcCbyo62/9XRp8wHrg+5DoFLT+H93pnVkFhnL/2ub3CiqMrt2K44wLD6cSgFiAp3xtG/giGZx3qk5onWIiT9iDu1Db2Ex10oCUtAJyuzcMb1X8to97e5IX1jufLdNbPmrwpaZUM2ygmAlkYnujhTSC+JTrEzY24/DO6o)
+    username: ENC(I0BA9xgJB1xaeX78BW0nvUBs1V701bscpfcD/34DwTLRl7OStUrH4q5vsexcF4cm)
+    password: ENC(7JSEyGGbA7NFMeTZiI2sYfZWeii8LoAdumhZC21dgF+zB/SbDVdUDhgJby516Y+Z)
+  jpa:
+    hibernate:
+      ddl-auto: update

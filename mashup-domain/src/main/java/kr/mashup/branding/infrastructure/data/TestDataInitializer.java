@@ -25,7 +25,7 @@ import kr.mashup.branding.domain.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Profile({"local", "develop"})
+@Profile({"local"})
 @Slf4j
 @Component
 @RequiredArgsConstructor
