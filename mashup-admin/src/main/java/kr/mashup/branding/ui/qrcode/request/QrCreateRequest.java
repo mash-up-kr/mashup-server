@@ -8,6 +8,9 @@ import lombok.Value;
 @Getter
 @Value(staticConstructor = "of")
 public class QrCreateRequest {
+    
+    Long scheduleId;
+    
     Long eventId;
 
     String code;

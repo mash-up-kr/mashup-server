@@ -18,6 +18,7 @@ import com.sun.istack.NotNull;
 
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
+import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
@@ -46,15 +47,14 @@ public class Event extends BaseEntity {
     @OrderBy("startedAt")
     private final List<Content> contentList = new ArrayList<>();
 
-    @OneToOne// optional true 이다.
-    @JoinColumn(name = "attendance_code_id")
-    private AttendanceCode attendanceCode;
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AttendanceCode> attendanceCodes = new ArrayList<>();
 
-    public static Event of(Schedule schedule,String eventName, DateRange dateRange) {
+    public static Event of(Schedule schedule, String eventName, DateRange dateRange) {
         return new Event(schedule, eventName, dateRange);
     }
 
-    private Event(Schedule schedule,String eventName, DateRange dateRange) {
+    private Event(Schedule schedule, String eventName, DateRange dateRange) {
         validateEventPeriod(schedule, dateRange.getStart(), dateRange.getEnd());
         validateEventName(eventName);
         this.eventName = eventName;
@@ -70,8 +70,21 @@ public class Event extends BaseEntity {
         this.contentList.add(content);
     }
 
-    public void setAttendanceCode(AttendanceCode code) {
-        this.attendanceCode = code;
+    public AttendanceCode addAttendanceCode(String code, DateRange dateRange) {
+        final DateRange eventDateRange
+                = DateRange.of(startedAt, endedAt);
+        final boolean isValidCodeTime
+                = DateUtil.isContainDateRange(eventDateRange, dateRange);
+
+        if (!isValidCodeTime) {
+            throw new BadRequestException();
+        }
+
+        final AttendanceCode attendanceCode
+                = AttendanceCode.of(this, code, dateRange);
+        this.attendanceCodes.add(attendanceCode);
+
+        return attendanceCode;
     }
 
     public void changeStartDate(LocalDateTime newStartedAt) {
@@ -86,13 +99,13 @@ public class Event extends BaseEntity {
         this.endedAt = newEndedAt;
     }
 
-    private void validateEventName(String eventName){
+    private void validateEventName(String eventName) {
         // TODO: 타이틀 입력폼(글자수 제한)에서 글자수 제한 상세 기획 필요
     }
 
     private void validateEventPeriod(Schedule schedule, LocalDateTime startedAt, LocalDateTime endedAt) {
         if (!DateUtil.isContainDateRange(DateRange.of(schedule.getStartedAt(), schedule.getEndedAt()),
-            DateRange.of(startedAt, endedAt))) {
+                DateRange.of(startedAt, endedAt))) {
             throw new IllegalArgumentException();
         }
     }

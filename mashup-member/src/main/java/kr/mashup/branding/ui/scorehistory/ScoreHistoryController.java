@@ -24,7 +24,10 @@ public class ScoreHistoryController {
     @ApiOperation("점수 히스토리 목록")
     @GetMapping
     public ApiResponse<ScoreHistoriesResponse> getScoreHistory(@ApiIgnore MemberAuth memberAuth) {
-        List<ScoreHistoryResponse> scoreHistoryResponses = scoreHistoryFacadeService.getScoreHistory(memberAuth.getMemberId());
+
+        final List<ScoreHistoryResponse> scoreHistoryResponses
+                = scoreHistoryFacadeService.getScoreHistory(memberAuth.getMemberId());
+
         return ApiResponse.success(ScoreHistoriesResponse.of(scoreHistoryResponses));
     }
 }

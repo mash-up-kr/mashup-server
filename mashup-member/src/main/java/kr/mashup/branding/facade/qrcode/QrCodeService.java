@@ -7,7 +7,6 @@ import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.exception.BadRequestException;
-import kr.mashup.branding.service.event.EventService;
 import kr.mashup.branding.ui.qrcode.response.QrCodeResponse;
 import kr.mashup.branding.util.QrGenerator;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class QrCodeService {
-    private final EventService eventService;
 
     @Transactional(readOnly = true)
     public QrCodeResponse getQrCode(Long eventId) {

@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -26,19 +29,22 @@ public class AttendanceCode extends BaseEntity {
     @NotNull
     private LocalDateTime endedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "event_id")
+    private Event event;
+
     public static AttendanceCode of(Event event, String code, DateRange dateRange) {
         return new AttendanceCode(event, code, dateRange);
     }
 
+
     private AttendanceCode(Event event, String code, DateRange dateRange) {
 
         checkAttendancePeriod(event, dateRange);
-
         this.eventId = event.getId();
         this.code = code;
         this.startedAt = dateRange.getStart();
         this.endedAt = dateRange.getEnd();
-        event.setAttendanceCode(this);
     }
 
 
@@ -48,5 +54,6 @@ public class AttendanceCode extends BaseEntity {
             throw new IllegalArgumentException();
         }
     }
+
 
 }

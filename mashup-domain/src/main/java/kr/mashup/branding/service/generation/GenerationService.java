@@ -19,6 +19,7 @@ import java.util.List;
 
 @Service
 @Transactional
+@Validated
 @RequiredArgsConstructor
 public class GenerationService {
 
@@ -49,6 +50,7 @@ public class GenerationService {
 
         final DateRange generationDateRange
             = DateRange.of(createVo.getStatedAt(), createVo.getEndedAt());
+
         final Generation generation = Generation.of(generationNumber, generationDateRange);
 
         generationRepository.save(generation);

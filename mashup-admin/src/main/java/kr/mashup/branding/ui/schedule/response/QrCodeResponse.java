@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.qrcode.response;
+package kr.mashup.branding.ui.schedule.response;
 
 import lombok.Getter;
 import lombok.Value;

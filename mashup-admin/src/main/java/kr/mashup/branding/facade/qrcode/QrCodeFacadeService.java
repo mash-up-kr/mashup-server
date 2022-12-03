@@ -1,5 +1,6 @@
 package kr.mashup.branding.facade.qrcode;
 
+import kr.mashup.branding.service.schedule.ScheduleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,15 +15,17 @@ import kr.mashup.branding.util.QrGenerator;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
-public class QrCodeService {
-    private final EventService eventService;
+public class QrCodeFacadeService {
+    private final ScheduleService scheduleService;
     private final AttendanceCodeService attendanceCodeService;
 
     // QR 코드 생성
     @Transactional
     public QrCreateResponse generate(QrCreateRequest req) {
-        final Event event = eventService.getByIdOrThrow(req.getEventId());
+        
+        final Event event = scheduleService.getEventOrThrow(req.getEventId());
         final DateRange period = DateRange.of(req.getStart(), req.getEnd());
 
         attendanceCodeService.save(

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
-import kr.mashup.branding.facade.qrcode.QrCodeService;
+import kr.mashup.branding.facade.qrcode.QrCodeFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.qrcode.request.QrCreateRequest;
 import kr.mashup.branding.ui.qrcode.response.QrCreateResponse;
@@ -17,14 +17,14 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/qr-code")
 public class QrCodeController {
 
-    private final QrCodeService qrCodeService;
+    private final QrCodeFacadeService qrCodeFacadeService;
 
     @ApiOperation("QR 코드 생성")
     @PostMapping("/")
     public ApiResponse<QrCreateResponse> create(
         @RequestBody QrCreateRequest request
     ) {
-        final QrCreateResponse res = qrCodeService.generate(request);
+        final QrCreateResponse res = qrCodeFacadeService.generate(request);
         return ApiResponse.success(res);
     }
 }
