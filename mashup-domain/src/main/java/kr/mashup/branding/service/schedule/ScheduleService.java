@@ -48,6 +48,7 @@ public class ScheduleService {
         return scheduleRepository.findByGeneration(generation,Pageable.unpaged()).getContent();
     }
 
+
     public Page<Schedule> getByGeneration(Generation generation, Pageable pageable) {
         return scheduleRepository
             .findByGeneration(generation, pageable);
@@ -131,4 +132,5 @@ public class ScheduleService {
 
         return attendanceCode;
     }
+
 }

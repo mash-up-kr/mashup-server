@@ -92,12 +92,16 @@ public class ScheduleFacadeService {
 
     @Transactional
     public QrCodeResponse generateQrCode(Long scheduleId, Long eventId, QrCodeGenerateRequest request) {
+
         final Schedule schedule
                 = scheduleService.getByIdOrThrow(scheduleId);
+
         final Event event
                 = scheduleService.getEventOrThrow(schedule, eventId);
+
         final DateRange codeValidRequestTime
                 = DateRange.of(request.getStartedAt(), request.getEndedAt());
+
         final AttendanceCode attendanceCode
                 = scheduleService.addAttendanceCode(event, codeValidRequestTime);
 

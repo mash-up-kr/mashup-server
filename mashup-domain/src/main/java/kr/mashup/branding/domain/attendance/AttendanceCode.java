@@ -21,8 +21,6 @@ import java.time.LocalDateTime;
 public class AttendanceCode extends BaseEntity {
 
     @NotNull
-    private Long eventId;
-    @NotNull
     private String code;
     @NotNull
     private LocalDateTime startedAt;
@@ -41,7 +39,7 @@ public class AttendanceCode extends BaseEntity {
     private AttendanceCode(Event event, String code, DateRange dateRange) {
 
         checkAttendancePeriod(event, dateRange);
-        this.eventId = event.getId();
+        this.event = event;
         this.code = code;
         this.startedAt = dateRange.getStart();
         this.endedAt = dateRange.getEnd();

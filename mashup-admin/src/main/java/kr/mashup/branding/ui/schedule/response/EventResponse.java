@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.schedule.response;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.schedule.Event;
@@ -17,8 +18,6 @@ public class EventResponse {
 
     LocalDateTime endedAt;
 
-    AttendanceCodeResponse attendanceCode;
-
     List<ContentResponse> contentList;
 
     public static EventResponse from(Event event) {
@@ -26,7 +25,6 @@ public class EventResponse {
             event.getId(),
             event.getStartedAt(),
             event.getEndedAt(),
-            AttendanceCodeResponse.from(event.getAttendanceCode()),
             event.getContentList()
                 .stream()
                 .map(ContentResponse::from)

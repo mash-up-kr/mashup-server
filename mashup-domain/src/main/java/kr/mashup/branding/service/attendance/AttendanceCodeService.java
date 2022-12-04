@@ -1,6 +1,7 @@
 package kr.mashup.branding.service.attendance;
 
 import kr.mashup.branding.domain.attendance.AttendanceCode;
+import kr.mashup.branding.domain.attendance.AttendanceCodeNotFoundException;
 import kr.mashup.branding.repository.attendancecode.AttendanceCodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,5 +14,9 @@ public class AttendanceCodeService {
 
     public AttendanceCode save(AttendanceCode attendanceCode) {
         return attendanceCodeRepository.save(attendanceCode);
+    }
+
+    public AttendanceCode getByCodeOrThrow(String code){
+        return attendanceCodeRepository.findByCode(code).orElseThrow(AttendanceCodeNotFoundException::new);
     }
 }
