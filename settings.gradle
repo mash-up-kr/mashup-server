@@ -1,7 +1,0 @@
-rootProject.name = 'mashup-server'
-include 'mashup-domain'
-include 'mashup-recruit'
-include 'mashup-member'
-include 'mashup-admin'
-include 'mashup-batch'
-
