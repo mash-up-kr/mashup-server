@@ -6,6 +6,5 @@ public enum RecruitmentScheduleEventName {
     SCREENING_RESULT_ANNOUNCED("SCREENING_RESULT_ANNOUNCED"),
     INTERVIEW_RESULT_ANNOUNCED("INTERVIEW_RESULT_ANNOUNCED");
 
-    RecruitmentScheduleEventName(String desc) {
-    }
+    RecruitmentScheduleEventName(String desc) {}
 }

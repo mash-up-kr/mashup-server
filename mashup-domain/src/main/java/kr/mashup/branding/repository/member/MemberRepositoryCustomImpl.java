@@ -37,9 +37,9 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     @Override
     public Page<MemberScoreQueryResult> findAllActiveByGeneration(Generation generation, Platform platform, String searchName, Pageable pageable) {
         //기본 정렬은 이름 기준
-        Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "name"));
+        final Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "name"));
 
-        QueryResults<MemberScoreQueryResult> results = queryFactory
+        final QueryResults<MemberScoreQueryResult> results = queryFactory
             // score sum 은 numberPath sumAlias 로 접근한다. 정렬 필드에 score 가 있을 시에도 사용
             .select(Projections.constructor(MemberScoreQueryResult.class, member, memberGeneration.platform, scoreHistory.score.sum().coalesce(0d).as(sumAlias)))
             .from(member)
@@ -65,11 +65,11 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     }
 
     private OrderSpecifier[] getOrderSpecifier(Sort sort) {
-        List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
+        final List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
         for (Sort.Order order : sort) {
-            Sort.Direction direction = order.getDirection();
-            String field = order.getProperty();
-            Order qOrder = direction.isAscending() ? Order.ASC : Order.DESC;
+            final Sort.Direction direction = order.getDirection();
+            final String field = order.getProperty();
+            final Order qOrder = direction.isAscending() ? Order.ASC : Order.DESC;
 
             OrderSpecifier orderSpecifier = null;
 
@@ -98,7 +98,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     @Override
     public Long countActiveByPlatformAndGeneration(Platform platform, Generation generation) {
-        Integer count = queryFactory
+        final Integer count = queryFactory
             .select(member.count())
             .from(member)
             .join(memberGeneration).on(memberGeneration.member.eq(member))
@@ -106,6 +106,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .and(memberGeneration.generation.eq(generation))
                 .and(member.status.eq(MemberStatus.ACTIVE)))
             .fetch().size();
+
         return count.longValue();
     }
 
@@ -122,7 +123,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     @Override
     public Page<Member> findActiveByPlatformAndGeneration(Platform platform, Generation generation, Pageable pageable) {
-        List<OrderSpecifier> orderSpecifiers = QueryUtils.toOrderSpecifiers(member, pageable.getSortOr(Sort.by(Sort.Order.asc("name"))));
+        final List<OrderSpecifier> orderSpecifiers = QueryUtils.toOrderSpecifiers(member, pageable.getSortOr(Sort.by(Sort.Order.asc("name"))));
         QueryResults<Member> fetchResults = queryFactory
             .selectFrom(member)
             .join(memberGeneration).on(memberGeneration.member.eq(member))

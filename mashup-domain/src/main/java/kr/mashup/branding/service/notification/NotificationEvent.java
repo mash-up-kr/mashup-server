@@ -6,5 +6,4 @@ import lombok.Value;
 public class NotificationEvent {
     Long notificationId;
     NotificationEventType type;
-
 }

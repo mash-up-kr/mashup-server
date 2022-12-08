@@ -75,6 +75,7 @@ public enum ResultCode {
 
     // Generation (기수)
     GENERATION_NOT_FOUND("기수가 존재하지 않습니다."),
+    GENERATION_ALREADY_EXISTS("이미 존재하는 기수입니다."),
     MEMBER_GENERATION_NOT_FOUND("사용자의 기수 정보가 존재하지 않습니다."),
 
     // AttendanceCode (출석 코드)

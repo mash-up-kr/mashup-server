@@ -25,5 +25,7 @@ public class ApplicationResponse {
     private List<AnswerResponse> answers;
     private ApplicationResultResponse result;
     private Boolean privacyPolicyAgreed;
+    // 기수 정보 추가
+    private GenerationResponse generationResponse;
 
 }

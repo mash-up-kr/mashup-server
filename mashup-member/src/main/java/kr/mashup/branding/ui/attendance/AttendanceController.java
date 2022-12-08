@@ -41,11 +41,11 @@ public class AttendanceController {
         @ApiIgnore MemberAuth auth,
         @RequestBody AttendanceCheckRequest req
     ) {
-        AttendanceCheckResponse res = attendanceFacadeService.checkAttendance(
-            auth.getMemberId(),
-            req.getCheckingCode()
-        );
-        return ApiResponse.success(res);
+
+        final AttendanceCheckResponse response
+                = attendanceFacadeService.checkAttendance(auth.getMemberId(), req.getCheckingCode());
+
+        return ApiResponse.success(response);
     }
 
     @ApiOperation(

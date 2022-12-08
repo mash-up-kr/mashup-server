@@ -2,7 +2,7 @@ package kr.mashup.branding.ui.recruitmentschedule;
 
 import java.time.LocalDateTime;
 
-import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleUpdateVo;
+import kr.mashup.branding.domain.recruitmentschedule.vo.RecruitmentScheduleUpdateVo;
 import lombok.Getter;
 import lombok.ToString;
 

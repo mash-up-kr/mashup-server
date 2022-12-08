@@ -2,11 +2,10 @@ package kr.mashup.branding.service.applicant;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import kr.mashup.branding.domain.applicant.Applicant;
-import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
-import kr.mashup.branding.domain.applicant.JoinRequestVo;
+import kr.mashup.branding.domain.applicant.exception.ApplicantNotFoundException;
+import kr.mashup.branding.domain.applicant.vo.JoinRequestVo;
 import kr.mashup.branding.repository.applicant.ApplicantRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +20,7 @@ public class ApplicantService {
 
     private final ApplicantRepository applicantRepository;
 
-    public Applicant getApplicant(Long applicantId) {
+    public Applicant getApplicant(final Long applicantId) {
 
         Assert.notNull(applicantId, "'applicantId' must not be null");
 
@@ -30,7 +29,8 @@ public class ApplicantService {
     }
 
     @Transactional
-    public Applicant join(JoinRequestVo joinRequestVo) {
+    public Applicant join(final JoinRequestVo joinRequestVo) {
+
         Assert.notNull(joinRequestVo, "'joinRequestVo' must not be null");
 
         final Applicant applicant
@@ -41,7 +41,7 @@ public class ApplicantService {
         return applicant;
     }
 
-    public List<Applicant> getApplicants(Collection<Long> applicantIds) {
+    public List<Applicant> getApplicants(final Collection<Long> applicantIds) {
         return applicantRepository.findByApplicantIdIn(applicantIds);
     }
 }
