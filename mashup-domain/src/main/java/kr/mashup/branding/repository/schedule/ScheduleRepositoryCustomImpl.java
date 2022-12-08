@@ -28,7 +28,6 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-
     @Override
     public Page<Schedule> findByGeneration(Generation _generation, Pageable pageable) {
         Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "startedAt"));
@@ -52,15 +51,6 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
 
             OrderSpecifier orderSpecifier = null;
 
-            if (field.equals("name") || field.equals("identification")) {
-                orderSpecifier = new OrderSpecifier(qOrder, Expressions.path(Object.class, member, field));
-            } else if (field.equals("platform")) {
-                orderSpecifier = new OrderSpecifier(qOrder, Expressions.path(Object.class, memberGeneration, field));
-            } else if (field.equals("score")) {
-                orderSpecifier = new OrderSpecifier(qOrder, sumAlias);
-            } else {
-                throw new BadRequestException(ResultCode.BAD_REQUEST);
-            }
 
             orderSpecifiers.add(orderSpecifier);
         }

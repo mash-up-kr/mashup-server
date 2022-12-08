@@ -25,10 +25,10 @@ public class MemberController {
     @ApiOperation("회원 정보 조회")
     @GetMapping
     public ApiResponse<MemberInfoResponse> getMemberInfo(
-        @ApiIgnore MemberAuth memberAuth
+            @ApiIgnore MemberAuth memberAuth
     ) {
-        MemberInfoResponse memberInfoResponse =
-            memberFacadeService.getMemberInfo(memberAuth.getMemberId());
+        final MemberInfoResponse memberInfoResponse =
+                memberFacadeService.getMemberInfo(memberAuth.getMemberId());
 
         return ApiResponse.success(memberInfoResponse);
     }
@@ -36,18 +36,21 @@ public class MemberController {
     @ApiOperation("ID 중복 조회")
     @GetMapping("{id}")
     public ApiResponse<ValidResponse> isDuplicatedId(
-        @PathVariable String id
-    ){
-        ValidResponse response = memberFacadeService.checkDuplicatedIdentification(id);
+            @PathVariable String id
+    ) {
+        final ValidResponse response
+                = memberFacadeService.checkDuplicatedIdentification(id);
 
         return ApiResponse.success(response);
     }
+
     @ApiOperation("로그인")
     @PostMapping("login")
     public ApiResponse<AccessResponse> login(
-        @Valid @RequestBody LoginRequest request
+            @Valid @RequestBody LoginRequest request
     ) {
-        AccessResponse memberAccessResponse = memberFacadeService.login(request);
+        final AccessResponse memberAccessResponse
+                = memberFacadeService.login(request);
 
         return ApiResponse.success(memberAccessResponse);
     }
@@ -55,9 +58,10 @@ public class MemberController {
     @ApiOperation("회원가입")
     @PostMapping("signup")
     public ApiResponse<AccessResponse> signUp(
-        @Valid @RequestBody SignUpRequest request
+            @Valid @RequestBody SignUpRequest request
     ) {
-        AccessResponse accessResponse = memberFacadeService.signUp(request);
+        final AccessResponse accessResponse
+                = memberFacadeService.signUp(request);
 
         return ApiResponse.success(accessResponse);
     }
@@ -65,8 +69,8 @@ public class MemberController {
     @ApiOperation("회원 가입 코드 검증")
     @GetMapping("code")
     public ApiResponse<ValidResponse> validateSignUpCode(ValidInviteRequest req) {
-        ValidResponse response =
-            memberFacadeService.validateInviteCode(req);
+        final ValidResponse response =
+                memberFacadeService.validateInviteCode(req);
 
         return ApiResponse.success(response);
     }
@@ -85,8 +89,10 @@ public class MemberController {
     @PostMapping("/token")
     public ApiResponse<TokenResponse> issueAccessToken(
             @ApiIgnore MemberAuth memberAuth
-    ){
-        TokenResponse tokenResponse = memberFacadeService.getAccessToken(memberAuth.getMemberId());
+    ) {
+        final TokenResponse tokenResponse
+                = memberFacadeService.getAccessToken(memberAuth.getMemberId());
+
         return ApiResponse.success(tokenResponse);
     }
 

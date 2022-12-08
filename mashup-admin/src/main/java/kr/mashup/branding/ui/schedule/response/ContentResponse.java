@@ -1,10 +1,10 @@
-package kr.mashup.branding.ui.content.response;
-
-import java.time.LocalDateTime;
+package kr.mashup.branding.ui.schedule.response;
 
 import kr.mashup.branding.domain.schedule.Content;
 import lombok.Getter;
 import lombok.Value;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Value(staticConstructor = "of")

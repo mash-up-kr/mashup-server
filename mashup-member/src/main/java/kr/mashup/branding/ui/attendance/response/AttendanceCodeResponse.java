@@ -24,7 +24,7 @@ public class AttendanceCodeResponse {
     public static AttendanceCodeResponse from(AttendanceCode attendanceCode) {
         return new AttendanceCodeResponse(
             attendanceCode.getId(),
-            attendanceCode.getEventId(),
+            attendanceCode.getEvent().getId(),
             attendanceCode.getCode(),
             attendanceCode.getStartedAt(),
             attendanceCode.getEndedAt()

@@ -10,6 +10,7 @@ import kr.mashup.branding.domain.schedule.Schedule;
 public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findBySchedule(Schedule schedule);
+
 }
 /**
  * Event 연관관계
