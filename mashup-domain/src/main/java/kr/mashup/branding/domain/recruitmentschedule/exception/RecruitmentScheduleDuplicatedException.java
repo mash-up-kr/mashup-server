@@ -1,4 +1,4 @@
-package kr.mashup.branding.domain.recruitmentschedule;
+package kr.mashup.branding.domain.recruitmentschedule.exception;
 
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;

@@ -8,8 +8,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.domain.generation.QGeneration;
-import kr.mashup.branding.domain.schedule.QSchedule;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.util.QueryUtils;
 import lombok.RequiredArgsConstructor;

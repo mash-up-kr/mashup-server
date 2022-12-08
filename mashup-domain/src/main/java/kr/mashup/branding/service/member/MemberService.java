@@ -31,15 +31,15 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberGenerationRepository memberGenerationRepository;
 
-    public Member save(MemberCreateDto memberCreateDto) {
-
-        Boolean isExist = memberRepository.existsByIdentification(memberCreateDto.getIdentification());
+    public Member save(final MemberCreateDto memberCreateDto) {
+        // 이미 존재하는 identification 인지 확인한다.
+        final Boolean isExist = memberRepository.existsByIdentification(memberCreateDto.getIdentification());
         if (isExist) {
             throw new BadRequestException(ResultCode.MEMBER_DUPLICATED_IDENTIFICATION);
         }
-        Generation generation = memberCreateDto.getGeneration();
 
-        Member member = Member.of(
+        final Generation generation = memberCreateDto.getGeneration();
+        final Member member = Member.of(
             memberCreateDto.getName(),
             memberCreateDto.getIdentification(),
             memberCreateDto.getPassword(),
@@ -48,7 +48,8 @@ public class MemberService {
         );
         memberRepository.save(member);
 
-        MemberGeneration memberGeneration = MemberGeneration.of(member, generation, memberCreateDto.getPlatform());
+        final MemberGeneration memberGeneration = MemberGeneration.of(member, generation, memberCreateDto.getPlatform());
+
         memberGenerationRepository.save(memberGeneration);
         member.addMemberGenerations(memberGeneration);
 
@@ -58,15 +59,15 @@ public class MemberService {
 
     //2-1. 회원 조회 - active 상태만
     public Member getActiveOrThrowById(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
+        final Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         checkActiveStatus(member);
+
         return member;
     }
 
     public Member getActiveOrThrowByIdentification(String identification) {
-        Member member = memberRepository.findByIdentification(identification)
-            .orElseThrow(MemberNotFoundException::new);
+        final Member member
+            = memberRepository.findByIdentification(identification).orElseThrow(MemberNotFoundException::new);
         checkActiveStatus(member);
         return member;
     }
@@ -79,7 +80,7 @@ public class MemberService {
         String identification,
         String password
     ) {
-        Member member = memberRepository.findByIdentification(identification)
+        final Member member = memberRepository.findByIdentification(identification)
             .orElseThrow(MemberNotFoundException::new);
         if (!member.isMatchPassword(password, passwordEncoder)) {
             throw new MemberLoginFailException();
@@ -93,9 +94,9 @@ public class MemberService {
         Platform platform,
         String searchName,
         Pageable pageable
-        ) {
+    ) {
 
-        return memberRepository.findAllActiveByGeneration(generation,platform, searchName, pageable);
+        return memberRepository.findAllActiveByGeneration(generation, platform, searchName, pageable);
     }
 
     public List<Member> getAllByPlatformAndGeneration(
@@ -132,8 +133,9 @@ public class MemberService {
     }
 
     public Platform getLatestPlatform(Member member) {
-        List<MemberGeneration> memberGenerations = getMemberGenerations(member);
+        final List<MemberGeneration> memberGenerations = getMemberGenerations(member);
         memberGenerations.sort(Comparator.comparingInt(it -> it.getGeneration().getNumber()));
+
         return memberGenerations.get(memberGenerations.size() - 1).getPlatform();
     }
 
@@ -142,7 +144,7 @@ public class MemberService {
         String rawPassword,
         String newPassword
     ) {
-        Member member = memberRepository.findById(memberId)
+        final Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
         checkActiveStatus(member);
         member.changePassword(rawPassword, newPassword, passwordEncoder);
@@ -152,7 +154,7 @@ public class MemberService {
 
     public Member activate(Long memberId) {
 
-        Member member = memberRepository.findById(memberId)
+        final Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
         member.activate();
 
@@ -162,8 +164,9 @@ public class MemberService {
 
     //4. 회원 삭제
     public void deleteMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+        final Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
+
         memberGenerationRepository.deleteByMember(member);
         memberRepository.delete(member);
     }

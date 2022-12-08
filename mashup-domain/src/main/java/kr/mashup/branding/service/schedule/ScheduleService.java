@@ -37,7 +37,7 @@ public class ScheduleService {
     }
 
     public List<Schedule> getByGeneration(Generation generation) {
-        return scheduleRepository.findByGeneration(generation,Pageable.unpaged());
+        return scheduleRepository.findByGeneration(generation,Pageable.unpaged()).toList();
     }
 
     public Page<Schedule> getByGeneration(Generation generation, Pageable pageable) {
@@ -46,11 +46,12 @@ public class ScheduleService {
     }
 
     public Event addEvents(Schedule schedule, EventCreateDto dto){
-        if(schedule.getStatus() == ScheduleStatus.PUBLIC){
 
-        }
+        onlyHidingScheduleCanChanged(schedule);
+
         final Event event
             = Event.of(schedule, dto.getEventName(), dto.getDateRange());
+
         schedule.addEvent(event);
         return event;
     }
@@ -58,9 +59,8 @@ public class ScheduleService {
 
     public Content addContent(Event event, ContentsCreateDto dto) {
         final Schedule schedule = event.getSchedule();
-        if(schedule.getStatus() == ScheduleStatus.PUBLIC){
+        onlyHidingScheduleCanChanged(schedule);
 
-        }
         final Content content
             = Content.of(event, dto.getTitle(), dto.getDesc(), dto.getStartedAt());
         event.addContent(content);
@@ -73,16 +73,25 @@ public class ScheduleService {
     }
 
     public void deleteSchedule(Schedule schedule) {
-        if(schedule.getStatus() == ScheduleStatus.PUBLIC){
+        onlyHidingScheduleCanChanged(schedule);
+        passedScheduleMustNotBeDeleted(schedule);
 
-        }
-        if(schedule.getStartedAt().isBefore(LocalDateTime.now())){
-
-        }
         scheduleRepository.delete(schedule);
+    }
+
+    private void passedScheduleMustNotBeDeleted(Schedule schedule) {
+        if(schedule.getStartedAt().isBefore(LocalDateTime.now())){
+            throw new ScheduleAlreadyPublishedException();
+        }
     }
 
     public void hideSchedule(Schedule schedule) {
         schedule.hide();
+    }
+
+    private void onlyHidingScheduleCanChanged(Schedule schedule){
+        if(schedule.getStatus() == ScheduleStatus.PUBLIC){
+            throw new ScheduleAlreadyPublishedException();
+        }
     }
 }

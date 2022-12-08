@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.recruitmentschedule.vo.RecruitmentScheduleCreateVo;
+import kr.mashup.branding.domain.recruitmentschedule.vo.RecruitmentScheduleUpdateVo;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -60,14 +62,14 @@ public class RecruitmentSchedule {
     private LocalDateTime updatedAt;
 
 
-    public static RecruitmentSchedule from(RecruitmentScheduleCreateVo recruitmentScheduleCreateVo) {
-        RecruitmentSchedule recruitmentSchedule = new RecruitmentSchedule();
+    public static RecruitmentSchedule from(final RecruitmentScheduleCreateVo recruitmentScheduleCreateVo) {
+        final RecruitmentSchedule recruitmentSchedule = new RecruitmentSchedule();
         recruitmentSchedule.eventName = recruitmentScheduleCreateVo.getEventName();
         recruitmentSchedule.eventOccurredAt = recruitmentScheduleCreateVo.getEventOccurredAt();
         return recruitmentSchedule;
     }
 
-    public RecruitmentSchedule update(RecruitmentScheduleUpdateVo recruitmentScheduleUpdateVo) {
+    public RecruitmentSchedule update(final RecruitmentScheduleUpdateVo recruitmentScheduleUpdateVo) {
         this.eventOccurredAt = recruitmentScheduleUpdateVo.getEventOccurredAt();
         return this;
     }

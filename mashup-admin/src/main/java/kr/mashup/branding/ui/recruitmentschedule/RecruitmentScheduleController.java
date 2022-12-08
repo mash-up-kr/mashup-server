@@ -1,7 +1,6 @@
 package kr.mashup.branding.ui.recruitmentschedule;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.mashup.branding.domain.recruitmentschedule.RecruitmentSchedule;
-import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleCreateVo;
-import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleUpdateVo;
 import kr.mashup.branding.facade.recruitmentschedule.RecruitmentScheduleFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;

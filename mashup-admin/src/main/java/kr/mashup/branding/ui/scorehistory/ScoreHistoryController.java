@@ -29,7 +29,6 @@ public class ScoreHistoryController {
     public ApiResponse<EmptyResponse> addScore(
         @RequestBody ScoreAddRequest request
     ) {
-
         scoreHistoryFacadeService.addScore(request.getMemberId(), request.getGenerationNumber(), request.getScoreType(), request.getName(), request.getDate(), request.getMemo());
         return ApiResponse.success(EmptyResponse.of());
     }

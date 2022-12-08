@@ -22,26 +22,26 @@ public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
 
-    public boolean isExist(Member member, Event event) {
+    public boolean isExist(final Member member, final Event event) {
         return attendanceRepository.existsAttendanceByMemberAndEvent(member, event);
     }
 
-    public Attendance getOrThrow(Member member, Event event) {
+    public Attendance getOrThrow(final Member member, final Event event) {
         return attendanceRepository.findByMemberAndEvent(member, event)
             .orElseThrow(() -> new NotFoundException(ResultCode.ATTENDANCE_NOT_FOUND));
     }
 
     public Attendance checkAttendance(
-        Member member,
-        Event event,
-        AttendanceStatus status
+        final Member member,
+        final Event event,
+        final AttendanceStatus status
     ) {
         return attendanceRepository.save(Attendance.of(member, status, event));
     }
 
     public AttendanceStatus getAttendanceStatusByMemberAndStartedEvents(
-        Member member,
-        List<Event> startedEvents
+        final Member member,
+        final List<Event> startedEvents
     ) {
         if(startedEvents.isEmpty()) return AttendanceStatus.ABSENT;
 

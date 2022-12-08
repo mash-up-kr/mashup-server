@@ -66,12 +66,12 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
             queryFactory
                 .selectFrom(application)
                 .from(application)
-                    .join(application.applicant, applicant).fetchJoin()
-                    .join(application.applicationForm, applicationForm).fetchJoin()
-                    .join(applicationForm.team, team).fetchJoin()
-                    .join(team.generation, generation).fetchJoin()
-                    .join(application.applicationResult, applicationResult).fetchJoin()
-                    .join(application.confirmation, confirmation).fetchJoin()
+                .join(application.applicant, applicant).fetchJoin()
+                .join(application.applicationForm, applicationForm).fetchJoin()
+                .join(applicationForm.team, team).fetchJoin()
+                .join(team.generation, generation).fetchJoin()
+                .join(application.applicationResult, applicationResult).fetchJoin()
+                .join(application.confirmation, confirmation).fetchJoin()
                 .where(
                     teamIdEq(teamId),
                     screeningStatusEq(screeningStatus),
@@ -134,13 +134,24 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
     }
 
     @Override
-    public boolean existByApplicantAndApplicationStatus(Long applicantId, ApplicationStatus status) {
+    public boolean existByGenerationAndApplicantAndApplicationStatus(
+        Generation _generation,
+        Long applicantId,
+        ApplicationStatus status) {
+
         Application fetchFirst = queryFactory
             .selectFrom(application)
             .join(application.applicant, applicant)
-            .where(applicant.applicantId.eq(applicantId)
-                .and(application.status.eq(status)))
+            .join(application.applicationForm, applicationForm)
+            .join(applicationForm.team, team)
+            .join(team.generation, generation)
+            .where(
+                applicant.applicantId.eq(applicantId),
+                application.status.eq(status),
+                generation.id.eq(_generation.getId())
+            )
             .fetchFirst();
+
         return fetchFirst != null;
     }
 
@@ -149,12 +160,12 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
         return queryFactory
             .selectFrom(application)
             .from(application)
-                .join(application.applicant, applicant).fetchJoin()
-                .join(application.applicationForm, applicationForm).fetchJoin()
-                .join(applicationForm.team, team).fetchJoin()
-                .join(team.generation, generation).fetchJoin()
-                .join(application.applicationResult, applicationResult).fetchJoin()
-                .join(application.confirmation, confirmation).fetchJoin()
+            .join(application.applicant, applicant).fetchJoin()
+            .join(application.applicationForm, applicationForm).fetchJoin()
+            .join(applicationForm.team, team).fetchJoin()
+            .join(team.generation, generation).fetchJoin()
+            .join(application.applicationResult, applicationResult).fetchJoin()
+            .join(application.confirmation, confirmation).fetchJoin()
             .where(applicant.applicantId.eq(applicantId)
                 .and(application.status.in(statuses)))
             .fetch();
@@ -164,12 +175,12 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
     public List<Application> findByApplicantAndApplicationForm(Applicant _applicant, ApplicationForm _applicationForm) {
         return queryFactory
             .selectFrom(application)
-                .join(application.applicant, applicant).fetchJoin()
-                .join(application.applicationForm, applicationForm).fetchJoin()
-                .join(applicationForm.team, team).fetchJoin()
-                .join(team.generation, generation).fetchJoin()
-                .join(application.applicationResult, applicationResult).fetchJoin()
-                .join(application.confirmation, confirmation).fetchJoin()
+            .join(application.applicant, applicant).fetchJoin()
+            .join(application.applicationForm, applicationForm).fetchJoin()
+            .join(applicationForm.team, team).fetchJoin()
+            .join(team.generation, generation).fetchJoin()
+            .join(application.applicationResult, applicationResult).fetchJoin()
+            .join(application.confirmation, confirmation).fetchJoin()
             .where(applicant.eq(_applicant)
                 .and(applicationForm.eq(_applicationForm)))
             .fetch();
@@ -197,12 +208,12 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
     public List<Application> findByApplicationForm(Long applicationFormId) {
         return queryFactory
             .selectFrom(application)
-                .join(application.applicant, applicant).fetchJoin()
-                .join(application.applicationForm, applicationForm).fetchJoin()
-                .join(applicationForm.team, team).fetchJoin()
-                .join(team.generation, generation).fetchJoin()
-                .join(application.applicationResult, applicationResult).fetchJoin()
-                .join(application.confirmation, confirmation).fetchJoin()
+            .join(application.applicant, applicant).fetchJoin()
+            .join(application.applicationForm, applicationForm).fetchJoin()
+            .join(applicationForm.team, team).fetchJoin()
+            .join(team.generation, generation).fetchJoin()
+            .join(application.applicationResult, applicationResult).fetchJoin()
+            .join(application.confirmation, confirmation).fetchJoin()
             .where(applicationForm.applicationFormId.eq(applicationFormId))
             .fetch();
     }
@@ -211,12 +222,12 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
     public List<Application> findByStatusAndCreatedAtBefore(ApplicationStatus status, LocalDateTime eventOccurredAt) {
         return queryFactory
             .selectFrom(application)
-                .join(application.applicant, applicant).fetchJoin()
-                .join(application.applicationForm, applicationForm).fetchJoin()
-                .join(applicationForm.team, team).fetchJoin()
-                .join(team.generation, generation).fetchJoin()
-                .join(application.applicationResult, applicationResult).fetchJoin()
-                .join(application.confirmation, confirmation).fetchJoin()
+            .join(application.applicant, applicant).fetchJoin()
+            .join(application.applicationForm, applicationForm).fetchJoin()
+            .join(applicationForm.team, team).fetchJoin()
+            .join(team.generation, generation).fetchJoin()
+            .join(application.applicationResult, applicationResult).fetchJoin()
+            .join(application.confirmation, confirmation).fetchJoin()
             .where(application.status.eq(status)
                 .and(application.createdAt.before(eventOccurredAt)))
             .fetch();
@@ -226,12 +237,12 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
     public List<Application> findApplicationsByApplicantIn(Generation _generation, List<Applicant> applicants) {
         return queryFactory
             .selectFrom(application)
-                .join(application.applicant, applicant).fetchJoin()
-                .join(application.applicationForm, applicationForm).fetchJoin()
-                .join(applicationForm.team, team).fetchJoin()
-                .join(team.generation, generation).fetchJoin()
-                .join(application.applicationResult, applicationResult).fetchJoin()
-                .join(application.confirmation, confirmation).fetchJoin()
+            .join(application.applicant, applicant).fetchJoin()
+            .join(application.applicationForm, applicationForm).fetchJoin()
+            .join(applicationForm.team, team).fetchJoin()
+            .join(team.generation, generation).fetchJoin()
+            .join(application.applicationResult, applicationResult).fetchJoin()
+            .join(application.confirmation, confirmation).fetchJoin()
             .where(applicant.in(applicants).and(generation.eq(_generation)))
             .fetch();
     }

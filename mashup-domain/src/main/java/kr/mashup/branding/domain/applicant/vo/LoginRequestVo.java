@@ -1,4 +1,4 @@
-package kr.mashup.branding.domain.applicant;
+package kr.mashup.branding.domain.applicant.vo;
 
 import lombok.Value;
 

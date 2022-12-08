@@ -19,17 +19,18 @@ import java.util.List;
 
 @Service
 @Transactional
+@Validated
 @RequiredArgsConstructor
 public class GenerationService {
 
     private final GenerationRepository generationRepository;
 
-    public Generation getByIdOrThrow(Long generationId) {
+    public Generation getByIdOrThrow(final Long generationId) {
         return generationRepository.findById(generationId)
             .orElseThrow(() -> new NotFoundException(ResultCode.GENERATION_NOT_FOUND));
     }
 
-    public Generation getByNumberOrThrow(Integer number) {
+    public Generation getByNumberOrThrow(final Integer number) {
         return generationRepository.findByNumber(number)
             .orElseThrow(() -> new NotFoundException(ResultCode.GENERATION_NOT_FOUND));
     }
@@ -38,7 +39,7 @@ public class GenerationService {
         return generationRepository.findAll();
     }
 
-    public Generation create(@Valid GenerationCreateVo createVo){
+    public Generation create(@Valid final GenerationCreateVo createVo){
 
         final Integer generationNumber = createVo.getGenerationNumber();
 
@@ -56,7 +57,7 @@ public class GenerationService {
         return generation;
     }
 
-    public Generation update(@Valid GenerationUpdateVo updateVo) {
+    public Generation update(@Valid final GenerationUpdateVo updateVo) {
 
         final Long generationId = updateVo.getGenerationId();
 

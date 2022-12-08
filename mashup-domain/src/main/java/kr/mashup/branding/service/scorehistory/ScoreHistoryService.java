@@ -28,10 +28,10 @@ public class ScoreHistoryService {
     private final EventRepository eventRepository;
 
     public ScoreHistory save(ScoreHistory scoreHistory) {
-
         scoreHistoryRepository.save(scoreHistory);
         return scoreHistory;
     }
+
     public List<ScoreHistory> getByMember(Member member) {
         return scoreHistoryRepository.findByMember(member);
     }
@@ -59,6 +59,9 @@ public class ScoreHistoryService {
         return ScoreHistory.of(scoreType, schedule, member);
     }
 
+    /**
+     * 출석 결과로 최종 출석 결과를 생성한다.
+     */
     private ScoreType getScoreTypeByAttendances(
         List<Event> events,
         List<Attendance> attendances

@@ -57,16 +57,17 @@ public class ApplicationService {
      */
     @Transactional
     public Application create(Long applicantId, Applicant applicant, ApplicationForm applicationForm) {
+
         Assert.notNull(applicantId, "'applicantId' must not be null");
+
         final Generation generation = applicationForm.getTeam().getGeneration();
         validateDate(generation, applicantId);
 
         final List<Application> applications
             = applicationRepository.findByApplicantAndApplicationForm(applicant, applicationForm);
 
-        // TODO: unique index (applicantId, applicationFormId)
         if (!applications.isEmpty()) {
-            Application application = applications.get(0);
+            final Application application = applications.get(0);
             if (application.isSubmitted()) {
                 throw new ApplicationAlreadySubmittedException();
             }
@@ -85,13 +86,12 @@ public class ApplicationService {
         final Generation generation = application.getApplicationForm().getTeam().getGeneration();
 
         validateDate(generation, applicantId);
-        validateSubmittedApplicationExists(applicantId, applicationId);
+        validateSubmittedApplicationExists(generation, applicantId, applicationId);
 
         application.update(updateApplicationVo);
 
         return application;
     }
-
 
 
     @Transactional
@@ -106,7 +106,7 @@ public class ApplicationService {
         final Generation generation = application.getApplicationForm().getTeam().getGeneration();
 
         validateDate(generation, applicantId);
-        validateSubmittedApplicationExists(applicantId, applicationId);
+        validateSubmittedApplicationExists(generation, applicantId, applicationId);
 
 
         try {
@@ -133,12 +133,23 @@ public class ApplicationService {
     /**
      * 이미 제출한 지원서가 존재하는지 검증
      *
+     * @param generation    해당 기수
      * @param applicantId   지원자 식별자
      * @param applicationId 지원서 식별자
      */
-    private void validateSubmittedApplicationExists(Long applicantId, Long applicationId) {
-        // TODO: 기수 정보 적용 필요
-        if (applicationRepository.existByApplicantAndApplicationStatus(applicantId, ApplicationStatus.SUBMITTED)) {
+    private void validateSubmittedApplicationExists(
+        final Generation generation,
+        final Long applicantId,
+        final Long applicationId) {
+
+        final boolean alreadySubmittedInGeneration =
+            applicationRepository
+            .existByGenerationAndApplicantAndApplicationStatus(
+                generation,
+                applicantId,
+                ApplicationStatus.SUBMITTED);
+
+        if (alreadySubmittedInGeneration) {
             throw new ApplicationAlreadySubmittedException(
                 "Failed to submit application. applicationId: " + applicationId);
         }
@@ -213,7 +224,7 @@ public class ApplicationService {
             = applicationRepository
             .findApplicationsByApplicantIn(generation, applicants) // 기수당 1지원 정책 가정, 재지원 필터링위해서 generation 사용
             .stream()
-            .collect(Collectors.toMap(Application::getApplicant, it -> it, (applicant1, applicant2)->applicant1));
+            .collect(Collectors.toMap(Application::getApplicant, it -> it, (applicant1, applicant2) -> applicant1));
 
         return applicationMap;
     }
@@ -254,7 +265,6 @@ public class ApplicationService {
 
         return application;
     }
-
 
 
     public Page<Application> getApplications(Long adminMemberId, Generation generation,
@@ -310,6 +320,7 @@ public class ApplicationService {
     private Application findApplicationById(Long applicationId) {
         return applicationRepository.findById(applicationId).orElseThrow(ApplicationNotFoundException::new);
     }
+
     private Application findByApplicantIdAndApplicationId(Long applicantId, Long applicationId) {
         return applicationRepository
             .findByApplicationAndApplicant(applicationId, applicantId)

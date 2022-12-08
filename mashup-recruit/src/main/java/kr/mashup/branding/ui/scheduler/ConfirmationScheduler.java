@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConfirmationScheduler {
     private final ConfirmationFacadeService confirmationFacadeService;
-
+    // TODO : Recruitment Schedule 대응 필요
     /**
      * 지원 마감시 임시저장인 지원서에 대한 지원자 응답 변경
      * TO_BE_DETERMINED -> NOT_APPLICABLE

@@ -1,4 +1,4 @@
-package kr.mashup.branding.domain.recruitmentschedule;
+package kr.mashup.branding.domain.recruitmentschedule.vo;
 
 import java.time.LocalDateTime;
 

@@ -18,11 +18,13 @@ import com.sun.istack.NotNull;
 
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
+import kr.mashup.branding.domain.schedule.exception.EventInvalidNameException;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Entity
 @Getter
@@ -87,7 +89,9 @@ public class Event extends BaseEntity {
     }
 
     private void validateEventName(String eventName){
-        // TODO: 타이틀 입력폼(글자수 제한)에서 글자수 제한 상세 기획 필요
+        if(!StringUtils.hasText(eventName)){
+            throw new EventInvalidNameException();
+        }
     }
 
     private void validateEventPeriod(Schedule schedule, LocalDateTime startedAt, LocalDateTime endedAt) {

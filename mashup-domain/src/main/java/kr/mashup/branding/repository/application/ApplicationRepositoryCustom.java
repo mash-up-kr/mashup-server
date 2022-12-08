@@ -20,7 +20,7 @@ public interface ApplicationRepositoryCustom {
 
     boolean existByApplicationForm(Long applicationFormId);
 
-    boolean existByApplicantAndApplicationStatus(Long applicant, ApplicationStatus status);
+    boolean existByGenerationAndApplicantAndApplicationStatus(Generation generation, Long applicant, ApplicationStatus status);
 
     List<Application> findByIdAndStatusIn(Long applicantId, Collection<ApplicationStatus> statuses);
 

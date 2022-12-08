@@ -5,11 +5,11 @@ import java.util.List;
 
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.recruitmentschedule.RecruitmentSchedule;
-import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleCreateVo;
-import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleDuplicatedException;
+import kr.mashup.branding.domain.recruitmentschedule.vo.RecruitmentScheduleCreateVo;
+import kr.mashup.branding.domain.recruitmentschedule.exception.RecruitmentScheduleDuplicatedException;
 import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleEventName;
-import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleNotFoundException;
-import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleUpdateVo;
+import kr.mashup.branding.domain.recruitmentschedule.exception.RecruitmentScheduleNotFoundException;
+import kr.mashup.branding.domain.recruitmentschedule.vo.RecruitmentScheduleUpdateVo;
 import kr.mashup.branding.repository.recruitmentschedule.RecruitmentScheduleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +29,7 @@ public class RecruitmentScheduleService {
     /**
      * 채용 일정 목록 조회
      */
-    public List<RecruitmentSchedule> getAll(Generation generation) {
+    public List<RecruitmentSchedule> getAll(final Generation generation) {
         return recruitmentScheduleRepository.findAllByGeneration(generation);
     }
 
@@ -37,7 +37,9 @@ public class RecruitmentScheduleService {
      * 채용 일정 생성
      */
     @Transactional
-    public RecruitmentSchedule create(Generation generation, RecruitmentScheduleCreateVo recruitmentScheduleCreateVo) {
+    public RecruitmentSchedule create(
+        final Generation generation,
+        final RecruitmentScheduleCreateVo recruitmentScheduleCreateVo) {
         Assert.notNull(recruitmentScheduleCreateVo, "'createRecruitmentScheduleVo' must not be null");
 
         if (recruitmentScheduleRepository.
@@ -52,12 +54,12 @@ public class RecruitmentScheduleService {
     }
 
     /**
-     * 채용 일정 생성
+     * 채용 일정 변경
      */
     @Transactional
     public RecruitmentSchedule update(
-        Long recruitmentScheduleId,
-        RecruitmentScheduleUpdateVo recruitmentScheduleUpdateVo
+        final Long recruitmentScheduleId,
+        final RecruitmentScheduleUpdateVo recruitmentScheduleUpdateVo
     ) {
         Assert.notNull(recruitmentScheduleId, "'recruitmentScheduleId' must not be null");
         Assert.notNull(recruitmentScheduleUpdateVo, "'updateRecruitmentScheduleVo' must not be null");

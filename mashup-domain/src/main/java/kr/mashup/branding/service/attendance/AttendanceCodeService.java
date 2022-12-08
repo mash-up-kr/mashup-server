@@ -13,7 +13,7 @@ public class AttendanceCodeService {
 
     private final AttendanceCodeRepository attendanceCodeRepository;
 
-    public AttendanceCode save(AttendanceCode attendanceCode) {
+    public AttendanceCode save(final AttendanceCode attendanceCode) {
         return attendanceCodeRepository.save(attendanceCode);
     }
 }

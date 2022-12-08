@@ -2,8 +2,8 @@ package kr.mashup.branding.facade.recruitmentschedule;
 
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.recruitmentschedule.RecruitmentSchedule;
-import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleCreateVo;
-import kr.mashup.branding.domain.recruitmentschedule.RecruitmentScheduleUpdateVo;
+import kr.mashup.branding.domain.recruitmentschedule.vo.RecruitmentScheduleCreateVo;
+import kr.mashup.branding.domain.recruitmentschedule.vo.RecruitmentScheduleUpdateVo;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.recruitmentschedule.RecruitmentScheduleService;
 import kr.mashup.branding.ui.recruitmentschedule.RecruitmentScheduleCreateRequest;

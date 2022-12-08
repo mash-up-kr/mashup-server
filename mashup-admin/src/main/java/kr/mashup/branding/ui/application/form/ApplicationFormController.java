@@ -11,6 +11,7 @@ import kr.mashup.branding.ui.application.form.vo.UpdateApplicationFormRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -43,7 +44,7 @@ public class ApplicationFormController {
         @RequestParam(defaultValue = "12", required = false) Integer generationNumber,
         @RequestParam(required = false) Long teamId,
         @RequestParam(required = false) String searchWord,
-        Pageable pageable // TODO Pageable default
+        @PageableDefault Pageable pageable
     ) {
         final ApplicationFormQueryRequest request
             = ApplicationFormQueryRequest.of(generationNumber, teamId, searchWord, pageable);

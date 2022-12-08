@@ -16,23 +16,27 @@ import java.util.Optional;
 public class InviteService {
     private final InviteRepository inviteRepository;
 
-    public Invite create(Platform platform, Generation generation, DateRange dateRange) {
-        Invite invite = Invite.of(platform, generation, dateRange);
+    public Invite create(
+        final Platform platform,
+        final Generation generation,
+        final DateRange dateRange) {
+
+        final Invite invite = Invite.of(platform, generation, dateRange);
 
         return inviteRepository.save(invite);
     }
 
-    public Invite getOrThrow(String inviteCode) {
+    public Invite getOrThrow(final String inviteCode) {
         return inviteRepository.findByCode(inviteCode)
             .orElseThrow(InviteNotFoundException::new);
     }
 
-    public Invite getOrThrow(Platform platform, Generation generation){
+    public Invite getOrThrow(final Platform platform, final Generation generation){
         return inviteRepository.findByPlatformAndGeneration(platform, generation)
                 .orElseThrow(InviteNotFoundException::new);
     }
 
-    public Optional<Invite> getOrNull(String inviteCode) {
+    public Optional<Invite> getOrNull(final String inviteCode) {
         return inviteRepository.findByCode(inviteCode);
     }
 
