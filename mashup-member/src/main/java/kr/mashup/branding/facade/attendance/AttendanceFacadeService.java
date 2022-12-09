@@ -16,6 +16,7 @@ import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.service.attendance.AttendanceCodeService;
 import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.member.MemberService;
+import kr.mashup.branding.service.pushnoti.AttendancePushNotiReservationService;
 import kr.mashup.branding.service.schedule.ScheduleService;
 import kr.mashup.branding.ui.attendance.response.AttendanceCheckResponse;
 import kr.mashup.branding.ui.attendance.response.AttendanceInfo;
@@ -25,6 +26,7 @@ import kr.mashup.branding.ui.attendance.response.TotalAttendanceResponse;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,10 +43,12 @@ import java.util.stream.Collectors;
 public class AttendanceFacadeService {
 
     private final static int LATE_LIMIT_TIME = 10;
+    private final static long PUSH_SCHEDULE_INTERVAL_MINUTES = 5;
     private final AttendanceService attendanceService;
     private final MemberService memberService;
     private final ScheduleService scheduleService;
     private final AttendanceCodeService attendanceCodeService;
+    private final AttendancePushNotiReservationService attendancePushNotiReservationService;
 
     /**
      * 출석 체크
@@ -95,6 +99,32 @@ public class AttendanceFacadeService {
         );
 
         return AttendanceCheckResponse.from(attendance);
+    }
+
+    @Scheduled(fixedDelay = 60 * 1000 * 5, initialDelay = 0)
+    public void reservePushNotiSchedule() {
+        final LocalDateTime now = LocalDateTime.now();
+        findAllActivesWithin(PUSH_SCHEDULE_INTERVAL_MINUTES * 2).stream()
+                .filter(attendanceCode -> isNotScheduledYet(attendanceCode, now))
+                .forEach(attendanceCode -> reserveAttendanceStartNotiPush(attendanceCode, "test"));
+    }
+
+    private void reserveAttendanceStartNotiPush(AttendanceCode attendanceCode, String message) {
+        attendancePushNotiReservationService.reserve(
+                attendanceCode.getId(),
+                "test",
+                attendanceCode.getStartedAt().minusMinutes(PUSH_SCHEDULE_INTERVAL_MINUTES)
+        );
+    }
+
+    private Boolean isNotScheduledYet(AttendanceCode attendanceCode, LocalDateTime criteria) {
+        return !attendanceCode.getStartedAt().minusMinutes(PUSH_SCHEDULE_INTERVAL_MINUTES).isBefore(criteria);
+    }
+
+    private List<AttendanceCode> findAllActivesWithin(Long minute) {
+        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime criteria = now.plusMinutes(minute);
+        return attendanceCodeService.findByStartedAtBetween(now, criteria);
     }
 
     private void validAttendanceCode(AttendanceCode attendanceCode, String code) {
