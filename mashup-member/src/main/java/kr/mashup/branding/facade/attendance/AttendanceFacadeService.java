@@ -106,13 +106,15 @@ public class AttendanceFacadeService {
         final LocalDateTime now = LocalDateTime.now();
         findAllActivesWithin(PUSH_SCHEDULE_INTERVAL_MINUTES * 2).stream()
                 .filter(attendanceCode -> isNotScheduledYet(attendanceCode, now))
-                .forEach(attendanceCode -> reserveAttendanceStartNotiPush(attendanceCode, "test"));
+                .forEach(this::reserveAttendanceStartNotiPush);
     }
 
-    private void reserveAttendanceStartNotiPush(AttendanceCode attendanceCode, String message) {
+    private void reserveAttendanceStartNotiPush(AttendanceCode attendanceCode) {
         attendancePushNotiReservationService.reserve(
                 attendanceCode.getId(),
-                "test",
+                Collections.emptyList(),
+                "출석 체크",
+                "출석 체크 시작 5분 전입니다 준비해주세요",
                 attendanceCode.getStartedAt().minusMinutes(PUSH_SCHEDULE_INTERVAL_MINUTES)
         );
     }
@@ -355,7 +357,7 @@ public class AttendanceFacadeService {
 
                 final AttendanceCode code = event
                         .getAttendanceCodes()
-                        .get(event.getAttendanceCodes().size()-1); // TODO : Sorting
+                        .get(event.getAttendanceCodes().size() - 1); // TODO : Sorting
                 final boolean isBeforeAttendanceCheckTime =
                         now.isBefore(code.getStartedAt());
                 final boolean isAttendanceCheckTime = DateUtil.isInTime(
