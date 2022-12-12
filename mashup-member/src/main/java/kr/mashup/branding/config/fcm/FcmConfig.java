@@ -1,4 +1,4 @@
-package kr.mashup.branding.config;
+package kr.mashup.branding.config.fcm;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -12,7 +12,7 @@ import java.io.IOException;
 
 @Configuration
 public class FcmConfig {
-    @Value("${fcm.secret-key}")
+    @Value("${fcm.secret}")
     private String secretKey;
 
     @Bean

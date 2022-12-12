@@ -1,4 +1,4 @@
-package kr.mashup.branding.service.pushnoti;
+package kr.mashup.branding.facade.pushnoti;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.*;
