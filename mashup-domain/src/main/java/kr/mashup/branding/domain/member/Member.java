@@ -51,6 +51,11 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MemberStatus status;
 
+    @Enumerated(EnumType.STRING)
+    private OsType osType;
+
+    private String fcmToken;
+
     public boolean isMatchPassword(String rawPassword, PasswordEncoder encoder) {
         return encoder.matches(rawPassword, this.password);
     }
