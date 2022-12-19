@@ -2,7 +2,7 @@ package kr.mashup.branding.domain.attendance;
 
 import com.sun.istack.NotNull;
 import kr.mashup.branding.domain.BaseEntity;
-import kr.mashup.branding.domain.event.Event;
+import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.member.Member;
 import lombok.AccessLevel;
 import lombok.Getter;

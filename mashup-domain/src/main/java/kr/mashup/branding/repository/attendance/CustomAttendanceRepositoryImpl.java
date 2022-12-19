@@ -6,7 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.attendance.QAttendance;
-import kr.mashup.branding.domain.event.QEvent;
+import kr.mashup.branding.domain.schedule.QEvent;
 import kr.mashup.branding.domain.schedule.QSchedule;
 import kr.mashup.branding.domain.schedule.Schedule;
 import lombok.RequiredArgsConstructor;

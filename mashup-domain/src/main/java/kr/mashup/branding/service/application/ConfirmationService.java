@@ -22,7 +22,7 @@ public class ConfirmationService {
         RecruitmentScheduleEventName.RECRUITMENT_ENDED;
 
     @Transactional
-    public void updateToBeDeterminedToNotApplicable(List<Application> applications) {
+    public void updateToBeDeterminedToNotApplicable(final List<Application> applications) {
 
         applications
             .stream()
@@ -37,7 +37,7 @@ public class ConfirmationService {
     }
 
     @Transactional
-    public void updateInterviewConfirmWaitingToRejected(List<Application> applications) {
+    public void updateInterviewConfirmWaitingToRejected(final List<Application> applications) {
 
         applications
             .stream()
@@ -53,7 +53,7 @@ public class ConfirmationService {
     }
 
     @Transactional
-    public void updateFinalConfirmWaitingToRejected(List<Application> applications) {
+    public void updateFinalConfirmWaitingToRejected(final List<Application> applications) {
 
         applications
             .stream()

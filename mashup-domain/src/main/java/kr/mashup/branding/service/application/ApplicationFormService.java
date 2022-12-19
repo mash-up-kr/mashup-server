@@ -36,7 +36,11 @@ public class ApplicationFormService {
     private final ApplicationFormScheduleValidator applicationFormScheduleValidator;
 
     @Transactional
-    public ApplicationForm create(Long adminMemberId, Team team, CreateApplicationFormVo createApplicationFormVo) {
+    public ApplicationForm create(
+        final Long adminMemberId,
+        final Team team,
+        final CreateApplicationFormVo createApplicationFormVo) {
+
         final Generation generation = team.getGeneration();
         validateRecruitingSchedule(generation, adminMemberId); // 모집시간 전에만 지원서를 수정할 수 있다.
 

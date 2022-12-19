@@ -17,7 +17,7 @@ public class ApplicantResponse {
     private final String residence;
     private final ApplicantStatus status;
 
-    public static ApplicantResponse from(Applicant applicant) {
+    public static ApplicantResponse from(final Applicant applicant) {
         return new ApplicantResponse(
             applicant.getApplicantId(),
             applicant.getEmail(),

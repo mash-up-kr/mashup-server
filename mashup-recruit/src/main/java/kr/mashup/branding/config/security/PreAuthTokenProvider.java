@@ -2,7 +2,7 @@ package kr.mashup.branding.config.security;
 
 import java.util.Collections;
 
-import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
+import kr.mashup.branding.domain.applicant.exception.ApplicantNotFoundException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

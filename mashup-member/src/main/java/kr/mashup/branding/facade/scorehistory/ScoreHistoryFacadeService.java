@@ -24,17 +24,17 @@ public class ScoreHistoryFacadeService {
 
     @Transactional(readOnly = true)
     public List<ScoreHistoryResponse> getScoreHistory(Long memberId) {
-        List<ScoreHistoryResponse> scoreHistoryResponses = new ArrayList<>();
-        Member member = memberService.getActiveOrThrowById(memberId);
+        final List<ScoreHistoryResponse> scoreHistoryResponses = new ArrayList<>();
+        final Member member = memberService.getActiveOrThrowById(memberId);
 
         member.getMemberGenerations()
-            .forEach(memberGeneration -> {
-                List<ScoreHistory> scoreHistories = scoreHistoryService
-                    .getByMemberAndGeneration(member, memberGeneration.getGeneration())
-                    .stream()
-                    .filter(ScoreHistory::isCanceled).collect(Collectors.toList());
-                scoreHistoryResponses.add(createScoreHistory(scoreHistories, memberGeneration.getGeneration().getNumber()));
-            });
+                .forEach(memberGeneration -> {
+                    List<ScoreHistory> scoreHistories = scoreHistoryService
+                            .getByMemberAndGeneration(member, memberGeneration.getGeneration())
+                            .stream()
+                            .filter(ScoreHistory::isCanceled).collect(Collectors.toList());
+                    scoreHistoryResponses.add(createScoreHistory(scoreHistories, memberGeneration.getGeneration().getNumber()));
+                });
 
         Collections.reverse(scoreHistoryResponses);
 
@@ -42,20 +42,23 @@ public class ScoreHistoryFacadeService {
     }
 
     private ScoreHistoryResponse createScoreHistory(List<ScoreHistory> scoreHistories, int generationNumber) {
-        AtomicReference<Double> totalScore = new AtomicReference<>(0.0);
-        List<ScoreHistoryResponse.ScoreDetail> scoreDetails = new ArrayList<>();
+
+        final AtomicReference<Double> totalScore
+                = new AtomicReference<>(0.0);
+
+        final List<ScoreHistoryResponse.ScoreDetail> scoreDetails = new ArrayList<>();
 
         scoreHistories.forEach(scoreHistory ->
-            scoreDetails.add(
-                ScoreHistoryResponse.ScoreDetail.of(
-                    scoreHistory.getType(),
-                    scoreHistory.getName(),
-                    scoreHistory.getScore(),
-                    totalScore.updateAndGet(v -> v + scoreHistory.getScore()),
-                    scoreHistory.getDate(),
-                    scoreHistory.getScheduleName()
-                )
-            ));
+                scoreDetails.add(
+                        ScoreHistoryResponse.ScoreDetail.of(
+                                scoreHistory.getType(),
+                                scoreHistory.getName(),
+                                scoreHistory.getScore(),
+                                totalScore.updateAndGet(v -> v + scoreHistory.getScore()),
+                                scoreHistory.getDate(),
+                                scoreHistory.getScheduleName()
+                        )
+                ));
         Collections.reverse(scoreDetails);
 
         return ScoreHistoryResponse.of(generationNumber, totalScore.get(), scoreDetails);

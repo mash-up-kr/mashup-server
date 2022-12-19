@@ -24,13 +24,11 @@ public class TeamService {
 
     @Transactional
     public Team create(CreateTeamVo createTeamVo) {
-        Team team = teamRepository.save(Team.of(createTeamVo));
-        return team;
+        return teamRepository.save(Team.of(createTeamVo));
     }
 
     public Team getTeam(Long teamId) {
-        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
-        return team;
+        return teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
     }
 
    public boolean isExistTeam(Long teamId){

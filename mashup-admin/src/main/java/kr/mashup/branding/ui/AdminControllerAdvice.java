@@ -100,6 +100,13 @@ public class AdminControllerAdvice {
         return ApiResponse.failure(e.getResultCode());
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<?> handleIllegalArgumentException(Exception e) {
+        log.error("handleIllegalArgumentException", e);
+        return ApiResponse.failure(ResultCode.BAD_REQUEST, e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResponse<?> handleException(Exception e) {

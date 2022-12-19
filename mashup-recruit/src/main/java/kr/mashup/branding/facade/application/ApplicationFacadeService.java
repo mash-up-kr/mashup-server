@@ -4,15 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.applicant.Applicant;
-import kr.mashup.branding.domain.applicant.ApplicantNotFoundException;
+import kr.mashup.branding.domain.applicant.exception.ApplicantNotFoundException;
 import kr.mashup.branding.domain.application.ApplicationCreationRequestInvalidException;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
-import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.domain.team.TeamNotFoundException;
 import kr.mashup.branding.service.applicant.ApplicantService;
 import kr.mashup.branding.service.application.ApplicationFormService;
-import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.team.TeamService;
 import kr.mashup.branding.ui.application.vo.ApplicationResponse;
 import org.springframework.stereotype.Service;
@@ -31,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ApplicationFacadeService {
     private final TeamService teamService;
-    private final GenerationService generationService;
     private final ApplicantService applicantService;
     private final ApplicationService applicationService;
     private final ApplicationFormService applicationFormService;
@@ -43,6 +39,7 @@ public class ApplicationFacadeService {
      */
     public ApplicationResponse create(Long applicantId, Long teamId) {
 
+        // 지원자 조회
         final Applicant applicant;
         try {
             applicant = applicantService.getApplicant(applicantId);
@@ -50,12 +47,13 @@ public class ApplicationFacadeService {
             throw new ApplicationCreationRequestInvalidException("Applicant not found. applicantId: " + applicantId, e);
         }
 
+        // 존재하는 team id 인지 검증 -> team은 generation에 종속적이다.
         final boolean isExistTeam = teamService.isExistTeam(teamId);
         if(!isExistTeam){
             throw new ApplicationCreationRequestInvalidException("Team not found. teamId: " + teamId);
-
         }
 
+        // 지원 form 조회
         final ApplicationForm applicationForm;
         try {
             applicationForm = applicationFormService.getApplicationFormsByTeamId(teamId)

@@ -3,7 +3,6 @@ package kr.mashup.branding.facade.member;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.invite.Invite;
 import kr.mashup.branding.domain.member.Member;
-import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberInvalidInviteCodeException;
 import kr.mashup.branding.dto.member.MemberCreateDto;
@@ -13,13 +12,13 @@ import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.member.request.LoginRequest;
 import kr.mashup.branding.ui.member.request.SignUpRequest;
 import kr.mashup.branding.ui.member.request.ValidInviteRequest;
-import kr.mashup.branding.ui.member.response.*;
+import kr.mashup.branding.ui.member.response.AccessResponse;
+import kr.mashup.branding.ui.member.response.MemberInfoResponse;
+import kr.mashup.branding.ui.member.response.TokenResponse;
+import kr.mashup.branding.ui.member.response.ValidResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Comparator;
-import java.util.List;
 
 
 @Service

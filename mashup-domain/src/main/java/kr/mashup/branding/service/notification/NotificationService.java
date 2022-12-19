@@ -36,16 +36,16 @@ public class NotificationService {
 
     @Transactional
     public Notification createSmsNotification(
-        AdminMember adminMember,
-        Generation generation,
-        List<Applicant> recipientApplicants,
-        SmsSendRequestVo smsSendRequestVo) {
+        final AdminMember adminMember,
+        final Generation generation,
+        final List<Applicant> recipientApplicants,
+        final SmsSendRequestVo smsSendRequestVo) {
 
         Assert.notNull(smsSendRequestVo, "'smsSendVo' must not be null");
         validateSmsRequest(adminMember, recipientApplicants, smsSendRequestVo);
 
         final Notification notification
-            = notificationRepository.save(Notification.sms(adminMember,generation, smsSendRequestVo));
+            = notificationRepository.save(Notification.sms(adminMember, generation, smsSendRequestVo));
 
         final List<SmsRequest> smsRequests
             = recipientApplicants
@@ -60,8 +60,8 @@ public class NotificationService {
 
     @Transactional
     public Notification updateSmsStatus(
-        Long notificationId,
-        SmsSendResultVo smsSendResultVo) {
+        final Long notificationId,
+        final SmsSendResultVo smsSendResultVo) {
 
         Assert.notNull(notificationId, "'notificationId' must not be null");
         Assert.notNull(smsSendResultVo, "'smsSendResultVo' must not be null");
@@ -94,25 +94,30 @@ public class NotificationService {
         return notification;
     }
 
-    public Page<Notification> getNotifications(Long adminMemberId, @Nullable String searchWord, Pageable pageable) {
+    public Page<Notification> getNotifications(
+        final Long adminMemberId,
+        @Nullable final String searchWord,
+        Pageable pageable) {
+
         Assert.notNull(pageable, "'pageable' must not be null");
+
         pageable = PageRequest.of(
             pageable.getPageNumber(),
             pageable.getPageSize(),
             pageable.getSortOr(Sort.by(Sort.Order.desc("sentAt")))
         );
 
-        return notificationRepository.findWithSearchWord(searchWord,  pageable);
+        return notificationRepository.findWithSearchWord(searchWord, pageable);
     }
 
 
-    public Notification getNotification(Long notificationId) {
+    public Notification getNotification(final Long notificationId) {
         Assert.notNull(notificationId, "'notificationId' must not be null");
         return notificationRepository.findById(notificationId)
             .orElseThrow(NotificationNotFoundException::new);
     }
 
-    public List<SmsRequest> getSmsRequestsByApplicantId(Long applicantId) {
+    public List<SmsRequest> getSmsRequestsByApplicantId(final Long applicantId) {
         Assert.notNull(applicantId, "'applicantId' must not be null");
         return smsRequestRepository.findByRecipient(applicantId);
     }
@@ -121,8 +126,8 @@ public class NotificationService {
      * ========= Private Methods ===============
      */
     private void validateSmsRequest(
-        AdminMember adminMember,
-        List<Applicant> recipientApplicants,
+        final AdminMember adminMember,
+        final List<Applicant> recipientApplicants,
         SmsSendRequestVo smsSendRequestVo) {
 
         validatedNotDuplicatedNotificationName(smsSendRequestVo);
@@ -136,32 +141,32 @@ public class NotificationService {
         validateNotEmptyAdminPhoneNumber(adminMember);
     }
 
-    private void validateNotEmptyAdminPhoneNumber(AdminMember adminMember) {
+    private void validateNotEmptyAdminPhoneNumber(final AdminMember adminMember) {
         if (!StringUtils.hasText(adminMember.getPhoneNumber())) {
             throw new NotificationRequestInvalidException("Sender's phoneNumber must not be null, empty or blank");
         }
     }
 
-    private void validateAdminPhoneNumberRegisteredToExternalService(AdminMember adminMember) {
+    private void validateAdminPhoneNumberRegisteredToExternalService(final AdminMember adminMember) {
         if (adminMember.getPhoneNumberRegistered() != Boolean.TRUE) {
             throw new NotificationRequestInvalidException(
                 "Sender's phoneNumber must be registered to NHN Cloud Notification Service");
         }
     }
 
-    private void validateNotEmptyRecipient(List<Applicant> recipientApplicants) {
+    private void validateNotEmptyRecipient(final List<Applicant> recipientApplicants) {
         if (recipientApplicants.isEmpty()) {
             throw new NotificationRequestInvalidException("'recipientApplicantIds' must not be empty or null");
         }
     }
 
-    private void validateNotEmptyContents(SmsSendRequestVo smsSendRequestVo) {
+    private void validateNotEmptyContents(final SmsSendRequestVo smsSendRequestVo) {
         if (!StringUtils.hasText(smsSendRequestVo.getContent())) {
             throw new NotificationRequestInvalidException("'content' must not be null, empty or blank");
         }
     }
 
-    private void validatedNotDuplicatedNotificationName(SmsSendRequestVo smsSendRequestVo) {
+    private void validatedNotDuplicatedNotificationName(final SmsSendRequestVo smsSendRequestVo) {
         if (notificationRepository.existsByName(smsSendRequestVo.getName())) {
             throw new NotificationRequestInvalidException(
                 "Notification name duplicated. name: " + smsSendRequestVo.getName());
