@@ -3,10 +3,7 @@ package kr.mashup.branding.service.member;
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.domain.member.Member;
-import kr.mashup.branding.domain.member.MemberGeneration;
-import kr.mashup.branding.domain.member.MemberStatus;
-import kr.mashup.branding.domain.member.Platform;
+import kr.mashup.branding.domain.member.*;
 import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
 import kr.mashup.branding.domain.member.exception.MemberNotFoundException;
 import kr.mashup.branding.domain.member.exception.MemberPendingException;
@@ -40,11 +37,14 @@ public class MemberService {
 
         final Generation generation = memberCreateDto.getGeneration();
         final Member member = Member.of(
-            memberCreateDto.getName(),
-            memberCreateDto.getIdentification(),
-            memberCreateDto.getPassword(),
-            passwordEncoder,
-            memberCreateDto.getPrivatePolicyAgreed()
+                memberCreateDto.getName(),
+                memberCreateDto.getIdentification(),
+                memberCreateDto.getPassword(),
+                passwordEncoder,
+                memberCreateDto.getPrivatePolicyAgreed(),
+                memberCreateDto.getOsType(),
+                memberCreateDto.getFcmToken(),
+                memberCreateDto.getPushNotificationAgreed()
         );
         memberRepository.save(member);
 
@@ -188,4 +188,5 @@ public class MemberService {
     public Platform getPlatform(Member member, Generation generation) {
         return memberGenerationRepository.findByMemberAndGeneration(member, generation).orElseThrow(MemberNotFoundException::new).getPlatform();
     }
+
 }

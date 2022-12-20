@@ -1,6 +1,7 @@
 package kr.mashup.branding.dto.member;
 
 import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.member.OsType;
 import kr.mashup.branding.domain.member.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,5 +22,9 @@ public class MemberCreateDto {
 
     private Boolean privatePolicyAgreed;
 
+    private OsType osType;
 
+    private String fcmToken;
+
+    private Boolean pushNotificationAgreed;
 }

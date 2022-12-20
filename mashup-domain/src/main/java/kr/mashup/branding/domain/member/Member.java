@@ -56,6 +56,8 @@ public class Member extends BaseEntity {
 
     private String fcmToken;
 
+    private Boolean pushNotificationAgreed;
+
     public boolean isMatchPassword(String rawPassword, PasswordEncoder encoder) {
         return encoder.matches(rawPassword, this.password);
     }
@@ -77,8 +79,11 @@ public class Member extends BaseEntity {
             String identification,
             String rawPassword,
             PasswordEncoder encoder,
-            Boolean privatePolicyAgreed) {
-        return new Member(name, identification, rawPassword, encoder, privatePolicyAgreed);
+            Boolean privatePolicyAgreed,
+            OsType osType,
+            String fcmToken,
+            Boolean pushNotificationAgreed) {
+        return new Member(name, identification, rawPassword, encoder, privatePolicyAgreed, osType, fcmToken, pushNotificationAgreed);
     }
 
     private Member(
@@ -86,7 +91,10 @@ public class Member extends BaseEntity {
             String identification,
             String rawPassword,
             PasswordEncoder encoder,
-            Boolean privatePolicyAgreed) {
+            Boolean privatePolicyAgreed,
+            OsType osType,
+            String fcmToken,
+            Boolean pushNotificationAgreed) {
 
         checkAgreePrivacyPolicy(privatePolicyAgreed);
         checkValidName(name);
@@ -99,6 +107,9 @@ public class Member extends BaseEntity {
         this.privatePolicyAgreed = privatePolicyAgreed;
         this.status = MemberStatus.ACTIVE;
         //this.status = MemberStatus.PENDING;
+        this.osType = osType;
+        this.fcmToken = fcmToken;
+        this.pushNotificationAgreed = pushNotificationAgreed;
     }
 
     private void checkValidID(String identification) {
@@ -135,5 +146,10 @@ public class Member extends BaseEntity {
 
     public void addMemberGenerations(MemberGeneration memberGeneration) {
         this.memberGenerations.add(memberGeneration);
+    }
+
+    public void updatePushNotificationInfo(OsType osType, String fcmToken) {
+        this.osType = osType;
+        this.fcmToken = fcmToken;
     }
 }

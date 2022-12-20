@@ -37,7 +37,7 @@ public class MemberFacadeService {
         return MemberInfoResponse.from(member,latestPlatform);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public AccessResponse login(LoginRequest request) {
         // Member 조회
         final String identification = request.getIdentification();
@@ -49,6 +49,7 @@ public class MemberFacadeService {
         final String token = jwtService.encode(memberId);
 
         Platform latestPlatform = memberService.getLatestPlatform(member);
+        member.updatePushNotificationInfo(request.getOsType(), request.getFcmToken());
 
         return AccessResponse.of(member,latestPlatform,token);
     }
@@ -69,12 +70,15 @@ public class MemberFacadeService {
         final Generation generation = invite.getGeneration();
 
         final MemberCreateDto memberCreateDto = MemberCreateDto.of(
-            request.getName(),
-            request.getIdentification(),
-            request.getPassword(),
-            platform,
-            generation,
-            request.getPrivatePolicyAgreed());
+                request.getName(),
+                request.getIdentification(),
+                request.getPassword(),
+                platform,
+                generation,
+                request.getPrivatePolicyAgreed(),
+                request.getOsType(),
+                request.getFcmToken(),
+                request.getPushNotificationAgreed());
 
         final Member member = memberService.save(memberCreateDto);
         final String token = jwtService.encode(member.getId());
@@ -107,6 +111,4 @@ public class MemberFacadeService {
         boolean isExist = memberService.isDuplicatedIdentification(identification);
         return ValidResponse.of(!isExist);
     }
-
-
 }
