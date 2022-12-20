@@ -102,7 +102,7 @@ public class ApplicationFacadeService {
      */
     public List<ApplicationResponse> getApplications(Long applicantId) {
         return applicationService
-            .getApplications(applicantId)
+            .getApplication(applicantId)
             .stream()
             .map(applicationAssembler::toApplicationResponse)
             .collect(Collectors.toList());
@@ -114,7 +114,7 @@ public class ApplicationFacadeService {
     public ApplicationResponse getApplication(Long applicantId, Long applicationId) {
 
         final Application application
-            = applicationService.getApplication(applicantId, applicationId);
+            = applicationService.getApplications(applicantId, applicationId);
 
         return applicationAssembler.toApplicationResponse(application);
     }

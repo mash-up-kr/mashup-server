@@ -11,7 +11,7 @@ spring:
         default_batch_fetch_size: 1000
     open-in-view: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
 sms:
   toast:
     url: https://api-sms.cloud.toast.com/
@@ -19,3 +19,6 @@ sms:
     secret-key: ENC(RxnWUTWTXS93vSfsLX0M4gHYbFGrLsFU5BH09V4Ds0bBgWcNteRYKbgVOuPe+2Si)
 logging:
   config: classpath:logback/logback-spring.xml
+aws:
+  access-key: ENC(lZmgx3mTPaE2hvXN9vvSkhEM4TNJrcmmQNiI5wxCZJ4)
+  secret-key: ENC(rEP6l0XY+8rwnd4BAMox+kY7EULBXaBoKNJinQ0VBr2pIPUzc24atCWV9k0kpLVmtfsjkvI6bls=)
