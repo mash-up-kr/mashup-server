@@ -13,6 +13,8 @@ import kr.mashup.branding.repository.emailnotification.EmailNotificationReposito
 import kr.mashup.branding.repository.emailnotification.EmailRequestRepository;
 import kr.mashup.branding.repository.emailnotification.EmailTemplateRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,5 +57,9 @@ public class EmailNotificationService {
             = emailRequestRepository.findById(emailRequestId).orElseThrow(IllegalArgumentException::new);
 
         emailRequest.updateStatus(status);
+    }
+
+    public Page<EmailNotification> readEmailNotifications(String searchWord, Pageable pageable) {
+        return emailNotificationRepository.findByMemoContaining(searchWord, pageable);
     }
 }

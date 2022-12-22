@@ -35,5 +35,5 @@ sms:
 logging:
   config: classpath:logback/logback-spring.xml
 aws:
-  access-key: ENC(lZmgx3mTPaE2hvXN9vvSkhEM4TNJrcmmQNiI5wxCZJ4)
-  secret-key: ENC(rEP6l0XY+8rwnd4BAMox+kY7EULBXaBoKNJinQ0VBr2pIPUzc24atCWV9k0kpLVmtfsjkvI6bls=)
+  access-key: ENC(MuzpGJ7chIHXUhNOCvoWTzrd9qW7NwctIlDtCkNmWDopfXe7CtiguHJqyYISUTPoPqNhx0Z9EMDq0rgkv0sCvQ==)
+  secret-key: ENC(BQxYjBhQ902/RnEsSbfid/dD52Ls4Eo81c65hGDjsDMHNcv68RbMsS1hVezt9V+XoLwlcg3ZH3K6SlgSyO71f0o0xfK5DoyQn02/eB1C2BQ=)
