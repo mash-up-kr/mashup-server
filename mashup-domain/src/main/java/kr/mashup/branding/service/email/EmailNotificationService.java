@@ -1,13 +1,13 @@
 package kr.mashup.branding.service.email;
 
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
-import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.email.EmailNotification;
 import kr.mashup.branding.domain.email.EmailRequest;
 import kr.mashup.branding.domain.email.EmailRequestStatus;
 import kr.mashup.branding.domain.email.EmailTemplate;
 import kr.mashup.branding.domain.email.EmailTemplateName;
+import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.repository.emailnotification.EmailNotificationRepository;
 import kr.mashup.branding.repository.emailnotification.EmailRequestRepository;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -61,5 +62,9 @@ public class EmailNotificationService {
 
     public Page<EmailNotification> readEmailNotifications(String searchWord, Pageable pageable) {
         return emailNotificationRepository.findByMemoContaining(searchWord, pageable);
+    }
+
+    public EmailNotification readEmailNotification(Long emailNotificationId) {
+        return emailNotificationRepository.getById(emailNotificationId);
     }
 }

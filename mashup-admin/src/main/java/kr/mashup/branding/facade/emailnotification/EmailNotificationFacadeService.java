@@ -15,6 +15,7 @@ import kr.mashup.branding.service.email.EmailNotificationEventPublisher;
 import kr.mashup.branding.service.email.EmailNotificationService;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.ui.emailnotification.EmailSendRequest;
+import kr.mashup.branding.ui.emailnotification.vo.EmailNotificationDetailResponseVo;
 import kr.mashup.branding.ui.emailnotification.vo.EmailNotificationResponseVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -102,5 +103,9 @@ public class EmailNotificationFacadeService {
     public Page<EmailNotificationResponseVo> readEmailNotifications(String searchWord, Pageable pageable) {
         return emailNotificationService.readEmailNotifications(searchWord, pageable)
                 .map(EmailNotificationResponseVo::from);
+    }
+
+    public EmailNotificationDetailResponseVo readEmailNotification(Long emailNotificationId) {
+        return EmailNotificationDetailResponseVo.of(emailNotificationService.readEmailNotification(emailNotificationId));
     }
 }
