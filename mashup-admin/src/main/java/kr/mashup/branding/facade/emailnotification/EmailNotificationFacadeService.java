@@ -100,11 +100,13 @@ public class EmailNotificationFacadeService {
         return metadataList;
     }
 
+    @Transactional(readOnly = true)
     public Page<EmailNotificationResponseVo> readEmailNotifications(String searchWord, Pageable pageable) {
         return emailNotificationService.readEmailNotifications(searchWord, pageable)
                 .map(EmailNotificationResponseVo::from);
     }
 
+    @Transactional(readOnly = true)
     public EmailNotificationDetailResponseVo readEmailNotification(Long emailNotificationId) {
         return EmailNotificationDetailResponseVo.of(emailNotificationService.readEmailNotification(emailNotificationId));
     }
