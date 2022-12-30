@@ -14,8 +14,8 @@ import kr.mashup.branding.service.email.EmailNotificationEventPublisher;
 import kr.mashup.branding.service.email.EmailNotificationService;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.ui.emailnotification.EmailSendRequest;
-import kr.mashup.branding.ui.emailnotification.vo.EmailNotificationDetailResponseVo;
-import kr.mashup.branding.ui.emailnotification.vo.EmailNotificationResponseVo;
+import kr.mashup.branding.ui.emailnotification.vo.EmailNotificationDetailResponse;
+import kr.mashup.branding.ui.emailnotification.vo.EmailNotificationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -97,13 +98,23 @@ public class EmailNotificationFacadeService {
     }
 
     @Transactional(readOnly = true)
-    public Page<EmailNotificationResponseVo> readEmailNotifications(String searchWord, Pageable pageable) {
-        return emailNotificationService.readEmailNotifications(searchWord, pageable)
-            .map(EmailNotificationResponseVo::of);
+    public Page<EmailNotificationResponse> readEmailNotifications(
+        final Optional<String> searchWord,
+        final Pageable pageable
+    ) {
+        return emailNotificationService
+            .readEmailNotifications(searchWord, pageable)
+            .map(EmailNotificationResponse::of);
     }
 
     @Transactional(readOnly = true)
-    public EmailNotificationDetailResponseVo readEmailNotification(Long emailNotificationId) {
-        return EmailNotificationDetailResponseVo.of(emailNotificationService.readEmailNotification(emailNotificationId));
+    public EmailNotificationDetailResponse readEmailNotification(
+        final Long emailNotificationId
+    ) {
+
+        final EmailNotification emailNotification
+            = emailNotificationService.getByIdOrThrow(emailNotificationId);
+
+        return EmailNotificationDetailResponse.of(emailNotification);
     }
 }

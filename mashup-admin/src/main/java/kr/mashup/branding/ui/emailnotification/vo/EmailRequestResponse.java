@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class EmailRequestResponseVo {
+public class EmailRequestResponse {
     @ApiModelProperty(value = "이메일 발송 상세 내역 식별자", example = "1")
     private Long emailRequestId;
 
@@ -27,10 +27,13 @@ public class EmailRequestResponseVo {
     @ApiModelProperty(value = "발송 상태", example = "SUCCESS")
     private EmailRequestStatus status;
 
-    public static EmailRequestResponseVo of(EmailRequest emailRequest) {
-        Applicant applicant = emailRequest.getApplication().getApplicant();
+    public static EmailRequestResponse of(
+        final EmailRequest emailRequest
+    ) {
 
-        return EmailRequestResponseVo.builder()
+        final Applicant applicant = emailRequest.getApplication().getApplicant();
+
+        return EmailRequestResponse.builder()
                 .emailRequestId(emailRequest.getId())
                 .recipientName(applicant.getName())
                 .recipientEmail(applicant.getEmail())

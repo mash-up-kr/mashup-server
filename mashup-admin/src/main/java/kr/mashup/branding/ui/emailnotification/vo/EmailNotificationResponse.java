@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Builder
-public class EmailNotificationResponseVo {
+public class EmailNotificationResponse {
     @ApiModelProperty(value = "이메일 발송 내역 식별자", example = "1")
     private Long emailNotificationId;
 
@@ -27,7 +27,6 @@ public class EmailNotificationResponseVo {
     @ApiModelProperty(value = "발송 유형", example = "서류 결과 발표")
     private String type;
 
-    //TODO: 발송 시각 어디에 있는지 찾아서 넣기
     @ApiModelProperty(value = "발송 시각")
     private LocalDateTime sendAt;
 
@@ -43,23 +42,26 @@ public class EmailNotificationResponseVo {
     @ApiModelProperty(value = "전체 수신자 수", example = "220")
     private Long totalCount;
 
-    public static EmailNotificationResponseVo of(EmailNotification emailNotification) {
-        List<EmailRequest> emailRequests = emailNotification.getEmailRequests();
-        Map<EmailRequestStatus, Long> statusCountMap = emailRequests.
-                stream()
-                .collect(Collectors.groupingBy(EmailRequest::getStatus, Collectors.counting()));
+    public static EmailNotificationResponse of(final EmailNotification emailNotification) {
 
-        Long successCount = statusCountMap.getOrDefault(EmailRequestStatus.SUCCESS, 0L);
-        Long failureCount = statusCountMap.getOrDefault(EmailRequestStatus.FAIL, 0L);
+        final List<EmailRequest> emailRequests = emailNotification.getEmailRequests();
+        final Map<EmailRequestStatus, Long> statusCountMap
+            = emailRequests
+            .stream()
+            .collect(Collectors.groupingBy(EmailRequest::getStatus, Collectors.counting()));
 
-        return EmailNotificationResponseVo.builder()
-                .emailNotificationId(emailNotification.getId())
-                .type(emailNotification.getEmailTemplate().getTemplateName().name())
-                .name(emailNotification.getMemo())
-                .sender(emailNotification.getSender().getPosition())
-                .successCount(successCount)
-                .failureCount(failureCount)
-                .totalCount(successCount + failureCount)
-                .build();
+        final Long successCount = statusCountMap.getOrDefault(EmailRequestStatus.SUCCESS, 0L);
+        final Long failureCount = statusCountMap.getOrDefault(EmailRequestStatus.FAIL, 0L);
+
+        return EmailNotificationResponse.builder()
+            .emailNotificationId(emailNotification.getId())
+            .type(emailNotification.getEmailTemplateName().name())
+            .name(emailNotification.getMemo())
+            .sender(emailNotification.getSender().getPosition())
+            .successCount(successCount)
+            .failureCount(failureCount)
+            .sendAt(emailNotification.getCreatedAt())
+            .totalCount(successCount + failureCount)
+            .build();
     }
 }

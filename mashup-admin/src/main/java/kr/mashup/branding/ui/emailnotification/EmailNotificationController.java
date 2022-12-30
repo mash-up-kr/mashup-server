@@ -5,16 +5,17 @@ import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.EmptyResponse;
 import kr.mashup.branding.facade.emailnotification.EmailNotificationFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.emailnotification.vo.EmailNotificationDetailResponseVo;
-import kr.mashup.branding.ui.emailnotification.vo.EmailNotificationResponseVo;
-import kr.mashup.branding.ui.emailnotification.vo.EmailRequestResponseVo;
+import kr.mashup.branding.ui.emailnotification.vo.EmailNotificationDetailResponse;
+import kr.mashup.branding.ui.emailnotification.vo.EmailNotificationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
+import java.util.Optional;
 
 @Api(tags = "문자 발송 API")
 @RequiredArgsConstructor
@@ -37,18 +38,25 @@ public class EmailNotificationController {
     }
 
     @ApiOperation("이메일 발송내역 목록 조회")
-    @GetMapping("")
-    public ApiResponse<List<EmailNotificationResponseVo>> readEmailNotifications(
-            @RequestParam(required = false) String searchWord, Pageable pageable) {
-        Page<EmailNotificationResponseVo> data = emailNotificationFacadeService.readEmailNotifications(searchWord, pageable);
+    @GetMapping
+    public ApiResponse<List<EmailNotificationResponse>> readEmailNotifications(
+            @RequestParam(required = false) Optional<String> searchWord,
+            @PageableDefault Pageable pageable
+    ) {
+
+        final Page<EmailNotificationResponse> data
+            = emailNotificationFacadeService.readEmailNotifications(searchWord, pageable);
 
         return ApiResponse.success(data);
     }
 
     @ApiOperation("이메일 발송 내역 상세 조회")
     @GetMapping("/{emailNotificationId}")
-    public ApiResponse<EmailNotificationDetailResponseVo> readEmailNotification(@PathVariable Long emailNotificationId) {
-        EmailNotificationDetailResponseVo data = emailNotificationFacadeService.readEmailNotification(emailNotificationId);
+    public ApiResponse<EmailNotificationDetailResponse> readEmailNotification(
+        @PathVariable Long emailNotificationId
+    ) {
+        final EmailNotificationDetailResponse data
+            = emailNotificationFacadeService.readEmailNotification(emailNotificationId);
 
         return ApiResponse.success(data);
     }

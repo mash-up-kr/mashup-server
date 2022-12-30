@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -39,8 +40,12 @@ public class EmailNotificationService {
         return emailNotificationRepository.save(emailNotification);
     }
 
-    public EmailNotification getByIdOrThrow(final Long emailNotificationId) {
-        return emailNotificationRepository.findById(emailNotificationId).orElseThrow(IllegalArgumentException::new);
+    public EmailNotification getByIdOrThrow(
+        final Long emailNotificationId
+    ) {
+        return emailNotificationRepository
+            .findById(emailNotificationId)
+            .orElseThrow(IllegalArgumentException::new);
     }
 
     public void updateToSuccess(final Long emailRequestId, final String messageId) {
@@ -60,12 +65,11 @@ public class EmailNotificationService {
         emailRequest.updateStatus(EmailRequestStatus.FAIL);
     }
 
-    public Page<EmailNotification> readEmailNotifications(String searchWord, Pageable pageable) {
-        if (searchWord == null) searchWord = "";
-        return emailNotificationRepository.findByMemoContaining(searchWord, pageable);
+    public Page<EmailNotification> readEmailNotifications(
+        final Optional<String> searchWord,
+        final Pageable pageable
+    ) {
+        return emailNotificationRepository.findBySearchWord(searchWord, pageable);
     }
 
-    public EmailNotification readEmailNotification(Long emailNotificationId) {
-        return emailNotificationRepository.getById(emailNotificationId);
-    }
 }
