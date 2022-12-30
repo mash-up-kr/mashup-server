@@ -36,7 +36,7 @@ public class ApplicationController {
     @GetMapping
     public ApiResponse<List<ApplicationSimpleResponse>> getApplications(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
-        @RequestParam(defaultValue = "12", required = false) Integer generationNumber,
+        @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
         @RequestParam(required = false) String searchWord,
         @RequestParam(required = false) Long teamId,
         @RequestParam(required = false) ApplicantConfirmationStatus confirmStatus,
