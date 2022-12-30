@@ -3,12 +3,16 @@ package kr.mashup.branding.ui.emailnotification.vo;
 import io.swagger.annotations.ApiModelProperty;
 import kr.mashup.branding.domain.adminmember.entity.Position;
 import kr.mashup.branding.domain.email.EmailNotification;
+import kr.mashup.branding.domain.email.EmailRequest;
 import kr.mashup.branding.domain.email.EmailRequestStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -30,12 +34,32 @@ public class EmailNotificationResponseVo {
     @ApiModelProperty(value = "발송자")
     private Position sender;
 
+    @ApiModelProperty(value = "발송 성공한 수신자 수", example = "209")
+    private Long successCount;
+
+    @ApiModelProperty(value = "발송 실패한 수신자 수", example = "11")
+    private Long failureCount;
+
+    @ApiModelProperty(value = "전체 수신자 수", example = "220")
+    private Long totalCount;
+
     public static EmailNotificationResponseVo of(EmailNotification emailNotification) {
+        List<EmailRequest> emailRequests = emailNotification.getEmailRequests();
+        Map<EmailRequestStatus, Long> statusCountMap = emailRequests.
+                stream()
+                .collect(Collectors.groupingBy(EmailRequest::getStatus, Collectors.counting()));
+
+        Long successCount = statusCountMap.getOrDefault(EmailRequestStatus.SUCCESS, 0L);
+        Long failureCount = statusCountMap.getOrDefault(EmailRequestStatus.FAIL, 0L);
+
         return EmailNotificationResponseVo.builder()
                 .emailNotificationId(emailNotification.getId())
                 .type(emailNotification.getEmailTemplate().getTemplateName().name())
                 .name(emailNotification.getMemo())
                 .sender(emailNotification.getSender().getPosition())
+                .successCount(successCount)
+                .failureCount(failureCount)
+                .totalCount(successCount + failureCount)
                 .build();
     }
 }
