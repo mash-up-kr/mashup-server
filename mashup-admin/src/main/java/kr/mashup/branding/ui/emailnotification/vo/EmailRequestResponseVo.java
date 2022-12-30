@@ -1,7 +1,9 @@
 package kr.mashup.branding.ui.emailnotification.vo;
 
 import io.swagger.annotations.ApiModelProperty;
+import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.email.EmailRequest;
+import kr.mashup.branding.domain.email.EmailRequestStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,11 +21,21 @@ public class EmailRequestResponseVo {
     @ApiModelProperty(value = "수신자 이메일", example = "test@gmail.com")
     private String recipientEmail;
 
+    @ApiModelProperty(value = "지원 플랫폼", example = "디자인")
+    private String team;
+
+    @ApiModelProperty(value = "발송 상태", example = "SUCCESS")
+    private EmailRequestStatus status;
+
     public static EmailRequestResponseVo of(EmailRequest emailRequest) {
+        Applicant applicant = emailRequest.getApplication().getApplicant();
+
         return EmailRequestResponseVo.builder()
                 .emailRequestId(emailRequest.getId())
-                .recipientName(emailRequest.getApplication().getApplicant().getName())
-                .recipientEmail(emailRequest.getApplication().getApplicant().getEmail())
+                .recipientName(applicant.getName())
+                .recipientEmail(applicant.getEmail())
+                .team(applicant.getDepartment())
+                .status(emailRequest.getStatus())
                 .build();
     }
 }
