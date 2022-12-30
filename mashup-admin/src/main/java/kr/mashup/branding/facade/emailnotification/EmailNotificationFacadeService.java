@@ -103,7 +103,7 @@ public class EmailNotificationFacadeService {
     @Transactional(readOnly = true)
     public Page<EmailNotificationResponseVo> readEmailNotifications(String searchWord, Pageable pageable) {
         return emailNotificationService.readEmailNotifications(searchWord, pageable)
-                .map(EmailNotificationResponseVo::from);
+                .map(EmailNotificationResponseVo::of);
     }
 
     @Transactional(readOnly = true)

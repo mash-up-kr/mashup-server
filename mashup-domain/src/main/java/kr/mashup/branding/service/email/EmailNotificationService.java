@@ -61,6 +61,7 @@ public class EmailNotificationService {
     }
 
     public Page<EmailNotification> readEmailNotifications(String searchWord, Pageable pageable) {
+        if (searchWord == null) searchWord = "";
         return emailNotificationRepository.findByMemoContaining(searchWord, pageable);
     }
 
