@@ -1,6 +1,6 @@
 package kr.mashup.branding.ui.emailnotification;
 
-import io.swagger.annotations.ApiModelProperty;
+import kr.mashup.branding.domain.email.EmailTemplateName;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -12,7 +12,7 @@ public class EmailSendRequest {
 
     private String memo;
 
-    private String templateName;
+    private EmailTemplateName templateName;
 
     private List<Long> applicationIds;
 }

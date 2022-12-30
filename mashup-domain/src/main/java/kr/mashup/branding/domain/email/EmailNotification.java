@@ -15,6 +15,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -50,12 +52,6 @@ public class EmailNotification {
     private Generation generation;
 
     /**
-     * 이메일 템플릿
-     */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private EmailTemplate emailTemplate;
-
-    /**
      * 발송 이메일
      */
     private String senderEmail;
@@ -65,6 +61,12 @@ public class EmailNotification {
      */
     private String memo;
 
+    /**
+     * 발송 템플릿 이름
+     */
+    @Enumerated(EnumType.STRING)
+    private EmailTemplateName emailTemplateName;
+
     @OneToMany(mappedBy = "emailNotification", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EmailRequest> emailRequests;
 
@@ -72,18 +74,18 @@ public class EmailNotification {
     public static EmailNotification of(
         AdminMember sender,
         Generation generation,
-        EmailTemplate emailTemplate,
+        EmailTemplateName emailTemplateName,
         String memo,
         List<Application> applications
     ) {
 
         final EmailNotification emailNotification
-            = new EmailNotification(sender, generation, emailTemplate, "recruit.mashup@gmail.com", memo);
+            = new EmailNotification(sender, generation, emailTemplateName, "recruit.mashup@gmail.com", memo);
 
         emailNotification.emailRequests
             = applications
             .stream()
-            .map(it->EmailRequest.of(emailNotification,it))
+            .map(it -> EmailRequest.of(emailNotification, it))
             .collect(Collectors.toList());
 
         return emailNotification;
@@ -92,14 +94,14 @@ public class EmailNotification {
     private EmailNotification(
         AdminMember sender,
         Generation generation,
-        EmailTemplate emailTemplate,
+        EmailTemplateName emailTemplateName,
         String senderEmail,
         String memo
     ) {
 
         this.sender = sender;
         this.generation = generation;
-        this.emailTemplate = emailTemplate;
+        this.emailTemplateName = emailTemplateName;
         this.senderEmail = senderEmail;
         this.memo = memo;
     }

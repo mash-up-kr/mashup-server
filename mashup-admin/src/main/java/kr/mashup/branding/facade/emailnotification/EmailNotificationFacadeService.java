@@ -5,7 +5,6 @@ import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.email.EmailMetadata;
 import kr.mashup.branding.domain.email.EmailNotification;
 import kr.mashup.branding.domain.email.EmailRequest;
-import kr.mashup.branding.domain.email.EmailTemplate;
 import kr.mashup.branding.domain.email.EmailTemplateName;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
@@ -42,7 +41,11 @@ public class EmailNotificationFacadeService {
     private final ApplicationService applicationService;
 
     @Transactional
-    public void sendEmailNotification(final Long adminMemberId, final Integer generationNumber, final EmailSendRequest request) {
+    public void sendEmailNotification(
+        final Long adminMemberId,
+        final Integer generationNumber,
+        final EmailSendRequest request
+    ) {
 
         final AdminMember adminMember
             = adminMemberService.getByAdminMemberId(adminMemberId);
@@ -62,15 +65,13 @@ public class EmailNotificationFacadeService {
         emailNotificationEventPublisher.publishEmailNotificationEvent(event);
     }
 
+    @Transactional(readOnly = true)
     public List<EmailMetadata> getEmailMetaData(final Long emailNotificationId) {
 
         final EmailNotification emailNotification
             = emailNotificationService.getByIdOrThrow(emailNotificationId);
 
-        final EmailTemplate emailTemplate
-            = emailNotification.getEmailTemplate();
-
-        final EmailTemplateName templateName = emailTemplate.getTemplateName();
+        final EmailTemplateName emailTemplateName = emailNotification.getEmailTemplateName();
 
         final String senderEmail = emailNotification.getSenderEmail();
         final List<EmailRequest> emailRequests = emailNotification.getEmailRequests();
@@ -80,19 +81,14 @@ public class EmailNotificationFacadeService {
         for (final EmailRequest request : emailRequests) {
 
             final Application application = request.getApplication();
-            // TODO : 템플릿 분기
+
             final Map<String, String> bindingData = new HashMap<>();
-            if (templateName.equals(EmailTemplateName.SUBMIT)) {
-                bindingData.put("name", application.getApplicant().getName());
-                bindingData.put("position", application.getApplicationForm().getTeam().getName());
-            }else{
-                bindingData.put("name", application.getApplicant().getName());
-                bindingData.put("position", application.getApplicationForm().getTeam().getName());
-            }
+
+            bindingData.put("name", application.getApplicant().getName());
+            bindingData.put("position", application.getApplicationForm().getTeam().getName());
 
             final EmailMetadata emailMetadata
-                = EmailMetadata.of(request.getId(), templateName.name(), bindingData, senderEmail,
-                application.getApplicant().getEmail());
+                = EmailMetadata.of(request.getId(), emailTemplateName.name(), bindingData, senderEmail, application.getApplicant().getEmail());
 
             metadataList.add(emailMetadata);
         }
@@ -103,7 +99,7 @@ public class EmailNotificationFacadeService {
     @Transactional(readOnly = true)
     public Page<EmailNotificationResponseVo> readEmailNotifications(String searchWord, Pageable pageable) {
         return emailNotificationService.readEmailNotifications(searchWord, pageable)
-                .map(EmailNotificationResponseVo::of);
+            .map(EmailNotificationResponseVo::of);
     }
 
     @Transactional(readOnly = true)

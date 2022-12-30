@@ -9,6 +9,6 @@ public class EmailMetadata {
     Long requestId;
     String templateName;
     Map<String, String> bindingData;
-    String src;
-    String dest;
+    String senderEmail;
+    String receiverEmail;
 }

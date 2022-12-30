@@ -40,6 +40,10 @@ public class EmailRequest {
         this.status = status;
     }
 
+    public void setMessageId(String messageId){
+        this.messageId = messageId;
+    }
+
     public static EmailRequest of(EmailNotification emailNotification, Application application) {
         return new EmailRequest(emailNotification, application);
     }

@@ -27,9 +27,9 @@ public class EmailNotificationController {
     @ApiOperation("Email 발송")
     @PostMapping("/send")
     public ApiResponse<EmptyResponse> sendSms(
-        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
-        @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
-        @RequestBody EmailSendRequest emailSendRequest
+        @ApiIgnore @ModelAttribute("adminMemberId") final Long adminMemberId,
+        @RequestParam(defaultValue = "13", required = false) final  Integer generationNumber,
+        @RequestBody final EmailSendRequest emailSendRequest
     ) {
         emailNotificationFacadeService.sendEmailNotification(adminMemberId, generationNumber, emailSendRequest);
 

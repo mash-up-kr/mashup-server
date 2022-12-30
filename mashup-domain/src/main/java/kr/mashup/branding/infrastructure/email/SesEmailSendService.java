@@ -7,6 +7,9 @@ import com.amazonaws.services.simpleemail.model.SendTemplatedEmailRequest;
 import com.amazonaws.services.simpleemail.model.SendTemplatedEmailResult;
 import com.google.gson.Gson;
 import kr.mashup.branding.domain.email.EmailMetadata;
+import kr.mashup.branding.service.email.EmailResponse;
+import kr.mashup.branding.service.email.EmailResponseStatus;
+import kr.mashup.branding.service.email.EmailSendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +18,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SesEmailService {
+public class SesEmailSendService implements EmailSendService {
 
     private final AmazonSimpleEmailService amazonSimpleEmailService;
 
-    public SesResponseStatus sendEmail(EmailMetadata metadata){
+    public EmailResponse sendEmail(EmailMetadata metadata){
 
         List<String> receivers = new ArrayList<>();
-        receivers.add(metadata.getDest());
+        receivers.add(metadata.getReceiverEmail());
 
         Destination des = new Destination();
         des.setToAddresses(receivers);
@@ -32,15 +35,15 @@ public class SesEmailService {
         SendTemplatedEmailRequest emailRequest = new SendTemplatedEmailRequest();
         emailRequest.setTemplate(metadata.getTemplateName());
         emailRequest.setDestination(des);
-        emailRequest.setSource(metadata.getSrc());
+        emailRequest.setSource(metadata.getSenderEmail());
         emailRequest.setTemplateData(templateData);
 
         SendTemplatedEmailResult result = amazonSimpleEmailService.sendTemplatedEmail(emailRequest);
 
         if (result.getSdkHttpMetadata().getHttpStatusCode() != 200){
-            return SesResponseStatus.FAIL;
+            return EmailResponse.fail();
         }
 
-        return SesResponseStatus.SUCCESS;
+        return EmailResponse.success(result.getMessageId());
     }
 }

@@ -5,13 +5,10 @@ import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.email.EmailNotification;
 import kr.mashup.branding.domain.email.EmailRequest;
 import kr.mashup.branding.domain.email.EmailRequestStatus;
-import kr.mashup.branding.domain.email.EmailTemplate;
 import kr.mashup.branding.domain.email.EmailTemplateName;
-import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.repository.emailnotification.EmailNotificationRepository;
 import kr.mashup.branding.repository.emailnotification.EmailRequestRepository;
-import kr.mashup.branding.repository.emailnotification.EmailTemplateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,36 +24,40 @@ public class EmailNotificationService {
 
     private final EmailRequestRepository emailRequestRepository;
     private final EmailNotificationRepository emailNotificationRepository;
-    private final EmailTemplateRepository emailTemplateRepository;
 
     public EmailNotification create(
-        AdminMember sender,
-        Generation generation,
-        String memo,
-        String templateName,
-        List<Application> applications
-    ){
-        final EmailTemplateName emailTemplateName = EmailTemplateName.valueOf(templateName);
-
-        final EmailTemplate emailTemplate =
-            emailTemplateRepository.findByTemplateName(emailTemplateName).orElseThrow(IllegalArgumentException::new);
+        final AdminMember sender,
+        final Generation generation,
+        final String memo,
+        final EmailTemplateName templateName,
+        final List<Application> applications
+    ) {
 
         final EmailNotification emailNotification
-            = EmailNotification.of(sender, generation, emailTemplate, memo, applications);
+            = EmailNotification.of(sender, generation, templateName, memo, applications);
 
         return emailNotificationRepository.save(emailNotification);
     }
 
-    public EmailNotification getByIdOrThrow(Long emailNotificationId) {
+    public EmailNotification getByIdOrThrow(final Long emailNotificationId) {
         return emailNotificationRepository.findById(emailNotificationId).orElseThrow(IllegalArgumentException::new);
     }
 
-    public void update(Long emailRequestId, EmailRequestStatus status){
+    public void updateToSuccess(final Long emailRequestId, final String messageId) {
 
         final EmailRequest emailRequest
             = emailRequestRepository.findById(emailRequestId).orElseThrow(IllegalArgumentException::new);
 
-        emailRequest.updateStatus(status);
+        emailRequest.updateStatus(EmailRequestStatus.SUCCESS);
+        emailRequest.setMessageId(messageId);
+    }
+
+    public void updateToFail(final Long emailRequestId) {
+
+        final EmailRequest emailRequest
+            = emailRequestRepository.findById(emailRequestId).orElseThrow(IllegalArgumentException::new);
+
+        emailRequest.updateStatus(EmailRequestStatus.FAIL);
     }
 
     public Page<EmailNotification> readEmailNotifications(String searchWord, Pageable pageable) {
