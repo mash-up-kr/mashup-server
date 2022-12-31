@@ -26,7 +26,7 @@ public class AdminTeamController {
     @GetMapping
     public ApiResponse<List<TeamResponse>> getTeams(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
-        @RequestParam(defaultValue = "12", required = false) Integer generationNumber
+        @RequestParam(defaultValue = "13", required = false) Integer generationNumber
     ) {
 
         final List<TeamResponse> responses

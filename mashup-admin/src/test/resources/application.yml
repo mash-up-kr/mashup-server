@@ -13,3 +13,7 @@ sms:
 
 jwt:
   secret: test
+aws:
+  ses:
+    access-key: test
+    secret-key: test

@@ -4,7 +4,9 @@ plugins {
     id 'java'
 }
 
-dependencies {
+dependencies{
+    implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'com.amazonaws:aws-java-sdk-ses:1.12.3'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.security:spring-security-crypto'
