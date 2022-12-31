@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class ApplicationService {
     private final ApplicationRepository applicationRepository;
@@ -55,7 +55,6 @@ public class ApplicationService {
      *
      * @return 지원서
      */
-    @Transactional
     public Application create(Long applicantId, Applicant applicant, ApplicationForm applicationForm) {
 
         Assert.notNull(applicantId, "'applicantId' must not be null");
@@ -77,7 +76,6 @@ public class ApplicationService {
         return applicationRepository.save(Application.of(applicant, applicationForm));
     }
 
-    @Transactional
     public Application update(Long applicantId, Long applicationId, UpdateApplicationVo updateApplicationVo) {
         Assert.notNull(applicationId, "'applicationId' must not be null");
         Assert.notNull(updateApplicationVo, "'updateApplicationVo' must not be null");
@@ -94,7 +92,6 @@ public class ApplicationService {
     }
 
 
-    @Transactional
     public Application submit(
         Long applicantId,
         Long applicationId,
@@ -158,7 +155,6 @@ public class ApplicationService {
     /**
      * 지원서 1개에 대해서 결과, 면접 일정을 변경한다.
      */
-    @Transactional
     public Application updateResult(
         AdminMember adminMember,
         UpdateApplicationResultVo updateApplicationResultVo
@@ -178,7 +174,6 @@ public class ApplicationService {
         return application;
     }
 
-    @Transactional
     public Application updateConfirmationFromApplicant(Long applicantId,
                                                        UpdateConfirmationVo updateConfirmationVo) {
         final Long applicationId = updateConfirmationVo.getApplicationId();
@@ -193,7 +188,6 @@ public class ApplicationService {
     }
 
 
-    @Transactional
     public Application updateConfirmationForTest(Long applicantId,
                                                  UpdateConfirmationVo updateConfirmationVo) {
         final Long applicationId = updateConfirmationVo.getApplicationId();
@@ -205,8 +199,12 @@ public class ApplicationService {
         return application;
     }
 
-    @Transactional
-    public List<Application> getApplications(Long applicantId) {
+    public List<Application> getApplications(List<Long> applicationIds) {
+
+        return applicationRepository.findAllById(applicationIds);
+    }
+
+    public List<Application> getApplication(Long applicantId) {
 
         final List<Application> applications
             = applicationRepository
@@ -217,7 +215,7 @@ public class ApplicationService {
         return applications;
     }
 
-    @Transactional
+
     public Map<Applicant, Application> getApplications(Generation generation, List<Applicant> applicants) {
 
         final Map<Applicant, Application> applicationMap
@@ -240,8 +238,7 @@ public class ApplicationService {
     }
 
     // TODO: 상세 조회시 form 도 같이 조합해서 내려주어야할듯 (teamId, memberId 요청하면 해당팀 쓰던 지원서 질문, 내용 다 합쳐서)
-    @Transactional
-    public Application getApplication(Long applicantId, Long applicationId) {
+    public Application getApplications(Long applicantId, Long applicationId) {
         Assert.notNull(applicantId, "'applicantId' must not be null");
         Assert.notNull(applicationId, "'applicationId' must not be null");
 
@@ -283,7 +280,6 @@ public class ApplicationService {
         }
     }
 
-    @Transactional
     public void deleteByApplicationFormId(Long applicationFormId) {
         List<Application> applications = applicationRepository
             .findByApplicationForm(applicationFormId);
@@ -295,7 +291,6 @@ public class ApplicationService {
         applicationRepository.deleteAllById(applicationIds);
     }
 
-    @Transactional
     public void delete(Long applicationId) {
         applicationRepository.findById(applicationId)
             .ifPresent(applicationRepository::delete);

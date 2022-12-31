@@ -25,7 +25,7 @@ public class RecruitmentScheduleController {
 
     @GetMapping
     public ApiResponse<List<RecruitmentScheduleResponse>> getSchedules(
-        @RequestParam(defaultValue = "12", required = false) Integer generationNumber
+        @RequestParam(defaultValue = "13", required = false) Integer generationNumber
     ) {
         final List<RecruitmentScheduleResponse> responses
             = recruitmentScheduleFacadeService.getAll(generationNumber);
@@ -35,7 +35,7 @@ public class RecruitmentScheduleController {
 
     @PostMapping
     public ApiResponse<RecruitmentScheduleResponse> create(
-        @RequestParam(defaultValue = "12", required = false) Integer generationNumber,
+        @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
         @RequestBody RecruitmentScheduleCreateRequest request
     ) {
         // TODO: 권한 검사 필요함
