@@ -23,7 +23,10 @@ public class AttendanceCodeService {
         return attendanceCodeRepository.findByCode(code).orElseThrow(AttendanceCodeNotFoundException::new);
     }
 
-    public List<AttendanceCode> findByStartedAtBetween(LocalDateTime from, LocalDateTime to) {
-        return attendanceCodeRepository.findAllByStartedAtBetween(from, to);
+    public List<AttendanceCode> findByStartedAtLeftOpenBetween(LocalDateTime from, LocalDateTime to) {
+        return attendanceCodeRepository.findAllByStartedAtGreaterThanAndStartedAtLessThanEqual(from, to);
+    }
+    public List<AttendanceCode> findAllByEndedAtLeftOpenBetween(LocalDateTime from, LocalDateTime to) {
+        return attendanceCodeRepository.findAllByEndedAtGreaterThanAndEndedAtLessThanEqual(from, to);
     }
 }
