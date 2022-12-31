@@ -11,7 +11,9 @@ import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
-import kr.mashup.branding.domain.pushnoti.vo.AttendanceStartVo;
+import kr.mashup.branding.domain.pushnoti.vo.AttendanceEndingVo;
+import kr.mashup.branding.domain.pushnoti.vo.AttendanceStartedVo;
+import kr.mashup.branding.domain.pushnoti.vo.AttendanceStartingVo;
 import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,6 +39,8 @@ public class AttendanceFacadeService {
 
     private final static int LATE_LIMIT_TIME = 10;
     private final static long PUSH_SCHEDULE_INTERVAL_MINUTES = 1;
+    private final static long ATTENDANCE_START_AFTER_MINUTES = 1;
+    private final static long ATTENDANCE_END_AFTER_MINUTES = 3;
     private final AttendanceService attendanceService;
     private final MemberService memberService;
     private final ScheduleService scheduleService;
@@ -94,17 +99,46 @@ public class AttendanceFacadeService {
     }
 
     @Scheduled(cron = "0 * * * * *")
-    public void pushNotiSchedule() {
-        findAllActivesWithin(PUSH_SCHEDULE_INTERVAL_MINUTES)
+    @Transactional(readOnly = true)
+    public void sendAttendanceStartingPushNoti() {
+        findAllStartsWithin(ATTENDANCE_START_AFTER_MINUTES)
                 .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
-                        new AttendanceStartVo(Collections.emptyList())
+                        new AttendanceStartingVo(Collections.emptyList())
                 ));
     }
 
-    private List<AttendanceCode> findAllActivesWithin(Long minute) {
-        final LocalDateTime now = LocalDateTime.now();
-        final LocalDateTime criteria = now.plusMinutes(minute);
-        return attendanceCodeService.findByStartedAtBetween(now, criteria);
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional(readOnly = true)
+    public void sendAttendanceStartedPushNoti() {
+        findAllStartsWithin(0L)
+                .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
+                        new AttendanceStartedVo(Collections.emptyList())
+                ));
+    }
+
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional(readOnly = true)
+    public void sendAttendanceEndingPushNoti() {
+        findAllEndsWithin(ATTENDANCE_END_AFTER_MINUTES)
+                .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
+                        new AttendanceEndingVo(Collections.emptyList())
+                ));
+    }
+
+    private List<AttendanceCode> findAllStartsWithin(Long afterMinutes) {
+        final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        return attendanceCodeService.findByStartedAtLeftOpenBetween(
+                now.plusMinutes(-PUSH_SCHEDULE_INTERVAL_MINUTES + afterMinutes),
+                now.plusMinutes(afterMinutes)
+        );
+    }
+
+    private List<AttendanceCode> findAllEndsWithin(Long afterMinutes) {
+        final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        return attendanceCodeService.findAllByEndedAtLeftOpenBetween(
+                now.plusMinutes(-PUSH_SCHEDULE_INTERVAL_MINUTES + afterMinutes),
+                now.plusMinutes(afterMinutes)
+        );
     }
 
     private void validAttendanceCode(AttendanceCode attendanceCode, String code) {
