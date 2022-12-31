@@ -4,7 +4,6 @@ import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.attendance.AttendanceStatus;
-import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
 import kr.mashup.branding.domain.exception.NotFoundException;
@@ -12,17 +11,15 @@ import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
+import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.service.attendance.AttendanceCodeService;
 import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.member.MemberService;
-import kr.mashup.branding.facade.pushnoti.AttendancePushNotiReservationService;
+import kr.mashup.branding.service.pushnoti.FcmPushNotiService;
+import kr.mashup.branding.service.pushnoti.PushNotiService;
 import kr.mashup.branding.service.schedule.ScheduleService;
-import kr.mashup.branding.ui.attendance.response.AttendanceCheckResponse;
-import kr.mashup.branding.ui.attendance.response.AttendanceInfo;
-import kr.mashup.branding.ui.attendance.response.PersonalAttendanceResponse;
-import kr.mashup.branding.ui.attendance.response.PlatformAttendanceResponse;
-import kr.mashup.branding.ui.attendance.response.TotalAttendanceResponse;
+import kr.mashup.branding.ui.attendance.response.*;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,11 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,12 +35,12 @@ import java.util.stream.Collectors;
 public class AttendanceFacadeService {
 
     private final static int LATE_LIMIT_TIME = 10;
-    private final static long PUSH_SCHEDULE_INTERVAL_MINUTES = 5;
+    private final static long PUSH_SCHEDULE_INTERVAL_MINUTES = 1;
     private final AttendanceService attendanceService;
     private final MemberService memberService;
     private final ScheduleService scheduleService;
     private final AttendanceCodeService attendanceCodeService;
-    private final AttendancePushNotiReservationService attendancePushNotiReservationService;
+    private final PushNotiService pushNotiService;
 
     /**
      * 출석 체크
@@ -100,26 +93,14 @@ public class AttendanceFacadeService {
         return AttendanceCheckResponse.from(attendance);
     }
 
-    @Scheduled(fixedDelay = 60 * 1000 * 5, initialDelay = 0)
-    public void reservePushNotiSchedule() {
-        final LocalDateTime now = LocalDateTime.now();
-        findAllActivesWithin(PUSH_SCHEDULE_INTERVAL_MINUTES * 2).stream()
-                .filter(attendanceCode -> isNotScheduledYet(attendanceCode, now))
-                .forEach(this::reserveAttendanceStartNotiPush);
-    }
-
-    private void reserveAttendanceStartNotiPush(AttendanceCode attendanceCode) {
-        attendancePushNotiReservationService.reserve(
-                attendanceCode.getId(),
-                Collections.emptyList(),
-                "출석 체크",
-                "출석 체크 시작 5분 전입니다 준비해주세요",
-                attendanceCode.getStartedAt().minusMinutes(PUSH_SCHEDULE_INTERVAL_MINUTES)
-        );
-    }
-
-    private Boolean isNotScheduledYet(AttendanceCode attendanceCode, LocalDateTime criteria) {
-        return !attendanceCode.getStartedAt().minusMinutes(PUSH_SCHEDULE_INTERVAL_MINUTES).isBefore(criteria);
+    @Scheduled(cron = "0 * * * * *")
+    public void pushNotiSchedule() {
+        findAllActivesWithin(PUSH_SCHEDULE_INTERVAL_MINUTES)
+                .forEach(attendanceCode -> pushNotiService.sendPushNotification(
+                        Collections.emptyList(),
+                        "출석 체크",
+                        "출석 체크 시작 5분 전입니다 준비해주세요"
+                ));
     }
 
     private List<AttendanceCode> findAllActivesWithin(Long minute) {
