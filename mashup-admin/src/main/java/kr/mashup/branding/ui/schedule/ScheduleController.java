@@ -30,7 +30,7 @@ public class ScheduleController {
     @ApiOperation("스케줄 조회")
     @GetMapping
     public ApiResponse<List<ScheduleResponse>> getSchedules(
-            @RequestParam(defaultValue = "12", required = false) Integer generationNumber,
+            @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
             @PageableDefault Pageable pageable
     ) {
         final Page<ScheduleResponse> responses
@@ -43,7 +43,7 @@ public class ScheduleController {
     @ApiOperation("스케줄 생성")
     @PostMapping
     public ApiResponse<ScheduleResponse> createSchedule(
-        @RequestParam(defaultValue = "12", required = false) Integer generationNumber,
+        @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
         @Valid @RequestBody ScheduleUpdateRequest scheduleUpdateRequest
     ) {
         final ScheduleResponse response

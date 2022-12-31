@@ -1,14 +1,14 @@
 package kr.mashup.branding.ui.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import kr.mashup.branding.domain.application.CreateApplicationVo;
+import io.swagger.annotations.ApiOperation;
+import kr.mashup.branding.facade.application.ApplicationFacadeService;
+import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationSubmitRequest;
 import kr.mashup.branding.ui.application.vo.CreateApplicationRequest;
 import kr.mashup.branding.ui.application.vo.UpdateApplicationRequest;
 import kr.mashup.branding.ui.application.vo.UpdateConfirmationRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,13 +17,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.annotations.ApiOperation;
-import kr.mashup.branding.domain.application.Application;
-import kr.mashup.branding.facade.application.ApplicationFacadeService;
-import kr.mashup.branding.ui.ApiResponse;
-import lombok.RequiredArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/applications")
