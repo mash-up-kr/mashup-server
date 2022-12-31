@@ -7,7 +7,7 @@ import java.util.Map;
 @Value(staticConstructor = "of")
 public class EmailMetadata {
     Long requestId;
-    String templateName;
+    EmailTemplateName templateName;
     Map<String, String> bindingData;
     String senderEmail;
     String receiverEmail;

@@ -1,6 +1,7 @@
 package kr.mashup.branding.facade.application;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.applicant.Applicant;
@@ -8,10 +9,12 @@ import kr.mashup.branding.domain.applicant.exception.ApplicantNotFoundException;
 import kr.mashup.branding.domain.application.ApplicationCreationRequestInvalidException;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
+import kr.mashup.branding.domain.email.EmailTemplateName;
 import kr.mashup.branding.service.applicant.ApplicantService;
 import kr.mashup.branding.service.application.ApplicationFormService;
 import kr.mashup.branding.service.team.TeamService;
 import kr.mashup.branding.ui.application.vo.ApplicationResponse;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.domain.application.Application;
@@ -31,6 +34,7 @@ public class ApplicationFacadeService {
     private final ApplicantService applicantService;
     private final ApplicationService applicationService;
     private final ApplicationFormService applicationFormService;
+    private final ApplicationEventPublisher eventPublisher;
     private final ApplicationAssembler applicationAssembler;
 
 
@@ -93,6 +97,17 @@ public class ApplicationFacadeService {
     ) {
         final Application application
             = applicationService.submit(applicantId, applicationId, applicationSubmitRequestVo);
+
+        final String teamName = application.getApplicationForm().getTeam().getName();
+        final String name = application.getApplicant().getName();
+        final String email = application.getApplicant().getEmail();
+
+        eventPublisher.publishEvent(
+            EmailSendEvent.of(
+                "recruit.mashup.kr",
+                email,
+                EmailTemplateName.SUBMIT,
+                Map.of("name", name, "position", "teamName")));
 
         return applicationAssembler.toApplicationResponse(application);
     }

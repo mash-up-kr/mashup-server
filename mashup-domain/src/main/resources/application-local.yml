@@ -15,18 +15,6 @@ spring:
     url: jdbc:h2:mem://localhost/~/testdb;MODE=MYSQL
     username: sa
     password:
-    #  datasource:
-    #    driver-class-name: com.mysql.cj.jdbc.Driver
-    #    url: jdbc:mysql://localhost:3306/recruit?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    #    username: root
-    #    password: 1234
-#    jpa:
-#      hibernate:
-#        ddl-auto: update
-#      open-in-view: false
-#      properties:
-#        hibernate:
-#          default_batch_fetch_size: 1000
 sms:
   toast:
     url: https://api-sms.cloud.toast.com/
@@ -35,5 +23,6 @@ sms:
 logging:
   config: classpath:logback/logback-spring.xml
 aws:
-  access-key: ENC(MuzpGJ7chIHXUhNOCvoWTzrd9qW7NwctIlDtCkNmWDopfXe7CtiguHJqyYISUTPoPqNhx0Z9EMDq0rgkv0sCvQ==)
-  secret-key: ENC(BQxYjBhQ902/RnEsSbfid/dD52Ls4Eo81c65hGDjsDMHNcv68RbMsS1hVezt9V+XoLwlcg3ZH3K6SlgSyO71f0o0xfK5DoyQn02/eB1C2BQ=)
+  ses:
+    access-key: ENC(aQntk9Wm8gCrHsIvt+q7+cIDTGI6hWIlRisZXE3q/BNACqKQXrXnpzrgnhHIpeALhhAe82v0niu93NTZyomkwQ==)
+    secret-key: ENC(/B1+2Mflsgv1enwFvvmdzffHKGM0F6MV/Of6hdLyE+f6zkDI25TF8Av502lO0cV7PeYKdHje0FJPo22idqzsVQaRN1QM9cqvHbs1hgudDkE=)

@@ -89,7 +89,7 @@ public class EmailNotificationFacadeService {
             bindingData.put("position", application.getApplicationForm().getTeam().getName());
 
             final EmailMetadata emailMetadata
-                = EmailMetadata.of(request.getId(), emailTemplateName.name(), bindingData, senderEmail, application.getApplicant().getEmail());
+                = EmailMetadata.of(request.getId(), emailTemplateName, bindingData, senderEmail, application.getApplicant().getEmail());
 
             metadataList.add(emailMetadata);
         }

@@ -3,11 +3,12 @@ package kr.mashup.branding.ui.emailnotification;
 import kr.mashup.branding.config.async.ThreadPoolName;
 import kr.mashup.branding.domain.email.EmailMetadata;
 import kr.mashup.branding.facade.emailnotification.EmailNotificationFacadeService;
-import kr.mashup.branding.infrastructure.email.SesEmailSendService;
 import kr.mashup.branding.service.email.EmailResponse;
 import kr.mashup.branding.service.email.EmailResponseStatus;
 import kr.mashup.branding.service.email.EmailNotificationEvent;
 import kr.mashup.branding.service.email.EmailNotificationService;
+import kr.mashup.branding.service.email.EmailSendService;
+import kr.mashup.branding.service.email.EmailSendVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -26,7 +27,7 @@ public class EmailNotificationEventListener {
 
     private final EmailNotificationFacadeService emailNotificationFacadeService;
     private final EmailNotificationService emailNotificationService;
-    private final SesEmailSendService emailSendService;
+    private final EmailSendService emailSendService;
 
     @Async(value = ThreadPoolName.EMAIL_SEND_THREAD_POOL)
     @Transactional(propagation = Propagation.NEVER)
@@ -44,7 +45,7 @@ public class EmailNotificationEventListener {
         // infra 전송
         for(final EmailMetadata metadata : emailMetaDataList){
             try{
-                final EmailResponse emailResponse = emailSendService.sendEmail(metadata);
+                final EmailResponse emailResponse = emailSendService.sendEmail(EmailSendVo.from(metadata));
                 if(emailResponse.getStatus().equals(EmailResponseStatus.SUCCESS)){
                     emailNotificationService.updateToSuccess(metadata.getRequestId(), emailResponse.getMessageId());
                 }else{

@@ -10,6 +10,7 @@ import kr.mashup.branding.domain.email.EmailMetadata;
 import kr.mashup.branding.service.email.EmailResponse;
 import kr.mashup.branding.service.email.EmailResponseStatus;
 import kr.mashup.branding.service.email.EmailSendService;
+import kr.mashup.branding.service.email.EmailSendVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,23 +23,23 @@ public class SesEmailSendService implements EmailSendService {
 
     private final AmazonSimpleEmailService amazonSimpleEmailService;
 
-    public EmailResponse sendEmail(EmailMetadata metadata){
+    public EmailResponse sendEmail(EmailSendVo emailSendVo){
 
-        List<String> receivers = new ArrayList<>();
-        receivers.add(metadata.getReceiverEmail());
+        final List<String> receivers = new ArrayList<>();
+        receivers.add(emailSendVo.getReceiverEmail());
 
-        Destination des = new Destination();
-        des.setToAddresses(receivers);
+        final Destination dest = new Destination();
+        dest.setToAddresses(receivers);
 
-        String templateData = new Gson().toJson(metadata.getBindingData());
+        final String templateData = new Gson().toJson(emailSendVo.getBindingData());
 
-        SendTemplatedEmailRequest emailRequest = new SendTemplatedEmailRequest();
-        emailRequest.setTemplate(metadata.getTemplateName());
-        emailRequest.setDestination(des);
-        emailRequest.setSource(metadata.getSenderEmail());
+        final SendTemplatedEmailRequest emailRequest = new SendTemplatedEmailRequest();
+        emailRequest.setTemplate(emailSendVo.getTemplateName().getRegisteredTemplateName());
+        emailRequest.setDestination(dest);
+        emailRequest.setSource(emailSendVo.getSenderEmail());
         emailRequest.setTemplateData(templateData);
 
-        SendTemplatedEmailResult result = amazonSimpleEmailService.sendTemplatedEmail(emailRequest);
+        final SendTemplatedEmailResult result = amazonSimpleEmailService.sendTemplatedEmail(emailRequest);
 
         if (result.getSdkHttpMetadata().getHttpStatusCode() != 200){
             return EmailResponse.fail();

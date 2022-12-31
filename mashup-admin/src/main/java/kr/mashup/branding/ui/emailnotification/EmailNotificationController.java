@@ -25,9 +25,33 @@ public class EmailNotificationController {
 
     private final EmailNotificationFacadeService emailNotificationFacadeService;
 
-    @ApiOperation("Email 발송")
+    @ApiOperation("이메일 발송내역 목록 조회")
+    @GetMapping
+    public ApiResponse<List<EmailNotificationResponse>> readEmailNotifications(
+            @RequestParam(required = false) final Optional<String> searchWord,
+            @PageableDefault final Pageable pageable
+    ) {
+
+        final Page<EmailNotificationResponse> responses
+            = emailNotificationFacadeService.readEmailNotifications(searchWord, pageable);
+
+        return ApiResponse.success(responses);
+    }
+
+    @ApiOperation("이메일 발송 내역 상세 조회")
+    @GetMapping("/{emailNotificationId}")
+    public ApiResponse<EmailNotificationDetailResponse> readEmailNotification(
+        @PathVariable final Long emailNotificationId
+    ) {
+        final EmailNotificationDetailResponse responses
+            = emailNotificationFacadeService.readEmailNotification(emailNotificationId);
+
+        return ApiResponse.success(responses);
+    }
+
+    @ApiOperation("이메일 발송하기")
     @PostMapping("/send")
-    public ApiResponse<EmptyResponse> sendSms(
+    public ApiResponse<EmptyResponse> sendEmail(
         @ApiIgnore @ModelAttribute("adminMemberId") final Long adminMemberId,
         @RequestParam(defaultValue = "13", required = false) final  Integer generationNumber,
         @RequestBody final EmailSendRequest emailSendRequest
@@ -35,29 +59,5 @@ public class EmailNotificationController {
         emailNotificationFacadeService.sendEmailNotification(adminMemberId, generationNumber, emailSendRequest);
 
         return ApiResponse.success(EmptyResponse.of());
-    }
-
-    @ApiOperation("이메일 발송내역 목록 조회")
-    @GetMapping
-    public ApiResponse<List<EmailNotificationResponse>> readEmailNotifications(
-            @RequestParam(required = false) Optional<String> searchWord,
-            @PageableDefault Pageable pageable
-    ) {
-
-        final Page<EmailNotificationResponse> data
-            = emailNotificationFacadeService.readEmailNotifications(searchWord, pageable);
-
-        return ApiResponse.success(data);
-    }
-
-    @ApiOperation("이메일 발송 내역 상세 조회")
-    @GetMapping("/{emailNotificationId}")
-    public ApiResponse<EmailNotificationDetailResponse> readEmailNotification(
-        @PathVariable Long emailNotificationId
-    ) {
-        final EmailNotificationDetailResponse data
-            = emailNotificationFacadeService.readEmailNotification(emailNotificationId);
-
-        return ApiResponse.success(data);
     }
 }

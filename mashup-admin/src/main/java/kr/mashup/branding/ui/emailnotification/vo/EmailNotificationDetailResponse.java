@@ -56,8 +56,9 @@ public class EmailNotificationDetailResponse {
             .map(EmailRequestResponse::of)
             .collect(Collectors.toList());
 
-        final Map<EmailRequestStatus, Long> statusCountMap = emailRequests.
-            stream()
+        final Map<EmailRequestStatus, Long> statusCountMap
+            = emailRequests
+            .stream()
             .collect(Collectors.groupingBy(EmailRequest::getStatus, Collectors.counting()));
 
         final Long successCount = statusCountMap.getOrDefault(EmailRequestStatus.SUCCESS, 0L);
