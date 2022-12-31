@@ -16,7 +16,6 @@ import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.service.attendance.AttendanceCodeService;
 import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.member.MemberService;
-import kr.mashup.branding.service.pushnoti.FcmPushNotiService;
 import kr.mashup.branding.service.pushnoti.PushNotiService;
 import kr.mashup.branding.service.schedule.ScheduleService;
 import kr.mashup.branding.ui.attendance.response.*;

@@ -1,4 +1,4 @@
-package kr.mashup.branding.config.fcm;
+package kr.mashup.branding.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
