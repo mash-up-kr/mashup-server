@@ -11,12 +11,13 @@ import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
+import kr.mashup.branding.domain.pushnoti.vo.AttendanceStartVo;
 import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.schedule.Schedule;
+import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.attendance.AttendanceCodeService;
 import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.member.MemberService;
-import kr.mashup.branding.service.pushnoti.PushNotiService;
 import kr.mashup.branding.service.schedule.ScheduleService;
 import kr.mashup.branding.ui.attendance.response.*;
 import kr.mashup.branding.util.DateUtil;
@@ -39,7 +40,7 @@ public class AttendanceFacadeService {
     private final MemberService memberService;
     private final ScheduleService scheduleService;
     private final AttendanceCodeService attendanceCodeService;
-    private final PushNotiService pushNotiService;
+    private final PushNotiEventPublisher pushNotiEventPublisher;
 
     /**
      * 출석 체크
@@ -95,10 +96,8 @@ public class AttendanceFacadeService {
     @Scheduled(cron = "0 * * * * *")
     public void pushNotiSchedule() {
         findAllActivesWithin(PUSH_SCHEDULE_INTERVAL_MINUTES)
-                .forEach(attendanceCode -> pushNotiService.sendPushNotification(
-                        Collections.emptyList(),
-                        "출석 체크",
-                        "출석 체크 시작 5분 전입니다 준비해주세요"
+                .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
+                        new AttendanceStartVo(Collections.emptyList())
                 ));
     }
 
