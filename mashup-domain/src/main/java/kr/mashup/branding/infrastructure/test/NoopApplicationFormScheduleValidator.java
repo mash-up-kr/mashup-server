@@ -11,7 +11,7 @@ import kr.mashup.branding.domain.application.form.ApplicationFormScheduleValidat
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Profile("ignore-schedule-validation")
+@Profile("develop")
 @Primary
 @Component
 public class NoopApplicationFormScheduleValidator implements ApplicationFormScheduleValidator {
