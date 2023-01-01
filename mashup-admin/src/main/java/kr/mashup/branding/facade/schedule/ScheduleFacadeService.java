@@ -2,11 +2,14 @@ package kr.mashup.branding.facade.schedule;
 
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.pushnoti.vo.SeminarUpdatedVo;
 import kr.mashup.branding.domain.schedule.ContentsCreateDto;
 import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleCreateDto;
+import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.generation.GenerationService;
+import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.schedule.EventCreateDto;
 import kr.mashup.branding.service.schedule.ScheduleService;
 import kr.mashup.branding.ui.schedule.response.QrCodeResponse;
@@ -23,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -31,6 +35,8 @@ import java.util.List;
 public class ScheduleFacadeService {
     private final ScheduleService scheduleService;
     private final GenerationService generationService;
+    private final PushNotiEventPublisher pushNotiEventPublisher;
+    private final MemberService memberService;
 
     public Page<ScheduleResponse> getSchedules(Integer generationNumber, Pageable pageable) {
 
@@ -63,6 +69,7 @@ public class ScheduleFacadeService {
                 = scheduleService.getByIdOrThrow(scheduleId);
 
         scheduleService.publishSchedule(schedule);
+        pushNotiEventPublisher.publishPushNotiSendEvent(new SeminarUpdatedVo(Collections.emptyList()));
     }
 
     @Transactional
@@ -79,6 +86,7 @@ public class ScheduleFacadeService {
 
         doUpdateSchedule(schedule, request);
 
+        pushNotiEventPublisher.publishPushNotiSendEvent(new SeminarUpdatedVo(Collections.emptyList()));
         return ScheduleResponse.from(schedule);
     }
 
