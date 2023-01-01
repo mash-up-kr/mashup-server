@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -194,4 +195,8 @@ public class MemberService {
         member.updatePushNotificationAgreed(pushNotificationAgreed);
     }
 
+
+    public List<Member> getAllPushNotiTargetableMembers() {
+        return Collections.emptyList(); // TODO 최신기수만?
+    }
 }

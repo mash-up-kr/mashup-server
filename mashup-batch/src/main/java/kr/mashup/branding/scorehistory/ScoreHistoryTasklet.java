@@ -1,8 +1,12 @@
 package kr.mashup.branding.scorehistory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import kr.mashup.branding.domain.pushnoti.vo.AttendanceScoreUpdatedVo;
+import kr.mashup.branding.domain.pushnoti.vo.SeminarAttendanceAppliedVo;
+import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -25,6 +29,7 @@ public class ScoreHistoryTasklet implements Tasklet {
 	private final ScheduleRepository scheduleRepository;
 	private final AttendanceService attendanceService;
 	private final ScoreHistoryService scoreHistoryService;
+	private final PushNotiEventPublisher pushNotiEventPublisher;
 
 	@Override
 	@Transactional
@@ -39,6 +44,7 @@ public class ScoreHistoryTasklet implements Tasklet {
 			});
 			schedule.changeIsCounted(true);
 		});
+		pushNotiEventPublisher.publishPushNotiSendEvent(new SeminarAttendanceAppliedVo(Collections.emptyList())); // TODO 대상 선정
 		return RepeatStatus.FINISHED;
 	}
 }

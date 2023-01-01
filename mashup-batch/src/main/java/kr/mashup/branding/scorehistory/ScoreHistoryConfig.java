@@ -1,5 +1,6 @@
 package kr.mashup.branding.scorehistory;
 
+import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -31,6 +32,7 @@ public class ScoreHistoryConfig {
     private final ScheduleRepository scheduleRepository;
     private final AttendanceService attendanceService;
     private final ScoreHistoryService scoreHistoryService;
+    private final PushNotiEventPublisher pushNotiEventPublisher;
 
     @Bean
     public Job scoreHistoryJob() {
@@ -52,6 +54,6 @@ public class ScoreHistoryConfig {
     @Bean
     @StepScope
     public Tasklet scoreHistoryTasklet(ScheduleRepository scheduleRepository, AttendanceService attendanceService, ScoreHistoryService scoreHistoryService) {
-        return new ScoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService);
+        return new ScoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService, pushNotiEventPublisher);
     }
 }
