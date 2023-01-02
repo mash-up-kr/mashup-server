@@ -21,6 +21,9 @@ public class EmailRequestResponse {
     @ApiModelProperty(value = "수신자 이메일", example = "test@gmail.com")
     private String recipientEmail;
 
+    @ApiModelProperty(value = "지원서 아이디", example = "1")
+    private Long applicationId;
+
     @ApiModelProperty(value = "지원 플랫폼", example = "디자인")
     private String team;
 
@@ -37,6 +40,7 @@ public class EmailRequestResponse {
                 .emailRequestId(emailRequest.getId())
                 .recipientName(applicant.getName())
                 .recipientEmail(applicant.getEmail())
+                .applicationId(emailRequest.getApplication().getApplicationId())
                 .team(applicant.getDepartment())
                 .status(emailRequest.getStatus())
                 .build();
