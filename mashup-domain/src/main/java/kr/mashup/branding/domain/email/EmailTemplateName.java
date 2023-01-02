@@ -11,7 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 public enum EmailTemplateName {
 
     TEST("test"),
-    SUBMIT("submit");
+    SUBMIT("submit"),
+    INTERVIEW_RESULT("interview-result"),
+    SCREENING_DELAY("screening-delay"),
+    SCREENING_RESULT("screening-result");
 
     EmailTemplateName(String registeredTemplateName) {
         this.registeredTemplateName = registeredTemplateName;
