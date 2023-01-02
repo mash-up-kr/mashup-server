@@ -24,10 +24,9 @@ public class ApplicationSubmitEmailListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleSendEmailEvent(EmailSendEvent event) {
 
-        final EmailSendVo emailSendVo
-            = EmailSendVo.of(event.getEmailTemplateName(), event.getBindingData(), event.getSenderEmail(), event.getReceiverEmail());
-
         try {
+            final EmailSendVo emailSendVo
+                = EmailSendVo.of(event.getEmailTemplateName(), event.getBindingData(), event.getSenderEmail(), event.getReceiverEmail());
             emailSendService.sendEmail(emailSendVo);
         } catch (Exception e) {
             log.error("submit email send fail to {} caused by {}", event.getReceiverEmail(), e.getMessage());

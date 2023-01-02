@@ -107,7 +107,7 @@ public class ApplicationFacadeService {
                 "recruit.mashup.kr",
                 email,
                 EmailTemplateName.SUBMIT,
-                Map.of("name", name, "position", "teamName")));
+                Map.of("name", name, "position", teamName)));
 
         return applicationAssembler.toApplicationResponse(application);
     }
