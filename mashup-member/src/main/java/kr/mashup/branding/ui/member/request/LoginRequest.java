@@ -1,9 +1,10 @@
 package kr.mashup.branding.ui.member.request;
 
+import kr.mashup.branding.domain.member.OsType;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -13,4 +14,12 @@ public class LoginRequest {
     private String identification;
 
     private String password;
+
+    @NotNull
+    private OsType osType;
+
+    @NotEmpty
+    private String fcmToken;
+
+    private Boolean pushNotificationAgreed;
 }
