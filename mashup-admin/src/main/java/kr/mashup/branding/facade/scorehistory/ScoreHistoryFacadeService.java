@@ -37,7 +37,9 @@ public class ScoreHistoryFacadeService {
         final ScoreHistory scoreHistory = ScoreHistory.of(scoreType, member, LocalDateTime.of(date, LocalTime.MIN), name, generation, memo);
 
         scoreHistoryService.save(scoreHistory);
-        pushNotiEventPublisher.publishPushNotiSendEvent(new AttendanceScoreUpdatedVo(Collections.emptyList()));
+        pushNotiEventPublisher.publishPushNotiSendEvent(
+            new AttendanceScoreUpdatedVo(memberService.getAllPushNotiTargetableFcmTokens())
+        );
     }
     @Transactional
     public void cancelScore(Long scoreHistoryId, String memo) {
@@ -45,7 +47,9 @@ public class ScoreHistoryFacadeService {
         final ScoreHistory scoreHistory = scoreHistoryService.getByIdOrThrow(scoreHistoryId);
 
         scoreHistory.cancel(memo);
-        pushNotiEventPublisher.publishPushNotiSendEvent(new AttendanceScoreUpdatedVo(Collections.emptyList()));
+        pushNotiEventPublisher.publishPushNotiSendEvent(
+            new AttendanceScoreUpdatedVo(memberService.getAllPushNotiTargetableFcmTokens())
+        );
     }
 
 }
