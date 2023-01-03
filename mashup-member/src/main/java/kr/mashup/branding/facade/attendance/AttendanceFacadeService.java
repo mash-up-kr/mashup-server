@@ -103,7 +103,7 @@ public class AttendanceFacadeService {
     public void sendAttendanceStartingPushNoti() {
         findAllStartsWithin(ATTENDANCE_START_AFTER_MINUTES)
                 .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
-                        new AttendanceStartingVo(Collections.emptyList())
+                        new AttendanceStartingVo(memberService.getAllPushNotiTargetableFcmTokens())
                 ));
     }
 
@@ -112,7 +112,7 @@ public class AttendanceFacadeService {
     public void sendAttendanceStartedPushNoti() {
         findAllStartsWithin(0L)
                 .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
-                        new AttendanceStartedVo(Collections.emptyList())
+                        new AttendanceStartedVo(memberService.getAllPushNotiTargetableFcmTokens())
                 ));
     }
 
@@ -121,7 +121,7 @@ public class AttendanceFacadeService {
     public void sendAttendanceEndingPushNoti() {
         findAllEndsWithin(ATTENDANCE_END_AFTER_MINUTES)
                 .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
-                        new AttendanceEndingVo(Collections.emptyList())
+                        new AttendanceEndingVo(memberService.getAllPushNotiTargetableFcmTokens())
                 ));
     }
 

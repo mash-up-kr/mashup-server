@@ -17,3 +17,5 @@ aws:
   ses:
     access-key: test
     secret-key: test
+fcm:
+  secret: test

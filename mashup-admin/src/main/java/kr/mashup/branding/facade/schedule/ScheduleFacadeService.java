@@ -26,7 +26,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -69,7 +68,10 @@ public class ScheduleFacadeService {
                 = scheduleService.getByIdOrThrow(scheduleId);
 
         scheduleService.publishSchedule(schedule);
-        pushNotiEventPublisher.publishPushNotiSendEvent(new SeminarUpdatedVo(Collections.emptyList()));
+
+        pushNotiEventPublisher.publishPushNotiSendEvent(
+            new SeminarUpdatedVo(memberService.getAllPushNotiTargetableFcmTokens())
+        );
     }
 
     @Transactional
@@ -85,8 +87,6 @@ public class ScheduleFacadeService {
                 = scheduleService.getByIdOrThrow(scheduleId);
 
         doUpdateSchedule(schedule, request);
-
-        pushNotiEventPublisher.publishPushNotiSendEvent(new SeminarUpdatedVo(Collections.emptyList()));
         return ScheduleResponse.from(schedule);
     }
 

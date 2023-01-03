@@ -17,9 +17,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,11 +40,11 @@ public class MemberService {
 
         final Generation generation = memberCreateDto.getGeneration();
         final Member member = Member.of(
-                memberCreateDto.getName(),
-                memberCreateDto.getIdentification(),
-                memberCreateDto.getPassword(),
-                passwordEncoder,
-                memberCreateDto.getPrivatePolicyAgreed()
+            memberCreateDto.getName(),
+            memberCreateDto.getIdentification(),
+            memberCreateDto.getPassword(),
+            passwordEncoder,
+            memberCreateDto.getPrivatePolicyAgreed()
         );
         memberRepository.save(member);
 
@@ -187,8 +189,12 @@ public class MemberService {
         return memberGenerationRepository.findByMemberAndGeneration(member, generation).orElseThrow(MemberNotFoundException::new).getPlatform();
     }
 
-    public List<Member> getAllPushNotiTargetableMembers() {
-        return Collections.emptyList(); // TODO 최신기수만?
+    public List<String> getAllPushNotiTargetableFcmTokens() {
+        return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
+            .filter(Member::getPushNotificationAgreed)
+            .map(Member::getFcmToken)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
     }
 
     public void updatePushNotificationInfo(OsType osType, String fcmToken, Member member) {
