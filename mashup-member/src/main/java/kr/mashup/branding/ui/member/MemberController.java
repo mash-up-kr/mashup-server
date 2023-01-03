@@ -97,8 +97,8 @@ public class MemberController {
         return ApiResponse.success(tokenResponse);
     }
 
-    @ApiOperation("푸시 알림 동의 여부")
-    @PatchMapping
+    @ApiOperation("푸시 알림 동의 여부 업데이트")
+    @PatchMapping("/push-notification")
     public ApiResponse<Boolean> updatePushNotificationAgreed(
             @ApiIgnore MemberAuth memberAuth,
             @Valid @RequestBody PushNotificationRequest request
