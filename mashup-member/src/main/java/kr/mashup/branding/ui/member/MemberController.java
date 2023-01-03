@@ -9,6 +9,7 @@ import kr.mashup.branding.ui.member.request.SignUpRequest;
 import kr.mashup.branding.ui.member.request.ValidInviteRequest;
 import kr.mashup.branding.ui.member.response.*;
 import kr.mashup.branding.ui.EmptyResponse;
+import kr.mashup.branding.ui.member.request.PushNotificationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -94,6 +95,18 @@ public class MemberController {
                 = memberFacadeService.getAccessToken(memberAuth.getMemberId());
 
         return ApiResponse.success(tokenResponse);
+    }
+
+    @ApiOperation("푸시 알림 정보 업데이트 업데이트")
+    @PatchMapping("/push-notification")
+    public ApiResponse<Boolean> updatePushNotificationAgreed(
+            @ApiIgnore MemberAuth memberAuth,
+            @Valid @RequestBody PushNotificationRequest request
+    ) {
+        final boolean updatePushNotificationAgreedResponse
+                = memberFacadeService.updatePushNotificationAgreed(memberAuth.getMemberId(), request);
+
+        return ApiResponse.success(updatePushNotificationAgreedResponse);
     }
 
 }

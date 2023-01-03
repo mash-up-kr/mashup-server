@@ -16,6 +16,7 @@ import kr.mashup.branding.ui.member.response.AccessResponse;
 import kr.mashup.branding.ui.member.response.MemberInfoResponse;
 import kr.mashup.branding.ui.member.response.TokenResponse;
 import kr.mashup.branding.ui.member.response.ValidResponse;
+import kr.mashup.branding.ui.member.request.PushNotificationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +38,7 @@ public class MemberFacadeService {
         return MemberInfoResponse.from(member,latestPlatform);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public AccessResponse login(LoginRequest request) {
         // Member 조회
         final String identification = request.getIdentification();
@@ -49,6 +50,9 @@ public class MemberFacadeService {
         final String token = jwtService.encode(memberId);
 
         Platform latestPlatform = memberService.getLatestPlatform(member);
+
+        // 로그인 시점에 푸시 알림을 위한 정보 업데이트
+        memberService.updatePushNotificationInfo(request.getOsType(), request.getFcmToken(), member);
 
         return AccessResponse.of(member,latestPlatform,token);
     }
@@ -69,12 +73,12 @@ public class MemberFacadeService {
         final Generation generation = invite.getGeneration();
 
         final MemberCreateDto memberCreateDto = MemberCreateDto.of(
-            request.getName(),
-            request.getIdentification(),
-            request.getPassword(),
-            platform,
-            generation,
-            request.getPrivatePolicyAgreed());
+                request.getName(),
+                request.getIdentification(),
+                request.getPassword(),
+                platform,
+                generation,
+                request.getPrivatePolicyAgreed());
 
         final Member member = memberService.save(memberCreateDto);
         final String token = jwtService.encode(member.getId());
@@ -108,5 +112,10 @@ public class MemberFacadeService {
         return ValidResponse.of(!isExist);
     }
 
-
+    @Transactional
+    public Boolean updatePushNotificationAgreed(Long memberId, PushNotificationRequest request) {
+        Member member = memberService.getActiveOrThrowById(memberId);
+        memberService.updatePushNotificationAgreed(request.getPushNotificationAgreed(), member);
+        return true;
+    }
 }

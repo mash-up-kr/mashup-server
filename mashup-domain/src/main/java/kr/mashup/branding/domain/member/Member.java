@@ -51,6 +51,14 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MemberStatus status;
 
+    @Enumerated(EnumType.STRING)
+    private OsType osType;
+
+    private String fcmToken;
+
+    // TODO: 기본 설정값 논의
+    private Boolean pushNotificationAgreed = true;
+
     public boolean isMatchPassword(String rawPassword, PasswordEncoder encoder) {
         return encoder.matches(rawPassword, this.password);
     }
@@ -130,5 +138,14 @@ public class Member extends BaseEntity {
 
     public void addMemberGenerations(MemberGeneration memberGeneration) {
         this.memberGenerations.add(memberGeneration);
+    }
+
+    public void updatePushNotificationInfo(OsType osType, String fcmToken) {
+        this.osType = osType;
+        this.fcmToken = fcmToken;
+    }
+
+    public void updatePushNotificationAgreed(Boolean pushNotificationAgreed) {
+        this.pushNotificationAgreed = pushNotificationAgreed;
     }
 }
