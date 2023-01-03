@@ -187,6 +187,10 @@ public class MemberService {
         return memberGenerationRepository.findByMemberAndGeneration(member, generation).orElseThrow(MemberNotFoundException::new).getPlatform();
     }
 
+    public List<Member> getAllPushNotiTargetableMembers() {
+        return Collections.emptyList(); // TODO 최신기수만?
+    }
+
     public void updatePushNotificationInfo(OsType osType, String fcmToken, Member member) {
         member.updatePushNotificationInfo(osType, fcmToken);
     }
@@ -195,8 +199,4 @@ public class MemberService {
         member.updatePushNotificationAgreed(pushNotificationAgreed);
     }
 
-
-    public List<Member> getAllPushNotiTargetableMembers() {
-        return Collections.emptyList(); // TODO 최신기수만?
-    }
 }
