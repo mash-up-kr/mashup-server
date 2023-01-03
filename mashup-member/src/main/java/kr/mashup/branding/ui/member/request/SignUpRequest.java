@@ -1,13 +1,11 @@
 package kr.mashup.branding.ui.member.request;
 
-import kr.mashup.branding.domain.member.OsType;
 import kr.mashup.branding.domain.member.Platform;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -30,12 +28,4 @@ public class SignUpRequest {
 
     @AssertTrue(message = "개인정보 이용에 동의해야 가입할 수 있습니다.")
     private Boolean privatePolicyAgreed;
-
-    @NotNull
-    private OsType osType;
-
-    @NotEmpty
-    private String fcmToken;
-
-    private Boolean pushNotificationAgreed;
 }

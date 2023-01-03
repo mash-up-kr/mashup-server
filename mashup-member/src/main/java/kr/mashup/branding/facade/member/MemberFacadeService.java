@@ -16,6 +16,7 @@ import kr.mashup.branding.ui.member.response.AccessResponse;
 import kr.mashup.branding.ui.member.response.MemberInfoResponse;
 import kr.mashup.branding.ui.member.response.TokenResponse;
 import kr.mashup.branding.ui.member.response.ValidResponse;
+import kr.mashup.branding.ui.member.request.PushNotificationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,9 @@ public class MemberFacadeService {
         final String token = jwtService.encode(memberId);
 
         Platform latestPlatform = memberService.getLatestPlatform(member);
-        member.updatePushNotificationInfo(request.getOsType(), request.getFcmToken());
+
+        // 로그인 시점에 푸시 알람을 위한 정보 업데이트
+        memberService.updatePushNotificationInfo(request.getOsType(), request.getFcmToken(), member);
 
         return AccessResponse.of(member,latestPlatform,token);
     }
@@ -75,10 +78,7 @@ public class MemberFacadeService {
                 request.getPassword(),
                 platform,
                 generation,
-                request.getPrivatePolicyAgreed(),
-                request.getOsType(),
-                request.getFcmToken(),
-                request.getPushNotificationAgreed());
+                request.getPrivatePolicyAgreed());
 
         final Member member = memberService.save(memberCreateDto);
         final String token = jwtService.encode(member.getId());
@@ -110,5 +110,12 @@ public class MemberFacadeService {
     public ValidResponse checkDuplicatedIdentification(String identification) {
         boolean isExist = memberService.isDuplicatedIdentification(identification);
         return ValidResponse.of(!isExist);
+    }
+
+    @Transactional
+    public Boolean updatePushNotificationAgreed(Long memberId, PushNotificationRequest request) {
+        Member member = memberService.getActiveOrThrowById(memberId);
+        memberService.updatePushNotificationAgreed(request.getPushNotificationAgreed(), member);
+        return true;
     }
 }

@@ -41,10 +41,7 @@ public class MemberService {
                 memberCreateDto.getIdentification(),
                 memberCreateDto.getPassword(),
                 passwordEncoder,
-                memberCreateDto.getPrivatePolicyAgreed(),
-                memberCreateDto.getOsType(),
-                memberCreateDto.getFcmToken(),
-                memberCreateDto.getPushNotificationAgreed()
+                memberCreateDto.getPrivatePolicyAgreed()
         );
         memberRepository.save(member);
 
@@ -187,6 +184,14 @@ public class MemberService {
 
     public Platform getPlatform(Member member, Generation generation) {
         return memberGenerationRepository.findByMemberAndGeneration(member, generation).orElseThrow(MemberNotFoundException::new).getPlatform();
+    }
+
+    public void updatePushNotificationInfo(OsType osType, String fcmToken, Member member) {
+        member.updatePushNotificationInfo(osType, fcmToken);
+    }
+
+    public void updatePushNotificationAgreed(Boolean pushNotificationAgreed, Member member) {
+        member.updatePushNotificationAgreed(pushNotificationAgreed);
     }
 
 }
