@@ -43,7 +43,6 @@ public class MemberService {
                 passwordEncoder,
                 memberCreateDto.getPrivatePolicyAgreed()
         );
-
         memberRepository.save(member);
 
         final MemberGeneration memberGeneration = MemberGeneration.of(member, generation, memberCreateDto.getPlatform());

@@ -51,7 +51,7 @@ public class MemberFacadeService {
 
         Platform latestPlatform = memberService.getLatestPlatform(member);
 
-        // 로그인 시점에 푸시 알람을 위한 정보 업데이트
+        // 로그인 시점에 푸시 알림을 위한 정보 업데이트
         memberService.updatePushNotificationInfo(request.getOsType(), request.getFcmToken(), member);
 
         return AccessResponse.of(member,latestPlatform,token);
