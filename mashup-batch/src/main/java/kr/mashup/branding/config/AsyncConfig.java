@@ -1,4 +1,4 @@
-package kr.mashup.branding.config.async;
+package kr.mashup.branding.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,16 +10,6 @@ import java.util.concurrent.Executor;
 @Configuration
 @EnableAsync
 public class AsyncConfig {
-
-    @Bean(name = ThreadPoolName.EMAIL_SEND_THREAD_POOL)
-    public Executor emailSendThreadPoolTaskExecutor() {
-        ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-        taskExecutor.setCorePoolSize(3); // 기본 스레드 수
-        taskExecutor.setMaxPoolSize(30); // 최대 스레드 수
-        taskExecutor.setQueueCapacity(100); // Queue 사이즈
-        taskExecutor.setThreadNamePrefix("Executor-");
-        return taskExecutor;
-    }
 
     @Bean(name = ThreadPoolName.PUSH_NOTI_SEND_THREAD_POOL)
     public Executor pushNotiSendThreadPoolTaskExecutor() {

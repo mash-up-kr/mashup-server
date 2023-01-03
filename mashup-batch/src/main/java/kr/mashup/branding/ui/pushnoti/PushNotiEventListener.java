@@ -1,7 +1,8 @@
-package kr.mashup.branding.infrastructure.pushnoti;
+package kr.mashup.branding.ui.pushnoti;
 
 import kr.mashup.branding.config.ThreadPoolName;
 import kr.mashup.branding.domain.pushnoti.vo.PushNotiSendVo;
+import kr.mashup.branding.infrastructure.pushnoti.PushNotiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
