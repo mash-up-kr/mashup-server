@@ -9,7 +9,6 @@ import kr.mashup.branding.service.notification.NotificationEvent;
 import kr.mashup.branding.service.notification.sms.SmsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,7 +26,7 @@ public class NotificationEventListener {
     private final SmsService smsService;
 
     // 문자 발송 비동기 이벤트 처리 로직
-    @Async(value = ThreadPoolName.SMS_ASYNC_POOL)
+    @Async(value = ThreadPoolName.EMAIL_SEND_THREAD_POOL)
     @Transactional(propagation = Propagation.NEVER)
     @TransactionalEventListener(
         phase = TransactionPhase.AFTER_COMMIT,

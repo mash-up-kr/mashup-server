@@ -37,7 +37,7 @@ public class NotificationController {
     @PostMapping("/sms/send")
     public ApiResponse<EmptyResponse> sendSms(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
-        @RequestParam(defaultValue = "12", required = false) Integer generationNumber,
+        @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
         @RequestBody SmsSendRequest smsSendRequest
     ) {
         notificationFacadeService.createSmsNotification(adminMemberId, generationNumber, smsSendRequest);
@@ -50,7 +50,7 @@ public class NotificationController {
     @GetMapping
     public ApiResponse<List<NotificationSimpleResponse>> getNotifications(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
-        @RequestParam(defaultValue = "12", required = false) Integer generationNumber,
+        @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
         @RequestParam(required = false) String searchWord,
         Pageable pageable
     ) {

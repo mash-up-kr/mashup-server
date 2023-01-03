@@ -36,7 +36,7 @@ public class LoginFacadeService {
     @Value("${oauth.google.client.id}")
     private String clientId;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public LoginResponse login(String googleToken) {
 
         final GoogleIdToken googleIdToken = verifyToken(googleToken);
