@@ -1,10 +1,8 @@
 package kr.mashup.branding.scorehistory;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import kr.mashup.branding.domain.pushnoti.vo.AttendanceScoreUpdatedVo;
 import kr.mashup.branding.domain.pushnoti.vo.SeminarAttendanceAppliedVo;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.member.MemberService;

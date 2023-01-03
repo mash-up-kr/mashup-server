@@ -1,6 +1,7 @@
 package kr.mashup.branding.scorehistory;
 
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
+import kr.mashup.branding.service.member.MemberService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -33,6 +34,7 @@ public class ScoreHistoryConfig {
     private final AttendanceService attendanceService;
     private final ScoreHistoryService scoreHistoryService;
     private final PushNotiEventPublisher pushNotiEventPublisher;
+    private final MemberService memberService;
 
     @Bean
     public Job scoreHistoryJob() {
@@ -46,14 +48,14 @@ public class ScoreHistoryConfig {
     @JobScope
     public Step scoreHistoryStep() {
         return stepBuilderFactory.get(STEP_NAME)
-            .tasklet(scoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService))
+            .tasklet(scoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService, pushNotiEventPublisher, memberService))
             .transactionManager(new ResourcelessTransactionManager())
             .build();
     }
 
     @Bean
     @StepScope
-    public Tasklet scoreHistoryTasklet(ScheduleRepository scheduleRepository, AttendanceService attendanceService, ScoreHistoryService scoreHistoryService) {
-        return new ScoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService, pushNotiEventPublisher);
+    public Tasklet scoreHistoryTasklet(ScheduleRepository scheduleRepository, AttendanceService attendanceService, ScoreHistoryService scoreHistoryService, PushNotiEventPublisher pushNotiEventPublisher, MemberService memberService) {
+        return new ScoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService, pushNotiEventPublisher, memberService);
     }
 }
