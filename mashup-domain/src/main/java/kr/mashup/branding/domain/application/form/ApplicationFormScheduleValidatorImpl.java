@@ -19,7 +19,7 @@ public class ApplicationFormScheduleValidatorImpl implements ApplicationFormSche
     @Override
     public void validate(Generation generation, LocalDateTime localDateTime) {
         if (recruitmentScheduleService.isRecruitStarted(generation, localDateTime)) {
-            throw new ApplicationFormModificationNotAllowedException("모집 시작시각 이후에는 지원서를 생성, 수정 및 삭제할 수 없습니다");
+            throw new ApplicationFormModificationNotAllowedException("모집 시작시각 이후에는 설문지를 생성, 수정 및 삭제할 수 없습니다");
         }
     }
 }
