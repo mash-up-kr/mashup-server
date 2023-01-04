@@ -1,6 +1,7 @@
 package kr.mashup.branding.domain.email;
 
 
+import kr.mashup.branding.config.EmailConfig;
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.Application;
@@ -87,7 +88,7 @@ public class EmailNotification {
     ) {
 
         final EmailNotification emailNotification
-            = new EmailNotification(sender, generation, emailTemplateName, "recruit.mashup@gmail.com", memo);
+            = new EmailNotification(sender, generation, emailTemplateName, EmailConfig.RECRUIT_ADDRESS, memo);
 
         emailNotification.emailRequests
             = applications

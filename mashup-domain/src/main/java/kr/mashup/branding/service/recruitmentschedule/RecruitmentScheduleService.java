@@ -82,13 +82,13 @@ public class RecruitmentScheduleService {
     /**
      * 모집 시작했는지
      */
-    public boolean isRecruitStarted(Generation generation, LocalDateTime localDateTime) {
+    public boolean isRecruitStarted(Generation generation, LocalDateTime currentTime) {
         final LocalDateTime recruitStartedAt
             = recruitmentScheduleRepository.findByEventName(generation, RECRUITMENT_STARTED)
             .map(RecruitmentSchedule::getEventOccurredAt)
             .orElseThrow(RecruitmentScheduleNotFoundException::new);
 
-        return !localDateTime.isBefore(recruitStartedAt);
+        return currentTime.isAfter(recruitStartedAt);
     }
 
     /**
