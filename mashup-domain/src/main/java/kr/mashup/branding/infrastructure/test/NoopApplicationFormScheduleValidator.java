@@ -11,9 +11,9 @@ import kr.mashup.branding.domain.application.form.ApplicationFormScheduleValidat
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Profile("develop")
-@Primary
-@Component
+//@Profile("develop")
+//@Primary
+//@Component
 public class NoopApplicationFormScheduleValidator implements ApplicationFormScheduleValidator {
     @Override
     public void validate(Generation generation, LocalDateTime localDateTime) {
