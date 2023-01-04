@@ -92,11 +92,9 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
         List<BooleanExpression> booleanExpressions = new ArrayList<>();
         if (screeningStatus != null) {
             booleanExpressions.add(applicationResult.screeningStatus.eq(screeningStatus));
-
-            // 서류 합격일 경우에 최종 합격도 서류 합격에 속하기 때문에 필터링에 같이 추출, 따라서 인터뷰 결과가 패스는 제거
-            if (screeningStatus == ApplicationScreeningStatus.PASSED) {
-                booleanExpressions.add(applicationResult.interviewStatus.ne(ApplicationInterviewStatus.PASSED));
-            }
+            // 서류 통과한 다음 면접 결과가 NOT RATED 에서 Pass 나 Fail 등이 되므로,
+            // interview status not rated 조건을 주어야 서류 결과만 난 지원자들을 볼 수 있다.
+            booleanExpressions.add(applicationResult.interviewStatus.eq(ApplicationInterviewStatus.NOT_RATED));
         }
         return booleanExpressions.stream().reduce(BooleanExpression::and).orElse(null);
     }
