@@ -1,9 +1,11 @@
 package kr.mashup.branding.facade.application;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.config.EmailConfig;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.applicant.exception.ApplicantNotFoundException;
 import kr.mashup.branding.domain.application.ApplicationCreationRequestInvalidException;
@@ -97,17 +99,19 @@ public class ApplicationFacadeService {
     ) {
         final Application application
             = applicationService.submit(applicantId, applicationId, applicationSubmitRequestVo);
-
-        final String teamName = application.getApplicationForm().getTeam().getName();
-        final String name = application.getApplicant().getName();
         final String email = application.getApplicant().getEmail();
+
+
+        final Map<String, String> bindingData = new HashMap<>();
+        bindingData.put("name", application.getApplicant().getName());
+        bindingData.put("position", application.getApplicationForm().getTeam().getName());
 
         eventPublisher.publishEvent(
             EmailSendEvent.of(
-                "recruit.mashup.kr",
+                EmailConfig.RECRUIT_ADDRESS,
                 email,
                 EmailTemplateName.SUBMIT,
-                Map.of("name", name, "position", teamName)));
+                bindingData));
 
         return applicationAssembler.toApplicationResponse(application);
     }
