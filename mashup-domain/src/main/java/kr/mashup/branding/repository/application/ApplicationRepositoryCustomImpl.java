@@ -92,9 +92,10 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
         List<BooleanExpression> booleanExpressions = new ArrayList<>();
         if (screeningStatus != null) {
             booleanExpressions.add(applicationResult.screeningStatus.eq(screeningStatus));
-            // 서류 통과한 다음 면접 결과가 NOT RATED 에서 Pass 나 Fail 등이 되므로,
+            // 서류 통과한 다음 면접 결과가 NOT RATED 에서 Pass 나 Fail 등이 되고 서탈이면 NOT APPLICABLE 이므로
             // interview status not rated 조건을 주어야 서류 결과만 난 지원자들을 볼 수 있다.
             booleanExpressions.add(applicationResult.interviewStatus.eq(ApplicationInterviewStatus.NOT_RATED));
+            booleanExpressions.add(applicationResult.interviewStatus.eq(ApplicationInterviewStatus.NOT_APPLICABLE));
         }
         return booleanExpressions.stream().reduce(BooleanExpression::and).orElse(null);
     }
