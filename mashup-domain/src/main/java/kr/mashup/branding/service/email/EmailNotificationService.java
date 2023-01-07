@@ -72,4 +72,7 @@ public class EmailNotificationService {
         return emailNotificationRepository.findBySearchWord(searchWord, pageable);
     }
 
+    public List<EmailRequest> getEmailRequestsByApplicationId(Long applicationId) {
+        return emailRequestRepository.findByApplicationId(applicationId);
+    }
 }
