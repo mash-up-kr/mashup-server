@@ -1,7 +1,6 @@
 package kr.mashup.branding.ui.schedule.response;
 
 import java.time.LocalDateTime;
-
 import kr.mashup.branding.domain.schedule.Content;
 import lombok.Getter;
 import lombok.Value;
@@ -22,7 +21,7 @@ public class ContentResponse {
         return ContentResponse.of(
             content.getId(),
             content.getTitle(),
-            content.getDesc(),
+            content.getDescription(),
             content.getStartedAt()
         );
     }
