@@ -4,6 +4,8 @@ import kr.mashup.branding.domain.application.Application;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Entity;
@@ -14,6 +16,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -35,6 +38,12 @@ public class EmailRequest {
 
     @Enumerated(EnumType.STRING)
     private EmailRequestStatus status = EmailRequestStatus.CREATED;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     public void updateStatus(EmailRequestStatus status) {
         this.status = status;
