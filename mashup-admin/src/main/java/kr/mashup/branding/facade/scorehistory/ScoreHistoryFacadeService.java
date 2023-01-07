@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,7 +39,7 @@ public class ScoreHistoryFacadeService {
 
         scoreHistoryService.save(scoreHistory);
         pushNotiEventPublisher.publishPushNotiSendEvent(
-            new AttendanceScoreUpdatedVo(memberService.getAllPushNotiTargetableFcmTokens())
+            new AttendanceScoreUpdatedVo(List.of(member.getFcmToken()))
         );
     }
     @Transactional
@@ -48,7 +49,7 @@ public class ScoreHistoryFacadeService {
 
         scoreHistory.cancel(memo);
         pushNotiEventPublisher.publishPushNotiSendEvent(
-            new AttendanceScoreUpdatedVo(memberService.getAllPushNotiTargetableFcmTokens())
+            new AttendanceScoreUpdatedVo(List.of(scoreHistory.getMember().getFcmToken()))
         );
     }
 

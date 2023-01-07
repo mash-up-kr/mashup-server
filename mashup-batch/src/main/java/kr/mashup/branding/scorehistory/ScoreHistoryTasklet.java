@@ -2,6 +2,7 @@ package kr.mashup.branding.scorehistory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.pushnoti.vo.SeminarAttendanceAppliedVo;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
@@ -43,10 +44,12 @@ public class ScoreHistoryTasklet implements Tasklet {
 				scoreHistoryService.save(scoreHistory);
 			});
 			schedule.changeIsCounted(true);
+			pushNotiEventPublisher.publishPushNotiSendEvent(
+				new SeminarAttendanceAppliedVo(
+					attendanceMap.keySet().stream().map(Member::getFcmToken).collect(Collectors.toList())
+				)
+			);
 		});
-		pushNotiEventPublisher.publishPushNotiSendEvent(
-			new SeminarAttendanceAppliedVo(memberService.getAllPushNotiTargetableFcmTokens())
-		);
 		return RepeatStatus.FINISHED;
 	}
 }
