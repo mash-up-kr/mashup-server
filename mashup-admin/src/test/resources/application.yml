@@ -17,16 +17,3 @@ aws:
   ses:
     access-key: test
     secret-key: test
-fcm:
-  secret: '{
-  "type": "service_account",
-  "project_id": "",
-  "private_key_id": "",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDecLSU7FnJhaa8\nNlIOa2o46WD/VgfPOWtRL+0G51n0TM2LN8CsCxLGBcyX+8VOdwhCdyg5prb8L1tW\nTwVuv9CT+wOYcKxSyNCAhKrH3dxTl0yVWEWb0FanZf2sGsFCnUEQlQ4+IONoR93l\nZ5K8pXOHohHW66tpuX+sz+kzvpT2Y5fxr+qp87olIPFnsLeV7jdX5gREpVo02fK5\ndszo8aJ4NWSqg1yoLbp6PmW/3acWBRCuX8vldy8En4C1ZwnwSmxmShTnwan9wIHE\n3coJV9VQ848MlTkTdCmZkeTGIBxzwV4xGAKF1dlQEBeUW498LLWZAR47duWqIUlt\nC2+weRJbAgMBAAECggEAD28mjdwbHB6H7oXztPMYZbvbx8ZtDaCK+mZ8PdRjq3iA\nx+jQbPTqZ+Roc8s7v4axg1sdPBLTSOBIUs7Hg7hk0pUXhMZHTrSHCG6BeGjD1uZS\noVzZ8kZxx3UONZji+/+epMs9jRYJxryQgFBqyr14LLBpfc4lu1TsWk360mT7lQo8\nQgO5jws1T7X75jb4+NWkLPBTO5I4Vn4WBiyPfvAhTfp19QZ8q5+7IHtiAZqIC53g\nkI+YyvfPELKdRydw17DwZU9C8BkLPY0z916yDrC8SUxdZRbmjQSy3lOYME8FKMPj\nhDdFZOfSRXiKvyc1IbjhNK7jtTjHXnaXDOOPDkmt0QKBgQDxH/vPG0yNDxNYW8XJ\nrgwNzYAvYEtxktiihqKq5DS12WS7X4Suza9GMb2PG6Wb1+KKwg30P95B16N9bYGh\n/HyeGU2lnk4UnIricw5OiQJQRrkWfsjlrFPHzQEBCoK8KT/MSABoue+K0ra/cQeJ\nAn4HMDSa4XuDptdaIYKSlmekdQKBgQDsKaPX2GVmy3sZIRLe53k+TNsk86g9ydbf\nvZX/9+xjNnRDYyPQhqoPiaDwCDWMkRVDsYlsw40G9/iPsqtYdpy/bKTl6+Mp0cco\nY3zomfXyqqMubE3A4sJCoMdRerr7C0g+eQ4NYesU9Oo9ZTxKIRIWK4rslSQlXh3T\nU36VUDjBjwKBgQDURrQIwJ/ED2GYiDK4OuGhxSj0jHHeqsjNTHoouH8vGRP1YUIO\nIkYMJf4b3tsNOCHYxr5CKXghvxXPdniJgx6ykNQq2hMjUi1y7pfJzBSdV6XaiAOV\nLwETBQe9QuOVgzsHPNwfVpHsRVVddMSNegQ5j9bAA4IZhOhSEO5C3uafgQKBgEQU\nuPwHkSvyKxmSdEs4NbalF2Puriip4Dz9/ZkeEtKDJz8p/HAn8iyqg2/PHgjY5mVu\nb+yf7y78G3bpjgXho8x3eI4j04gBxsU48RBpGgML+CDw7fVWKaRljzBJDlBC71+7\nLDblbIzNEh4C6j+AiyNDCDitwg7XtAdxAYPv7Xy3AoGBANF5OVpZw1yIjqhn2Qq3\nQ1yB9K1vtNZKHCglAPlCsRVGiGf/94e6QXUkY1FHZXSvErmM4QrzN3OTr+nSjAjy\namyACr0hBdsvkfxzHYn0+ER330qYbtzt2lUSYaO2/elYaIs+2zbIQH7l27/zABLQ\n4eoVIh4jk/8jHnQAZZ3LV5qz\n-----END PRIVATE KEY-----\n",
-  "client_email": "",
-  "client_id": "",
-  "auth_uri": "",
-  "token_uri": "",
-  "auth_provider_x509_cert_url": "",
-  "client_x509_cert_url": ""
-}'
