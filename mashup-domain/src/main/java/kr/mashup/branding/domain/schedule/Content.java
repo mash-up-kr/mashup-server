@@ -1,21 +1,18 @@
 package kr.mashup.branding.domain.schedule;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import org.springframework.util.Assert;
-
 import com.sun.istack.NotNull;
-
+import java.time.LocalDateTime;
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
@@ -26,7 +23,7 @@ public class Content extends BaseEntity {
     private String title;
 
     @NotNull
-    private String desc;
+    private String description;
 
     @NotNull
     private LocalDateTime startedAt;
@@ -36,23 +33,23 @@ public class Content extends BaseEntity {
     @JoinColumn(name = "event_id")
     private Event event;
 
-    public static Content of(Event event, String title, String desc, LocalDateTime startedAt) {
-        return new Content(title, desc, startedAt, event);
-    }
-
-    private Content(String title, String desc, LocalDateTime startedAt, Event event) {
+    private Content(String title, String description, LocalDateTime startedAt, Event event) {
         checkStartIsInTime(event.getStartedAt(), event.getEndedAt(), startedAt);
 
         this.title = title;
-        this.desc = desc;
+        this.description = description;
         this.startedAt = startedAt;
         this.event = event;
         event.addContent(this);
     }
 
-    public void changeDesc(String desc) {
-        Assert.hasText(desc, "");
-        this.desc = desc;
+    public static Content of(Event event, String title, String description, LocalDateTime startedAt) {
+        return new Content(title, description, startedAt, event);
+    }
+
+    public void changeDesc(String description) {
+        Assert.hasText(description, "");
+        this.description = description;
     }
 
     private void checkStartIsInTime(LocalDateTime eventStartedAt, LocalDateTime eventEndedAt, LocalDateTime startedAt) {
@@ -60,7 +57,5 @@ public class Content extends BaseEntity {
             throw new IllegalArgumentException("유효하지 않은 시작시간입니다.");
         }
     }
-
-
 
 }
