@@ -3,31 +3,21 @@ package kr.mashup.branding.service.schedule;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
-import kr.mashup.branding.domain.attendance.Attendance;
+import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
-import kr.mashup.branding.domain.exception.BadRequestException;
-import kr.mashup.branding.domain.schedule.Content;
-import kr.mashup.branding.domain.schedule.ContentsCreateDto;
-import kr.mashup.branding.domain.schedule.Event;
-import kr.mashup.branding.domain.schedule.ScheduleCreateDto;
-import kr.mashup.branding.domain.schedule.ScheduleStatus;
+import kr.mashup.branding.domain.exception.NotFoundException;
+import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.schedule.*;
 import kr.mashup.branding.domain.schedule.exception.CodeGenerateFailException;
 import kr.mashup.branding.domain.schedule.exception.EventNotFoundException;
 import kr.mashup.branding.domain.schedule.exception.ScheduleAlreadyPublishedException;
 import kr.mashup.branding.repository.attendancecode.AttendanceCodeRepository;
+import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.util.DateRange;
-import kr.mashup.branding.util.DateUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import kr.mashup.branding.domain.ResultCode;
-import kr.mashup.branding.domain.exception.NotFoundException;
-import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.domain.schedule.Schedule;
-import kr.mashup.branding.repository.schedule.ScheduleRepository;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +36,7 @@ public class ScheduleService {
     }
 
     public List<Schedule> getByGeneration(Generation generation) {
-        return scheduleRepository.findByGeneration(generation,Pageable.unpaged()).toList();
+        return scheduleRepository.findByGeneration(generation, Pageable.unpaged()).toList();
     }
 
 
@@ -55,7 +45,7 @@ public class ScheduleService {
             .findByGeneration(generation, pageable);
     }
 
-    public Event addEvents(Schedule schedule, EventCreateDto dto){
+    public Event addEvents(Schedule schedule, EventCreateDto dto) {
 
         onlyHidingScheduleCanChanged(schedule);
 
@@ -67,13 +57,13 @@ public class ScheduleService {
         return event;
     }
 
-    public Event getEventOrThrow(Schedule schedule, Long eventId){
+    public Event getEventOrThrow(Schedule schedule, Long eventId) {
         return schedule
-                .getEventList()
-                .stream()
-                .filter(it->it.getId().equals(eventId))
-                .findFirst()
-                .orElseThrow(EventNotFoundException::new);
+            .getEventList()
+            .stream()
+            .filter(it -> it.getId().equals(eventId))
+            .findFirst()
+            .orElseThrow(EventNotFoundException::new);
     }
 
     public Content addContent(Event event, ContentsCreateDto dto) {
@@ -81,7 +71,7 @@ public class ScheduleService {
         onlyHidingScheduleCanChanged(schedule);
 
         final Content content
-            = Content.of(event, dto.getTitle(), dto.getDesc(), dto.getStartedAt());
+            = Content.of(event, dto.getTitle(), dto.getDescription(), dto.getStartedAt());
 
         event.addContent(content);
 
@@ -103,7 +93,7 @@ public class ScheduleService {
     }
 
     private void passedScheduleMustNotBeDeleted(Schedule schedule) {
-        if(schedule.getStartedAt().isBefore(LocalDateTime.now())){
+        if (schedule.getStartedAt().isBefore(LocalDateTime.now())) {
             throw new ScheduleAlreadyPublishedException();
         }
     }
@@ -112,31 +102,32 @@ public class ScheduleService {
         schedule.hide();
     }
 
-    private void onlyHidingScheduleCanChanged(Schedule schedule){
-        if(schedule.getStatus() == ScheduleStatus.PUBLIC){
+    private void onlyHidingScheduleCanChanged(Schedule schedule) {
+        if (schedule.getStatus() == ScheduleStatus.PUBLIC) {
             throw new ScheduleAlreadyPublishedException();
         }
     }
+
     public AttendanceCode addAttendanceCode(Event event, DateRange codeValidRequestTime) {
 
         String code = null;
 
         boolean isCreated = false;
 
-        for(int i=0; i<3; i++){
-            code = UUID.randomUUID().toString().substring(0,5);
+        for (int i = 0; i < 3; i++) {
+            code = UUID.randomUUID().toString().substring(0, 5);
             boolean existsByCode = attendanceCodeRepository.existsByCode(code);
-            if(!existsByCode){
+            if (!existsByCode) {
                 isCreated = true;
                 break;
             }
         }
-        if(!isCreated){
+        if (!isCreated) {
             throw new CodeGenerateFailException();
         }
 
         final AttendanceCode attendanceCode
-                = event.addAttendanceCode(code, codeValidRequestTime);
+            = event.addAttendanceCode(code, codeValidRequestTime);
 
         return attendanceCode;
     }

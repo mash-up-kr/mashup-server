@@ -1,25 +1,24 @@
 package kr.mashup.branding.domain.schedule;
 
-import lombok.Getter;
-
 import java.time.LocalDateTime;
+import lombok.Getter;
 
 @Getter
 public class ContentsCreateDto {
 
     private final String title;
 
-    private final String desc;
+    private final String description;
 
     private final LocalDateTime startedAt;
 
-    public static ContentsCreateDto of(String title, String desc, LocalDateTime startedAt) {
-        return new ContentsCreateDto(title, desc, startedAt);
+    private ContentsCreateDto(String title, String description, LocalDateTime startedAt) {
+        this.title = title;
+        this.description = description;
+        this.startedAt = startedAt;
     }
 
-    private ContentsCreateDto(String title, String desc, LocalDateTime startedAt) {
-        this.title = title;
-        this.desc = desc;
-        this.startedAt = startedAt;
+    public static ContentsCreateDto of(String title, String description, LocalDateTime startedAt) {
+        return new ContentsCreateDto(title, description, startedAt);
     }
 }
