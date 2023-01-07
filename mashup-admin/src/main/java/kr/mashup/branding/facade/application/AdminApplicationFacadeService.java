@@ -54,6 +54,7 @@ public class AdminApplicationFacadeService {
 
         final List<SmsRequest> smsRequests
             = notificationService.getSmsRequestsByApplicantId(application.getApplicant().getApplicantId());
+
         final List<EmailRequest> emailRequests =
             emailNotificationService.getEmailRequestsByApplicationId(application.getApplicationId());
 

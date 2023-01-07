@@ -37,7 +37,7 @@ public class ApplicationDetailResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<SmsRequestDetailResponse> smsRequests;
-    private List<EmailRequestResponse> emailRequestResponses;
+    private List<ApplicationEmailResponse> applicationEmailResponses;
 
     public static ApplicationDetailResponse of(
         Application application,
@@ -56,10 +56,10 @@ public class ApplicationDetailResponse {
             .map(it -> SmsRequestDetailResponse.of(it, team))
             .collect(Collectors.toList());
 
-        final List<EmailRequestResponse> emailRequestResponses = emailRequests
+        final List<ApplicationEmailResponse> emailRequestResponses = emailRequests
             .stream()
             .sorted(Comparator.comparing(EmailRequest::getCreatedAt).reversed())
-            .map(EmailRequestResponse::of)
+            .map(ApplicationEmailResponse::of)
             .collect(Collectors.toList());
 
         final List<QuestionResponse> questionResponses = questions
@@ -85,7 +85,7 @@ public class ApplicationDetailResponse {
             application.getCreatedAt(), // 생성 일시
             application.getUpdatedAt(), // 수정 일시
             smsRequestDetailResponses, // sms 발송 내역
-            emailRequestResponses
+            emailRequestResponses // 이메일 발송 내역
         );
     }
 }
