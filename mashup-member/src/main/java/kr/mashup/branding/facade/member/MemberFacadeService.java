@@ -12,7 +12,11 @@ import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.member.request.LoginRequest;
 import kr.mashup.branding.ui.member.request.SignUpRequest;
 import kr.mashup.branding.ui.member.request.ValidInviteRequest;
-import kr.mashup.branding.ui.member.response.*;
+import kr.mashup.branding.ui.member.response.AccessResponse;
+import kr.mashup.branding.ui.member.response.MemberInfoResponse;
+import kr.mashup.branding.ui.member.response.TokenResponse;
+import kr.mashup.branding.ui.member.response.ValidResponse;
+import kr.mashup.branding.ui.member.request.PushNotificationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,22 +33,28 @@ public class MemberFacadeService {
     @Transactional(readOnly = true)
     public MemberInfoResponse getMemberInfo(Long memberId) {
 
-        final Member member = memberService.getOrThrowById(memberId);
-
-        return MemberInfoResponse.from(member);
+        final Member member = memberService.getActiveOrThrowById(memberId);
+        Platform latestPlatform = memberService.getLatestPlatform(member);
+        return MemberInfoResponse.from(member,latestPlatform);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public AccessResponse login(LoginRequest request) {
         // Member 조회
         final String identification = request.getIdentification();
         final String password = request.getPassword();
         final Member member =
-            memberService.getOrThrowByIdentificationAndPassword(identification, password);
+            memberService.getActiveOrThrowByIdentificationAndPassword(identification, password);
         // Token 생성
         final Long memberId = member.getId();
         final String token = jwtService.encode(memberId);
-        return AccessResponse.of(member,token);
+
+        Platform latestPlatform = memberService.getLatestPlatform(member);
+
+        // 로그인 시점에 푸시 알림을 위한 정보 업데이트
+        memberService.updatePushNotificationInfo(request.getOsType(), request.getFcmToken(), member);
+
+        return AccessResponse.of(member,latestPlatform,token);
     }
 
 
@@ -63,17 +73,18 @@ public class MemberFacadeService {
         final Generation generation = invite.getGeneration();
 
         final MemberCreateDto memberCreateDto = MemberCreateDto.of(
-            request.getName(),
-            request.getIdentification(),
-            request.getPassword(),
-            platform,
-            generation,
-            request.getPrivatePolicyAgreed());
+                request.getName(),
+                request.getIdentification(),
+                request.getPassword(),
+                platform,
+                generation,
+                request.getPrivatePolicyAgreed());
 
         final Member member = memberService.save(memberCreateDto);
         final String token = jwtService.encode(member.getId());
+        Platform latestPlatform = memberService.getLatestPlatform(member);
 
-        return AccessResponse.of(member, token);
+        return AccessResponse.of(member,latestPlatform, token);
     }
 
     @Transactional(readOnly = true)
@@ -99,5 +110,12 @@ public class MemberFacadeService {
     public ValidResponse checkDuplicatedIdentification(String identification) {
         boolean isExist = memberService.isDuplicatedIdentification(identification);
         return ValidResponse.of(!isExist);
+    }
+
+    @Transactional
+    public Boolean updatePushNotificationAgreed(Long memberId, PushNotificationRequest request) {
+        Member member = memberService.getActiveOrThrowById(memberId);
+        memberService.updatePushNotificationAgreed(request.getPushNotificationAgreed(), member);
+        return true;
     }
 }

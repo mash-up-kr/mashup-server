@@ -4,6 +4,9 @@ spring:
     username: ENC(Rafn9TDh8A6A5mzzpMR509WKULNRrIpZM1PD89gigZNui0NEwE55dkwz/goQzQjp)
     password: ENC(fxWrJBvyF3X7SoFrGYKbeA4nLuchRIXTbaMahilpJFBSRc28VSLo6BN6PV+W/DVF)
   jpa:
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
     hibernate:
       ddl-auto: none
 sms:
@@ -13,3 +16,7 @@ sms:
     secret-key: ENC(RxnWUTWTXS93vSfsLX0M4gHYbFGrLsFU5BH09V4Ds0bBgWcNteRYKbgVOuPe+2Si)
 logging:
   config: classpath:logback/logback-spring.xml
+aws:
+  ses:
+    access-key: ENC(aQntk9Wm8gCrHsIvt+q7+cIDTGI6hWIlRisZXE3q/BNACqKQXrXnpzrgnhHIpeALhhAe82v0niu93NTZyomkwQ==)
+    secret-key: ENC(/B1+2Mflsgv1enwFvvmdzffHKGM0F6MV/Of6hdLyE+f6zkDI25TF8Av502lO0cV7PeYKdHje0FJPo22idqzsVQaRN1QM9cqvHbs1hgudDkE=)

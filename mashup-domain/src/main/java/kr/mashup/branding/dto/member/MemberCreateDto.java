@@ -20,6 +20,4 @@ public class MemberCreateDto {
     private Generation generation;
 
     private Boolean privatePolicyAgreed;
-
-
 }

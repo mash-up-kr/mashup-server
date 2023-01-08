@@ -28,5 +28,4 @@ public class SignUpRequest {
 
     @AssertTrue(message = "개인정보 이용에 동의해야 가입할 수 있습니다.")
     private Boolean privatePolicyAgreed;
-
 }

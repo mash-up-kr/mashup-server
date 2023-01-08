@@ -1,7 +1,8 @@
 package kr.mashup.branding.ui.scorehistory;
 
-import javax.validation.Valid;
-
+import kr.mashup.branding.EmptyResponse;
+import kr.mashup.branding.ui.scorehistory.request.ScoreAddRequest;
+import kr.mashup.branding.ui.scorehistory.request.ScoreCancelRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,9 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.scorehistory.ScoreHistoryFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.scorehistory.request.ScoreHistoryCreateRequest;
-import kr.mashup.branding.ui.scorehistory.response.ScoreHistoryResponse;
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/score-history")
@@ -21,13 +24,21 @@ public class ScoreHistoryController {
 
     private final ScoreHistoryFacadeService scoreHistoryFacadeService;
 
-    @ApiOperation("추가 점수")
-    @PostMapping
-    public ApiResponse<ScoreHistoryResponse> create(
-        @Valid @RequestBody ScoreHistoryCreateRequest scoreHistoryCreateRequest
+    @ApiOperation("점수 추가")
+    @PostMapping("add")
+    public ApiResponse<EmptyResponse> addScore(
+        @RequestBody ScoreAddRequest request
     ) {
-        ScoreHistoryResponse res = scoreHistoryFacadeService.save(scoreHistoryCreateRequest);
+        scoreHistoryFacadeService.addScore(request.getMemberId(), request.getGenerationNumber(), request.getScoreType(), request.getName(), request.getDate(), request.getMemo());
+        return ApiResponse.success(EmptyResponse.of());
+    }
 
-        return ApiResponse.success(res);
+    @ApiOperation("점수 취소")
+    @PostMapping("cancel")
+    public ApiResponse<EmptyResponse> cancelScore(
+        @RequestBody ScoreCancelRequest request
+    ) {
+        scoreHistoryFacadeService.cancelScore(request.getScoreHistoryId(), request.getMemo());
+        return ApiResponse.success(EmptyResponse.of());
     }
 }

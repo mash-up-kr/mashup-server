@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -32,21 +33,6 @@ public class Generation extends BaseEntity {
     @NotNull
     private LocalDate endedAt;
 
-    @OneToMany(mappedBy = "generation")
-    private final List<Schedule> schedules = new ArrayList<>();
-
-    @OneToMany(mappedBy = "generation")
-    private final List<MemberGeneration> memberGenerations = new ArrayList<>();
-
-    @OneToMany(mappedBy = "generation")
-    private final List<Invite> invites = new ArrayList<>();
-
-    public void addSchedule(Schedule schedule){
-        if(schedules.contains(schedule)){
-            return;
-        }
-        this.schedules.add(schedule);
-    }
 
     public static Generation of(Integer number, DateRange dateRange){
         return new Generation(number, dateRange);
@@ -68,6 +54,11 @@ public class Generation extends BaseEntity {
             throw new IllegalArgumentException();
         }
     }
+    public void changeDate(DateRange dateRange){
+        this.startedAt = dateRange.getStart().toLocalDate();
+        this.endedAt = dateRange.getEnd().toLocalDate();
+    }
+
 
     public void changeStartDate(LocalDate newStartDate){
 
@@ -88,4 +79,17 @@ public class Generation extends BaseEntity {
         this.endedAt = newEndedDate;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Generation that = (Generation) o;
+        return getNumber().equals(that.getNumber()) && getStartedAt().equals(that.getStartedAt()) && getEndedAt().equals(that.getEndedAt());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getNumber(), getStartedAt(), getEndedAt());
+    }
 }

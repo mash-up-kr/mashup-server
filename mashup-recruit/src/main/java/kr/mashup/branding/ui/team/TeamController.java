@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
@@ -17,15 +18,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TeamController {
     private final TeamFacadeService teamFacadeService;
-    private final TeamAssembler teamAssembler;
 
     @ApiOperation("팀 목록 조회")
     @GetMapping
-    public ApiResponse<List<TeamResponse>> getTeams() {
-        return ApiResponse.success(
-            teamFacadeService.getTeams().stream()
-                .map(teamAssembler::toTeamResponse)
-                .collect(Collectors.toList())
-        );
+    public ApiResponse<List<TeamResponse>> getTeams(
+        @RequestParam(defaultValue = "13", required = false) Integer generationNumber
+    ) {
+
+        final List<TeamResponse> responses = teamFacadeService.getTeams(generationNumber);
+
+        return ApiResponse.success(responses);
     }
 }

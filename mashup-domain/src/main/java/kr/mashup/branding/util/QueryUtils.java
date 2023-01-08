@@ -31,4 +31,6 @@ public class QueryUtils {
     public static <T> Page<T> toPage(QueryResults<T> queryResults, Pageable pageable) {
         return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
     }
+
+
 }

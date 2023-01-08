@@ -1,5 +1,6 @@
 package kr.mashup.branding.util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class DateUtil {
@@ -7,6 +8,13 @@ public class DateUtil {
     public static boolean isStartBeforeOrEqualEnd(
         LocalDateTime startedAt,
         LocalDateTime endedAt
+    ) {
+        return startedAt.isBefore(endedAt) || startedAt.isEqual(endedAt);
+    }
+
+    public static boolean isStartBeforeOrEqualEnd(
+        LocalDate startedAt,
+        LocalDate endedAt
     ) {
         return startedAt.isBefore(endedAt) || startedAt.isEqual(endedAt);
     }

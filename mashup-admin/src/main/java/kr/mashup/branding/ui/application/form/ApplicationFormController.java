@@ -1,8 +1,17 @@
 package kr.mashup.branding.ui.application.form;
 
-import java.util.List;
-
+import kr.mashup.branding.domain.application.form.ApplicationFormQueryVo;
+import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
+import kr.mashup.branding.facade.application.form.AdminApplicationFormFacadeService;
+import kr.mashup.branding.ui.ApiResponse;
+import kr.mashup.branding.ui.application.form.vo.ApplicationFormQueryRequest;
+import kr.mashup.branding.ui.application.form.vo.ApplicationFormResponse;
+import kr.mashup.branding.ui.application.form.vo.CreateApplicationFormRequest;
+import kr.mashup.branding.ui.application.form.vo.UpdateApplicationFormRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,21 +22,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import kr.mashup.branding.domain.application.form.ApplicationForm;
-import kr.mashup.branding.domain.application.form.ApplicationFormQueryVo;
-import kr.mashup.branding.domain.application.form.CreateApplicationFormVo;
-import kr.mashup.branding.facade.application.form.ApplicationFormFacadeService;
-import kr.mashup.branding.ui.ApiResponse;
-import lombok.RequiredArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/application-forms")
 @RequiredArgsConstructor
 public class ApplicationFormController {
-    private final ApplicationFormFacadeService applicationFormFacadeService;
-    private final ApplicationFormAssembler applicationFormAssembler;
+
+    private final AdminApplicationFormFacadeService adminApplicationFormFacadeService;
 
     /**
      * 설문지 목록 조회
@@ -37,14 +41,16 @@ public class ApplicationFormController {
      */
     @GetMapping
     public ApiResponse<List<ApplicationFormResponse>> getApplicationForms(
+        @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
         @RequestParam(required = false) Long teamId,
         @RequestParam(required = false) String searchWord,
-        Pageable pageable
+        @PageableDefault Pageable pageable
     ) {
-        return ApiResponse.success(
-            applicationFormFacadeService.getApplicationForms(ApplicationFormQueryVo.of(teamId, searchWord, pageable))
-                .map(applicationFormAssembler::toApplicationFormResponse)
-        );
+        final ApplicationFormQueryRequest request
+            = ApplicationFormQueryRequest.of(generationNumber, teamId, searchWord, pageable);
+
+        final Page<ApplicationFormResponse> responses = adminApplicationFormFacadeService.getApplicationForms(request);
+        return ApiResponse.success(responses);
     }
 
     /**
@@ -56,26 +62,27 @@ public class ApplicationFormController {
     public ApiResponse<ApplicationFormResponse> getApplicationForm(
         @PathVariable Long applicationFormId
     ) {
-        ApplicationForm applicationForm = applicationFormFacadeService.getApplicationForm(applicationFormId);
-        return ApiResponse.success(applicationFormAssembler.toApplicationFormResponse(applicationForm));
+
+        final ApplicationFormResponse response = adminApplicationFormFacadeService.getApplicationForm(applicationFormId);
+        return ApiResponse.success(response);
     }
 
     /**
      * 설문지 생성
-     * @param createApplicationFormRequest 설문지 생성 요청 정보
+     * @param request 설문지 생성 요청 정보
      * @return 새로 생성된 설문지
      */
     @PostMapping
     public ApiResponse<ApplicationFormResponse> create(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
-        @RequestBody CreateApplicationFormRequest createApplicationFormRequest
+        @RequestBody CreateApplicationFormRequest request
     ) {
-        CreateApplicationFormVo createApplicationFormVo = applicationFormAssembler.toCreateApplicationFormVo(
-            createApplicationFormRequest);
-        ApplicationForm applicationForm = applicationFormFacadeService.create(adminMemberId, createApplicationFormVo);
-        return ApiResponse.success(
-            applicationFormAssembler.toApplicationFormResponse(applicationForm)
-        );
+
+        final CreateApplicationFormVo createFormVo = request.toVo();
+        final Long teamId = request.getTeamId();
+
+        final ApplicationFormResponse response = adminApplicationFormFacadeService.create(adminMemberId,teamId, createFormVo);
+        return ApiResponse.success(response);
     }
 
     /**
@@ -90,14 +97,13 @@ public class ApplicationFormController {
         @PathVariable Long applicationFormId,
         @RequestBody UpdateApplicationFormRequest updateApplicationFormRequest
     ) {
-        ApplicationForm applicationForm = applicationFormFacadeService.update(
+        final ApplicationFormResponse response = adminApplicationFormFacadeService.update(
             adminMemberId,
             applicationFormId,
-            applicationFormAssembler.toUpdateApplicationFormVo(updateApplicationFormRequest)
+            updateApplicationFormRequest.toVo()
         );
-        return ApiResponse.success(
-            applicationFormAssembler.toApplicationFormResponse(applicationForm)
-        );
+
+        return ApiResponse.success(response);
     }
 
     /**
@@ -109,7 +115,7 @@ public class ApplicationFormController {
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @PathVariable Long applicationFormId
     ) {
-        applicationFormFacadeService.delete(adminMemberId, applicationFormId);
+        adminApplicationFormFacadeService.delete(adminMemberId, applicationFormId);
         return ApiResponse.success();
     }
 }

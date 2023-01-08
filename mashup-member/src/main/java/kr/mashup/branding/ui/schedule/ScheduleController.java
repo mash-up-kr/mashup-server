@@ -29,7 +29,8 @@ public class ScheduleController {
     )
     @GetMapping("/{id}")
     public ApiResponse<ScheduleResponse> getById(@PathVariable Long id) {
-        ScheduleResponse res = scheduleFacadeService.getById(id);
+        final ScheduleResponse res
+                = scheduleFacadeService.getById(id);
 
         return ApiResponse.success(res);
     }
@@ -47,7 +48,7 @@ public class ScheduleController {
     public ApiResponse<ScheduleResponseList> getByGenerationNumber(
         @PathVariable Integer generationNumber
     ) {
-        ScheduleResponseList res =
+        final ScheduleResponseList res =
             scheduleFacadeService.getByGenerationNum(generationNumber);
 
         return ApiResponse.success(res);

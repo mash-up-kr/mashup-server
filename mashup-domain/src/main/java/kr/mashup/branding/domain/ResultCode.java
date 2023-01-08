@@ -59,6 +59,7 @@ public enum ResultCode {
     MEMBER_NOT_MATCH_PASSWORD("비밀번호가 일치하지 않습니다."),
     MEMBER_INVALID_INVITE("잘못된 가입 코드입니다."),
     MEMBER_INVALID_EMPTY_NAME("잘못된 이름입니다."),
+    MEMBER_PENDING_STATUS("가입 승인 대기중입니다."),
 
 
     // Platform (플랫폼)
@@ -74,6 +75,7 @@ public enum ResultCode {
 
     // Generation (기수)
     GENERATION_NOT_FOUND("기수가 존재하지 않습니다."),
+    GENERATION_ALREADY_EXISTS("이미 존재하는 기수입니다."),
     MEMBER_GENERATION_NOT_FOUND("사용자의 기수 정보가 존재하지 않습니다."),
 
     // AttendanceCode (출석 코드)
@@ -86,6 +88,10 @@ public enum ResultCode {
     ATTENDANCE_ALREADY_CHECKED("이미 출석 체크를 했습니다."),
     ATTENDANCE_TIME_BEFORE("아직 출석 체크 시간이 아닙니다."),
     ATTENDANCE_TIME_OVER("출석 체크 시간이 지났습니다."),
+
+    // Score HISTORY
+    SCORETYPE_INVALID_NAME("잘못된 점수 타입 이름입니다."),
+    SCOREHISTORY_NOT_FOUND("점수가 존재하지 않습니다."),
 
     // Invite (초대 코드)
     INVITE_NOT_FOUND("초대 코드가 존재하지 않습니다.");

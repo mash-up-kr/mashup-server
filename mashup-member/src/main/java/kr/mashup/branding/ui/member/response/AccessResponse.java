@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.member.response;
 
 import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.Platform;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,12 +25,12 @@ public class AccessResponse {
     // 정렬 ASC
     private List<Integer> generations;
 
-    public static AccessResponse of(Member member, String token) {
+    public static AccessResponse of(Member member, Platform platform, String token) {
         return new AccessResponse(
                 member.getId(),
                 token,
                 member.getName(),
-                member.getPlatform().name(),
+                platform.name(),
                 member.getMemberGenerations()
                         .stream()
                         .map(it-> it.getGeneration().getNumber())

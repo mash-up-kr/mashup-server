@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kr.mashup.branding.domain.schedule.Schedule;
-import kr.mashup.branding.ui.event.response.EventResponse;
+import kr.mashup.branding.domain.schedule.ScheduleStatus;
 import lombok.Getter;
 import lombok.Value;
 
@@ -25,6 +25,8 @@ public class ScheduleResponse {
 
     List<EventResponse> eventList;
 
+    ScheduleStatus status;
+
     public static ScheduleResponse from(Schedule schedule) {
         return ScheduleResponse.of(
             schedule.getId(),
@@ -35,7 +37,8 @@ public class ScheduleResponse {
             schedule.getEventList()
                 .stream()
                 .map(EventResponse::from)
-                .collect(Collectors.toList())
+                .collect(Collectors.toList()),
+            schedule.getStatus()
         );
     }
 }

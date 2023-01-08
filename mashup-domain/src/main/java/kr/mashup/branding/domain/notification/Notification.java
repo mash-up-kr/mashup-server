@@ -11,12 +11,15 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.notification.exception.NotificationRequestInvalidException;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -24,9 +27,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.StringUtils;
 
-import kr.mashup.branding.domain.adminmember.AdminMember;
+import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.domain.notification.sms.SmsRequest;
-import kr.mashup.branding.domain.notification.sms.SmsSendRequestVo;
+import kr.mashup.branding.domain.notification.sms.vo.SmsSendRequestVo;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,7 +39,7 @@ import lombok.ToString;
 @Entity
 @Getter
 @ToString(of = {"notificationId", "senderValue", "sentAt", "name", "content", "status", "type", "messageId", "resultId",
-    "resultCode", "resultMessage", "createdAt", "updatedAt"})
+    "resultCode", "resultMessage", "createdAt", "updatedAt", "generation"})
 @EqualsAndHashCode(of = "notificationId")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
@@ -48,9 +51,15 @@ public class Notification {
     /**
      * 발송자
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "admin_member_id")
     private AdminMember sender;
+
+    @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL)
+    private final List<SmsRequest> smsRequests = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Generation generation;
 
     /**
      * 발송자 번호
@@ -106,8 +115,7 @@ public class Notification {
      */
     private String resultMessage;
 
-    @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL)
-    private final List<SmsRequest> smsRequests = new ArrayList<>();
+
 
     @CreatedBy
     private String createdBy;
@@ -123,10 +131,15 @@ public class Notification {
 
     public static Notification sms(
         AdminMember adminMember,
+        Generation generation,
         SmsSendRequestVo smsSendRequestVo
     ) {
+        if(!adminMember.getPhoneNumberRegistered()){
+            throw new NotificationRequestInvalidException("Sender's phoneNumber must be registered to NHN Cloud Notification Service");
+        }
         Notification notification = new Notification();
         notification.sender = adminMember;
+        notification.generation = generation;
         notification.senderValue = adminMember.getPhoneNumber();
         notification.sentAt = LocalDateTime.now();
         notification.messageId = UUID.randomUUID().toString();

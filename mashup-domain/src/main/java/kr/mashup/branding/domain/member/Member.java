@@ -2,17 +2,18 @@ package kr.mashup.branding.domain.member;
 
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.attendance.Attendance;
-import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.dto.member.MemberUpdateDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
-import javax.persistence.*;
+
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,17 +39,8 @@ public class Member extends BaseEntity {
     @NotBlank(message = "비밀번호는 비어있을 수 없습니다.")
     private String password;
 
-    @NotNull(message = "플랫폼은 비어있을 수 없습니다.")
-    @Enumerated(EnumType.STRING)
-    private Platform platform;
-
-//    @NotNull(message = "기수는 비어있을 수 없습니다.")
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "generation_id")
-//    private Generation generation;
     @OneToMany(mappedBy = "member")
     private final List<MemberGeneration> memberGenerations = new ArrayList<>();
-
 
     @OneToMany(mappedBy = "member")
     private final List<Attendance> attendances = new ArrayList<>();
@@ -56,17 +48,16 @@ public class Member extends BaseEntity {
     @AssertTrue(message = "개인정보 이용에 동의해야만 가입할 수 있습니다.")
     private Boolean privatePolicyAgreed;
 
+    @Enumerated(EnumType.STRING)
+    private MemberStatus status;
 
-    public void updateInfo(MemberUpdateDto memberUpdateDto){
+    @Enumerated(EnumType.STRING)
+    private OsType osType;
 
-        final String name = memberUpdateDto.getName();
-        final Platform platform = memberUpdateDto.getPlatform();
+    private String fcmToken;
 
-        checkValidName(name);
-
-        this.name = name;
-        this.platform = platform;
-    }
+    // TODO: 기본 설정값 논의
+    private Boolean pushNotificationAgreed = true;
 
     public boolean isMatchPassword(String rawPassword, PasswordEncoder encoder) {
         return encoder.matches(rawPassword, this.password);
@@ -80,14 +71,17 @@ public class Member extends BaseEntity {
         this.password = encoder.encode(newPassword);
     }
 
+    public void activate(){
+        this.status = MemberStatus.ACTIVE;
+    }
+
     public static Member of(
             String name,
             String identification,
             String rawPassword,
             PasswordEncoder encoder,
-            Platform platform,
             Boolean privatePolicyAgreed) {
-        return new Member(name, identification, rawPassword, encoder, platform,  privatePolicyAgreed);
+        return new Member(name, identification, rawPassword, encoder, privatePolicyAgreed);
     }
 
     private Member(
@@ -95,7 +89,6 @@ public class Member extends BaseEntity {
             String identification,
             String rawPassword,
             PasswordEncoder encoder,
-            Platform platform,
             Boolean privatePolicyAgreed) {
 
         checkAgreePrivacyPolicy(privatePolicyAgreed);
@@ -106,8 +99,9 @@ public class Member extends BaseEntity {
         this.name = name;
         this.identification = identification;
         this.password = encoder.encode(rawPassword);
-        this.platform = platform;
         this.privatePolicyAgreed = privatePolicyAgreed;
+        this.status = MemberStatus.ACTIVE;
+        //this.status = MemberStatus.PENDING;
     }
 
     private void checkValidID(String identification) {
@@ -127,12 +121,6 @@ public class Member extends BaseEntity {
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("이름이 비어있을 수 없습니다.");
         }
-//        if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
-//            throw new IllegalArgumentException("이름은 "+MIN_NAME_LENGTH+"글자에서 "+MAX_NAME_LENGTH+"글자이어야 합니다.");
-//        }
-//        if (!Pattern.matches("^[가-힣]*$", name)) {
-//            throw new IllegalArgumentException("이름은 완성된 한글로만 이루어져야 합니다.");
-//        }
     }
 
     private void checkAgreePrivacyPolicy(Boolean privatePolicyAgreed) {
@@ -150,5 +138,14 @@ public class Member extends BaseEntity {
 
     public void addMemberGenerations(MemberGeneration memberGeneration) {
         this.memberGenerations.add(memberGeneration);
+    }
+
+    public void updatePushNotificationInfo(OsType osType, String fcmToken) {
+        this.osType = osType;
+        this.fcmToken = fcmToken;
+    }
+
+    public void updatePushNotificationAgreed(Boolean pushNotificationAgreed) {
+        this.pushNotificationAgreed = pushNotificationAgreed;
     }
 }
