@@ -2,6 +2,7 @@ package kr.mashup.branding.ui.emailnotification.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import kr.mashup.branding.domain.applicant.Applicant;
+import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.email.EmailRequest;
 import kr.mashup.branding.domain.email.EmailRequestStatus;
 import lombok.Builder;
@@ -33,15 +34,15 @@ public class EmailRequestResponse {
     public static EmailRequestResponse of(
         final EmailRequest emailRequest
     ) {
-
-        final Applicant applicant = emailRequest.getApplication().getApplicant();
+        final Application application = emailRequest.getApplication();
+        final Applicant applicant = application.getApplicant();
 
         return EmailRequestResponse.builder()
                 .emailRequestId(emailRequest.getId())
                 .recipientName(applicant.getName())
                 .recipientEmail(applicant.getEmail())
                 .applicationId(emailRequest.getApplication().getApplicationId())
-                .team(applicant.getDepartment())
+                .team(application.getApplicationForm().getTeam().getName())
                 .status(emailRequest.getStatus())
                 .build();
     }
