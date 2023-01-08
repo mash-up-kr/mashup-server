@@ -4,6 +4,9 @@ spring:
     username: ENC(Rafn9TDh8A6A5mzzpMR509WKULNRrIpZM1PD89gigZNui0NEwE55dkwz/goQzQjp)
     password: ENC(fxWrJBvyF3X7SoFrGYKbeA4nLuchRIXTbaMahilpJFBSRc28VSLo6BN6PV+W/DVF)
   jpa:
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
     hibernate:
       ddl-auto: none
 sms:
