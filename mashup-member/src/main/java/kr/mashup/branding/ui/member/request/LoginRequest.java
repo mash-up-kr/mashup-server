@@ -20,6 +20,4 @@ public class LoginRequest {
 
     @NotEmpty
     private String fcmToken;
-
-    private Boolean pushNotificationAgreed;
 }
