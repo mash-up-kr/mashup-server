@@ -70,7 +70,7 @@ public class ScheduleFacadeService {
         scheduleService.publishSchedule(schedule);
 
         pushNotiEventPublisher.publishPushNotiSendEvent(
-            new SeminarUpdatedVo(memberService.getAllPushNotiTargetableFcmTokens())
+            new SeminarUpdatedVo(memberService.getAllPushNotiTargetableMembers())
         );
     }
 

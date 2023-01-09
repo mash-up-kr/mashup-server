@@ -39,7 +39,7 @@ public class ScoreHistoryFacadeService {
 
         scoreHistoryService.save(scoreHistory);
         pushNotiEventPublisher.publishPushNotiSendEvent(
-            new AttendanceScoreUpdatedVo(List.of(member.getFcmToken()))
+            new AttendanceScoreUpdatedVo(List.of(member))
         );
     }
     @Transactional
@@ -49,7 +49,7 @@ public class ScoreHistoryFacadeService {
 
         scoreHistory.cancel(memo);
         pushNotiEventPublisher.publishPushNotiSendEvent(
-            new AttendanceScoreUpdatedVo(List.of(scoreHistory.getMember().getFcmToken()))
+            new AttendanceScoreUpdatedVo(List.of(scoreHistory.getMember()))
         );
     }
 

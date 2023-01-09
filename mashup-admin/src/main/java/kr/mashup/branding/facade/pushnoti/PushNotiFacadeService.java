@@ -17,7 +17,7 @@ public class PushNotiFacadeService {
     public void sendPushNotiToAllMembers(String title, String body) {
         pushNotiEventPublisher.publishPushNotiSendEvent(
             new PushNotiSendVo(
-                memberService.getAllPushNotiTargetableFcmTokens(),
+                memberService.getAllPushNotiTargetableMembers(),
                 title,
                 body
             )

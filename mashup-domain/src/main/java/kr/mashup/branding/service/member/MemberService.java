@@ -189,11 +189,9 @@ public class MemberService {
         return memberGenerationRepository.findByMemberAndGeneration(member, generation).orElseThrow(MemberNotFoundException::new).getPlatform();
     }
 
-    public List<String> getAllPushNotiTargetableFcmTokens() {
+    public List<Member> getAllPushNotiTargetableMembers() {
         return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
             .filter(Member::getPushNotificationAgreed)
-            .map(Member::getFcmToken)
-            .filter(Objects::nonNull)
             .collect(Collectors.toList());
     }
 
