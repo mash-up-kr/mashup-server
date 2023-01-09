@@ -86,7 +86,13 @@ public class EmailNotificationFacadeService {
             final Map<String, String> bindingData = new HashMap<>();
 
             bindingData.put("name", application.getApplicant().getName());
-            bindingData.put("position", application.getApplicationForm().getTeam().getName());
+
+            // 메일 발송 시 Design -> Product Design
+            String position = application.getApplicationForm().getTeam().getName();
+            if(position.equals("Design")){
+                position = "Product Design";
+            }
+            bindingData.put("position", position);
 
             final EmailMetadata emailMetadata
                 = EmailMetadata.of(request.getId(), emailTemplateName, bindingData, senderEmail, application.getApplicant().getEmail());
