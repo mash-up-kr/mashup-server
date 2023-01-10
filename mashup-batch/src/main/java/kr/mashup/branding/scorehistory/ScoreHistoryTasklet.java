@@ -34,18 +34,18 @@ public class ScoreHistoryTasklet implements Tasklet {
 	@Transactional
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
 		List<Schedule> schedules = scheduleRepository.findAllByIsCounted(false);
-        List<Member> pushNotTargetMembers = new ArrayList<>();
+        List<Member> pushNotiTargetMembers = new ArrayList<>();
 
 		schedules.forEach(schedule -> {
 			Map<Member, List<Attendance>> attendanceMap = attendanceService.getByScheduleAndGroupByMember(schedule);
 			attendanceMap.forEach((member, attendances) -> {
 				ScoreHistory scoreHistory = scoreHistoryService.createByAttendances(member, schedule, attendances);
 				scoreHistoryService.save(scoreHistory);
-                pushNotTargetMembers.add(member);
+				pushNotiTargetMembers.add(member);
 			});
 			schedule.changeIsCounted(true);
 		});
-        pushNotiEventPublisher.publishPushNotiSendEvent(new SeminarAttendanceAppliedVo(pushNotTargetMembers));
+        pushNotiEventPublisher.publishPushNotiSendEvent(new SeminarAttendanceAppliedVo(pushNotiTargetMembers));
 		return RepeatStatus.FINISHED;
 	}
 }
