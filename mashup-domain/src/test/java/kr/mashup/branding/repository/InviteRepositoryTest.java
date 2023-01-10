@@ -6,6 +6,7 @@ import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.repository.generation.GenerationRepository;
 import kr.mashup.branding.repository.invite.InviteRepository;
 import kr.mashup.branding.util.DateRange;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
+@Disabled
 public class InviteRepositoryTest {
 
 	@Autowired

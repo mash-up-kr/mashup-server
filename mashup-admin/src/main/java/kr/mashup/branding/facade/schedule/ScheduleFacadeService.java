@@ -2,11 +2,14 @@ package kr.mashup.branding.facade.schedule;
 
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.pushnoti.vo.SeminarUpdatedVo;
 import kr.mashup.branding.domain.schedule.ContentsCreateDto;
 import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleCreateDto;
+import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.generation.GenerationService;
+import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.schedule.EventCreateDto;
 import kr.mashup.branding.service.schedule.ScheduleService;
 import kr.mashup.branding.ui.schedule.response.QrCodeResponse;
@@ -31,6 +34,8 @@ import java.util.List;
 public class ScheduleFacadeService {
     private final ScheduleService scheduleService;
     private final GenerationService generationService;
+    private final PushNotiEventPublisher pushNotiEventPublisher;
+    private final MemberService memberService;
 
     public Page<ScheduleResponse> getSchedules(Integer generationNumber, Pageable pageable) {
 
@@ -63,6 +68,10 @@ public class ScheduleFacadeService {
                 = scheduleService.getByIdOrThrow(scheduleId);
 
         scheduleService.publishSchedule(schedule);
+
+        pushNotiEventPublisher.publishPushNotiSendEvent(
+            new SeminarUpdatedVo(memberService.getAllPushNotiTargetableMembers())
+        );
     }
 
     @Transactional
@@ -78,7 +87,6 @@ public class ScheduleFacadeService {
                 = scheduleService.getByIdOrThrow(scheduleId);
 
         doUpdateSchedule(schedule, request);
-
         return ScheduleResponse.from(schedule);
     }
 

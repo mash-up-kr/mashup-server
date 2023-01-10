@@ -6,6 +6,9 @@ import kr.mashup.branding.repository.attendancecode.AttendanceCodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AttendanceCodeService {
@@ -16,7 +19,14 @@ public class AttendanceCodeService {
         return attendanceCodeRepository.save(attendanceCode);
     }
 
-    public AttendanceCode getByCodeOrThrow(String code){
+    public AttendanceCode getByCodeOrThrow(String code) {
         return attendanceCodeRepository.findByCode(code).orElseThrow(AttendanceCodeNotFoundException::new);
+    }
+
+    public List<AttendanceCode> findByStartedAtLeftOpenBetween(LocalDateTime from, LocalDateTime to) {
+        return attendanceCodeRepository.findAllByStartedAtGreaterThanAndStartedAtLessThanEqual(from, to);
+    }
+    public List<AttendanceCode> findAllByEndedAtLeftOpenBetween(LocalDateTime from, LocalDateTime to) {
+        return attendanceCodeRepository.findAllByEndedAtGreaterThanAndEndedAtLessThanEqual(from, to);
     }
 }

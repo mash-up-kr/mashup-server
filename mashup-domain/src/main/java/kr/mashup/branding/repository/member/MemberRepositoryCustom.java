@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static kr.mashup.branding.repository.member.MemberRepositoryCustomImpl.MemberScoreQueryResult;
@@ -21,6 +22,8 @@ public interface MemberRepositoryCustom {
     List<Member> findActiveByPlatformAndGeneration(Platform platform, Generation generation);
 
     Page<Member> findActiveByPlatformAndGeneration(Platform platform, Generation generation, Pageable pageable);
+
+    List<Member> findAllByCurrentGenerationAt(LocalDate at);
 }
 /**
  * Member 연관관계

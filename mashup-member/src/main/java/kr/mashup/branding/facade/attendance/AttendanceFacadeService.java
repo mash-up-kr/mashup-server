@@ -4,7 +4,6 @@ import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.attendance.AttendanceStatus;
-import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
 import kr.mashup.branding.domain.exception.NotFoundException;
@@ -12,28 +11,26 @@ import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
+import kr.mashup.branding.domain.pushnoti.vo.AttendanceEndingVo;
+import kr.mashup.branding.domain.pushnoti.vo.AttendanceStartedVo;
+import kr.mashup.branding.domain.pushnoti.vo.AttendanceStartingVo;
+import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.schedule.Schedule;
+import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.attendance.AttendanceCodeService;
 import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.schedule.ScheduleService;
-import kr.mashup.branding.ui.attendance.response.AttendanceCheckResponse;
-import kr.mashup.branding.ui.attendance.response.AttendanceInfo;
-import kr.mashup.branding.ui.attendance.response.PersonalAttendanceResponse;
-import kr.mashup.branding.ui.attendance.response.PlatformAttendanceResponse;
-import kr.mashup.branding.ui.attendance.response.TotalAttendanceResponse;
+import kr.mashup.branding.ui.attendance.response.*;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,10 +38,14 @@ import java.util.stream.Collectors;
 public class AttendanceFacadeService {
 
     private final static int LATE_LIMIT_TIME = 10;
+    private final static long PUSH_SCHEDULE_INTERVAL_MINUTES = 1;
+    private final static long ATTENDANCE_START_AFTER_MINUTES = 1;
+    private final static long ATTENDANCE_END_AFTER_MINUTES = 3;
     private final AttendanceService attendanceService;
     private final MemberService memberService;
     private final ScheduleService scheduleService;
     private final AttendanceCodeService attendanceCodeService;
+    private final PushNotiEventPublisher pushNotiEventPublisher;
 
     /**
      * 출석 체크
@@ -95,6 +96,49 @@ public class AttendanceFacadeService {
         );
 
         return AttendanceCheckResponse.from(attendance);
+    }
+
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional(readOnly = true)
+    public void sendAttendanceStartingPushNoti() {
+        findAllStartsWithin(ATTENDANCE_START_AFTER_MINUTES)
+                .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
+                        new AttendanceStartingVo(memberService.getAllPushNotiTargetableMembers())
+                ));
+    }
+
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional(readOnly = true)
+    public void sendAttendanceStartedPushNoti() {
+        findAllStartsWithin(0L)
+                .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
+                        new AttendanceStartedVo(memberService.getAllPushNotiTargetableMembers())
+                ));
+    }
+
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional(readOnly = true)
+    public void sendAttendanceEndingPushNoti() {
+        findAllEndsWithin(ATTENDANCE_END_AFTER_MINUTES)
+                .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
+                        new AttendanceEndingVo(memberService.getAllPushNotiTargetableMembers())
+                ));
+    }
+
+    private List<AttendanceCode> findAllStartsWithin(Long afterMinutes) {
+        final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        return attendanceCodeService.findByStartedAtLeftOpenBetween(
+                now.plusMinutes(-PUSH_SCHEDULE_INTERVAL_MINUTES + afterMinutes),
+                now.plusMinutes(afterMinutes)
+        );
+    }
+
+    private List<AttendanceCode> findAllEndsWithin(Long afterMinutes) {
+        final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        return attendanceCodeService.findAllByEndedAtLeftOpenBetween(
+                now.plusMinutes(-PUSH_SCHEDULE_INTERVAL_MINUTES + afterMinutes),
+                now.plusMinutes(afterMinutes)
+        );
     }
 
     private void validAttendanceCode(AttendanceCode attendanceCode, String code) {
@@ -325,7 +369,7 @@ public class AttendanceFacadeService {
 
                 final AttendanceCode code = event
                         .getAttendanceCodes()
-                        .get(event.getAttendanceCodes().size()-1); // TODO : Sorting
+                        .get(event.getAttendanceCodes().size() - 1); // TODO : Sorting
                 final boolean isBeforeAttendanceCheckTime =
                         now.isBefore(code.getStartedAt());
                 final boolean isAttendanceCheckTime = DateUtil.isInTime(

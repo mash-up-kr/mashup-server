@@ -80,7 +80,7 @@ public class Schedule extends BaseEntity {
     }
 
     public void publishSchedule(){
-        if(status == ScheduleStatus.ADMIN_ONLY){
+        if(status == ScheduleStatus.PUBLIC){
             throw new ScheduleAlreadyPublishedException();
         }
         this.status = ScheduleStatus.PUBLIC;

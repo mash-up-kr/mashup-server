@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,6 +137,15 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return QueryUtils.toPage(fetchResults, pageable);
     }
 
-
+    @Override
+    public List<Member> findAllByCurrentGenerationAt(LocalDate at) {
+        return queryFactory
+            .selectFrom(member)
+            .join(memberGeneration).on(memberGeneration.member.eq(member))
+            .where(memberGeneration.generation.startedAt.before(at)
+                .and(memberGeneration.generation.endedAt.after(at))
+            )
+            .fetch();
+    }
 }
 
