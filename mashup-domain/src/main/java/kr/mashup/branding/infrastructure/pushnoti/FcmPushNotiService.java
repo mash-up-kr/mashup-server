@@ -1,9 +1,7 @@
 package kr.mashup.branding.infrastructure.pushnoti;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.MulticastMessage;
+import com.google.firebase.messaging.*;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.pushnoti.exception.PushNotiException;
 import kr.mashup.branding.domain.pushnoti.vo.PushNotiSendVo;
@@ -24,8 +22,7 @@ public class FcmPushNotiService implements PushNotiService {
     public void sendPushNotification(PushNotiSendVo pushNotiSendVo) {
         log.info("send push notification: " + pushNotiSendVo.getBody());
         MulticastMessage multicastMessage = MulticastMessage.builder()
-            .putData("title", pushNotiSendVo.getTitle())
-            .putData("body", pushNotiSendVo.getBody())
+            .setNotification(new Notification(pushNotiSendVo.getTitle(), pushNotiSendVo.getBody()))
             .addAllTokens(getAgreedFcmTokens(pushNotiSendVo.getMembers()))
             .build();
         try {
