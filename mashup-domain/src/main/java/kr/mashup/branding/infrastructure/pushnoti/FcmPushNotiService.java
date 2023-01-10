@@ -22,7 +22,9 @@ public class FcmPushNotiService implements PushNotiService {
     public void sendPushNotification(PushNotiSendVo pushNotiSendVo) {
         log.info("send push notification: " + pushNotiSendVo.getBody());
         MulticastMessage multicastMessage = MulticastMessage.builder()
-            .setNotification(new Notification(pushNotiSendVo.getTitle(), pushNotiSendVo.getBody()))
+            .setNotification(
+                Notification.builder().setTitle(pushNotiSendVo.getTitle()).setBody(pushNotiSendVo.getBody()).build()
+            )
             .addAllTokens(getAgreedFcmTokens(pushNotiSendVo.getMembers()))
             .build();
         try {
