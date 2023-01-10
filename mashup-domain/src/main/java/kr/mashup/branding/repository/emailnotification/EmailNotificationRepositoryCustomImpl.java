@@ -67,7 +67,7 @@ public class EmailNotificationRepositoryCustomImpl implements EmailNotificationR
             if (field.equals("createdAt")) {
                 orderSpecifier = new OrderSpecifier(qOrder, Expressions.path(Object.class, emailNotification, field));
             } else if (field.equals("templateName")) {
-                orderSpecifier = new OrderSpecifier(qOrder, Expressions.path(Object.class, emailNotification, field));
+                orderSpecifier = new OrderSpecifier(qOrder, Expressions.path(Object.class, emailNotification, "emailTemplateName"));
             } else {
                 throw new BadRequestException(ResultCode.BAD_REQUEST);
             }
