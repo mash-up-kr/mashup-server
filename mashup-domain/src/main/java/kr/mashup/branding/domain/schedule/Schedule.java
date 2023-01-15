@@ -88,7 +88,7 @@ public class Schedule extends BaseEntity {
 
     public void hide(){
         if(status != ScheduleStatus.PUBLIC){
-
+            // TODO: 채워넣기
         }
         if(startedAt.isBefore(LocalDateTime.now())){
 
