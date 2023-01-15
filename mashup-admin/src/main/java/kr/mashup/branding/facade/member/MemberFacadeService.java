@@ -49,7 +49,7 @@ public class MemberFacadeService {
 
         for (final MemberScoreQueryResult result : queryResults) {
 
-            Member member = result.getMember();
+            final Member member = result.getMember();
 
             final MemberResponse memberResponse = MemberResponse.of(member.getId(),
                 member.getName(),
