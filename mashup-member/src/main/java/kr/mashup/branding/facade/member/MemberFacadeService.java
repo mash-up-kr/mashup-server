@@ -84,6 +84,9 @@ public class MemberFacadeService {
         final String token = jwtService.encode(member.getId());
         Platform latestPlatform = memberService.getLatestPlatform(member);
 
+        // 회원가입 시점에 푸시 알림을 위한 정보 업데이트
+        memberService.updatePushNotificationInfo(request.getOsType(), request.getFcmToken(), member);
+
         return AccessResponse.of(member,latestPlatform, token);
     }
 
