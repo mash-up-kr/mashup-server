@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%file:%line]- %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <appender name="cloud_watch_aws_log_dev" class="ca.pjer.logback.AwsLogsAppender">
+        <layout>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%file:%line]- %msg%n</pattern>
+        </layout>
+        <logGroupName>MashUp-Server-Dev</logGroupName>
+        <logStreamName>batch</logStreamName>
+        <logRegion>ap-northeast-2</logRegion>
+        <maxBatchLogEvents>50</maxBatchLogEvents>
+        <maxFlushTimeMillis>30000</maxFlushTimeMillis>
+        <maxBlockTimeMillis>5000</maxBlockTimeMillis>
+        <retentionTimeDays>0</retentionTimeDays>
+    </appender>
+
+    <appender name="cloud_watch_aws_log_real" class="ca.pjer.logback.AwsLogsAppender">
+        <layout>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%file:%line]- %msg%n</pattern>
+        </layout>
+        <logGroupName>MashUp-Server-Real</logGroupName>
+        <logStreamName>batch</logStreamName>
+        <logRegion>ap-northeast-2</logRegion>
+        <maxBatchLogEvents>50</maxBatchLogEvents>
+        <maxFlushTimeMillis>30000</maxFlushTimeMillis>
+        <maxBlockTimeMillis>5000</maxBlockTimeMillis>
+        <retentionTimeDays>0</retentionTimeDays>
+    </appender>
+
+    <springProfile name="local">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+    <springProfile name="develop">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+
+        <root level="info">
+            <appender-ref ref="cloud_watch_aws_log_dev"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="production">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+
+        <root level="info">
+            <appender-ref ref="cloud_watch_aws_log_real"/>
+        </root>
+    </springProfile>
+
+</configuration>

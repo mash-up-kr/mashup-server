@@ -23,8 +23,8 @@ public class ScoreHistoryScheduler {
 	private final JobLauncher jobLauncher;
 	private final ScoreHistoryConfig scoreHistoryConfig;
 
-	// TODO: 젠킨스 파라미터로 스케줄링 시간 조정할 수 있도록 변경 필요
-	@Scheduled(cron = "* * 23 * 5")
+	// TODO: 젠킨스 파라미터로 스케줄링 시간 조정할 수 있도록 변경 필요(현재는 매주 토요일 오후 11시 배치 동작)
+	@Scheduled(cron = "* * 23 * * 5")
 	public void runJob() {
 		JobParameters params = new JobParametersBuilder()
 			.addString("datetime", LocalDateTime.now().toString())
