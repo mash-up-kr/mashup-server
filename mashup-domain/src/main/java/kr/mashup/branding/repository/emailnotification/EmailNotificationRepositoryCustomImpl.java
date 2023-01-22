@@ -34,18 +34,20 @@ public class EmailNotificationRepositoryCustomImpl implements EmailNotificationR
         final Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.DESC, "createdAt"));
 
         QueryResults<EmailNotification> results = queryFactory
-            .selectFrom(emailNotification)
-            .innerJoin(emailNotification.sender, adminMember).fetchJoin()
-            .innerJoin(emailNotification.generation, generation).fetchJoin()
-            .where(isContainSearchWord(searchWord))
-            .orderBy(getOrderSpecifier(sort))
-            .fetchResults();
+                .selectFrom(emailNotification)
+                .innerJoin(emailNotification.sender, adminMember).fetchJoin()
+                .innerJoin(emailNotification.generation, generation).fetchJoin()
+                .where(isContainSearchWord(searchWord))
+                .orderBy(getOrderSpecifier(sort))
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetchResults();
 
         return QueryUtils.toPage(results, pageable);
     }
 
     private BooleanExpression isContainSearchWord(Optional<String> searchWord) {
-        if(searchWord.isEmpty()){
+        if (searchWord.isEmpty()) {
             return null;
         }
 
@@ -56,7 +58,7 @@ public class EmailNotificationRepositoryCustomImpl implements EmailNotificationR
     private OrderSpecifier[] getOrderSpecifier(Sort sort) {
 
         final List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
-        
+
         for (Sort.Order order : sort) {
             final Sort.Direction direction = order.getDirection();
             final String field = order.getProperty();
