@@ -1,19 +1,14 @@
 package kr.mashup.branding.infrastructure.test;
 
 import java.time.LocalDateTime;
-
-import kr.mashup.branding.domain.generation.Generation;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
-
 import kr.mashup.branding.domain.application.ApplicationScheduleValidator;
+import kr.mashup.branding.domain.generation.Generation;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Profile("develop")
-@Primary
-@Component
+//@Profile("develop")
+//@Primary
+//@Component
 public class NoopApplicationScheduleValidator implements ApplicationScheduleValidator {
     @Override
     public void validate(Generation generation, LocalDateTime localDateTime) {

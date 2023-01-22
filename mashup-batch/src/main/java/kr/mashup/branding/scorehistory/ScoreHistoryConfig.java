@@ -1,5 +1,11 @@
 package kr.mashup.branding.scorehistory;
 
+import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
+import kr.mashup.branding.repository.schedule.ScheduleRepository;
+import kr.mashup.branding.service.attendance.AttendanceService;
+import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -11,12 +17,6 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import kr.mashup.branding.repository.schedule.ScheduleRepository;
-import kr.mashup.branding.service.attendance.AttendanceService;
-import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @RequiredArgsConstructor
@@ -31,6 +31,7 @@ public class ScoreHistoryConfig {
     private final ScheduleRepository scheduleRepository;
     private final AttendanceService attendanceService;
     private final ScoreHistoryService scoreHistoryService;
+    private final PushNotiEventPublisher pushNotiEventPublisher;
 
     @Bean
     public Job scoreHistoryJob() {
@@ -44,14 +45,14 @@ public class ScoreHistoryConfig {
     @JobScope
     public Step scoreHistoryStep() {
         return stepBuilderFactory.get(STEP_NAME)
-            .tasklet(scoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService))
+            .tasklet(scoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService, pushNotiEventPublisher))
             .transactionManager(new ResourcelessTransactionManager())
             .build();
     }
 
     @Bean
     @StepScope
-    public Tasklet scoreHistoryTasklet(ScheduleRepository scheduleRepository, AttendanceService attendanceService, ScoreHistoryService scoreHistoryService) {
-        return new ScoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService);
+    public Tasklet scoreHistoryTasklet(ScheduleRepository scheduleRepository, AttendanceService attendanceService, ScoreHistoryService scoreHistoryService, PushNotiEventPublisher pushNotiEventPublisher) {
+        return new ScoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService, pushNotiEventPublisher);
     }
 }

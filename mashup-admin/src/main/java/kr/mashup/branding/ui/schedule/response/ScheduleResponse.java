@@ -27,6 +27,12 @@ public class ScheduleResponse {
 
     ScheduleStatus status;
 
+    LocalDateTime createdAt;
+
+    LocalDateTime updatedAt;
+
+    LocalDateTime publishedAt;
+
     public static ScheduleResponse from(Schedule schedule) {
         return ScheduleResponse.of(
             schedule.getId(),
@@ -38,7 +44,10 @@ public class ScheduleResponse {
                 .stream()
                 .map(EventResponse::from)
                 .collect(Collectors.toList()),
-            schedule.getStatus()
+            schedule.getStatus(),
+            schedule.getCreatedAt(),
+            schedule.getUpdatedAt(),
+            schedule.getPublishedAt()
         );
     }
 }

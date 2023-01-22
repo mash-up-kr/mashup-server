@@ -50,6 +50,8 @@ public class Schedule extends BaseEntity {
     @OrderBy("startedAt")
     private List<Event> eventList = new ArrayList<>();
 
+    private LocalDateTime publishedAt;
+
     /*
     ScoreHistory 배치가 수행된 스케줄인지의 여부를 판단하기 위한 컬럼
      */
@@ -80,13 +82,15 @@ public class Schedule extends BaseEntity {
     }
 
     public void publishSchedule(){
-        if(status == ScheduleStatus.ADMIN_ONLY){
+        if(status == ScheduleStatus.PUBLIC){
             throw new ScheduleAlreadyPublishedException();
         }
         this.status = ScheduleStatus.PUBLIC;
+        this.publishedAt = LocalDateTime.now();
     }
 
     public void hide(){
+        // TODO: 채워넣기
         if(status != ScheduleStatus.PUBLIC){
 
         }
@@ -94,6 +98,7 @@ public class Schedule extends BaseEntity {
 
         }
         this.status = ScheduleStatus.ADMIN_ONLY;
+        this.publishedAt = null;
     }
 
 

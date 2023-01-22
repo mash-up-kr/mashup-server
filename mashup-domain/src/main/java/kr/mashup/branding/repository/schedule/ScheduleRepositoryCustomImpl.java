@@ -30,27 +30,29 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
 
     @Override
     public Page<Schedule> findByGeneration(Generation _generation, Pageable pageable) {
-        Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "startedAt"));
+        final Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "startedAt"));
 
-        QueryResults<Schedule> queryResults = queryFactory
+        final QueryResults<Schedule> queryResults = queryFactory
             .selectFrom(schedule)
             .join(schedule.generation, generation).fetchJoin()
             .where(generation.eq(_generation))
-            .orderBy()
+            .orderBy(getOrderSpecifier(sort))
             .fetchResults();
 
         return QueryUtils.toPage(queryResults, pageable);
     }
 
     private OrderSpecifier[] getOrderSpecifier(Sort sort) {
-        List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
+
+        final List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
+
         for (Sort.Order order : sort) {
             Sort.Direction direction = order.getDirection();
             String field = order.getProperty();
             Order qOrder = direction.isAscending() ? Order.ASC : Order.DESC;
 
-            OrderSpecifier orderSpecifier = null;
-
+            final OrderSpecifier orderSpecifier
+                = new OrderSpecifier(qOrder, Expressions.path(Object.class, schedule, field));
 
             orderSpecifiers.add(orderSpecifier);
         }
