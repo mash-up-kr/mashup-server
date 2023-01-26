@@ -39,6 +39,16 @@ public class ScheduleController {
         return ApiResponse.success(responses);
     }
 
+    @ApiOperation("스케줄 상세 조회")
+    @GetMapping("/{scheduleId}")
+    public ApiResponse<ScheduleResponse> getSchedule(
+            @PathVariable Long scheduleId
+    ) {
+        ScheduleResponse response = scheduleFacadeService.getSchedule(scheduleId);
+
+        return ApiResponse.success(response);
+    }
+
 
     @ApiOperation("스케줄 생성")
     @PostMapping
