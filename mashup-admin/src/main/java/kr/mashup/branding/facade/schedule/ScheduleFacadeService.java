@@ -47,6 +47,12 @@ public class ScheduleFacadeService {
                 .map(ScheduleResponse::from);
     }
 
+    public ScheduleResponse getSchedule(final Long scheduleId) {
+        final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
+
+        return ScheduleResponse.from(schedule);
+    }
+
     @Transactional
     public ScheduleResponse create(Integer generationNumber, ScheduleUpdateRequest request) {
         final Generation generation =
@@ -143,6 +149,7 @@ public class ScheduleFacadeService {
         }
 
     }
+
 
 
 }
