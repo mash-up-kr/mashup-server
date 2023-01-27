@@ -273,6 +273,7 @@ public class ApplicationService {
     public void updateInterviewGuideLink(Long teamId, String link) {
         applicationRepository.findInterviewerByTeamId(teamId)
             .forEach(interviewer -> {
+                log.info(interviewer.getApplicant().getName() + "에 링크를 설정합니다.");
                 interviewer.getApplicationResult().updateInterviewGuideLink(link);
             });
     }
