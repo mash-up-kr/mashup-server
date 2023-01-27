@@ -1,5 +1,6 @@
 package kr.mashup.branding.job.scorehistory;
 
+import kr.mashup.branding.config.BatchConfig;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.service.attendance.AttendanceService;
@@ -15,9 +16,14 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@ConditionalOnProperty(
+    value = BatchConfig.SPRING_BATCH_JOB_NAMES,
+    havingValue = ScoreHistoryConfig.JOB_NAME
+)
 @Configuration
 @RequiredArgsConstructor
 @Slf4j

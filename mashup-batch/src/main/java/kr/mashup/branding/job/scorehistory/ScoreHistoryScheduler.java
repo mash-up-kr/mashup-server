@@ -12,11 +12,10 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+//@Component
 public class ScoreHistoryScheduler {
 
     private final JobLauncher jobLauncher;
