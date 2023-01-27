@@ -1,29 +1,15 @@
 package kr.mashup.branding.domain.application.result;
 
 import java.time.LocalDateTime;
-
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-
+import kr.mashup.branding.domain.application.Application;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import kr.mashup.branding.domain.application.Application;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -129,6 +115,10 @@ public class ApplicationResult {
 
     public void updateInterviewStatus(ApplicationInterviewStatus applicationInterviewStatus) {
         interviewStatus = interviewStatus.update(applicationInterviewStatus);
+    }
+
+    public void updateInterviewGuideLink(String link) {
+        this.interviewGuideLink = link;
     }
 
     private void initInterviewInfo() {

@@ -8,7 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public enum Platform {
 
-    SPRING, IOS, ANDROID, DESIGN, WEB, NODE;
+    // ALL은 batch에서 사용하기 위해 추가
+    SPRING, IOS, ANDROID, DESIGN, WEB, NODE, ALL;
 
     @JsonCreator
     public static Platform from(String s) {
