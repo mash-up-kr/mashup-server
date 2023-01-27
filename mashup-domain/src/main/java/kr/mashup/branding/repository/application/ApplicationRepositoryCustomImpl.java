@@ -1,44 +1,34 @@
 package kr.mashup.branding.repository.application;
 
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.Application;
-import kr.mashup.branding.domain.application.ApplicationQueryRequest;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.ApplicationStatus;
-import kr.mashup.branding.domain.application.QApplication;
 import kr.mashup.branding.domain.application.confirmation.ApplicantConfirmationStatus;
-import kr.mashup.branding.domain.application.confirmation.QConfirmation;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
-import kr.mashup.branding.domain.application.form.QApplicationForm;
 import kr.mashup.branding.domain.application.result.ApplicationInterviewStatus;
 import kr.mashup.branding.domain.application.result.ApplicationScreeningStatus;
-import kr.mashup.branding.domain.application.result.QApplicationResult;
 import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.domain.generation.QGeneration;
-import kr.mashup.branding.domain.team.QTeam;
+import kr.mashup.branding.util.QueryUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.BooleanExpression;
-
-import kr.mashup.branding.util.QueryUtils;
-
 import static kr.mashup.branding.domain.applicant.QApplicant.applicant;
 import static kr.mashup.branding.domain.application.QApplication.application;
 import static kr.mashup.branding.domain.application.confirmation.QConfirmation.confirmation;
-import static kr.mashup.branding.domain.application.form.QApplicationForm.*;
+import static kr.mashup.branding.domain.application.form.QApplicationForm.applicationForm;
 import static kr.mashup.branding.domain.application.result.QApplicationResult.applicationResult;
 import static kr.mashup.branding.domain.generation.QGeneration.generation;
 import static kr.mashup.branding.domain.team.QTeam.team;
@@ -96,7 +86,7 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
             // interview status not rated 조건을 주어야 서류 결과만 난 지원자들을 볼 수 있다.
             booleanExpressions.add(applicationResult.interviewStatus.in(ApplicationInterviewStatus.NOT_RATED,
                 ApplicationInterviewStatus.NOT_APPLICABLE));
-        }else{
+        } else {
             return null;
         }
         return booleanExpressions.stream().reduce(BooleanExpression::and).orElse(null);
@@ -245,6 +235,22 @@ public class ApplicationRepositoryCustomImpl implements ApplicationRepositoryCus
             .join(application.applicationResult, applicationResult).fetchJoin()
             .join(application.confirmation, confirmation).fetchJoin()
             .where(applicant.in(applicants).and(generation.eq(_generation)))
+            .fetch();
+    }
+
+    @Override
+    public List<Application> findInterviewerByTeamId(Long teamId) {
+        return queryFactory
+            .selectFrom(application)
+            .join(application.applicationForm, applicationForm).fetchJoin()
+            .join(applicationForm.team, team).fetchJoin()
+            .join(team.generation, generation).fetchJoin()
+            .join(application.applicationResult, applicationResult).fetchJoin()
+            .join(application.confirmation, confirmation).fetchJoin()
+            .where(
+                teamIdEq(teamId),
+                screeningStatusEq(ApplicationScreeningStatus.PASSED)
+            )
             .fetch();
     }
 
