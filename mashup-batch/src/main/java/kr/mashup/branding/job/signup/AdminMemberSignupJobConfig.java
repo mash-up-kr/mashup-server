@@ -1,11 +1,8 @@
-package kr.mashup.branding.scorehistory;
+package kr.mashup.branding.job.signup;
 
-import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
-import kr.mashup.branding.repository.schedule.ScheduleRepository;
-import kr.mashup.branding.service.attendance.AttendanceService;
-import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
+import kr.mashup.branding.config.BatchConfig;
+import kr.mashup.branding.service.adminmember.AdminMemberService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -15,44 +12,45 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@ConditionalOnProperty(
+    value = BatchConfig.SPRING_BATCH_JOB_NAMES,
+    havingValue = AdminMemberSignupJobConfig.JOB_NAME
+)
 @Configuration
 @RequiredArgsConstructor
-@Slf4j
-public class ScoreHistoryConfig {
-    static final String JOB_NAME = "score-history-create";
+public class AdminMemberSignupJobConfig {
+    static final String JOB_NAME = "admin-member-sign-up";
     private static final String STEP_NAME = JOB_NAME + "-step";
 
     private final JobBuilderFactory jobBuilderFactory;
     private final JobRepository jobRepository;
     private final StepBuilderFactory stepBuilderFactory;
-    private final ScheduleRepository scheduleRepository;
-    private final AttendanceService attendanceService;
-    private final ScoreHistoryService scoreHistoryService;
-    private final PushNotiEventPublisher pushNotiEventPublisher;
+    private final AdminMemberService adminMemberService;
 
     @Bean
-    public Job scoreHistoryJob() {
+    public Job adminMemberSignUpJob() {
         return jobBuilderFactory.get(JOB_NAME)
             .repository(jobRepository)
-            .start(scoreHistoryStep())
+            .start(adminMemberSignUpStep())
             .build();
     }
 
     @Bean
     @JobScope
-    public Step scoreHistoryStep() {
+    public Step adminMemberSignUpStep() {
         return stepBuilderFactory.get(STEP_NAME)
-            .tasklet(scoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService, pushNotiEventPublisher))
+            .tasklet(adminMemberSignUpTasklet())
             .transactionManager(new ResourcelessTransactionManager())
             .build();
     }
 
     @Bean
     @StepScope
-    public Tasklet scoreHistoryTasklet(ScheduleRepository scheduleRepository, AttendanceService attendanceService, ScoreHistoryService scoreHistoryService, PushNotiEventPublisher pushNotiEventPublisher) {
-        return new ScoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService, pushNotiEventPublisher);
+    public Tasklet adminMemberSignUpTasklet() {
+        return new AdminMemberSignupTasklet(adminMemberService);
     }
 }
