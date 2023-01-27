@@ -18,12 +18,12 @@ public class InterviewSettingTasklet implements Tasklet {
 
     private final InterviewGuideLinkFacadeService interviewGuideLinkFacadeService;
     private Platform platform;
-    @Value("#{jobParameters[generationNum]}")
+    @Value("#{jobParameters['generationNum']}")
     private Integer generationNum;
-    @Value("#{jobParameters[link]}")
+    @Value("#{jobParameters['link']}")
     private String link;
 
-    @Value("#{jobParameters[platform]}")
+    @Value("#{jobParameters['platform']}")
     public void setPlatform(String platformStr) {
         this.platform = Platform.from(platformStr);
     }
