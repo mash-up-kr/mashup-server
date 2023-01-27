@@ -24,8 +24,10 @@ import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
+@Slf4j
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -65,9 +67,6 @@ public class Event extends BaseEntity {
     }
 
     public void addContent(Content content) {
-        if (contentList.contains(content)) {
-            return;
-        }
         this.contentList.add(content);
     }
 
