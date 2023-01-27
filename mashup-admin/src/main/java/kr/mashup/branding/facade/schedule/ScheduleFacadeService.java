@@ -141,7 +141,6 @@ public class ScheduleFacadeService {
                 scheduleService.addContent(event, contentsCreateDto);
             }
         }
-
     }
 
 
