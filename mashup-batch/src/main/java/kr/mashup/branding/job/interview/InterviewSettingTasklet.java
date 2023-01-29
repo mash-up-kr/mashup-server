@@ -1,6 +1,5 @@
 package kr.mashup.branding.job.interview;
 
-import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.facade.InterviewGuideLinkFacadeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.StepContribution;
@@ -17,16 +16,12 @@ import org.springframework.stereotype.Component;
 public class InterviewSettingTasklet implements Tasklet {
 
     private final InterviewGuideLinkFacadeService interviewGuideLinkFacadeService;
-    private Platform platform;
+    @Value("#{jobParameters['platform']}")
+    private String platformStr;
     @Value("#{jobParameters['generationNum']}")
     private Integer generationNum;
     @Value("#{jobParameters['link']}")
     private String link;
-
-    @Value("#{jobParameters['platform']}")
-    public void setPlatform(String platformStr) {
-        this.platform = Platform.from(platformStr);
-    }
 
     @Override
     public RepeatStatus execute(
@@ -34,7 +29,7 @@ public class InterviewSettingTasklet implements Tasklet {
         ChunkContext chunkContext
     ) {
         interviewGuideLinkFacadeService.setLink(
-            platform,
+            platformStr,
             generationNum,
             link
         );
