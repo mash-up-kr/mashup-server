@@ -1,7 +1,8 @@
-spring:
-  batch:
-    job:
-      enabled: false
+# 모든 배치는 VM 옵션으로 이름을 받아서 실행
+#spring:
+#  batch:
+#    job:
+#      enabled: false
 
 logging:
   level:
