@@ -277,12 +277,8 @@ public class ApplicationService {
                     applicationRepository.findInterviewerByTeamId(teamId);
 
                 interviewerList.stream()
-                    .peek(interviewer -> {
-                        log.info(interviewer.getApplicant().getName() + " 님의 링크를 설정합니다.");
-                    })
-                    .forEach(interviewer -> {
-                        interviewer.getApplicationResult().updateInterviewGuideLink(link);
-                    });
+                    .peek(interviewer -> log.info(interviewer.getApplicant().getName() + " 님의 링크를 설정합니다."))
+                    .forEach(interviewer -> interviewer.getApplicationResult().updateInterviewGuideLink(link));
 
                 return total + interviewerList.size();
             });
