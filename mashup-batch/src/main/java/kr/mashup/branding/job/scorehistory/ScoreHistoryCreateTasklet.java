@@ -24,7 +24,7 @@ public class ScoreHistoryCreateTasklet implements Tasklet {
     @Override
     @Transactional
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-        List<Member> pushNotiTargetMembers = scoreHistoryFacadeService.calculate();
+        List<Member> pushNotiTargetMembers = scoreHistoryFacadeService.create();
         pushNotiEventPublisher.publishPushNotiSendEvent(new SeminarAttendanceAppliedVo(pushNotiTargetMembers));
         return RepeatStatus.FINISHED;
     }

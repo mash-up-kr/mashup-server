@@ -1,8 +1,5 @@
 package kr.mashup.branding.service.schedule;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.exception.NotFoundException;
@@ -18,6 +15,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -128,6 +130,14 @@ public class ScheduleService {
             = event.addAttendanceCode(code, codeValidRequestTime);
 
         return attendanceCode;
+    }
+
+    public List<Schedule> findAllByIsCounted(boolean isCounted) {
+        return scheduleRepository.findAllByIsCounted(isCounted);
+    }
+
+    public Schedule findByStartedAt(LocalDate startDate) {
+        return scheduleRepository.retrieveByStartedAt(startDate);
     }
 
 }

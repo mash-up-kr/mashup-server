@@ -1,23 +1,23 @@
 package kr.mashup.branding.service.scorehistory;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.attendance.AttendanceStatus;
-import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.scorehistory.ScoreHistory;
 import kr.mashup.branding.domain.scorehistory.ScoreType;
 import kr.mashup.branding.repository.event.EventRepository;
 import kr.mashup.branding.repository.scorehistory.ScoreHistoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Transactional
@@ -82,5 +82,13 @@ public class ScoreHistoryService {
             scoreType = ScoreType.LATE;
         }
         return scoreType;
+    }
+
+    public void deleteAll(List<ScoreHistory> scoreHistories) {
+        scoreHistoryRepository.deleteAll(scoreHistories);
+    }
+
+    public List<ScoreHistory> findByScheduleStartedAt(LocalDate startDate) {
+        return scoreHistoryRepository.retrieveByScheduleStartedAt(startDate);
     }
 }
