@@ -1,18 +1,16 @@
 package kr.mashup.branding.repository.application;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.Application;
-import kr.mashup.branding.domain.application.ApplicationQueryRequest;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.ApplicationStatus;
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.generation.Generation;
 import org.springframework.data.domain.Page;
-
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 public interface ApplicationRepositoryCustom {
 
@@ -33,6 +31,8 @@ public interface ApplicationRepositoryCustom {
     List<Application> findByStatusAndCreatedAtBefore(ApplicationStatus status, LocalDateTime eventOccurredAt);
 
     List<Application> findApplicationsByApplicantIn(Generation generation, List<Applicant> applicants);
+
+    List<Application> findInterviewerByTeamId(Long teamId);
 
 }
 /**

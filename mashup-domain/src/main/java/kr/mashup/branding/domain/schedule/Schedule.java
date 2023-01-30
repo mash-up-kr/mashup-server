@@ -89,6 +89,10 @@ public class Schedule extends BaseEntity {
         this.publishedAt = LocalDateTime.now();
     }
 
+    public void changeGeneration(Generation generation){
+        this.generation = generation;
+    }
+
     public void hide(){
         // TODO: 채워넣기
         if(status != ScheduleStatus.PUBLIC){

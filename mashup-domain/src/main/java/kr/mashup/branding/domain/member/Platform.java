@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public enum Platform {
-
     SPRING, IOS, ANDROID, DESIGN, WEB, NODE;
 
     @JsonCreator

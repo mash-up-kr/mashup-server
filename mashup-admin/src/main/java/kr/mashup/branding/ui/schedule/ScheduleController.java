@@ -3,6 +3,7 @@ package kr.mashup.branding.ui.schedule;
 import javax.validation.Valid;
 
 import kr.mashup.branding.EmptyResponse;
+import kr.mashup.branding.ui.schedule.request.ScheduleUpdateRequest;
 import kr.mashup.branding.ui.schedule.response.QrCodeResponse;
 import kr.mashup.branding.ui.schedule.request.QrCodeGenerateRequest;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.schedule.ScheduleFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.schedule.request.ScheduleUpdateRequest;
+import kr.mashup.branding.ui.schedule.request.ScheduleCreateRequest;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -39,23 +40,34 @@ public class ScheduleController {
         return ApiResponse.success(responses);
     }
 
+    @ApiOperation("스케줄 상세 조회")
+    @GetMapping("/{scheduleId}")
+    public ApiResponse<ScheduleResponse> getSchedule(
+            @PathVariable Long scheduleId
+    ) {
+        final ScheduleResponse response
+                = scheduleFacadeService.getSchedule(scheduleId);
+
+        return ApiResponse.success(response);
+    }
+
 
     @ApiOperation("스케줄 생성")
     @PostMapping
     public ApiResponse<ScheduleResponse> createSchedule(
         @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
-        @Valid @RequestBody ScheduleUpdateRequest scheduleUpdateRequest
+        @Valid @RequestBody ScheduleCreateRequest scheduleCreateRequest
     ) {
         final ScheduleResponse response
-            = scheduleFacadeService.create(generationNumber, scheduleUpdateRequest);
+            = scheduleFacadeService.create(generationNumber, scheduleCreateRequest);
 
         return ApiResponse.success(response);
     }
 
     @ApiOperation("스케줄 배포")
-    @PostMapping("/{id}/publish")
+    @PostMapping("/{scheduleId}/publish")
     public ApiResponse<EmptyResponse> publishSchedule(
-        @PathVariable("id") Long scheduleId
+        @PathVariable Long scheduleId
     ){
         scheduleFacadeService.publishSchedule(scheduleId);
 
@@ -63,9 +75,9 @@ public class ScheduleController {
     }
 
     @ApiOperation("스케줄 배포 취소")
-    @PostMapping("/{id}/hide")
+    @PostMapping("/{scheduleId}/hide")
     public ApiResponse<EmptyResponse> hideSchedule(
-            @PathVariable("id") Long scheduleId
+            @PathVariable Long scheduleId
     ){
         scheduleFacadeService.hideSchedule(scheduleId);
 
@@ -73,9 +85,9 @@ public class ScheduleController {
     }
 
     @ApiOperation("스케줄 변경")
-    @DeleteMapping("/{id}")
+    @PostMapping("/{scheduleId}")
     public ApiResponse<EmptyResponse> updateSchedule(
-            @PathVariable("id") Long scheduleId,
+            @PathVariable Long scheduleId,
             @Valid @RequestBody ScheduleUpdateRequest scheduleUpdateRequest
     ){
         scheduleFacadeService.updateSchedule(scheduleId, scheduleUpdateRequest);
@@ -84,9 +96,9 @@ public class ScheduleController {
     }
 
     @ApiOperation("스케줄 삭제")
-    @DeleteMapping("/{id}/hide")
+    @DeleteMapping("/{scheduleId}")
     public ApiResponse<EmptyResponse> deleteSchedule(
-            @PathVariable("id") Long scheduleId
+            @PathVariable Long scheduleId
     ){
         scheduleFacadeService.deleteSchedule(scheduleId);
 

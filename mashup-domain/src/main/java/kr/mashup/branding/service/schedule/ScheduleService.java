@@ -73,8 +73,6 @@ public class ScheduleService {
         final Content content
             = Content.of(event, dto.getTitle(), dto.getDescription(), dto.getStartedAt());
 
-        event.addContent(content);
-
         return content;
     }
 

@@ -1,21 +1,18 @@
-package kr.mashup.branding.signup;
+package kr.mashup.branding.job.signup;
 
 import java.util.stream.Collectors;
-
-import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
+import kr.mashup.branding.domain.adminmember.entity.AdminMember;
+import kr.mashup.branding.domain.adminmember.entity.Position;
+import kr.mashup.branding.domain.adminmember.vo.AdminMemberSignUpCommand;
+import kr.mashup.branding.service.adminmember.AdminMemberService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
-
-import kr.mashup.branding.domain.adminmember.entity.AdminMember;
-import kr.mashup.branding.service.adminmember.AdminMemberService;
-import kr.mashup.branding.domain.adminmember.vo.AdminMemberSignUpCommand;
-import kr.mashup.branding.domain.adminmember.entity.Position;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor

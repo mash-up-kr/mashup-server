@@ -12,11 +12,8 @@ import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.schedule.EventCreateDto;
 import kr.mashup.branding.service.schedule.ScheduleService;
+import kr.mashup.branding.ui.schedule.request.*;
 import kr.mashup.branding.ui.schedule.response.QrCodeResponse;
-import kr.mashup.branding.ui.schedule.request.ContentsCreateRequest;
-import kr.mashup.branding.ui.schedule.request.EventCreateRequest;
-import kr.mashup.branding.ui.schedule.request.QrCodeGenerateRequest;
-import kr.mashup.branding.ui.schedule.request.ScheduleUpdateRequest;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.QrGenerator;
@@ -47,8 +44,14 @@ public class ScheduleFacadeService {
                 .map(ScheduleResponse::from);
     }
 
+    public ScheduleResponse getSchedule(final Long scheduleId) {
+        final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
+
+        return ScheduleResponse.from(schedule);
+    }
+
     @Transactional
-    public ScheduleResponse create(Integer generationNumber, ScheduleUpdateRequest request) {
+    public ScheduleResponse create(Integer generationNumber, ScheduleCreateRequest request) {
         final Generation generation =
                 generationService.getByNumberOrThrow(generationNumber);
         final DateRange dateRange
@@ -82,11 +85,19 @@ public class ScheduleFacadeService {
     }
 
     @Transactional
-    public ScheduleResponse updateSchedule(Long scheduleId, ScheduleUpdateRequest request) {
+    public ScheduleResponse updateSchedule(
+            final Long scheduleId,
+            final ScheduleUpdateRequest request) {
+
         final Schedule schedule
                 = scheduleService.getByIdOrThrow(scheduleId);
 
-        doUpdateSchedule(schedule, request);
+        final Generation generation
+                = generationService.getByNumberOrThrow(request.getGenerationNumber());
+
+        doUpdateSchedule(schedule, ScheduleCreateRequest.from(request));
+        schedule.changeGeneration(generation);
+
         return ScheduleResponse.from(schedule);
     }
 
@@ -118,7 +129,7 @@ public class ScheduleFacadeService {
         return QrCodeResponse.of(qrCodeUrl);
     }
 
-    private void doUpdateSchedule(Schedule schedule, ScheduleUpdateRequest request) {
+    private void doUpdateSchedule(Schedule schedule, ScheduleCreateRequest request) {
 
         final List<EventCreateRequest> eventsCreateRequests
                 = request.getEventsCreateRequests();
@@ -141,7 +152,6 @@ public class ScheduleFacadeService {
                 scheduleService.addContent(event, contentsCreateDto);
             }
         }
-
     }
 
 
