@@ -270,12 +270,20 @@ public class ApplicationService {
         }
     }
 
-    public void updateInterviewGuideLink(Long teamId, String link) {
-        applicationRepository.findInterviewerByTeamId(teamId)
-            .forEach(interviewer -> {
-                log.info(interviewer.getApplicant().getName() + "에 링크를 설정합니다.");
-                interviewer.getApplicationResult().updateInterviewGuideLink(link);
+    public void updateInterviewGuideLink(List<Long> teamList, String link) {
+        Long totalInterviewerSize = teamList.stream()
+            .reduce(0L, (total, teamId) -> {
+                final List<Application> interviewerList =
+                    applicationRepository.findInterviewerByTeamId(teamId);
+
+                interviewerList.stream()
+                    .peek(interviewer -> log.info(interviewer.getApplicant().getName() + " 님의 링크를 설정합니다."))
+                    .forEach(interviewer -> interviewer.getApplicationResult().updateInterviewGuideLink(link));
+
+                return total + interviewerList.size();
             });
+
+        log.info("링크를 설정한 총 인원수 : " + totalInterviewerSize);
     }
 
     public void deleteByApplicationFormId(Long applicationFormId) {
