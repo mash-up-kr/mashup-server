@@ -39,9 +39,7 @@ public class ScoreHistoryFacadeService {
         return members;
     }
 
-    public void delete(String scheduleStartDate) {
-        LocalDate startDate = LocalDate.parse(scheduleStartDate);
-
+    public void delete(LocalDate scheduleStartDate) {
         Schedule schedule = scheduleService.findByStartedAt(startDate);
         List<ScoreHistory> scoreHistories = scoreHistoryService.findByScheduleStartedAt(startDate);
         scoreHistoryService.deleteAll(scoreHistories);

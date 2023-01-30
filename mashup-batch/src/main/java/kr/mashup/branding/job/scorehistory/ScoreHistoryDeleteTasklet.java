@@ -10,6 +10,10 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.InvalidParameterException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+
 @Slf4j
 @RequiredArgsConstructor
 public class ScoreHistoryDeleteTasklet implements Tasklet {
@@ -22,7 +26,12 @@ public class ScoreHistoryDeleteTasklet implements Tasklet {
     @Override
     @Transactional
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-        scoreHistoryFacadeService.delete(scheduleStartDate);
-        return RepeatStatus.FINISHED;
+
+        try {
+            scoreHistoryFacadeService.delete(LocalDate.parse(scheduleStartDate));
+            return RepeatStatus.FINISHED;
+        } catch (DateTimeParseException e) {
+            throw new InvalidParameterException("");
+        }
     }
 }
