@@ -270,11 +270,13 @@ public class ApplicationService {
         }
     }
 
-    public void updateInterviewGuideLink(Long teamId, String link) {
-        applicationRepository.findInterviewerByTeamId(teamId)
-            .forEach(interviewer -> {
-                interviewer.getApplicationResult().updateInterviewGuideLink(link);
-            });
+    public void updateInterviewGuideLink(List<Long> teamList, String link) {
+        teamList.forEach(teamId -> {
+            applicationRepository.findInterviewerByTeamId(teamId)
+                .forEach(interviewer -> {
+                    interviewer.getApplicationResult().updateInterviewGuideLink(link);
+                });
+        });
     }
 
     public void deleteByApplicationFormId(Long applicationFormId) {
