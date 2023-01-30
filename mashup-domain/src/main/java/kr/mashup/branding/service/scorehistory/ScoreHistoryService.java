@@ -61,6 +61,7 @@ public class ScoreHistoryService {
 
     /**
      * 출석 결과로 최종 출석 결과를 생성한다.
+     * TODO: 리팩토링 진행 by @hocaron
      */
     private ScoreType getScoreTypeByAttendances(
         List<Event> events,

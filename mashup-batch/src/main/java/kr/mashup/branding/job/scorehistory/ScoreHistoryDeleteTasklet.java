@@ -26,12 +26,11 @@ public class ScoreHistoryDeleteTasklet implements Tasklet {
     @Override
     @Transactional
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-
         try {
             scoreHistoryFacadeService.delete(LocalDate.parse(scheduleStartDate));
             return RepeatStatus.FINISHED;
         } catch (DateTimeParseException e) {
-            throw new InvalidParameterException("");
+            throw new InvalidParameterException("날짜 형식이 올바르지 않습니다.(YYYY-MM-DD)");
         }
     }
 }
