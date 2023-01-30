@@ -40,8 +40,8 @@ public class ScoreHistoryFacadeService {
     }
 
     public void delete(LocalDate scheduleStartDate) {
-        Schedule schedule = scheduleService.findByStartedAt(startDate);
-        List<ScoreHistory> scoreHistories = scoreHistoryService.findByScheduleStartedAt(startDate);
+        Schedule schedule = scheduleService.findByStartedAt(scheduleStartDate);
+        List<ScoreHistory> scoreHistories = scoreHistoryService.findByScheduleStartedAt(scheduleStartDate);
         scoreHistoryService.deleteAll(scoreHistories);
         schedule.changeIsCounted(false);
     }
