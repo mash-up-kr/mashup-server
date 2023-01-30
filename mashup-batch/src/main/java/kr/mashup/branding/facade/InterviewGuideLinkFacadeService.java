@@ -1,6 +1,7 @@
 package kr.mashup.branding.facade;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.team.Team;
 import kr.mashup.branding.service.application.ApplicationService;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class InterviewGuideLinkFacadeService {
+
+    private static final String ALL_PLATFORM = "ALL";
 
     private final ApplicationService applicationService;
     private final GenerationService generationService;
@@ -28,13 +31,16 @@ public class InterviewGuideLinkFacadeService {
         final List<Team> teams =
             teamService.findAllTeamsByGeneration(generation);
 
-        final Long selectedTeamId = getTeamId(teams, platformStr);
+        final List<Long> selectedTeamList = getTeamId(teams, platformStr);
 
-        applicationService.updateInterviewGuideLink(selectedTeamId, link);
+        applicationService.updateInterviewGuideLink(selectedTeamList, link);
     }
 
-    private Long getTeamId(List<Team> teams, String platformStr) {
-        if (platformStr.equals("ALL")) return null;
+    private List<Long> getTeamId(List<Team> teams, String platformStr) {
+        if (platformStr.equals(ALL_PLATFORM))
+            return teams.stream()
+                .map(Team::getTeamId)
+                .collect(Collectors.toList());
 
         return teams.stream()
             .filter(team -> {
@@ -42,7 +48,6 @@ public class InterviewGuideLinkFacadeService {
                 return teamName.equals(platformStr);
             })
             .map(Team::getTeamId)
-            .findFirst()
-            .orElseThrow();
+            .collect(Collectors.toList());
     }
 }
