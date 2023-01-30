@@ -1,8 +1,5 @@
 package kr.mashup.branding.job.scorehistory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.pushnoti.vo.SeminarAttendanceAppliedVo;
@@ -18,11 +15,20 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
 public class ScoreHistoryTasklet implements Tasklet {
+
+    @Value("#{jobParameters['requestDateTime']}")
+    private String requestDateTime;
+
     private final ScheduleRepository scheduleRepository;
     private final AttendanceService attendanceService;
     private final ScoreHistoryService scoreHistoryService;
