@@ -85,7 +85,7 @@ public class ScheduleController {
     }
 
     @ApiOperation("스케줄 변경")
-    @PostMapping("/{scheduleId}")
+    @PutMapping("/{scheduleId}")
     public ApiResponse<EmptyResponse> updateSchedule(
             @PathVariable Long scheduleId,
             @Valid @RequestBody ScheduleUpdateRequest scheduleUpdateRequest
