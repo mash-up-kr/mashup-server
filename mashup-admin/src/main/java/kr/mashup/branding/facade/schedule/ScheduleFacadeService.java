@@ -18,6 +18,7 @@ import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.QrGenerator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -95,6 +97,7 @@ public class ScheduleFacadeService {
         final Generation generation
                 = generationService.getByNumberOrThrow(request.getGenerationNumber());
 
+        schedule.clearEvent();
         doUpdateSchedule(schedule, ScheduleCreateRequest.from(request));
         schedule.changeGeneration(generation);
 

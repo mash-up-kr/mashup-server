@@ -114,6 +114,10 @@ public class Schedule extends BaseEntity {
         this.eventList.add(event);
     }
 
+    public void clearEvent() {
+        this.eventList.clear();
+    }
+
     public void changeName(String newName) {
         Assert.hasText(newName, "이름이 비어있을 수 없습니다.");
         this.name = newName;
