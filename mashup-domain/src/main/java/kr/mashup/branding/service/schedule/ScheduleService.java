@@ -90,6 +90,16 @@ public class ScheduleService {
         scheduleRepository.delete(schedule);
     }
 
+    public Schedule updateSchedule(Schedule schedule, Generation generation, ScheduleCreateDto scheduleCreateDto) {
+        onlyHidingScheduleCanChanged(schedule);
+
+        schedule.changeName(scheduleCreateDto.getName());
+        schedule.changeGeneration(generation);
+        schedule.changeDate(scheduleCreateDto.getDateRange().getStart(), scheduleCreateDto.getDateRange().getEnd());
+
+        return schedule;
+    }
+
     private void passedScheduleMustNotBeDeleted(Schedule schedule) {
         if (schedule.getStartedAt().isBefore(LocalDateTime.now())) {
             throw new ScheduleAlreadyPublishedException();

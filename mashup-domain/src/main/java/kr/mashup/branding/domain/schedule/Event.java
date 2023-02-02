@@ -108,7 +108,7 @@ public class Event extends BaseEntity {
     private void validateEventPeriod(Schedule schedule, LocalDateTime startedAt, LocalDateTime endedAt) {
         if (!DateUtil.isContainDateRange(DateRange.of(schedule.getStartedAt(), schedule.getEndedAt()),
                 DateRange.of(startedAt, endedAt))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("세션 시간이 유효하지 않습니다.");
         }
     }
 
