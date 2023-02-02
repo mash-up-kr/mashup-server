@@ -85,14 +85,14 @@ public class ScheduleController {
     }
 
     @ApiOperation("스케줄 변경")
-    @PostMapping("/{scheduleId}")
-    public ApiResponse<EmptyResponse> updateSchedule(
+    @PutMapping("/{scheduleId}")
+    public ApiResponse<ScheduleResponse> updateSchedule(
             @PathVariable Long scheduleId,
             @Valid @RequestBody ScheduleUpdateRequest scheduleUpdateRequest
     ){
-        scheduleFacadeService.updateSchedule(scheduleId, scheduleUpdateRequest);
+        ScheduleResponse response = scheduleFacadeService.updateSchedule(scheduleId, scheduleUpdateRequest);
 
-        return ApiResponse.success(EmptyResponse.of());
+        return ApiResponse.success(response);
     }
 
     @ApiOperation("스케줄 삭제")

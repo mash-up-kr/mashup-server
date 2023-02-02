@@ -27,7 +27,7 @@ public class ConfirmationScheduler {
      * 서류 발표 후 24시간 뒤 서류 합격이지만 응답 대기중인 지원서에 대한 지원자 응답 변경
      * INTERVIEW_CONFIRM_WAITING -> INTERVIEW_CONFIRM_REJECTED
      */
-    @Scheduled(cron = "0 0 21 31 1 ?") // 2023-01-30 21:00:00 24시간 뒤인 01-31 21:00:00
+    @Scheduled(cron = "0 0 0 3 2 ?") // 2023-02-02 00:00:00 24시간 뒤인 02-03 00:00:00
     public void updateConfirmationAtScreeningEnded() {
         log.info("[ConfirmationScheduler] updateConfirmationAtScreeningEnded >>> start");
         confirmationFacadeService.updateInterviewConfirmWaitingToRejected(13);
