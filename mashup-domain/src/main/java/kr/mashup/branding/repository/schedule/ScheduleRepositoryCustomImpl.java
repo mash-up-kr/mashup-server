@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static kr.mashup.branding.domain.generation.QGeneration.generation;
 import static kr.mashup.branding.domain.schedule.QSchedule.schedule;
@@ -58,13 +59,13 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
         return orderSpecifiers.toArray(new OrderSpecifier[0]);
     }
 
-    public Schedule retrieveByStartedAt(LocalDate startDate) {
-        return queryFactory
+    public Optional<Schedule> retrieveByStartDate(LocalDate startDate) {
+        return Optional.ofNullable(queryFactory
                 .selectFrom(schedule)
                 .where(schedule.startedAt.between(
                         startDate.atStartOfDay(),
                         LocalDateTime.of(startDate, LocalTime.MAX).withNano(0)))
-                .fetchOne();
+                .fetchOne());
 
     }
 }

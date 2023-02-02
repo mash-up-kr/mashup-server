@@ -8,6 +8,7 @@ import kr.mashup.branding.domain.schedule.*;
 import kr.mashup.branding.domain.schedule.exception.CodeGenerateFailException;
 import kr.mashup.branding.domain.schedule.exception.EventNotFoundException;
 import kr.mashup.branding.domain.schedule.exception.ScheduleAlreadyPublishedException;
+import kr.mashup.branding.domain.schedule.exception.ScheduleNotFoundException;
 import kr.mashup.branding.repository.attendancecode.AttendanceCodeRepository;
 import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.util.DateRange;
@@ -136,8 +137,9 @@ public class ScheduleService {
         return scheduleRepository.findAllByIsCounted(isCounted);
     }
 
-    public Schedule findByStartedAt(LocalDate startDate) {
-        return scheduleRepository.retrieveByStartedAt(startDate);
+    public Schedule findByStartDate(LocalDate startDate) {
+        return scheduleRepository.retrieveByStartDate(startDate)
+                .orElseThrow(ScheduleNotFoundException::new);
     }
 
 }

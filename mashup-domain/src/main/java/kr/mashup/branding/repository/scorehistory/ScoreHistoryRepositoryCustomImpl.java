@@ -18,12 +18,12 @@ public class ScoreHistoryRepositoryCustomImpl implements ScoreHistoryRepositoryC
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<ScoreHistory> retrieveByScheduleStartedAt(LocalDate startDate) {
+    public List<ScoreHistory> retrieveAttendanceScoreByDate(LocalDate date) {
         return queryFactory
                 .selectFrom(scoreHistory)
                 .where(scoreHistory.date.between(
-                                startDate.atStartOfDay(),
-                                LocalDateTime.of(startDate, LocalTime.MAX).withNano(0))
+                                date.atStartOfDay(),
+                                LocalDateTime.of(date, LocalTime.MAX).withNano(0))
                         .and(scoreHistory.name.in(
                                 ScoreType.ATTENDANCE.getName(),
                                 ScoreType.ABSENT.getName(),

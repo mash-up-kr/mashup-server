@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ScoreHistoryRepositoryCustom {
 
-    List<ScoreHistory> retrieveByScheduleStartedAt(LocalDate startDate);
+    List<ScoreHistory> retrieveAttendanceScoreByDate(LocalDate date);
 }

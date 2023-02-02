@@ -23,6 +23,7 @@ public class ScoreHistoryFacadeService {
     private final AttendanceService attendanceService;
     private final ScoreHistoryService scoreHistoryService;
 
+    // TODO: 리팩토링 진행 by @hocaron
     public List<Member> create() {
         List<Schedule> schedules = scheduleService.findAllByIsCounted(false);
         List<Member> members = new ArrayList<>();
@@ -40,8 +41,8 @@ public class ScoreHistoryFacadeService {
     }
 
     public void delete(LocalDate scheduleStartDate) {
-        Schedule schedule = scheduleService.findByStartedAt(scheduleStartDate);
-        List<ScoreHistory> scoreHistories = scoreHistoryService.findByScheduleStartedAt(scheduleStartDate);
+        Schedule schedule = scheduleService.findByStartDate(scheduleStartDate);
+        List<ScoreHistory> scoreHistories = scoreHistoryService.findAttendanceScoreByDate(scheduleStartDate);
 
         scoreHistoryService.deleteAll(scoreHistories);
         schedule.changeIsCounted(false);

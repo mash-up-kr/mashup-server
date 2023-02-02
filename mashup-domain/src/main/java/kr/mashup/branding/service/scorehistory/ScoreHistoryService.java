@@ -89,7 +89,7 @@ public class ScoreHistoryService {
         scoreHistoryRepository.deleteAll(scoreHistories);
     }
 
-    public List<ScoreHistory> findByScheduleStartedAt(LocalDate startDate) {
-        return scoreHistoryRepository.retrieveByScheduleStartedAt(startDate);
+    public List<ScoreHistory> findAttendanceScoreByDate(LocalDate date) {
+        return scoreHistoryRepository.retrieveAttendanceScoreByDate(date);
     }
 }
