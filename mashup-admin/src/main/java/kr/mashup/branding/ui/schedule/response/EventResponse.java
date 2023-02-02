@@ -14,6 +14,8 @@ public class EventResponse {
 
     Long eventId;
 
+    String eventName;
+
     LocalDateTime startedAt;
 
     LocalDateTime endedAt;
@@ -23,6 +25,7 @@ public class EventResponse {
     public static EventResponse from(Event event) {
         return EventResponse.of(
             event.getId(),
+            event.getEventName(),
             event.getStartedAt(),
             event.getEndedAt(),
             event.getContentList()
