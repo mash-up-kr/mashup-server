@@ -91,15 +91,18 @@ public class ScheduleFacadeService {
             final Long scheduleId,
             final ScheduleUpdateRequest request) {
 
-        final Schedule schedule
+        Schedule schedule
                 = scheduleService.getByIdOrThrow(scheduleId);
 
         final Generation generation
                 = generationService.getByNumberOrThrow(request.getGenerationNumber());
 
+        ScheduleCreateDto scheduleCreateDto = ScheduleCreateDto.of(request.getName(), DateRange.of(request.getStartedAt(), request.getEndedAt()));
+
+        schedule = scheduleService.updateSchedule(schedule, generation, scheduleCreateDto);
+
         schedule.clearEvent();
         doUpdateSchedule(schedule, ScheduleCreateRequest.from(request));
-        schedule.changeGeneration(generation);
 
         return ScheduleResponse.from(schedule);
     }

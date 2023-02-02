@@ -123,6 +123,12 @@ public class Schedule extends BaseEntity {
         this.name = newName;
     }
 
+    public void changeDate(LocalDateTime startDate, LocalDateTime endDate) {
+        checkStartBeforeOrEqualEnd(startDate, endDate);
+        this.startedAt = startDate;
+        this.endedAt = endDate;
+    }
+
     public void changeStartDate(LocalDateTime newStartDate) {
         checkStartBeforeOrEqualEnd(newStartDate, endedAt);
         this.startedAt = newStartDate;
