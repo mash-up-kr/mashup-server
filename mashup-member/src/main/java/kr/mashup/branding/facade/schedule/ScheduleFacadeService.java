@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,7 +58,10 @@ public class ScheduleFacadeService {
     }
 
     private Integer countDate(LocalDateTime startedAt, LocalDateTime currentTime) {
-        return (int) Duration.between(startedAt, currentTime).toDays();
+        return (int) ChronoUnit.DAYS.between(
+                startedAt.truncatedTo(ChronoUnit.DAYS),
+                currentTime.truncatedTo(ChronoUnit.DAYS)
+        );
     }
 
     private Integer pickNextScheduleDate(List<ScheduleResponse> scheduleResponseList) {
