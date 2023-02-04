@@ -366,23 +366,25 @@ public class AttendanceFacadeService {
                 status = attendance.getStatus();
                 attendanceAt = attendance.getCreatedAt();
             } catch (NotFoundException e) {
-
-                final AttendanceCode code = event
-                        .getAttendanceCodes()
-                        .get(event.getAttendanceCodes().size() - 1); // TODO : Sorting
-                final boolean isBeforeAttendanceCheckTime =
-                        now.isBefore(code.getStartedAt());
-                final boolean isAttendanceCheckTime = DateUtil.isInTime(
-                        code.getStartedAt(),
-                        code.getEndedAt().plusMinutes(LATE_LIMIT_TIME),
-                        now
-                );
-                // 출석체크 시작 전이거나(2부에서는 해당 조건을 체크),
-                // 출석 체크 시간인데 출석을 안했을 때는 결석이 아닌 아직이란 값을 내려줌
-                if (isBeforeAttendanceCheckTime || isAttendanceCheckTime) {
+                final List<AttendanceCode> codes = event.getAttendanceCodes();
+                if (codes.isEmpty()) {
                     status = AttendanceStatus.NOT_YET;
                 } else {
-                    status = AttendanceStatus.ABSENT;
+                    final AttendanceCode code = codes.get(event.getAttendanceCodes().size() - 1);
+                    final boolean isBeforeAttendanceCheckTime =
+                            now.isBefore(code.getStartedAt());
+                    final boolean isAttendanceCheckTime = DateUtil.isInTime(
+                            code.getStartedAt(),
+                            code.getEndedAt().plusMinutes(LATE_LIMIT_TIME),
+                            now
+                    );
+                    // 출석체크 시작 전이거나(2부에서는 해당 조건을 체크),
+                    // 출석 체크 시간인데 출석을 안했을 때는 결석이 아닌 아직이란 값을 내려줌
+                    if (isBeforeAttendanceCheckTime || isAttendanceCheckTime) {
+                        status = AttendanceStatus.NOT_YET;
+                    } else {
+                        status = AttendanceStatus.ABSENT;
+                    }
                 }
             }
 
