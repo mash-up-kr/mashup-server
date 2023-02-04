@@ -1,12 +1,5 @@
 package kr.mashup.branding.facade.schedule;
 
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.service.generation.GenerationService;
@@ -15,7 +8,13 @@ import kr.mashup.branding.ui.schedule.response.Progress;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponseList;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,8 +58,10 @@ public class ScheduleFacadeService {
     }
 
     private Integer countDate(LocalDateTime startedAt, LocalDateTime currentTime) {
-
-        return Period.between(currentTime.toLocalDate(), startedAt.toLocalDate()).getDays();
+        return (int) ChronoUnit.DAYS.between(
+                startedAt.truncatedTo(ChronoUnit.DAYS),
+                currentTime.truncatedTo(ChronoUnit.DAYS)
+        );
     }
 
     private Integer pickNextScheduleDate(List<ScheduleResponse> scheduleResponseList) {
