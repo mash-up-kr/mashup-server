@@ -366,11 +366,11 @@ public class AttendanceFacadeService {
                 status = attendance.getStatus();
                 attendanceAt = attendance.getCreatedAt();
             } catch (NotFoundException e) {
-                final List<AttendanceCode> codes = event.getAttendanceCodes();
-                if (codes.isEmpty()) {
+                final List<AttendanceCode> attendanceCodes = event.getAttendanceCodes();
+                if (attendanceCodes.isEmpty()) {
                     status = AttendanceStatus.NOT_YET;
                 } else {
-                    final AttendanceCode code = codes.get(event.getAttendanceCodes().size() - 1);
+                    final AttendanceCode code = attendanceCodes.get(event.getAttendanceCodes().size() - 1);
                     final boolean isBeforeAttendanceCheckTime =
                             now.isBefore(code.getStartedAt());
                     final boolean isAttendanceCheckTime = DateUtil.isInTime(
