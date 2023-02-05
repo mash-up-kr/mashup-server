@@ -5,8 +5,6 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.mashup.branding.domain.ResultCode;
-import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.util.QueryUtils;
@@ -15,12 +13,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static kr.mashup.branding.domain.generation.QGeneration.generation;
-import static kr.mashup.branding.domain.member.QMember.member;
-import static kr.mashup.branding.domain.member.QMemberGeneration.memberGeneration;
 import static kr.mashup.branding.domain.schedule.QSchedule.schedule;
 
 @RequiredArgsConstructor
@@ -57,5 +57,15 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
             orderSpecifiers.add(orderSpecifier);
         }
         return orderSpecifiers.toArray(new OrderSpecifier[0]);
+    }
+
+    public Optional<Schedule> retrieveByStartDate(LocalDate startDate) {
+        return Optional.ofNullable(queryFactory
+                .selectFrom(schedule)
+                .where(schedule.startedAt.between(
+                        startDate.atStartOfDay(),
+                        LocalDateTime.of(startDate, LocalTime.MAX).withNano(0)))
+                .fetchOne());
+
     }
 }
