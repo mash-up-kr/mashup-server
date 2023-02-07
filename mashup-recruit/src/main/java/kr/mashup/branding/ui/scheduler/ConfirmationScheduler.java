@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class ConfirmationScheduler {
     private final ConfirmationFacadeService confirmationFacadeService;
     // TODO : Recruitment Schedule 대응 필요
+
     /**
      * 지원 마감시 임시저장인 지원서에 대한 지원자 응답 변경
      * TO_BE_DETERMINED -> NOT_APPLICABLE
@@ -38,7 +39,7 @@ public class ConfirmationScheduler {
      * 면접 발표 후 24시간 뒤 면접 합격이지만 응답 대기중인 지원서에 대한 지원자 응답 변경
      * FINAL_CONFIRM_WAITING -> FINAL_CONFIRM_REJECTED
      */
-    @Scheduled(cron = "0 0 21 8 2 ?") // 2023-02-07 21:00:00 24시간 뒤인 02-08 21:00:00
+    @Scheduled(cron = "0 0 0 9 2 ?") // 2023-02-08 00:00:00 24시간 뒤인 02-09 00:00:00
     public void updateConfirmationAtInterviewEnded() {
         log.info("[ConfirmationScheduler] updateConfirmationAtInterviewEnded >>> start");
         confirmationFacadeService.updateFinalConfirmWaitingToRejected(13);
