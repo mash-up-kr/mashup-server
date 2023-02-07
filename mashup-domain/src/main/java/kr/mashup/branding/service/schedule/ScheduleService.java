@@ -11,6 +11,7 @@ import kr.mashup.branding.domain.schedule.*;
 import kr.mashup.branding.domain.schedule.exception.CodeGenerateFailException;
 import kr.mashup.branding.domain.schedule.exception.EventNotFoundException;
 import kr.mashup.branding.domain.schedule.exception.ScheduleAlreadyPublishedException;
+import kr.mashup.branding.domain.schedule.exception.ScheduleNotDeletableException;
 import kr.mashup.branding.repository.attendancecode.AttendanceCodeRepository;
 import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.util.DateRange;
@@ -102,7 +103,7 @@ public class ScheduleService {
 
     private void passedScheduleMustNotBeDeleted(Schedule schedule) {
         if (schedule.getStartedAt().isBefore(LocalDateTime.now())) {
-            throw new ScheduleAlreadyPublishedException();
+            throw new ScheduleNotDeletableException();
         }
     }
 

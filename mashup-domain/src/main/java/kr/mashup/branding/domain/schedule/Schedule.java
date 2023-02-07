@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
 
+import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.schedule.exception.ScheduleAlreadyPublishedException;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
