@@ -10,6 +10,7 @@ import kr.mashup.branding.domain.schedule.exception.EventNotFoundException;
 import kr.mashup.branding.domain.schedule.exception.ScheduleAlreadyPublishedException;
 import kr.mashup.branding.domain.schedule.exception.ScheduleNotDeletableException;
 import kr.mashup.branding.domain.schedule.exception.ScheduleNotFoundException;
+import kr.mashup.branding.domain.schedule.exception.ScheduleNotDeletableException;
 import kr.mashup.branding.repository.attendancecode.AttendanceCodeRepository;
 import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.util.DateRange;
