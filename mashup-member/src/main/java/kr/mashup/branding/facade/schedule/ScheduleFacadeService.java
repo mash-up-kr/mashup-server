@@ -59,8 +59,8 @@ public class ScheduleFacadeService {
 
     private Integer countDate(LocalDateTime startedAt, LocalDateTime currentTime) {
         return (int) ChronoUnit.DAYS.between(
-                startedAt.truncatedTo(ChronoUnit.DAYS),
-                currentTime.truncatedTo(ChronoUnit.DAYS)
+                currentTime.truncatedTo(ChronoUnit.DAYS),
+                startedAt.truncatedTo(ChronoUnit.DAYS)
         );
     }
 
