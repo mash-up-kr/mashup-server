@@ -1,10 +1,8 @@
 package kr.mashup.branding.job.scorehistory;
 
 import kr.mashup.branding.config.BatchConfig;
+import kr.mashup.branding.facade.ScoreHistoryFacadeService;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
-import kr.mashup.branding.repository.schedule.ScheduleRepository;
-import kr.mashup.branding.service.attendance.AttendanceService;
-import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -22,43 +20,41 @@ import org.springframework.context.annotation.Configuration;
 
 @ConditionalOnProperty(
     value = BatchConfig.SPRING_BATCH_JOB_NAMES,
-    havingValue = ScoreHistoryConfig.JOB_NAME
+    havingValue = ScoreHistoryDeleteConfig.JOB_NAME
 )
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class ScoreHistoryConfig {
-    static final String JOB_NAME = "score-history-create";
+public class ScoreHistoryDeleteConfig {
+    static final String JOB_NAME = "score-history-delete";
     private static final String STEP_NAME = JOB_NAME + "-step";
 
     private final JobBuilderFactory jobBuilderFactory;
     private final JobRepository jobRepository;
     private final StepBuilderFactory stepBuilderFactory;
-    private final ScheduleRepository scheduleRepository;
-    private final AttendanceService attendanceService;
-    private final ScoreHistoryService scoreHistoryService;
+    private final ScoreHistoryFacadeService scoreHistoryFacadeService;
     private final PushNotiEventPublisher pushNotiEventPublisher;
 
     @Bean
-    public Job scoreHistoryJob() {
+    public Job scoreHistoryDeleteJob() {
         return jobBuilderFactory.get(JOB_NAME)
             .repository(jobRepository)
-            .start(scoreHistoryStep())
+            .start(scoreHistoryDeleteStep())
             .build();
     }
 
     @Bean
     @JobScope
-    public Step scoreHistoryStep() {
+    public Step scoreHistoryDeleteStep() {
         return stepBuilderFactory.get(STEP_NAME)
-            .tasklet(scoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService, pushNotiEventPublisher))
+            .tasklet(scoreHistoryDeleteTasklet(scoreHistoryFacadeService))
             .transactionManager(new ResourcelessTransactionManager())
             .build();
     }
 
     @Bean
     @StepScope
-    public Tasklet scoreHistoryTasklet(ScheduleRepository scheduleRepository, AttendanceService attendanceService, ScoreHistoryService scoreHistoryService, PushNotiEventPublisher pushNotiEventPublisher) {
-        return new ScoreHistoryTasklet(scheduleRepository, attendanceService, scoreHistoryService, pushNotiEventPublisher);
+    public Tasklet scoreHistoryDeleteTasklet(ScoreHistoryFacadeService scoreHistoryFacadeService) {
+        return new ScoreHistoryDeleteTasklet(scoreHistoryFacadeService);
     }
 }

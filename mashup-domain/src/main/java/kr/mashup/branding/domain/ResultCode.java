@@ -69,6 +69,8 @@ public enum ResultCode {
 
     // Schedule (스케줄)
     SCHEDULE_NOT_FOUND("스케줄이 존재하지 않습니다."),
+    SCHEDULE_STARTED_TIME_OVER("스케줄 시작 시간이 지났습니다."),
+    SCHEDULE_ALREADY_PUBLISHED("이미 발행된 스케줄입니다."),
 
     // Schedule (일정 내용)
     CONTENT_NOT_FOUND("일정 내용이 존재하지 않습니다."),

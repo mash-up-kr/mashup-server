@@ -1,8 +1,5 @@
 package kr.mashup.branding.service.schedule;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.exception.NotFoundException;
@@ -11,6 +8,9 @@ import kr.mashup.branding.domain.schedule.*;
 import kr.mashup.branding.domain.schedule.exception.CodeGenerateFailException;
 import kr.mashup.branding.domain.schedule.exception.EventNotFoundException;
 import kr.mashup.branding.domain.schedule.exception.ScheduleAlreadyPublishedException;
+import kr.mashup.branding.domain.schedule.exception.ScheduleNotDeletableException;
+import kr.mashup.branding.domain.schedule.exception.ScheduleNotFoundException;
+import kr.mashup.branding.domain.schedule.exception.ScheduleNotDeletableException;
 import kr.mashup.branding.repository.attendancecode.AttendanceCodeRepository;
 import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.util.DateRange;
@@ -18,6 +18,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -102,7 +107,7 @@ public class ScheduleService {
 
     private void passedScheduleMustNotBeDeleted(Schedule schedule) {
         if (schedule.getStartedAt().isBefore(LocalDateTime.now())) {
-            throw new ScheduleAlreadyPublishedException();
+            throw new ScheduleNotDeletableException();
         }
     }
 
@@ -138,6 +143,15 @@ public class ScheduleService {
             = event.addAttendanceCode(code, codeValidRequestTime);
 
         return attendanceCode;
+    }
+
+    public List<Schedule> findAllByIsCounted(boolean isCounted) {
+        return scheduleRepository.findAllByIsCounted(isCounted);
+    }
+
+    public Schedule findByStartDate(LocalDate startDate) {
+        return scheduleRepository.retrieveByStartDate(startDate)
+                .orElseThrow(ScheduleNotFoundException::new);
     }
 
 }
