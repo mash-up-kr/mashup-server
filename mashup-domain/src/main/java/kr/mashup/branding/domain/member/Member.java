@@ -17,7 +17,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Entity
 @Getter
@@ -110,10 +109,6 @@ public class Member extends BaseEntity {
         }
         if (identification.length() < MIN_ID_LENGTH || identification.length() > MAX_ID_LENGTH) {
             throw new IllegalArgumentException("아이디는 "+MIN_ID_LENGTH+"글자에서 "+MAX_ID_LENGTH+"글자이어야 합니다.");
-        }
-
-        if (!Pattern.matches("^[a-zA-Z]*$", identification)) {
-            throw new IllegalArgumentException("아이디는 영어 대소문자로만 구성되어야 합니다.");
         }
     }
 
