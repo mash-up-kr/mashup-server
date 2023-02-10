@@ -30,9 +30,10 @@ public class ScoreHistoryFacadeService {
         member.getMemberGenerations()
                 .forEach(memberGeneration -> {
                     List<ScoreHistory> scoreHistories = scoreHistoryService
-                            .getByMemberAndGeneration(member, memberGeneration.getGeneration())
-                            .stream()
-                            .filter(ScoreHistory::isCanceled).collect(Collectors.toList());
+                        .getByMemberAndGeneration(member, memberGeneration.getGeneration())
+                        .stream()
+                        .filter(scoreHistory -> !scoreHistory.isCanceled())
+                        .collect(Collectors.toList());
                     scoreHistoryResponses.add(createScoreHistory(scoreHistories, memberGeneration.getGeneration().getNumber()));
                 });
 
