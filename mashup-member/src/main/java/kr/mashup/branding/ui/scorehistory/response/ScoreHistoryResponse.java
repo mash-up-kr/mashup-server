@@ -23,5 +23,6 @@ public class ScoreHistoryResponse {
         Double cumulativeScore;
         LocalDateTime date;
         String scheduleName;
+        Boolean isCanceled;
     }
 }
