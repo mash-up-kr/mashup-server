@@ -57,7 +57,8 @@ public class ScoreHistoryFacadeService {
                                 scoreHistory.getScore(),
                                 totalScore.updateAndGet(v -> v + scoreHistory.getScore()),
                                 scoreHistory.getDate(),
-                                scoreHistory.getScheduleName()
+                                scoreHistory.getScheduleName(),
+                                scoreHistory.isCanceled()
                         )
                 ));
         Collections.reverse(scoreDetails);
