@@ -22,6 +22,7 @@ public enum ScoreType {
     MASHUP_LEADER("회장", 100.0),
     MASHUP_SUBLEADER("부회장", 100.0),
     ETC("기타", 0.0),
+    DEFAULT("기본 점수", 3.0),
     ;
 
     private final String name;
