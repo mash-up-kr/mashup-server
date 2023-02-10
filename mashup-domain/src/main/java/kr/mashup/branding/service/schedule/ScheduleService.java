@@ -5,12 +5,7 @@ import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.schedule.*;
-import kr.mashup.branding.domain.schedule.exception.CodeGenerateFailException;
-import kr.mashup.branding.domain.schedule.exception.EventNotFoundException;
-import kr.mashup.branding.domain.schedule.exception.ScheduleAlreadyPublishedException;
-import kr.mashup.branding.domain.schedule.exception.ScheduleNotDeletableException;
-import kr.mashup.branding.domain.schedule.exception.ScheduleNotFoundException;
-import kr.mashup.branding.domain.schedule.exception.ScheduleNotDeletableException;
+import kr.mashup.branding.domain.schedule.exception.*;
 import kr.mashup.branding.repository.attendancecode.AttendanceCodeRepository;
 import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.util.DateRange;
@@ -40,14 +35,18 @@ public class ScheduleService {
             .orElseThrow(() -> new NotFoundException(ResultCode.SCHEDULE_NOT_FOUND));
     }
 
-    public List<Schedule> getByGeneration(Generation generation) {
-        return scheduleRepository.findByGeneration(generation, Pageable.unpaged()).toList();
+    public Schedule getByIdAndStatusOrThrow(Long scheduleId, ScheduleStatus status) {
+        return scheduleRepository.findByIdAndStatus(scheduleId, status)
+                .orElseThrow(() -> new NotFoundException(ResultCode.SCHEDULE_NOT_FOUND));
     }
 
+    public List<Schedule> getByGenerationAndStatus(Generation generation, ScheduleStatus status) {
+        return scheduleRepository.findByGeneration(generation, status, Pageable.unpaged()).toList();
+    }
 
-    public Page<Schedule> getByGeneration(Generation generation, Pageable pageable) {
+    public Page<Schedule> getByGeneration(Generation generation, ScheduleStatus status, Pageable pageable) {
         return scheduleRepository
-            .findByGeneration(generation, pageable);
+            .findByGeneration(generation, status, pageable);
     }
 
     public Event addEvents(Schedule schedule, EventCreateDto dto) {
