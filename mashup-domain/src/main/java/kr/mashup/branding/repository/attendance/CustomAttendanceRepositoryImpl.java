@@ -1,15 +1,14 @@
 package kr.mashup.branding.repository.attendance;
 
-import java.util.List;
-
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.attendance.QAttendance;
 import kr.mashup.branding.domain.schedule.QEvent;
 import kr.mashup.branding.domain.schedule.QSchedule;
 import kr.mashup.branding.domain.schedule.Schedule;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 public class CustomAttendanceRepositoryImpl implements CustomAttendanceRepository {
@@ -20,7 +19,7 @@ public class CustomAttendanceRepositoryImpl implements CustomAttendanceRepositor
 	private final QSchedule qSchedule = QSchedule.schedule;
 	private final QEvent qEvent = QEvent.event;
 
-	public List<Attendance> getBySchedule(Schedule schedule) {
+	public List<Attendance> findBySchedule(Schedule schedule) {
 		return jpaQueryFactory
 			.select(qAttendance)
 			.from(qAttendance)

@@ -1,13 +1,12 @@
 package kr.mashup.branding.repository.attendance;
 
-import java.util.List;
-
-import org.springframework.stereotype.Repository;
-
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.schedule.Schedule;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface CustomAttendanceRepository {
-	List<Attendance> getBySchedule(Schedule schedule);
+	List<Attendance> findBySchedule(Schedule schedule);
 }
