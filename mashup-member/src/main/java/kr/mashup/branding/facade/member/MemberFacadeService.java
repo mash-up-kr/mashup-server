@@ -91,7 +91,7 @@ public class MemberFacadeService {
         Platform latestPlatform = memberService.getLatestPlatform(member);
 
         // 기본 활동 점수 부여
-        ScoreHistory scoreHistory = ScoreHistory.of(ScoreType.ATTENDANCE, member, LocalDateTime.now(), null, generation, null);
+        ScoreHistory scoreHistory = ScoreHistory.of(ScoreType.ATTENDANCE, member, LocalDateTime.now(), "", generation, null);
         scoreHistoryService.save(scoreHistory);
 
         // 회원가입 시점에 푸시 알림을 위한 정보 업데이트
