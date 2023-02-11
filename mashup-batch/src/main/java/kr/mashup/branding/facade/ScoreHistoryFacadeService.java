@@ -27,6 +27,11 @@ public class ScoreHistoryFacadeService {
     private final ScoreHistoryService scoreHistoryService;
     private final MemberService memberService;
 
+    /**
+     * 출석점수 집계를 실행합니다.
+     *
+     * @return 출석점수가 업데이트된 member 리스트
+     */
     @Transactional
     public List<Member> create() {
         List<Schedule> schedules = scheduleService.findAllByIsCounted(false);
@@ -48,6 +53,13 @@ public class ScoreHistoryFacadeService {
         return updatedMember;
     }
 
+    /**
+     * attendance 가 있는 member 의 출석점수를 계산합니다.
+     *
+     * @param schedule 출석점수 집계할 스케줄
+     * @param members 출석체크한 멤버
+     * @return 출석점수 리스트
+     */
     private List<ScoreHistory> getCheckedAttendance(Schedule schedule, List<Member> members) {
         Map<Member, List<Attendance>> checkedAttendances = attendanceService.getByScheduleAndGroupByMember(schedule);
 
@@ -59,6 +71,13 @@ public class ScoreHistoryFacadeService {
         return scoreHistories;
     }
 
+    /**
+     * attendance 가 없는 member 의 출석점수(결석처리)를 계산합니다.
+     *
+     * @param schedule 출석점수 집계할 스케줄
+     * @param members 출석체크를 한번도 하지않은 멤버
+     * @return 출석점수 리스트
+     */
     private List<ScoreHistory> getUnCheckedAttendance(Schedule schedule, List<Member> members) {
         List<ScoreHistory> scoreHistories = new ArrayList<>();
         members.forEach((member) ->
@@ -68,6 +87,11 @@ public class ScoreHistoryFacadeService {
     }
 
 
+    /**
+     * schedule 의 startDate 기준으로 출석점수 집계 결과를 삭제합니다.
+     *
+     * @param scheduleStartDate
+     */
     public void delete(LocalDate scheduleStartDate) {
         Schedule schedule = scheduleService.findByStartDate(scheduleStartDate);
         List<ScoreHistory> scoreHistories = scoreHistoryService.findAttendanceScoreByDate(scheduleStartDate);
