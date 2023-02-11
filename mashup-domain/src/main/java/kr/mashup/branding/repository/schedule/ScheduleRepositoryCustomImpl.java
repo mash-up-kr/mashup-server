@@ -3,10 +3,12 @@ package kr.mashup.branding.repository.schedule;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.schedule.Schedule;
+import kr.mashup.branding.domain.schedule.ScheduleStatus;
 import kr.mashup.branding.util.QueryUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,13 +31,14 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Schedule> findByGeneration(Generation _generation, Pageable pageable) {
+    public Page<Schedule> findByGeneration(Generation _generation, ScheduleStatus status, Pageable pageable) {
         final Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "startedAt"));
 
         final QueryResults<Schedule> queryResults = queryFactory
             .selectFrom(schedule)
             .join(schedule.generation, generation).fetchJoin()
-            .where(generation.eq(_generation))
+            .where(generation.eq(_generation)
+                    .and(eqStatus(status)))
             .orderBy(getOrderSpecifier(sort))
             .fetchResults();
 
@@ -57,6 +60,13 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
             orderSpecifiers.add(orderSpecifier);
         }
         return orderSpecifiers.toArray(new OrderSpecifier[0]);
+    }
+
+    private BooleanExpression eqStatus(ScheduleStatus status) {
+        if (status == null) {
+            return null;
+        }
+        return schedule.status.eq(status);
     }
 
     public Optional<Schedule> retrieveByStartDate(LocalDate startDate) {

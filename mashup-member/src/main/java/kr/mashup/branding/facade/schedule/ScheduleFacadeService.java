@@ -2,6 +2,7 @@ package kr.mashup.branding.facade.schedule;
 
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.schedule.Schedule;
+import kr.mashup.branding.domain.schedule.ScheduleStatus;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.schedule.ScheduleService;
 import kr.mashup.branding.ui.schedule.response.Progress;
@@ -25,7 +26,7 @@ public class ScheduleFacadeService {
 
     @Transactional(readOnly = true)
     public ScheduleResponse getById(Long id) {
-        Schedule schedule = scheduleService.getByIdOrThrow(id);
+        Schedule schedule = scheduleService.getByIdAndStatusOrThrow(id, ScheduleStatus.PUBLIC);
         Integer dateCount = countDate(schedule.getStartedAt(), LocalDateTime.now());
 
         return ScheduleResponse.from(schedule, dateCount);
@@ -35,7 +36,7 @@ public class ScheduleFacadeService {
     public ScheduleResponseList getByGenerationNum(Integer number) {
         Generation generation = generationService.getByNumberOrThrow(number);
 
-        List<Schedule> scheduleList = scheduleService.getByGeneration(generation);
+        List<Schedule> scheduleList = scheduleService.getByGenerationAndStatus(generation, ScheduleStatus.PUBLIC);
 
         LocalDateTime currentTIme = LocalDateTime.now();
         List<ScheduleResponse> scheduleResponseList = scheduleList.stream()

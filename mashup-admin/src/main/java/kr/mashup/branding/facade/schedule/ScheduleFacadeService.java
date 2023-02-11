@@ -42,7 +42,7 @@ public class ScheduleFacadeService {
                 = generationService.getByNumberOrThrow(generationNumber);
 
         return scheduleService
-                .getByGeneration(generation, pageable)
+                .getByGeneration(generation, null, pageable)
                 .map(ScheduleResponse::from);
     }
 

@@ -16,6 +16,7 @@ import kr.mashup.branding.domain.pushnoti.vo.AttendanceStartedVo;
 import kr.mashup.branding.domain.pushnoti.vo.AttendanceStartingVo;
 import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.schedule.Schedule;
+import kr.mashup.branding.domain.schedule.ScheduleStatus;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.attendance.AttendanceCodeService;
 import kr.mashup.branding.service.attendance.AttendanceService;
@@ -207,7 +208,7 @@ public class AttendanceFacadeService {
     public TotalAttendanceResponse getTotalAttendance(Long scheduleId) {
 
         final LocalDateTime now = LocalDateTime.now();
-        final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
+        final Schedule schedule = scheduleService.getByIdAndStatusOrThrow(scheduleId, ScheduleStatus.PUBLIC);
         final Generation currentGeneration = schedule.getGeneration();
 
         final List<Event> startedEvents =
@@ -301,7 +302,7 @@ public class AttendanceFacadeService {
             Platform platform,
             Long scheduleId
     ) {
-        final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
+        final Schedule schedule = scheduleService.getByIdAndStatusOrThrow(scheduleId, ScheduleStatus.PUBLIC);
         final Generation currentGeneration = schedule.getGeneration();
 
         final List<Member> members =
@@ -334,7 +335,7 @@ public class AttendanceFacadeService {
             Long scheduleId
     ) {
         final Member member = memberService.getActiveOrThrowById(memberId);
-        final Schedule schedule = scheduleService.getByIdOrThrow(scheduleId);
+        final Schedule schedule = scheduleService.getByIdAndStatusOrThrow(scheduleId, ScheduleStatus.PUBLIC);
 
         final List<AttendanceInfo> attendanceInfos =
                 getAttendanceInfoByMember(
