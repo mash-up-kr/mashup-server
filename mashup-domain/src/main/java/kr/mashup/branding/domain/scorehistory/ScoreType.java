@@ -7,7 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public enum ScoreType {
-    ATTENDANCE("전체 세미나 출석", 0.0),
+    // FIXME: 임시로 0.0 -> 3.0 으로 변경 / 전체 세미나 출석 -> 기본 점수 변경
+    ATTENDANCE("기본 점수", 3.0),
     ABSENT("전체 세미나 결석", -1.0),
     LATE("전체 세미나 지각", -0.5),
     DEPLOY_FAILURE("프로젝트 배포 실패", -0.5),
