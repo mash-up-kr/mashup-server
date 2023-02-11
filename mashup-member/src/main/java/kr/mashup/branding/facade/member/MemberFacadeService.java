@@ -5,21 +5,26 @@ import kr.mashup.branding.domain.invite.Invite;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberInvalidInviteCodeException;
+import kr.mashup.branding.domain.scorehistory.ScoreHistory;
+import kr.mashup.branding.domain.scorehistory.ScoreType;
 import kr.mashup.branding.dto.member.MemberCreateDto;
 import kr.mashup.branding.security.JwtService;
 import kr.mashup.branding.service.invite.InviteService;
 import kr.mashup.branding.service.member.MemberService;
+import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
 import kr.mashup.branding.ui.member.request.LoginRequest;
+import kr.mashup.branding.ui.member.request.PushNotificationRequest;
 import kr.mashup.branding.ui.member.request.SignUpRequest;
 import kr.mashup.branding.ui.member.request.ValidInviteRequest;
 import kr.mashup.branding.ui.member.response.AccessResponse;
 import kr.mashup.branding.ui.member.response.MemberInfoResponse;
 import kr.mashup.branding.ui.member.response.TokenResponse;
 import kr.mashup.branding.ui.member.response.ValidResponse;
-import kr.mashup.branding.ui.member.request.PushNotificationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 
 @Service
@@ -29,6 +34,7 @@ public class MemberFacadeService {
     private final MemberService memberService;
     private final InviteService inviteService;
     private final JwtService jwtService;
+    private final ScoreHistoryService scoreHistoryService;
 
     @Transactional(readOnly = true)
     public MemberInfoResponse getMemberInfo(Long memberId) {
@@ -83,6 +89,10 @@ public class MemberFacadeService {
         final Member member = memberService.save(memberCreateDto);
         final String token = jwtService.encode(member.getId());
         Platform latestPlatform = memberService.getLatestPlatform(member);
+
+        // 기본 활동 점수 부여
+        ScoreHistory scoreHistory = ScoreHistory.of(ScoreType.DEFAULT, member, LocalDateTime.now(), null, generation, null);
+        scoreHistoryService.save(scoreHistory);
 
         // 회원가입 시점에 푸시 알림을 위한 정보 업데이트
         memberService.updatePushNotificationInfo(request.getOsType(), request.getFcmToken(), member);
