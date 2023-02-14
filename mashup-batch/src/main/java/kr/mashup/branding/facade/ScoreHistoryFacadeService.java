@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,10 +48,12 @@ public class ScoreHistoryFacadeService {
 
             schedule.changeIsCounted(true);
 
-            updatedMember.removeAll(members);
             updatedMember.addAll(members);
         });
-        return updatedMember;
+
+        return updatedMember.stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     /**
