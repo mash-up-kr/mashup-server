@@ -67,7 +67,7 @@ public class ScoreHistoryService {
         List<Event> events,
         List<Attendance> attendances
     ) {
-        ScoreType scoreType = null;
+        ScoreType scoreType = ScoreType.ATTENDANCE;
 
         final long attendanceNumber = attendances.stream()
             .filter(attendance -> attendance.getStatus() == AttendanceStatus.ATTENDANCE)
@@ -75,13 +75,12 @@ public class ScoreHistoryService {
         final long lateNumber = attendances.size() - attendanceNumber;
         final long absentNumber = events.size() - attendances.size();
 
-        if(attendanceNumber == events.size()){      // 출석한 개수와 이벤트 개수가 같은 경우
-            scoreType = ScoreType.ATTENDANCE;
-        } else if (absentNumber > 0) {              // 결석이 하나 이상인 경우
+        if (absentNumber > 0) {             // 결석이 하나 이상인 경우
             scoreType = ScoreType.ABSENT;
-        } else if (lateNumber > 0) {                // 지각이 하나 이상인 경우
+        } else if (lateNumber > 0) {        // 지각이 하나 이상인 경우
             scoreType = ScoreType.LATE;
         }
+
         return scoreType;
     }
 
@@ -91,5 +90,9 @@ public class ScoreHistoryService {
 
     public List<ScoreHistory> findAttendanceScoreByDate(LocalDate date) {
         return scoreHistoryRepository.retrieveAttendanceScoreByDate(date);
+    }
+
+    public List<ScoreHistory> saveAll(List<ScoreHistory> scoreHistories) {
+        return scoreHistoryRepository.saveAll(scoreHistories);
     }
 }
