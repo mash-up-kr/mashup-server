@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -205,4 +204,7 @@ public class MemberService {
         member.updatePushNotificationAgreed(pushNotificationAgreed);
     }
 
+    public List<Member> getActiveAllByGeneration(Generation generation) {
+        return memberRepository.findAllActiveByGeneration(generation);
+    }
 }

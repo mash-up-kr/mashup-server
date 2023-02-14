@@ -147,5 +147,16 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
             )
             .fetch();
     }
+
+    @Override
+    public List<Member> findAllActiveByGeneration(Generation generation) {
+        return queryFactory
+                .selectFrom(member)
+                .innerJoin(memberGeneration)
+                .on(memberGeneration.member.eq(member)
+                        .and(memberGeneration.generation.eq(generation)))
+                .where(member.status.eq(MemberStatus.ACTIVE))
+                .fetch();
+    }
 }
 
