@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +33,7 @@ public class ScoreHistoryFacadeService {
     @Transactional
     public List<Member> create() {
         List<Schedule> schedules = scheduleService.findAllByIsCounted(false);
-        List<Member> updatedMember = new ArrayList<>();
+        Set<Member> updatedMember = new HashSet<>();
 
         schedules.forEach(schedule -> {
             List<Member> members = memberService.getActiveAllByGeneration(schedule.getGeneration());
@@ -51,9 +48,7 @@ public class ScoreHistoryFacadeService {
             updatedMember.addAll(members);
         });
 
-        return updatedMember.stream()
-                .distinct()
-                .collect(Collectors.toList());
+        return List.copyOf(updatedMember);
     }
 
     /**
