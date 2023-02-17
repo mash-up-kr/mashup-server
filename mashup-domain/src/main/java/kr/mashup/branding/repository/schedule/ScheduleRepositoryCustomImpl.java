@@ -31,14 +31,15 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Schedule> findByGeneration(Generation _generation, ScheduleStatus status, Pageable pageable) {
+    public Page<Schedule> findByGeneration(Generation _generation, String searchWord, ScheduleStatus status, Pageable pageable) {
         final Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "startedAt"));
 
         final QueryResults<Schedule> queryResults = queryFactory
             .selectFrom(schedule)
             .join(schedule.generation, generation).fetchJoin()
             .where(generation.eq(_generation)
-                    .and(eqStatus(status)))
+                    .and(eqStatus(status))
+                    .and(isContainSearchWord(searchWord)))
             .orderBy(getOrderSpecifier(sort))
             .fetchResults();
 
@@ -77,5 +78,11 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
                         LocalDateTime.of(startDate, LocalTime.MAX).withNano(0)))
                 .fetchOne());
 
+    }
+
+    private BooleanExpression isContainSearchWord(String searchWord) {
+        if (searchWord == null) return null;
+
+        return schedule.name.contains(searchWord);
     }
 }

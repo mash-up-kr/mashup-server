@@ -36,13 +36,13 @@ public class ScheduleFacadeService {
     private final PushNotiEventPublisher pushNotiEventPublisher;
     private final MemberService memberService;
 
-    public Page<ScheduleResponse> getSchedules(Integer generationNumber, Pageable pageable) {
+    public Page<ScheduleResponse> getSchedules(Integer generationNumber, String searchWord, Pageable pageable) {
 
         final Generation generation
                 = generationService.getByNumberOrThrow(generationNumber);
 
         return scheduleService
-                .getByGeneration(generation, null, pageable)
+                .getByGeneration(generation, searchWord, null, pageable)
                 .map(ScheduleResponse::from);
     }
 
