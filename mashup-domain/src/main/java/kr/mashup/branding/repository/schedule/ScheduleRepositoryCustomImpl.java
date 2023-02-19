@@ -35,13 +35,15 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
         final Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "startedAt"));
 
         final QueryResults<Schedule> queryResults = queryFactory
-            .selectFrom(schedule)
-            .join(schedule.generation, generation).fetchJoin()
-            .where(generation.eq(_generation)
-                    .and(eqStatus(status))
-                    .and(isContainSearchWord(searchWord)))
-            .orderBy(getOrderSpecifier(sort))
-            .fetchResults();
+                .selectFrom(schedule)
+                .join(schedule.generation, generation).fetchJoin()
+                .where(generation.eq(_generation)
+                        .and(eqStatus(status))
+                        .and(isContainSearchWord(searchWord)))
+                .orderBy(getOrderSpecifier(sort))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
 
         return QueryUtils.toPage(queryResults, pageable);
     }
@@ -56,7 +58,7 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
             Order qOrder = direction.isAscending() ? Order.ASC : Order.DESC;
 
             final OrderSpecifier orderSpecifier
-                = new OrderSpecifier(qOrder, Expressions.path(Object.class, schedule, field));
+                    = new OrderSpecifier(qOrder, Expressions.path(Object.class, schedule, field));
 
             orderSpecifiers.add(orderSpecifier);
         }
