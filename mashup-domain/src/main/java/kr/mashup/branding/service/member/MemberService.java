@@ -45,7 +45,9 @@ public class MemberService {
             memberCreateDto.getIdentification(),
             memberCreateDto.getPassword(),
             passwordEncoder,
-            memberCreateDto.getPrivatePolicyAgreed()
+            memberCreateDto.getPrivatePolicyAgreed(),
+            memberCreateDto.getOsType(),
+            memberCreateDto.getFcmToken()
         );
         memberRepository.save(member);
 
@@ -194,14 +196,6 @@ public class MemberService {
         return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
             .filter(Member::getPushNotificationAgreed)
             .collect(Collectors.toList());
-    }
-
-    public void updatePushNotificationInfo(OsType osType, String fcmToken, Member member) {
-        member.updatePushNotificationInfo(osType, fcmToken);
-    }
-
-    public void updatePushNotificationAgreed(Boolean pushNotificationAgreed, Member member) {
-        member.updatePushNotificationAgreed(pushNotificationAgreed);
     }
 
     public List<Member> getActiveAllByGeneration(Generation generation) {
