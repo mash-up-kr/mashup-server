@@ -41,12 +41,12 @@ public class ScheduleService {
     }
 
     public List<Schedule> getByGenerationAndStatus(Generation generation, ScheduleStatus status) {
-        return scheduleRepository.findByGeneration(generation, status, Pageable.unpaged()).toList();
+        return scheduleRepository.findByGeneration(generation, null, status, Pageable.unpaged()).toList();
     }
 
-    public Page<Schedule> getByGeneration(Generation generation, ScheduleStatus status, Pageable pageable) {
+    public Page<Schedule> getByGeneration(Generation generation, String searchWord, ScheduleStatus status, Pageable pageable) {
         return scheduleRepository
-            .findByGeneration(generation, status, pageable);
+            .findByGeneration(generation, searchWord, status, pageable);
     }
 
     public Event addEvents(Schedule schedule, EventCreateDto dto) {

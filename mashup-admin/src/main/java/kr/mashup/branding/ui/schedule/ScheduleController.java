@@ -6,6 +6,7 @@ import kr.mashup.branding.EmptyResponse;
 import kr.mashup.branding.ui.schedule.request.ScheduleUpdateRequest;
 import kr.mashup.branding.ui.schedule.response.QrCodeResponse;
 import kr.mashup.branding.ui.schedule.request.QrCodeGenerateRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/schedules")
 @RestController
+@Slf4j
 public class ScheduleController {
 
     private final ScheduleFacadeService scheduleFacadeService;
@@ -32,10 +34,11 @@ public class ScheduleController {
     @GetMapping
     public ApiResponse<List<ScheduleResponse>> getSchedules(
             @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
+            @RequestParam(required = false) String searchWord,
             @PageableDefault Pageable pageable
     ) {
         final Page<ScheduleResponse> responses
-                = scheduleFacadeService.getSchedules(generationNumber, pageable);
+                = scheduleFacadeService.getSchedules(generationNumber, searchWord, pageable);
 
         return ApiResponse.success(responses);
     }
