@@ -55,7 +55,6 @@ public class Member extends BaseEntity {
 
     private String fcmToken;
 
-    // TODO: 기본 설정값 논의
     private Boolean pushNotificationAgreed = true;
 
     public boolean isMatchPassword(String rawPassword, PasswordEncoder encoder) {
@@ -79,8 +78,10 @@ public class Member extends BaseEntity {
             String identification,
             String rawPassword,
             PasswordEncoder encoder,
-            Boolean privatePolicyAgreed) {
-        return new Member(name, identification, rawPassword, encoder, privatePolicyAgreed);
+            Boolean privatePolicyAgreed,
+            OsType osType,
+            String fcmToken) {
+        return new Member(name, identification, rawPassword, encoder, privatePolicyAgreed, osType, fcmToken);
     }
 
     private Member(
@@ -88,7 +89,9 @@ public class Member extends BaseEntity {
             String identification,
             String rawPassword,
             PasswordEncoder encoder,
-            Boolean privatePolicyAgreed) {
+            Boolean privatePolicyAgreed,
+            OsType osType,
+            String fcmToken) {
 
         checkAgreePrivacyPolicy(privatePolicyAgreed);
         checkValidName(name);
@@ -101,6 +104,8 @@ public class Member extends BaseEntity {
         this.privatePolicyAgreed = privatePolicyAgreed;
         this.status = MemberStatus.ACTIVE;
         //this.status = MemberStatus.PENDING;
+        this.osType = osType;
+        this.fcmToken = fcmToken;
     }
 
     private void checkValidID(String identification) {

@@ -58,7 +58,7 @@ public class MemberFacadeService {
         Platform latestPlatform = memberService.getLatestPlatform(member);
 
         // 로그인 시점에 푸시 알림을 위한 정보 업데이트
-        memberService.updatePushNotificationInfo(request.getOsType(), request.getFcmToken(), member);
+        member.updatePushNotificationInfo(request.getOsType(), request.getFcmToken());
 
         return AccessResponse.of(member,latestPlatform,token);
     }
@@ -84,18 +84,17 @@ public class MemberFacadeService {
                 request.getPassword(),
                 platform,
                 generation,
-                request.getPrivatePolicyAgreed());
+                request.getPrivatePolicyAgreed(),
+                request.getOsType(),
+                request.getFcmToken());
 
         final Member member = memberService.save(memberCreateDto);
         final String token = jwtService.encode(member.getId());
         Platform latestPlatform = memberService.getLatestPlatform(member);
 
-        // 기본 활동 점수 부여
-        ScoreHistory scoreHistory = ScoreHistory.of(ScoreType.ATTENDANCE, member, LocalDateTime.now(), "", generation, null);
+        // 회원가입 시점에 기본 활동 점수 부여
+        ScoreHistory scoreHistory = ScoreHistory.of(ScoreType.DEFAULT, member, LocalDateTime.now(), "", generation, null);
         scoreHistoryService.save(scoreHistory);
-
-        // 회원가입 시점에 푸시 알림을 위한 정보 업데이트
-        memberService.updatePushNotificationInfo(request.getOsType(), request.getFcmToken(), member);
 
         return AccessResponse.of(member,latestPlatform, token);
     }
@@ -128,7 +127,7 @@ public class MemberFacadeService {
     @Transactional
     public Boolean updatePushNotificationAgreed(Long memberId, PushNotificationRequest request) {
         Member member = memberService.getActiveOrThrowById(memberId);
-        memberService.updatePushNotificationAgreed(request.getPushNotificationAgreed(), member);
+        member.updatePushNotificationAgreed(request.getPushNotificationAgreed());
         return true;
     }
 }
