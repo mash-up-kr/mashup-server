@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface ScheduleRepositoryCustom {
 
-    Page<Schedule> findByGeneration(Generation generation, String searchWord, ScheduleStatus status, Pageable pageable);
+    Page<Schedule> retrieveByGeneration(Generation generation, String searchWord, ScheduleStatus status, Pageable pageable);
 
     Optional<Schedule> retrieveByStartDate(LocalDate startDate);
 }
