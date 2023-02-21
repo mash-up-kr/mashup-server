@@ -31,7 +31,7 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Schedule> findByGeneration(Generation _generation, String searchWord, ScheduleStatus status, Pageable pageable) {
+    public Page<Schedule> retrieveByGeneration(Generation _generation, String searchWord, ScheduleStatus status, Pageable pageable) {
         final Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "startedAt"));
 
         final QueryResults<Schedule> queryResults = queryFactory
