@@ -41,7 +41,7 @@ public class ScheduleService {
     }
 
     public List<Schedule> getByGenerationAndStatus(Generation generation, ScheduleStatus status) {
-        return scheduleRepository.findByGenerationAndStatus(generation, status);
+        return scheduleRepository.findByGenerationAndStatusOrderByStartedAtAsc(generation, status);
     }
 
     public Page<Schedule> getByGeneration(Generation generation, String searchWord, ScheduleStatus status, Pageable pageable) {
