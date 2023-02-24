@@ -150,5 +150,5 @@ public class Schedule extends BaseEntity {
         this.isCounted = isCounted;
     }
 
-
+    public Boolean isShowable() { return this.status == ScheduleStatus.PUBLIC; }
 }

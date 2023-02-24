@@ -3,10 +3,7 @@ package kr.mashup.branding.facade.schedule;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.pushnoti.vo.SeminarUpdatedVo;
-import kr.mashup.branding.domain.schedule.ContentsCreateDto;
-import kr.mashup.branding.domain.schedule.Event;
-import kr.mashup.branding.domain.schedule.Schedule;
-import kr.mashup.branding.domain.schedule.ScheduleCreateDto;
+import kr.mashup.branding.domain.schedule.*;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.member.MemberService;
@@ -20,11 +17,13 @@ import kr.mashup.branding.util.QrGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -41,9 +40,14 @@ public class ScheduleFacadeService {
         final Generation generation
                 = generationService.getByNumberOrThrow(generationNumber);
 
-        return scheduleService
-                .getByGeneration(generation, searchWord, null, pageable)
-                .map(ScheduleResponse::from);
+        final Page<Schedule> schedules = scheduleService.getByGeneration(generation, searchWord, null, pageable);
+        final List<ScheduleResponse> showableSchdeules = schedules
+                .stream()
+                .filter(Schedule::isShowable)
+                .map(ScheduleResponse::from)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(showableSchdeules, pageable, schedules.getTotalElements());
     }
 
     public ScheduleResponse getSchedule(final Long scheduleId) {
