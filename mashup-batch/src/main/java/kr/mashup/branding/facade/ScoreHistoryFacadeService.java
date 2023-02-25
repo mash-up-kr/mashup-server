@@ -37,6 +37,7 @@ public class ScoreHistoryFacadeService {
 
         schedules.forEach(schedule -> {
             List<Member> members = memberService.getActiveAllByGeneration(schedule.getGeneration());
+            updatedMember.addAll(members);
 
             List<ScoreHistory> scoreHistories = new ArrayList<>();
             scoreHistories.addAll(getCheckedAttendance(schedule, members));
@@ -44,8 +45,6 @@ public class ScoreHistoryFacadeService {
             scoreHistoryService.saveAll(scoreHistories);
 
             schedule.changeIsCounted(true);
-
-            updatedMember.addAll(members);
         });
 
         return List.copyOf(updatedMember);
