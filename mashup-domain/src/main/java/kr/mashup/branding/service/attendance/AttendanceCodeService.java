@@ -24,9 +24,9 @@ public class AttendanceCodeService {
     }
 
     public List<AttendanceCode> findByStartedAtLeftOpenBetween(LocalDateTime from, LocalDateTime to) {
-        return attendanceCodeRepository.findAllByStartedAtGreaterThanAndStartedAtLessThanEqual(from, to);
+        return attendanceCodeRepository.findAllByAttendanceCheckStartedAtGreaterThanAndAttendanceCheckStartedAtLessThanEqual(from, to);
     }
     public List<AttendanceCode> findAllByEndedAtLeftOpenBetween(LocalDateTime from, LocalDateTime to) {
-        return attendanceCodeRepository.findAllByEndedAtGreaterThanAndEndedAtLessThanEqual(from, to);
+        return attendanceCodeRepository.findAllByAttendanceCheckEndedAtGreaterThanAndAttendanceCheckEndedAtLessThanEqual(from, to);
     }
 }
