@@ -43,9 +43,9 @@ public class AttendanceCode extends BaseEntity {
         this.event = event;
         this.code = code;
         this.attendanceCheckStartedAt = dateRange.getStart();
-        this.attendanceCheckEndedAt = dateRange.getEnd();
+        this.attendanceCheckEndedAt = dateRange.getMid();
+        this.latenessCheckEndedAt = dateRange.getEnd();
     }
-
 
     private void checkAttendancePeriod(Event event, DateRange dateRange) {
 

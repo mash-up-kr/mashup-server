@@ -128,7 +128,11 @@ public class ScheduleFacadeService {
                 = scheduleService.getEventOrThrow(schedule, eventId);
 
         final DateRange codeValidRequestTime
-                = DateRange.of(request.getStartedAt(), request.getEndedAt());
+                = DateRange.of(
+                request.getAttendanceCheckStartedAt(),
+                request.getAttendanceCheckEndedAt(),
+                request.getLatenessCheckEndedAt()
+        );
 
         final AttendanceCode attendanceCode
                 = scheduleService.addAttendanceCode(event, codeValidRequestTime);
