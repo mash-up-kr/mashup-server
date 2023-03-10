@@ -41,13 +41,12 @@ public class ScheduleFacadeService {
                 = generationService.getByNumberOrThrow(generationNumber);
 
         final Page<Schedule> schedules = scheduleService.getByGeneration(generation, searchWord, null, pageable);
-        final List<ScheduleResponse> showableSchdeules = schedules
+        final List<ScheduleResponse> scheduleResponses = schedules
                 .stream()
-                .filter(Schedule::isShowable)
                 .map(ScheduleResponse::from)
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(showableSchdeules, pageable, schedules.getTotalElements());
+        return new PageImpl<>(scheduleResponses, pageable, schedules.getTotalElements());
     }
 
     public ScheduleResponse getSchedule(final Long scheduleId) {
