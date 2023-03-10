@@ -26,8 +26,8 @@ public class AttendanceCodeResponse {
             attendanceCode.getId(),
             attendanceCode.getEvent().getId(),
             attendanceCode.getCode(),
-            attendanceCode.getStartedAt(),
-            attendanceCode.getEndedAt()
+            attendanceCode.getAttendanceCheckStartedAt(),
+            attendanceCode.getAttendanceCheckEndedAt()
         );
     }
 }

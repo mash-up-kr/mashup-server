@@ -23,9 +23,11 @@ public class AttendanceCode extends BaseEntity {
     @NotNull
     private String code;
     @NotNull
-    private LocalDateTime startedAt;
+    private LocalDateTime attendanceCheckStartedAt;     // 출석체크 시작시간
     @NotNull
-    private LocalDateTime endedAt;
+    private LocalDateTime attendanceCheckEndedAt;       // 출석체크 마감시간
+    @NotNull
+    private LocalDateTime latenessCheckEndedAt;         // 지각체크 마감시간
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "event_id")
@@ -35,14 +37,13 @@ public class AttendanceCode extends BaseEntity {
         return new AttendanceCode(event, code, dateRange);
     }
 
-
     private AttendanceCode(Event event, String code, DateRange dateRange) {
 
         checkAttendancePeriod(event, dateRange);
         this.event = event;
         this.code = code;
-        this.startedAt = dateRange.getStart();
-        this.endedAt = dateRange.getEnd();
+        this.attendanceCheckStartedAt = dateRange.getStart();
+        this.attendanceCheckEndedAt = dateRange.getEnd();
     }
 
 
@@ -52,6 +53,4 @@ public class AttendanceCode extends BaseEntity {
             throw new IllegalArgumentException();
         }
     }
-
-
 }

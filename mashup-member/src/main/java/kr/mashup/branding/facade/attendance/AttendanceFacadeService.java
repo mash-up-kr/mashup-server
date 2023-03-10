@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AttendanceFacadeService {
 
-    private final static int LATE_LIMIT_TIME = 20;
     private final static long PUSH_SCHEDULE_INTERVAL_MINUTES = 1;
     private final static long ATTENDANCE_START_AFTER_MINUTES = 1;
     private final static long ATTENDANCE_END_AFTER_MINUTES = 3;
@@ -185,15 +184,15 @@ public class AttendanceFacadeService {
             LocalDateTime checkTime
     ) {
         final boolean isAttendance = DateUtil.isInTime(
-                attendanceCode.getStartedAt(),
-                attendanceCode.getEndedAt(),
+                attendanceCode.getAttendanceCheckStartedAt(),
+                attendanceCode.getAttendanceCheckEndedAt(),
                 checkTime
         );
         if (isAttendance) return AttendanceStatus.ATTENDANCE;
 
         final boolean isLate = DateUtil.isInTime(
-                attendanceCode.getEndedAt(),
-                attendanceCode.getEndedAt().plusMinutes(LATE_LIMIT_TIME),
+                attendanceCode.getAttendanceCheckEndedAt(),
+                attendanceCode.getLatenessCheckEndedAt(),
                 checkTime
         );
         if (isLate) return AttendanceStatus.LATE;
@@ -288,7 +287,7 @@ public class AttendanceFacadeService {
                 lastEvent
                         .getAttendanceCodes()
                         .get(lastEvent.getAttendanceCodes().size() - 1)
-                        .getEndedAt().plusMinutes(10);
+                        .getLatenessCheckEndedAt();
 
         return now.isAfter(attendanceEndTime);
     }
@@ -373,10 +372,10 @@ public class AttendanceFacadeService {
                 } else {
                     final AttendanceCode code = attendanceCodes.get(event.getAttendanceCodes().size() - 1);
                     final boolean isBeforeAttendanceCheckTime =
-                            now.isBefore(code.getStartedAt());
+                            now.isBefore(code.getAttendanceCheckStartedAt());
                     final boolean isAttendanceCheckTime = DateUtil.isInTime(
-                            code.getStartedAt(),
-                            code.getEndedAt().plusMinutes(LATE_LIMIT_TIME),
+                            code.getAttendanceCheckStartedAt(),
+                            code.getLatenessCheckEndedAt(),
                             now
                     );
                     // 출석체크 시작 전이거나(2부에서는 해당 조건을 체크),
