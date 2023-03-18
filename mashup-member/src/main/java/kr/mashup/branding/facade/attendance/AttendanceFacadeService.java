@@ -84,12 +84,10 @@ public class AttendanceFacadeService {
         }
 
 
-        validEventTime(event.getStartedAt(), event.getEndedAt(), checkTime);
-        validAttendanceCode(attendanceCode, checkingCode);
         validAlreadyCheckAttendance(member, event);
 
         // 출석 체크
-        Attendance attendance = attendanceService.checkAttendance(
+        final Attendance attendance = attendanceService.checkAttendance(
                 member,
                 event,
                 getAttendanceStatus(attendanceCode, checkTime)
@@ -141,30 +139,6 @@ public class AttendanceFacadeService {
         );
     }
 
-    private void validAttendanceCode(AttendanceCode attendanceCode, String code) {
-        if (attendanceCode == null) {
-            throw new BadRequestException(ResultCode.ATTENDANCE_CODE_NOT_FOUND);
-        }
-
-        if (!attendanceCode.getCode().equals(code)) {
-            throw new BadRequestException(ResultCode.ATTENDANCE_CODE_INVALID);
-        }
-    }
-
-    private void validEventTime(
-            LocalDateTime startedAt,
-            LocalDateTime endedAt,
-            LocalDateTime time
-    ) {
-        if (time.isBefore(startedAt)) {
-            throw new BadRequestException(ResultCode.ATTENDANCE_TIME_BEFORE);
-        }
-
-        final boolean isActive = DateUtil.isInTime(startedAt, endedAt, time);
-        if (!isActive) {
-            throw new BadRequestException(ResultCode.ATTENDANCE_TIME_OVER);
-        }
-    }
 
     /**
      * 이미 출석 체크를 했는지 판별
