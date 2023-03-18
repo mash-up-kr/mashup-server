@@ -100,9 +100,27 @@ public class AttendanceFacadeService {
     @Transactional(readOnly = true)
     public void sendAttendanceStartingPushNoti() {
         findAllStartsWithin(ATTENDANCE_START_AFTER_MINUTES)
-                .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
-                        new AttendanceStartingVo(memberService.getAllPushNotiTargetableMembers())
-                ));
+                .forEach(attendanceCode -> {
+
+                    final Event checkingEvent = attendanceCode.getEvent();
+
+                    final List<Member> pushableMembers = memberService.getAllPushNotiTargetableMembers();
+
+                    removeAlreadyCheckedMembers(checkingEvent, pushableMembers);
+
+                    pushNotiEventPublisher.publishPushNotiSendEvent(new AttendanceStartingVo(pushableMembers));
+                });
+    }
+
+    private void removeAlreadyCheckedMembers(Event checkingEvent, List<Member> pushableMembers) {
+        final List<Member> alreadyCheckedMembers
+                = attendanceService
+                .getByEvent(checkingEvent)
+                .stream()
+                .map(Attendance::getMember)
+                .toList();
+
+        pushableMembers.removeAll(alreadyCheckedMembers);
     }
 
     @Scheduled(cron = "0 * * * * *")
