@@ -106,21 +106,27 @@ public class AttendanceFacadeService {
 
                     final List<Member> pushableMembers = memberService.getAllPushNotiTargetableMembers();
 
-                    removeAlreadyCheckedMembers(checkingEvent, pushableMembers);
+                    final List<Member> pushTargetMembers = removeAlreadyCheckedMembers(checkingEvent, pushableMembers);
 
-                    pushNotiEventPublisher.publishPushNotiSendEvent(new AttendanceStartingVo(pushableMembers));
+                    pushNotiEventPublisher.publishPushNotiSendEvent(new AttendanceStartingVo(pushTargetMembers));
                 });
     }
 
-    private void removeAlreadyCheckedMembers(Event checkingEvent, List<Member> pushableMembers) {
+    private List<Member> removeAlreadyCheckedMembers(
+            final Event checkingEvent,
+            final List<Member> pushableMembers) {
+
         final List<Member> alreadyCheckedMembers
                 = attendanceService
                 .getByEvent(checkingEvent)
                 .stream()
                 .map(Attendance::getMember)
                 .toList();
+        final List<Member> pushTargetMembers = new ArrayList<>();
+        pushTargetMembers.addAll(pushableMembers);
+        pushTargetMembers.removeAll(alreadyCheckedMembers);
 
-        pushableMembers.removeAll(alreadyCheckedMembers);
+        return pushTargetMembers;
     }
 
     @Scheduled(cron = "0 * * * * *")
