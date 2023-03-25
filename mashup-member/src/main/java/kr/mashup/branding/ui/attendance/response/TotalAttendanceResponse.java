@@ -15,7 +15,7 @@ public class TotalAttendanceResponse {
     @ApiModelProperty(required = true, notes = "몇 부인지 나타내는 값 (1 -> 1부, 2 -> 2부)")
     Integer eventNum;
     @ApiModelProperty(required = true)
-    Boolean isEnd;
+    Boolean isEnd; // TODO 개선 필요
 
     @Getter
     @Value(staticConstructor = "of")

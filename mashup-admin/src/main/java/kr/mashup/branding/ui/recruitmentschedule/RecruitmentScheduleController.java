@@ -38,7 +38,6 @@ public class RecruitmentScheduleController {
         @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
         @RequestBody RecruitmentScheduleCreateRequest request
     ) {
-        // TODO: 권한 검사 필요함
         final RecruitmentScheduleResponse response
             = recruitmentScheduleFacadeService.create(generationNumber, request);
 

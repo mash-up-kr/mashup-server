@@ -196,14 +196,13 @@ public class AttendanceFacadeService {
      * 플랫폼별 전체 출석현황 조회
      */
     @Transactional(readOnly = true)
-    public TotalAttendanceResponse getTotalAttendance(Long scheduleId) {
+    public TotalAttendanceResponse getTotalAttendance(final Long scheduleId) {
 
-        final LocalDateTime now = LocalDateTime.now();
         final Schedule schedule = scheduleService.getByIdAndStatusOrThrow(scheduleId, ScheduleStatus.PUBLIC);
         final Generation currentGeneration = schedule.getGeneration();
 
-        final List<Event> startedEvents =
-                filterStartedEvent(schedule.getEventList(), now);
+        final LocalDateTime now = LocalDateTime.now();
+        final List<Event> startedEvents = filterStartedEvent(schedule.getEventList(), now);
 
         final List<TotalAttendanceResponse.PlatformInfo> platformInfos =
                 Arrays.stream(Platform.values()).map(platform -> {
@@ -248,7 +247,7 @@ public class AttendanceFacadeService {
             LocalDateTime now
     ) {
         return events.stream()
-                .filter(event -> !now.isBefore(event.getStartedAt()))
+                .filter(event -> now.isAfter(event.getStartedAt()))
                 .collect(Collectors.toList());
     }
 
@@ -278,7 +277,7 @@ public class AttendanceFacadeService {
         final LocalDateTime attendanceEndTime =
                 lastEvent
                         .getAttendanceCodes()
-                        .get(lastEvent.getAttendanceCodes().size() - 1)
+                        .get(lastEvent.getAttendanceCodes().size() - 1) // TODO 장애 포인트
                         .getLatenessCheckEndedAt();
 
         return now.isAfter(attendanceEndTime);

@@ -12,10 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,66 +28,65 @@ public class ScheduleFacadeService {
 
     @Transactional(readOnly = true)
     public ScheduleResponse getById(Long id) {
-        Schedule schedule = scheduleService.getByIdAndStatusOrThrow(id, ScheduleStatus.PUBLIC);
-        Integer dateCount = countDate(schedule.getStartedAt(), LocalDateTime.now());
+        final Schedule schedule = scheduleService.getByIdAndStatusOrThrow(id, ScheduleStatus.PUBLIC);
+        final Integer dateCount = countDayFromNow(schedule.getStartedAt(), LocalDateTime.now());
 
         return ScheduleResponse.from(schedule, dateCount);
     }
 
     @Transactional(readOnly = true)
-    public ScheduleResponseList getByGenerationNum(Integer number) {
-        Generation generation = generationService.getByNumberOrThrow(number);
+    public ScheduleResponseList getByGenerationNum(Integer generationNumber) {
 
-        List<Schedule> scheduleList = scheduleService.getByGenerationAndStatus(generation, ScheduleStatus.PUBLIC);
+        final Generation generation = generationService.getByNumberOrThrow(generationNumber);
 
-        LocalDateTime currentTIme = LocalDateTime.now();
-        List<ScheduleResponse> scheduleResponseList = scheduleList.stream()
-            .map(schedule -> ScheduleResponse.from(
-                schedule,
-                countDate(schedule.getStartedAt(), currentTIme)
-            ))
-            .collect(Collectors.toList());
+        final List<Schedule> scheduleList = scheduleService.getByGenerationAndStatus(generation, ScheduleStatus.PUBLIC);
 
-        Progress progress;
-        Integer dateCount = pickNextScheduleDate(scheduleResponseList);
+        final LocalDateTime currentTime = LocalDateTime.now();
 
-        if (scheduleList.size() == 0) {
-            progress = Progress.NOT_REGISTERED;
-        } else {
-            progress = checkScheduleProgress(dateCount);
+        final List<ScheduleResponse> scheduleResponseList = new ArrayList<>();
+        Optional<Integer> nextScheduleDayCountFromNow = Optional.empty();
+
+        for(final Schedule schedule : scheduleList){
+
+            final Integer dayCountFromNow = countDayFromNow(schedule.getStartedAt(), currentTime);
+
+            nextScheduleDayCountFromNow = updateNextScheduleDayCountFromNow(nextScheduleDayCountFromNow, dayCountFromNow);
+
+            final ScheduleResponse scheduleResponse = ScheduleResponse.from(schedule, dayCountFromNow);
+            scheduleResponseList.add(scheduleResponse);
         }
 
-        return ScheduleResponseList.of(progress, dateCount, scheduleResponseList);
+
+        final Progress progress = calcuateScheduleProgress(generation, scheduleList, currentTime);
+
+        return ScheduleResponseList.of(progress, nextScheduleDayCountFromNow, scheduleResponseList);
     }
 
-    private Integer countDate(LocalDateTime startedAt, LocalDateTime currentTime) {
+    private static Optional<Integer> updateNextScheduleDayCountFromNow(
+            final Optional<Integer> nextScheduleDayCountFromNow,
+            final Integer dayCountFromNow) {
+
+        return nextScheduleDayCountFromNow
+                .map(integer -> Math.min(dayCountFromNow, integer))
+                .or(() -> Optional.of(dayCountFromNow));
+    }
+
+    private static Progress calcuateScheduleProgress(Generation generation, List<Schedule> scheduleList, LocalDateTime currentTime) {
+        if (scheduleList.size() == 0) {
+            return Progress.NOT_REGISTERED;
+        }
+        final LocalDate generationEndDate = generation.getEndedAt();
+        final LocalDate today = currentTime.toLocalDate();
+        final Boolean isGenerationOngoing = generationEndDate.isAfter(today) || generationEndDate.isEqual(today);
+
+        return isGenerationOngoing ? Progress.ON_GOING : Progress.DONE;
+    }
+
+    private Integer countDayFromNow(LocalDateTime startedAt, LocalDateTime currentTime) {
         return (int) ChronoUnit.DAYS.between(
                 currentTime.truncatedTo(ChronoUnit.DAYS),
                 startedAt.truncatedTo(ChronoUnit.DAYS)
         );
     }
 
-    private Integer pickNextScheduleDate(List<ScheduleResponse> scheduleResponseList) {
-        Integer dateCount = null;
-
-        for (ScheduleResponse scheduleResponse : scheduleResponseList) {
-            if (scheduleResponse.getDateCount() >= 0) {
-                dateCount = scheduleResponse.getDateCount();
-                break;
-            }
-        }
-
-        return dateCount;
-    }
-
-    private Progress checkScheduleProgress(Integer dateCount) {
-        Progress progress;
-        if (dateCount == null) {
-            progress = Progress.DONE;
-        } else {
-            progress = Progress.ON_GOING;
-        }
-
-        return progress;
-    }
 }
