@@ -8,10 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -26,31 +23,39 @@ public class AttendanceCode extends BaseEntity {
     private LocalDateTime attendanceCheckStartedAt;     // 출석체크 시작시간
     @NotNull
     private LocalDateTime attendanceCheckEndedAt;       // 출석체크 마감시간
+
+    @NotNull
+    private LocalDateTime latenessCheckStartedAt;       // 지각체크 시작시간
+
     @NotNull
     private LocalDateTime latenessCheckEndedAt;         // 지각체크 마감시간
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "event_id")
     private Event event;
 
-    public static AttendanceCode of(Event event, String code, DateRange dateRange) {
-        return new AttendanceCode(event, code, dateRange);
+    public static AttendanceCode of(Event event, String code, DateRange attendanceTime, DateRange lateTime) {
+        return new AttendanceCode(event, code, attendanceTime, lateTime);
     }
 
-    private AttendanceCode(Event event, String code, DateRange dateRange) {
+    public void changeAttendanceTime(DateRange attendanceTime){
+        this.attendanceCheckStartedAt = attendanceTime.getStart();
+        this.attendanceCheckEndedAt = attendanceTime.getEnd();
+    }
 
-        checkAttendancePeriod(event, dateRange);
+    public void changeLateTime(DateRange lateTime){
+        this.latenessCheckStartedAt = lateTime.getStart();
+        this.latenessCheckEndedAt = lateTime.getEnd();
+    }
+
+    private AttendanceCode(Event event, String code, DateRange attendanceTime, DateRange lateTime) {
+
         this.event = event;
         this.code = code;
-        this.attendanceCheckStartedAt = dateRange.getStart();
-        this.attendanceCheckEndedAt = dateRange.getMid();
-        this.latenessCheckEndedAt = dateRange.getEnd();
+        this.attendanceCheckStartedAt = attendanceTime.getStart();
+        this.attendanceCheckEndedAt = attendanceTime.getEnd();
+        this.latenessCheckStartedAt = lateTime.getStart();
+        this.latenessCheckEndedAt = lateTime.getEnd();
     }
 
-    private void checkAttendancePeriod(Event event, DateRange dateRange) {
-
-        if (!DateUtil.isContainDateRange(DateRange.of(event.getStartedAt(), event.getEndedAt()), dateRange)) {
-            throw new IllegalArgumentException();
-        }
-    }
 }
