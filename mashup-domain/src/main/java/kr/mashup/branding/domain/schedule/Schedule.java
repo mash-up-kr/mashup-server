@@ -106,11 +106,6 @@ public class Schedule extends BaseEntity {
         this.publishedAt = null;
     }
 
-
-    public void configureEvents(List<Event> events){
-        this.eventList = events;
-    }
-
     public void addEvent(Event event){
         this.eventList.add(event);
     }

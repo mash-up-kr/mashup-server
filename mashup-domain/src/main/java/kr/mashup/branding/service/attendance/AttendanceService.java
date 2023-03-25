@@ -62,4 +62,8 @@ public class AttendanceService {
         return attendanceRepository.findBySchedule(schedule).stream()
             .collect(Collectors.groupingBy(Attendance::getMember));
     }
+
+    public List<Attendance> getByEvent(final Event event) {
+        return attendanceRepository.findAllByEvent(event);
+    }
 }

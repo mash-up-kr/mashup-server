@@ -84,12 +84,10 @@ public class AttendanceFacadeService {
         }
 
 
-        validEventTime(event.getStartedAt(), event.getEndedAt(), checkTime);
-        validAttendanceCode(attendanceCode, checkingCode);
         validAlreadyCheckAttendance(member, event);
 
         // 출석 체크
-        Attendance attendance = attendanceService.checkAttendance(
+        final Attendance attendance = attendanceService.checkAttendance(
                 member,
                 event,
                 getAttendanceStatus(attendanceCode, checkTime)
@@ -102,9 +100,33 @@ public class AttendanceFacadeService {
     @Transactional(readOnly = true)
     public void sendAttendanceStartingPushNoti() {
         findAllStartsWithin(ATTENDANCE_START_AFTER_MINUTES)
-                .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
-                        new AttendanceStartingVo(memberService.getAllPushNotiTargetableMembers())
-                ));
+                .forEach(attendanceCode -> {
+
+                    final Event checkingEvent = attendanceCode.getEvent();
+
+                    final List<Member> pushableMembers = memberService.getAllPushNotiTargetableMembers();
+
+                    final List<Member> pushTargetMembers = removeAlreadyCheckedMembers(checkingEvent, pushableMembers);
+
+                    pushNotiEventPublisher.publishPushNotiSendEvent(new AttendanceStartingVo(pushTargetMembers));
+                });
+    }
+
+    private List<Member> removeAlreadyCheckedMembers(
+            final Event checkingEvent,
+            final List<Member> pushableMembers) {
+
+        final List<Member> alreadyCheckedMembers
+                = attendanceService
+                .getByEvent(checkingEvent)
+                .stream()
+                .map(Attendance::getMember)
+                .toList();
+        final List<Member> pushTargetMembers = new ArrayList<>();
+        pushTargetMembers.addAll(pushableMembers);
+        pushTargetMembers.removeAll(alreadyCheckedMembers);
+
+        return pushTargetMembers;
     }
 
     @Scheduled(cron = "0 * * * * *")
@@ -141,30 +163,6 @@ public class AttendanceFacadeService {
         );
     }
 
-    private void validAttendanceCode(AttendanceCode attendanceCode, String code) {
-        if (attendanceCode == null) {
-            throw new BadRequestException(ResultCode.ATTENDANCE_CODE_NOT_FOUND);
-        }
-
-        if (!attendanceCode.getCode().equals(code)) {
-            throw new BadRequestException(ResultCode.ATTENDANCE_CODE_INVALID);
-        }
-    }
-
-    private void validEventTime(
-            LocalDateTime startedAt,
-            LocalDateTime endedAt,
-            LocalDateTime time
-    ) {
-        if (time.isBefore(startedAt)) {
-            throw new BadRequestException(ResultCode.ATTENDANCE_TIME_BEFORE);
-        }
-
-        final boolean isActive = DateUtil.isInTime(startedAt, endedAt, time);
-        if (!isActive) {
-            throw new BadRequestException(ResultCode.ATTENDANCE_TIME_OVER);
-        }
-    }
 
     /**
      * 이미 출석 체크를 했는지 판별
@@ -204,14 +202,13 @@ public class AttendanceFacadeService {
      * 플랫폼별 전체 출석현황 조회
      */
     @Transactional(readOnly = true)
-    public TotalAttendanceResponse getTotalAttendance(Long scheduleId) {
+    public TotalAttendanceResponse getTotalAttendance(final Long scheduleId) {
 
-        final LocalDateTime now = LocalDateTime.now();
         final Schedule schedule = scheduleService.getByIdAndStatusOrThrow(scheduleId, ScheduleStatus.PUBLIC);
         final Generation currentGeneration = schedule.getGeneration();
 
-        final List<Event> startedEvents =
-                filterStartedEvent(schedule.getEventList(), now);
+        final LocalDateTime now = LocalDateTime.now();
+        final List<Event> startedEvents = filterStartedEvent(schedule.getEventList(), now);
 
         final List<TotalAttendanceResponse.PlatformInfo> platformInfos =
                 Arrays.stream(Platform.values()).map(platform -> {
@@ -256,7 +253,7 @@ public class AttendanceFacadeService {
             LocalDateTime now
     ) {
         return events.stream()
-                .filter(event -> !now.isBefore(event.getStartedAt()))
+                .filter(event -> now.isAfter(event.getStartedAt()))
                 .collect(Collectors.toList());
     }
 
@@ -286,7 +283,7 @@ public class AttendanceFacadeService {
         final LocalDateTime attendanceEndTime =
                 lastEvent
                         .getAttendanceCodes()
-                        .get(lastEvent.getAttendanceCodes().size() - 1)
+                        .get(lastEvent.getAttendanceCodes().size() - 1) // TODO 장애 포인트
                         .getLatenessCheckEndedAt();
 
         return now.isAfter(attendanceEndTime);

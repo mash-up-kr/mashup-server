@@ -13,6 +13,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long>, C
     boolean existsAttendanceByMemberAndEvent(Member member, Event event);
     Optional<Attendance> findByMemberAndEvent(Member member, Event event);
     List<Attendance> findAllByMember(Member member);
+
 }
 /**
  * Attendance 연관관계

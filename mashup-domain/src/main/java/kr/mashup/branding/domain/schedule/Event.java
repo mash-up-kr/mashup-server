@@ -4,13 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 import com.sun.istack.NotNull;
@@ -50,39 +44,40 @@ public class Event extends BaseEntity {
     @OrderBy("startedAt")
     private final List<Content> contentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AttendanceCode> attendanceCodes = new ArrayList<>();
+    @OneToOne(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
+    private AttendanceCode attendanceCode;
 
-    public static Event of(Schedule schedule, String eventName, DateRange dateRange) {
-        return new Event(schedule, eventName, dateRange);
+    public static Event of(Schedule schedule, String eventName,DateRange eventTime, String code) {
+        return new Event(schedule, eventName, eventTime, code);
     }
 
-    private Event(Schedule schedule, String eventName, DateRange dateRange) {
-        validateEventPeriod(schedule, dateRange.getStart(), dateRange.getEnd());
+    private Event(Schedule schedule, String eventName, DateRange eventTime, String code) {
+
         validateEventName(eventName);
+
         this.eventName = eventName;
         this.schedule = schedule;
-        this.startedAt = dateRange.getStart();
-        this.endedAt = dateRange.getEnd();
+        this.startedAt = eventTime.getStart();
+        this.endedAt = eventTime.getEnd();
+
+        final DateRange temporaryAttendanceTime = DateRange.of(this.startedAt, this.endedAt);
+        final DateRange temporaryLateTime = DateRange.of(this.startedAt, this.endedAt);
+
+        addAttendanceCode(code, temporaryAttendanceTime, temporaryLateTime);
     }
 
     public void addContent(Content content) {
         this.contentList.add(content);
     }
 
-    public AttendanceCode addAttendanceCode(String code, DateRange dateRange) {
+    private AttendanceCode addAttendanceCode(String code, DateRange attendantTime, DateRange lateTime) {
         final DateRange eventDateRange
                 = DateRange.of(startedAt, endedAt);
-        final boolean isValidCodeTime
-                = DateUtil.isContainDateRange(eventDateRange, dateRange);
-
-        if (!isValidCodeTime) {
-            throw new BadRequestException();
-        }
 
         final AttendanceCode attendanceCode
-                = AttendanceCode.of(this, code, dateRange);
-        this.attendanceCodes.add(attendanceCode);
+                = AttendanceCode.of(this, code, attendantTime, lateTime);
+
+        this.attendanceCode = attendanceCode;
 
         return attendanceCode;
     }
