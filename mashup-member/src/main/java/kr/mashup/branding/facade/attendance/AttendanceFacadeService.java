@@ -282,8 +282,7 @@ public class AttendanceFacadeService {
 
         final LocalDateTime attendanceEndTime =
                 lastEvent
-                        .getAttendanceCodes()
-                        .get(lastEvent.getAttendanceCodes().size() - 1) // TODO 장애 포인트
+                        .getAttendanceCode()
                         .getLatenessCheckEndedAt();
 
         return now.isAfter(attendanceEndTime);
@@ -363,26 +362,22 @@ public class AttendanceFacadeService {
                 status = attendance.getStatus();
                 attendanceAt = attendance.getCreatedAt();
             } catch (NotFoundException e) {
-                final List<AttendanceCode> attendanceCodes = event.getAttendanceCodes();
-                if (attendanceCodes.isEmpty()) {
+                final AttendanceCode code = event.getAttendanceCode();
+                final boolean isBeforeAttendanceCheckTime =
+                        now.isBefore(code.getAttendanceCheckStartedAt());
+                final boolean isAttendanceCheckTime = DateUtil.isInTime(
+                        code.getAttendanceCheckStartedAt(),
+                        code.getLatenessCheckEndedAt(),
+                        now
+                );
+                // 출석체크 시작 전이거나(2부에서는 해당 조건을 체크),
+                // 출석 체크 시간인데 출석을 안했을 때는 결석이 아닌 아직이란 값을 내려줌
+                if (isBeforeAttendanceCheckTime || isAttendanceCheckTime) {
                     status = AttendanceStatus.NOT_YET;
                 } else {
-                    final AttendanceCode code = attendanceCodes.get(event.getAttendanceCodes().size() - 1);
-                    final boolean isBeforeAttendanceCheckTime =
-                            now.isBefore(code.getAttendanceCheckStartedAt());
-                    final boolean isAttendanceCheckTime = DateUtil.isInTime(
-                            code.getAttendanceCheckStartedAt(),
-                            code.getLatenessCheckEndedAt(),
-                            now
-                    );
-                    // 출석체크 시작 전이거나(2부에서는 해당 조건을 체크),
-                    // 출석 체크 시간인데 출석을 안했을 때는 결석이 아닌 아직이란 값을 내려줌
-                    if (isBeforeAttendanceCheckTime || isAttendanceCheckTime) {
-                        status = AttendanceStatus.NOT_YET;
-                    } else {
-                        status = AttendanceStatus.ABSENT;
-                    }
+                    status = AttendanceStatus.ABSENT;
                 }
+
             }
 
             return AttendanceInfo.of(
