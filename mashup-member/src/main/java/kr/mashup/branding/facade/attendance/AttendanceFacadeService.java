@@ -121,7 +121,8 @@ public class AttendanceFacadeService {
                 .getByEvent(checkingEvent)
                 .stream()
                 .map(Attendance::getMember)
-                .toList();
+                .collect(Collectors.toList());
+
         final List<Member> pushTargetMembers = new ArrayList<>();
         pushTargetMembers.addAll(pushableMembers);
         pushTargetMembers.removeAll(alreadyCheckedMembers);
