@@ -28,6 +28,6 @@ public class DanggnFacadeService {
         final DanggnScore danggnScore = memberGeneration.getDanggnScore();
         danggnScore.addScore(score);
         danggnShakeLogService.createLog(memberGeneration, score);
-        return DanggnScoreResponse.of(memberGeneration);
+        return DanggnScoreResponse.from(memberGeneration);
     }
 }

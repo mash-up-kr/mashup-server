@@ -11,9 +11,7 @@ public class DanggnScoreResponse {
 
     Long totalShakeScore;
 
-    public static DanggnScoreResponse of(
-        MemberGeneration memberGeneration
-    ) {
+    public static DanggnScoreResponse from(MemberGeneration memberGeneration) {
         return new DanggnScoreResponse(
             memberGeneration.getMember().getId(),
             memberGeneration.getDanggnScore().getTotalShakeScore()
