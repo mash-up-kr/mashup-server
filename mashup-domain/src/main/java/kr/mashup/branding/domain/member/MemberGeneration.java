@@ -23,7 +23,7 @@ public class MemberGeneration extends BaseEntity {
     @JoinColumn(name = "generation_id")
     private Generation generation;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "memberGeneration", orphanRemoval = true)
+    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "memberGeneration", orphanRemoval = true)
     private DanggnScore danggnScore;
 
     @Enumerated(EnumType.STRING)

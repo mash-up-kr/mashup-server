@@ -26,4 +26,19 @@ public class DanggnShakeLog {
 
     @CreatedDate
     protected LocalDateTime createdAt;
+
+    public static DanggnShakeLog of(
+        MemberGeneration memberGeneration,
+        Long shakeScore
+    ) {
+        return new DanggnShakeLog(memberGeneration, shakeScore);
+    }
+
+    private DanggnShakeLog(
+        MemberGeneration memberGeneration,
+        Long shakeScore
+    ) {
+        this.memberGeneration = memberGeneration;
+        this.shakeScore = shakeScore;
+    }
 }
