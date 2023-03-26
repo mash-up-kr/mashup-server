@@ -2,6 +2,7 @@ package kr.mashup.branding.service.member;
 
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
+import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.*;
 import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
@@ -200,5 +201,10 @@ public class MemberService {
 
     public List<Member> getActiveAllByGeneration(Generation generation) {
         return memberRepository.findAllActiveByGeneration(generation);
+    }
+
+    public MemberGeneration findByMemberIdAndGenerationNumber(Long memberId, Integer generationNumber) {
+        return memberGenerationRepository.findByMemberIdAndGenerationNumber(memberId, generationNumber)
+                .orElseThrow(GenerationIntegrityFailException::new);
     }
 }

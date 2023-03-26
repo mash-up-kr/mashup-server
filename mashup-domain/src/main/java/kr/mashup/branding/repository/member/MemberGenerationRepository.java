@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberGenerationRepository extends JpaRepository<MemberGeneration, Long> {
+public interface MemberGenerationRepository extends JpaRepository<MemberGeneration, Long>, MemberGenerationRepositoryCustom {
 
     void deleteByMember(Member member);
     Optional<MemberGeneration> findByMemberAndGeneration(Member member, Generation generation);
