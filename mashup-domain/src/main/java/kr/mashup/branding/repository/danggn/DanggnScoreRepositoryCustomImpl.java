@@ -20,7 +20,7 @@ public class DanggnScoreRepositoryCustomImpl implements DanggnScoreRepositoryCus
             .innerJoin(danggnScore.memberGeneration, memberGeneration)
             .innerJoin(memberGeneration.generation, generation)
             .on(generation.number.eq(generationNumber))
-            .orderBy(danggnScore.totalShakeScore.desc())
+            .orderBy(danggnScore.totalShakeScore.desc(), danggnScore.lastShakedAt.asc())
             .limit(limit)
             .fetch();
     }
