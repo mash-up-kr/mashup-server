@@ -14,13 +14,9 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.summingLong;
 
 @Service
 @RequiredArgsConstructor
@@ -53,20 +49,28 @@ public class DanggnFacadeService {
 
     @Transactional(readOnly = true)
     public List<DanggnPlatformRankResponse> getPlatformRankList(Integer generationNumber) {
-        Map<Platform, Long> danggnScoreMap = groupDanggnScoresByPlatform(danggnScoreService.findAllByGenerationNumber(generationNumber));
+        List<DanggnPlatformRankResponse> existingPlatformRankList = getExistingPlatformRankList(generationNumber);
 
-        return Stream.of(Platform.values())
-            .map(platform ->
-                DanggnPlatformRankResponse.of(platform, danggnScoreMap.getOrDefault(platform, 0L))
-            )
-            .sorted(Comparator.comparing(DanggnPlatformRankResponse::getTotalShakeScore).reversed())
+        Set<Platform> notExistingPlatforms = getNotExistingPlatforms(existingPlatformRankList);
+        List<DanggnPlatformRankResponse> notExistingPlatformRankList = notExistingPlatforms.stream()
+            .map(platform -> DanggnPlatformRankResponse.of(platform, 0L))
+            .collect(Collectors.toList());
+
+        return Stream.concat(existingPlatformRankList.stream(), notExistingPlatformRankList.stream()).collect(Collectors.toList());
+    }
+
+    private List<DanggnPlatformRankResponse> getExistingPlatformRankList(Integer generationNumber) {
+        return danggnScoreService.getDanggnScorePlatformOrderedList(generationNumber).stream()
+            .map(queryResult -> DanggnPlatformRankResponse.of(queryResult.getPlatform(), queryResult.getTotalScore()))
             .collect(Collectors.toList());
     }
 
-    private Map<Platform, Long> groupDanggnScoresByPlatform(List<DanggnScore> danggnScoreList) {
-        return danggnScoreList.stream().collect(Collectors.groupingBy(
-            danggnScore -> danggnScore.getMemberGeneration().getPlatform(),
-            summingLong(DanggnScore::getTotalShakeScore)
-        ));
+    private Set<Platform> getNotExistingPlatforms(List<DanggnPlatformRankResponse> existingPlatformRankList) {
+        Set<Platform> entirePlatforms = Arrays.stream(Platform.values()).collect(Collectors.toSet());
+        Set<Platform> existingPlatforms = existingPlatformRankList.stream()
+            .map(DanggnPlatformRankResponse::getPlatform)
+            .collect(Collectors.toSet());
+        entirePlatforms.removeAll(existingPlatforms);
+        return entirePlatforms;
     }
 }

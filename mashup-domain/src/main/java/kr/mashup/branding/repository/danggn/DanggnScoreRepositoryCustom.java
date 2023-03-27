@@ -1,11 +1,12 @@
 package kr.mashup.branding.repository.danggn;
 
 import kr.mashup.branding.domain.danggn.DanggnScore;
+import kr.mashup.branding.repository.danggn.DanggnScoreRepositoryCustomImpl.DanggnScorePlatformQueryResult;
 
 import java.util.List;
 
 public interface DanggnScoreRepositoryCustom {
-    List<DanggnScore> findTopByGenerationNumByTotalShakeScore(Integer generationNumber, Integer limit);
+    List<DanggnScore> findOrderedListByGenerationNum(Integer generationNumber, Integer limit);
 
-    List<DanggnScore> findAllByGenerationNumber(Integer generationNumber);
+    List<DanggnScorePlatformQueryResult> findOrderedDanggnScorePlatformListByGenerationNum(Integer generationNumber);
 }

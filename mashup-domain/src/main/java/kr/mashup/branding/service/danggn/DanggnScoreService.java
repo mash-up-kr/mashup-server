@@ -3,6 +3,7 @@ package kr.mashup.branding.service.danggn;
 import kr.mashup.branding.domain.danggn.DanggnScore;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.repository.danggn.DanggnScoreRepository;
+import kr.mashup.branding.repository.danggn.DanggnScoreRepositoryCustomImpl.DanggnScorePlatformQueryResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +20,10 @@ public class DanggnScoreService {
     }
 
     public List<DanggnScore> getDanggnScoreOrderedList(Integer generationNumber, Integer limit) {
-        return danggnScoreRepository.findTopByGenerationNumByTotalShakeScore(generationNumber, limit);
+        return danggnScoreRepository.findOrderedListByGenerationNum(generationNumber, limit);
     }
 
-    public List<DanggnScore> findAllByGenerationNumber(Integer generationNumber) {
-        return danggnScoreRepository.findAllByGenerationNumber(generationNumber);
+    public List<DanggnScorePlatformQueryResult> getDanggnScorePlatformOrderedList(Integer generationNumber) {
+        return danggnScoreRepository.findOrderedDanggnScorePlatformListByGenerationNum(generationNumber);
     }
 }
