@@ -6,12 +6,12 @@ import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.danggn.request.DanggnScoreAddRequest;
 import kr.mashup.branding.ui.danggn.response.DanggnMemberRankResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnPlatformRankResponse;
 import kr.mashup.branding.ui.danggn.response.DanggnScoreResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -46,14 +46,14 @@ public class DanggnController {
         @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
         @RequestParam(defaultValue = "11", required = false) Integer limit
     ) {
-        return ApiResponse.success(new ArrayList<>());
+        return ApiResponse.success(danggnFacadeService.getMemberRankList(generationNumber, limit));
     }
 
     @ApiOperation(value = "당근 흔들기 플랫폼별 랭킹")
     @GetMapping("/rank/platform")
-    public ApiResponse<List<DanggnMemberRankResponse>> getPlatformRank(
+    public ApiResponse<List<DanggnPlatformRankResponse>> getPlatformRank(
         @RequestParam(defaultValue = "13", required = false) Integer generationNumber
     ) {
-        return ApiResponse.success(new ArrayList<>());
+        return ApiResponse.success(danggnFacadeService.getPlatformRankList(generationNumber));
     }
 }

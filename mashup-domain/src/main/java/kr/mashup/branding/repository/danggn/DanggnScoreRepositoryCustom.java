@@ -7,5 +7,5 @@ import java.util.List;
 public interface DanggnScoreRepositoryCustom {
     List<DanggnScore> findTopByGenerationNumByTotalShakeScore(Integer limit, Integer generationNumber);
 
-    List<DanggnScore> findAll();
+    List<DanggnScore> findAllByGenerationNumber(Integer generationNumber);
 }

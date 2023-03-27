@@ -27,4 +27,8 @@ public class DanggnScoreService {
             generationNumber
         );
     }
+
+    public List<DanggnScore> findAllByGenerationNumber(Integer generationNumber) {
+        return danggnScoreRepository.findAllByGenerationNumber(generationNumber);
+    }
 }

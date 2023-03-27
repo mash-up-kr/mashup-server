@@ -1,6 +1,6 @@
 package kr.mashup.branding.ui.danggn.response;
 
-import kr.mashup.branding.domain.member.MemberGeneration;
+import kr.mashup.branding.domain.danggn.DanggnScore;
 import lombok.Getter;
 import lombok.Value;
 
@@ -13,11 +13,11 @@ public class DanggnMemberRankResponse {
 
     Long totalShakeScore;
 
-    public static DanggnMemberRankResponse from(MemberGeneration memberGeneration) {
+    public static DanggnMemberRankResponse from(DanggnScore danggnScore) {
         return new DanggnMemberRankResponse(
-            memberGeneration.getMember().getId(),
-            memberGeneration.getMember().getName(),
-            memberGeneration.getDanggnScore().getTotalShakeScore()
+            danggnScore.getMemberGeneration().getMember().getId(),
+            danggnScore.getMemberGeneration().getMember().getName(),
+            danggnScore.getTotalShakeScore()
         );
     }
 }

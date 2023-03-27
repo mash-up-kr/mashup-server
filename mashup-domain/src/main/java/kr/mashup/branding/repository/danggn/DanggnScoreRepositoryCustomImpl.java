@@ -6,18 +6,32 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static kr.mashup.branding.domain.danggn.QDanggnScore.danggnScore;
+import static kr.mashup.branding.domain.generation.QGeneration.generation;
+import static kr.mashup.branding.domain.member.QMemberGeneration.memberGeneration;
+
 @RequiredArgsConstructor
 public class DanggnScoreRepositoryCustomImpl implements DanggnScoreRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
     public List<DanggnScore> findTopByGenerationNumByTotalShakeScore(Integer limit, Integer generationNumber) {
-        return null;
+        return queryFactory.selectFrom(danggnScore)
+            .innerJoin(danggnScore.memberGeneration, memberGeneration)
+            .innerJoin(memberGeneration.generation, generation)
+            .on(generation.number.eq(generationNumber))
+            .orderBy(danggnScore.totalShakeScore.desc())
+            .limit(limit)
+            .fetch();
     }
 
     @Override
-    public List<DanggnScore> findAll() {
-        return null;
+    public List<DanggnScore> findAllByGenerationNumber(Integer generationNumber) {
+        return queryFactory.selectFrom(danggnScore)
+            .innerJoin(danggnScore.memberGeneration, memberGeneration)
+            .innerJoin(memberGeneration.generation, generation)
+            .on(generation.number.eq(generationNumber))
+            .fetch();
     }
 }
 
