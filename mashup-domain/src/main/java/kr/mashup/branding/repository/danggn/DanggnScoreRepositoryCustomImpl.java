@@ -15,7 +15,7 @@ public class DanggnScoreRepositoryCustomImpl implements DanggnScoreRepositoryCus
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<DanggnScore> findTopByGenerationNumByTotalShakeScore(Integer limit, Integer generationNumber) {
+    public List<DanggnScore> findTopByGenerationNumByTotalShakeScore(Integer generationNumber, Integer limit) {
         return queryFactory.selectFrom(danggnScore)
             .innerJoin(danggnScore.memberGeneration, memberGeneration)
             .innerJoin(memberGeneration.generation, generation)

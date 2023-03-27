@@ -46,18 +46,13 @@ public class DanggnFacadeService {
     }
 
     @Transactional(readOnly = true)
-    public List<DanggnMemberRankResponse> getMemberRankList(
-        Integer generationNumber,
-        Integer limit
-    ) {
+    public List<DanggnMemberRankResponse> getMemberRankList(Integer generationNumber, Integer limit) {
         return danggnScoreService.getDanggnScoreOrderedList(generationNumber, limit)
             .stream().map(DanggnMemberRankResponse::from).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<DanggnPlatformRankResponse> getPlatformRankList(
-        Integer generationNumber
-    ) {
+    public List<DanggnPlatformRankResponse> getPlatformRankList(Integer generationNumber) {
         Map<Platform, Long> danggnScoreMap = groupDanggnScoresByPlatform(danggnScoreService.findAllByGenerationNumber(generationNumber));
 
         return Stream.of(Platform.values())

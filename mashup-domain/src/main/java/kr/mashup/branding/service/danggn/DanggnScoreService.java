@@ -18,14 +18,8 @@ public class DanggnScoreService {
             .orElseGet(() -> danggnScoreRepository.save(DanggnScore.of(memberGeneration, 0L)));
     }
 
-    public List<DanggnScore> getDanggnScoreOrderedList(
-        Integer generationNumber,
-        Integer limit
-    ) {
-        return danggnScoreRepository.findTopByGenerationNumByTotalShakeScore(
-            limit,
-            generationNumber
-        );
+    public List<DanggnScore> getDanggnScoreOrderedList(Integer generationNumber, Integer limit) {
+        return danggnScoreRepository.findTopByGenerationNumByTotalShakeScore(generationNumber, limit);
     }
 
     public List<DanggnScore> findAllByGenerationNumber(Integer generationNumber) {
