@@ -30,7 +30,7 @@ public class DanggnController {
     public ApiResponse<DanggnScoreResponse> addDanggnScore(
         @ApiIgnore MemberAuth auth,
         @RequestBody DanggnScoreAddRequest req,
-        @RequestParam(defaultValue = "13", required = false) Integer generationNumber
+        @RequestParam Integer generationNumber
     ) {
         DanggnScoreResponse response = danggnFacadeService.addScore(auth.getMemberId(), generationNumber, req.getScore());
         return ApiResponse.success(response);
