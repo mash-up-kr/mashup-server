@@ -6,6 +6,8 @@ import kr.mashup.branding.repository.danggn.DanggnScoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class DanggnScoreService {
@@ -14,5 +16,15 @@ public class DanggnScoreService {
     public DanggnScore findByMemberGeneration(MemberGeneration memberGeneration) {
         return danggnScoreRepository.findByMemberGeneration(memberGeneration)
             .orElseGet(() -> danggnScoreRepository.save(DanggnScore.of(memberGeneration, 0L)));
+    }
+
+    public List<DanggnScore> getDanggnScoreOrderedList(
+        Integer generationNumber,
+        Integer limit
+    ) {
+        return danggnScoreRepository.findTopByGenerationNumByTotalShakeScore(
+            limit,
+            generationNumber
+        );
     }
 }
