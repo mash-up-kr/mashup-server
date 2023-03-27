@@ -1,7 +1,6 @@
 package kr.mashup.branding.domain.member;
 
 import kr.mashup.branding.domain.BaseEntity;
-import kr.mashup.branding.domain.danggn.DanggnScore;
 import kr.mashup.branding.domain.generation.Generation;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,9 +22,6 @@ public class MemberGeneration extends BaseEntity {
     @JoinColumn(name = "generation_id")
     private Generation generation;
 
-    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "memberGeneration", orphanRemoval = true)
-    private DanggnScore danggnScore;
-
     @Enumerated(EnumType.STRING)
     private Platform platform;
 
@@ -40,12 +36,5 @@ public class MemberGeneration extends BaseEntity {
         this.member = member;
         this.generation = generation;
         this.platform = platform;
-    }
-
-    public DanggnScore getDanggnScore() {
-        if (danggnScore == null) {
-            this.danggnScore = DanggnScore.of(this, 0L);
-        }
-        return this.danggnScore;
     }
 }
