@@ -19,7 +19,7 @@ public class DanggnShakeLog {
     @GeneratedValue
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_generation_id")
     private MemberGeneration memberGeneration;
 
