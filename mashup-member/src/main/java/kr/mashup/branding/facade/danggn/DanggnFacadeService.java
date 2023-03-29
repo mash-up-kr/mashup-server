@@ -10,6 +10,7 @@ import kr.mashup.branding.ui.danggn.response.DanggnMemberRankResponse;
 import kr.mashup.branding.ui.danggn.response.DanggnPlatformRankResponse;
 import kr.mashup.branding.ui.danggn.response.DanggnScoreResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,8 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 public class DanggnFacadeService {
+    @Value("${golden-danggn-percent}")
+    private Integer goldenDanggnPercent;
     private final MemberService memberService;
 
     private final DanggnShakeLogService danggnShakeLogService;
@@ -42,8 +45,8 @@ public class DanggnFacadeService {
     }
 
     @Transactional(readOnly = true)
-    public List<DanggnMemberRankResponse> getMemberRankList(Integer generationNumber, Integer limit) {
-        return danggnScoreService.getDanggnScoreOrderedList(generationNumber, limit)
+    public List<DanggnMemberRankResponse> getMemberRankList(Integer generationNumber) {
+        return danggnScoreService.getDanggnScoreOrderedList(generationNumber)
             .stream().map(DanggnMemberRankResponse::from).collect(Collectors.toList());
     }
 
@@ -57,6 +60,10 @@ public class DanggnFacadeService {
             .collect(Collectors.toList());
 
         return Stream.concat(existingPlatformRankList.stream(), notExistingPlatformRankList.stream()).collect(Collectors.toList());
+    }
+
+    public Integer getGoldenDanggnPercent() {
+        return goldenDanggnPercent;
     }
 
     private List<DanggnPlatformRankResponse> getExistingPlatformRankList(Integer generationNumber) {
