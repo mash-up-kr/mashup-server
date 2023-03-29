@@ -19,8 +19,8 @@ public class DanggnScoreService {
             .orElseGet(() -> danggnScoreRepository.save(DanggnScore.of(memberGeneration, 0L)));
     }
 
-    public List<DanggnScore> getDanggnScoreOrderedList(Integer generationNumber, Integer limit) {
-        return danggnScoreRepository.findOrderedListByGenerationNum(generationNumber, limit);
+    public List<DanggnScore> getDanggnScoreOrderedList(Integer generationNumber) {
+        return danggnScoreRepository.findOrderedListByGenerationNum(generationNumber);
     }
 
     public List<DanggnScorePlatformQueryResult> getDanggnScorePlatformOrderedList(Integer generationNumber) {
