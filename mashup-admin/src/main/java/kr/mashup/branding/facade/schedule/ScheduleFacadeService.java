@@ -1,9 +1,11 @@
 package kr.mashup.branding.facade.schedule;
 
-import kr.mashup.branding.domain.attendance.AttendanceCode;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.pushnoti.vo.SeminarUpdatedVo;
-import kr.mashup.branding.domain.schedule.*;
+import kr.mashup.branding.domain.schedule.ContentsCreateDto;
+import kr.mashup.branding.domain.schedule.Event;
+import kr.mashup.branding.domain.schedule.Schedule;
+import kr.mashup.branding.domain.schedule.ScheduleCreateDto;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.member.MemberService;
@@ -119,7 +121,7 @@ public class ScheduleFacadeService {
     }
 
     @Transactional
-    public QrCodeResponse generateQrCode(Long scheduleId, Long eventId, QrCodeGenerateRequest request) {
+    public QrCodeResponse updateQrCode(Long scheduleId, Long eventId, QrCodeGenerateRequest request) {
 
         final Schedule schedule
                 = scheduleService.getByIdOrThrow(scheduleId);
@@ -127,17 +129,14 @@ public class ScheduleFacadeService {
         final Event event
                 = scheduleService.getEventOrThrow(schedule, eventId);
 
-        final DateRange codeValidRequestTime
-                = DateRange.of(
-                request.getAttendanceCheckStartedAt(),
-                request.getAttendanceCheckEndedAt(),
-                request.getLatenessCheckEndedAt()
-        );
+        final DateRange attendantTime
+                = DateRange.of(request.getAttendanceCheckStartedAt(), request.getAttendanceCheckEndedAt());
 
-        final AttendanceCode attendanceCode
-                = scheduleService.addAttendanceCode(event, codeValidRequestTime);
+        final DateRange lateTime = DateRange.of(request.getAttendanceCheckEndedAt(), request.getLatenessCheckEndedAt());
 
-        final String qrCodeUrl = QrGenerator.generate(attendanceCode.getCode());
+        scheduleService.updateAttendanceTime(event, attendantTime,lateTime);
+
+        final String qrCodeUrl = QrGenerator.generate(event.getAttendanceCode().getCode());
 
         return QrCodeResponse.of(qrCodeUrl);
     }

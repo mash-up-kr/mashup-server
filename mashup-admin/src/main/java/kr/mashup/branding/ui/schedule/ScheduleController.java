@@ -108,15 +108,15 @@ public class ScheduleController {
         return ApiResponse.success(EmptyResponse.of());
     }
 
-    @ApiOperation("QR Code 생성")
+    @ApiOperation("QR Code 시간 수정")
     @PostMapping("/{scheduleId}/event/{eventId}/qr")
-    public ApiResponse<QrCodeResponse> deleteSchedule(
+    public ApiResponse<QrCodeResponse> updateQrCode(
             @PathVariable("scheduleId") Long scheduleId,
             @PathVariable("eventId") Long eventId,
             @Valid @RequestBody QrCodeGenerateRequest request
     ){
         final QrCodeResponse response
-                = scheduleFacadeService.generateQrCode(scheduleId, eventId, request);
+                = scheduleFacadeService.updateQrCode(scheduleId, eventId, request);
 
         return ApiResponse.success(response);
     }

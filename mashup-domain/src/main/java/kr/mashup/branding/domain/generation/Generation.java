@@ -1,11 +1,6 @@
 package kr.mashup.branding.domain.generation;
 
-import com.sun.istack.NotNull;
 import kr.mashup.branding.domain.BaseEntity;
-import kr.mashup.branding.domain.invite.Invite;
-import kr.mashup.branding.domain.member.Member;
-import kr.mashup.branding.domain.member.MemberGeneration;
-import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
@@ -13,10 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity

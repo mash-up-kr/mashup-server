@@ -14,12 +14,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
@@ -53,12 +55,19 @@ public class ScheduleService {
 
         onlyHidingScheduleCanChanged(schedule);
 
+        final String code = generateAttendanceCodeString();
         final Event event
-            = Event.of(schedule, dto.getEventName(), dto.getDateRange());
+            = Event.of(schedule, dto.getEventName(), dto.getDateRange(), code);
 
         schedule.addEvent(event);
 
         return event;
+    }
+
+    public void updateAttendanceTime(Event event, DateRange attendanceTime, DateRange lateTime){
+        final AttendanceCode attendanceCode = event.getAttendanceCode();
+        attendanceCode.changeAttendanceTime(attendanceTime);
+        attendanceCode.changeLateTime(lateTime);
     }
 
     public Event getEventOrThrow(Schedule schedule, Long eventId) {
@@ -120,7 +129,17 @@ public class ScheduleService {
         }
     }
 
-    public AttendanceCode addAttendanceCode(Event event, DateRange codeValidRequestTime) {
+
+    public List<Schedule> findAllByIsCounted(boolean isCounted) {
+        return scheduleRepository.findAllByIsCounted(isCounted);
+    }
+
+    public Schedule findByStartDate(LocalDate startDate) {
+        return scheduleRepository.retrieveByStartDate(startDate)
+                .orElseThrow(ScheduleNotFoundException::new);
+    }
+
+    private String generateAttendanceCodeString(){
 
         String code = null;
 
@@ -138,19 +157,7 @@ public class ScheduleService {
             throw new CodeGenerateFailException();
         }
 
-        final AttendanceCode attendanceCode
-            = event.addAttendanceCode(code, codeValidRequestTime);
-
-        return attendanceCode;
-    }
-
-    public List<Schedule> findAllByIsCounted(boolean isCounted) {
-        return scheduleRepository.findAllByIsCounted(isCounted);
-    }
-
-    public Schedule findByStartDate(LocalDate startDate) {
-        return scheduleRepository.retrieveByStartDate(startDate)
-                .orElseThrow(ScheduleNotFoundException::new);
+        return code;
     }
 
 }

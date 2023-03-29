@@ -227,7 +227,6 @@ public class ApplicationService {
         return applicationRepository.findByStatusAndCreatedAtBefore(status, eventOccurredAt);
     }
 
-    // TODO: 상세 조회시 form 도 같이 조합해서 내려주어야할듯 (teamId, memberId 요청하면 해당팀 쓰던 지원서 질문, 내용 다 합쳐서)
     public Application getApplications(Long applicantId, Long applicationId) {
         Assert.notNull(applicantId, "'applicantId' must not be null");
         Assert.notNull(applicationId, "'applicationId' must not be null");
