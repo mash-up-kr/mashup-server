@@ -42,8 +42,8 @@ public class DanggnFacadeService {
     }
 
     @Transactional(readOnly = true)
-    public List<DanggnMemberRankResponse> getMemberRankList(Integer generationNumber, Integer limit) {
-        return danggnScoreService.getDanggnScoreOrderedList(generationNumber, limit)
+    public List<DanggnMemberRankResponse> getMemberRankList(Integer generationNumber) {
+        return danggnScoreService.getDanggnScoreOrderedList(generationNumber)
             .stream().map(DanggnMemberRankResponse::from).collect(Collectors.toList());
     }
 

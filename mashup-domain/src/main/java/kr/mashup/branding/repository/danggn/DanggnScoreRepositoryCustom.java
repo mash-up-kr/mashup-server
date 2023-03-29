@@ -6,7 +6,7 @@ import kr.mashup.branding.repository.danggn.DanggnScoreRepositoryCustomImpl.Dang
 import java.util.List;
 
 public interface DanggnScoreRepositoryCustom {
-    List<DanggnScore> findOrderedListByGenerationNum(Integer generationNumber, Integer limit);
+    List<DanggnScore> findOrderedListByGenerationNum(Integer generationNumber);
 
     List<DanggnScorePlatformQueryResult> findOrderedDanggnScorePlatformListByGenerationNum(Integer generationNumber);
 }

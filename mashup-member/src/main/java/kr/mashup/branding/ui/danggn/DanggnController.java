@@ -46,7 +46,15 @@ public class DanggnController {
         @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
         @RequestParam(defaultValue = "11", required = false) Integer limit
     ) {
-        return ApiResponse.success(danggnFacadeService.getMemberRankList(generationNumber, limit));
+        return ApiResponse.success(danggnFacadeService.getMemberRankList(generationNumber).subList(0, limit));
+    }
+
+    @ApiOperation(value = "당근 흔들기 개인별 랭킹 전체")
+    @GetMapping("/rank/member/all")
+    public ApiResponse<List<DanggnMemberRankResponse>> getAllMemberRank(
+        @RequestParam(defaultValue = "13", required = false) Integer generationNumber
+    ) {
+        return ApiResponse.success(danggnFacadeService.getMemberRankList(generationNumber));
     }
 
     @ApiOperation(value = "당근 흔들기 플랫폼별 랭킹")

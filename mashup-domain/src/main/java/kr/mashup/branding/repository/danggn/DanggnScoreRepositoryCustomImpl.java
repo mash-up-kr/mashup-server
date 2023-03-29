@@ -18,13 +18,12 @@ public class DanggnScoreRepositoryCustomImpl implements DanggnScoreRepositoryCus
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<DanggnScore> findOrderedListByGenerationNum(Integer generationNumber, Integer limit) {
+    public List<DanggnScore> findOrderedListByGenerationNum(Integer generationNumber) {
         return queryFactory.selectFrom(danggnScore)
             .innerJoin(danggnScore.memberGeneration, memberGeneration)
             .innerJoin(memberGeneration.generation, generation)
             .on(generation.number.eq(generationNumber))
             .orderBy(danggnScore.totalShakeScore.desc(), danggnScore.lastShakedAt.asc())
-            .limit(limit)
             .fetch();
     }
 
