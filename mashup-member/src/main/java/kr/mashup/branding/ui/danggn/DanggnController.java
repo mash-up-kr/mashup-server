@@ -64,4 +64,10 @@ public class DanggnController {
     ) {
         return ApiResponse.success(danggnFacadeService.getPlatformRankList(generationNumber));
     }
+
+    @ApiOperation(value = "황금 당근 확률")
+    @GetMapping("/golden-danggn-percent")
+    public ApiResponse<Integer> getGoldenDanggnPercent() {
+        return ApiResponse.success(danggnFacadeService.getGoldenDanggnPercent());
+    }
 }
