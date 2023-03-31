@@ -66,6 +66,10 @@ public class ScheduleFacadeService {
             final Optional<Integer> nextScheduleDayCountFromNow,
             final Integer dayCountFromNow) {
 
+        if(dayCountFromNow < 0){
+            return Optional.empty();
+        }
+
         return nextScheduleDayCountFromNow
                 .map(integer -> Math.min(dayCountFromNow, integer))
                 .or(() -> Optional.of(dayCountFromNow));
