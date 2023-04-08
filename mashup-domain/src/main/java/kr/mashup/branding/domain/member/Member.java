@@ -55,7 +55,9 @@ public class Member extends BaseEntity {
 
     private String fcmToken;
 
-    private Boolean pushNotificationAgreed = true;
+    private Boolean newsPushNotificationAgreed = true;          // 매시업 소식 알림 동의 여부
+
+    private Boolean danggnPushNotificationAgreed = true;        // 당근 흔들기 알림 동의 여부
 
     public boolean isMatchPassword(String rawPassword, PasswordEncoder encoder) {
         return encoder.matches(rawPassword, this.password);
@@ -145,7 +147,8 @@ public class Member extends BaseEntity {
         this.fcmToken = fcmToken;
     }
 
-    public void updatePushNotificationAgreed(Boolean pushNotificationAgreed) {
-        this.pushNotificationAgreed = pushNotificationAgreed;
+    public void updatePushNotificationAgreed(Boolean newsPushNotificationAgreed, Boolean danggnPushNotificationAgreed) {
+        this.newsPushNotificationAgreed = newsPushNotificationAgreed;
+        this.danggnPushNotificationAgreed = danggnPushNotificationAgreed;
     }
 }

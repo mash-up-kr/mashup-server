@@ -22,7 +22,9 @@ public class MemberInfoResponse {
 
     private List<Integer> generations;
 
-    private Boolean pushNotificationAgreed;
+    private Boolean newsPushNotificationAgreed;
+
+    private Boolean danggnPushNotificationAgreed;
 
     public static MemberInfoResponse from(Member member, Platform platform) {
         return MemberInfoResponse.of(
@@ -34,8 +36,8 @@ public class MemberInfoResponse {
                         .stream()
                         .map(it -> it.getGeneration().getNumber())
                         .collect(Collectors.toList()),
-                member.getPushNotificationAgreed()
+                member.getNewsPushNotificationAgreed(),
+                member.getDanggnPushNotificationAgreed()
         );
     }
-
 }

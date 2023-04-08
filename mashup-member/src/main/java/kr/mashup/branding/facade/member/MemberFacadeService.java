@@ -127,7 +127,10 @@ public class MemberFacadeService {
     @Transactional
     public Boolean updatePushNotificationAgreed(Long memberId, PushNotificationRequest request) {
         Member member = memberService.getActiveOrThrowById(memberId);
-        member.updatePushNotificationAgreed(request.getPushNotificationAgreed());
+        member.updatePushNotificationAgreed(
+                request.getNewsPushNotificationAgreed(),
+                request.getDanggnPushNotificationAgreed()
+        );
         return true;
     }
 }
