@@ -1,21 +1,27 @@
 package kr.mashup.branding.facade.danggn;
 
 import kr.mashup.branding.domain.danggn.DanggnScore;
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
+import kr.mashup.branding.service.danggn.DanggnCacheKey;
+import kr.mashup.branding.service.danggn.DanggnCacheService;
 import kr.mashup.branding.service.danggn.DanggnScoreService;
 import kr.mashup.branding.service.danggn.DanggnShakeLogService;
+import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.danggn.response.DanggnMemberRankResponse;
 import kr.mashup.branding.ui.danggn.response.DanggnPlatformRankResponse;
 import kr.mashup.branding.ui.danggn.response.DanggnScoreResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,6 +36,9 @@ public class DanggnFacadeService {
 
     private final DanggnScoreService danggnScoreService;
 
+    private final DanggnCacheService danggnCacheService;
+
+    private final GenerationService generationService;
 
     @Transactional
     public DanggnScoreResponse addScore(
@@ -64,6 +73,52 @@ public class DanggnFacadeService {
 
     public Integer getGoldenDanggnPercent() {
         return goldenDanggnPercent;
+    }
+
+    @Scheduled(fixedDelay = 60000, initialDelay = 0)
+    @Transactional(readOnly = true)
+    public void sendFirstRecordMemberPushNoti() {
+        List<Generation> generations = generationService.getAll();
+        if (generations.isEmpty())
+            return;
+
+        generations.forEach(
+                generation -> {
+                    Integer generationNumber = generation.getNumber();
+                    String currentFirstRecordMemberId = danggnCacheService.findFirstRecordMemberId(generationNumber);
+                    String cachedFirstRecordMemberId = danggnCacheService.getCachedFirstRecord(DanggnCacheKey.MEMBER, generationNumber);
+
+                    if (currentFirstRecordMemberId == null || cachedFirstRecordMemberId.equals(currentFirstRecordMemberId)) {
+                        return;
+                    }
+                    // 변경된 부분 있으면 개인 랭킹 1 업데이트 푸시 알림 보낸 후 캐시 업데이트
+                    // TODO: 푸시 알림 로직 ex) 당근 흔들기 개인 랭킹 1위가 업데이트 됐어요
+                    danggnCacheService.updateCachedFirstRecord(DanggnCacheKey.MEMBER, generationNumber, currentFirstRecordMemberId);
+                }
+        );
+    }
+
+    @Scheduled(fixedDelay = 60000, initialDelay = 0)
+    @Transactional(readOnly = true)
+    public void sendFirstRecordPlatformPushNoti() {
+        List<Generation> generations = generationService.getAll();
+        if (generations.isEmpty())
+            return;
+
+        generations.forEach(
+                generation -> {
+                    Integer generationNumber = generation.getNumber();
+                    String currentFirstRecordPlatform = danggnCacheService.findFirstRecordPlatform(generationNumber);
+                    String cachedFirstRecordPlatform = danggnCacheService.getCachedFirstRecord(DanggnCacheKey.PLATFORM, generationNumber);
+
+                    if (currentFirstRecordPlatform == null || cachedFirstRecordPlatform.equals(currentFirstRecordPlatform)) {
+                        return;
+                    }
+                    // 변경된 부분 있으면 개인 팀 1 업데이트 푸시 알림 보낸 후 캐시 업데이트
+                    // TODO: 푸시 알림 로직 ex) 당근 흔들기 팀 랭킹 1위가 업데이트 됏어요
+                    danggnCacheService.updateCachedFirstRecord(DanggnCacheKey.PLATFORM, generationNumber, currentFirstRecordPlatform);
+                }
+        );
     }
 
     private List<DanggnPlatformRankResponse> getExistingPlatformRankList(Integer generationNumber) {
