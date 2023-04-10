@@ -84,6 +84,7 @@ public class DanggnFacadeService {
     @Scheduled(fixedDelay = 60000, initialDelay = 0)
     @Transactional(readOnly = true)
     public void sendDanggnFirstRecordMemberUpdatedPushNoti() {
+        // 현재 활동하는 기수 조회
         List<Generation> generations = generationService.getAllActiveInAt(LocalDate.now());
         if (generations.isEmpty())
             return;
@@ -97,7 +98,7 @@ public class DanggnFacadeService {
                     if (currentFirstRecordMemberId == null || cachedFirstRecordMemberId.equals(currentFirstRecordMemberId)) {
                         return;
                     }
-                    // 변경된 부분 있으면 개인 랭킹 1 업데이트 푸시 알림 보낸 후 캐시 업데이트
+                    // 변경된 부분 있으면 업데이트 푸시 알림 보낸 후 캐시 업데이트
                     pushNotiEventPublisher.publishPushNotiSendEvent(new DanggnFirstRecordMemberUpdatedVo(memberService.getAllDanggnPushNotiTargetableMembers()));
                     danggnCacheService.updateCachedFirstRecord(DanggnCacheKey.MEMBER, generationNumber, currentFirstRecordMemberId);
                 }
@@ -107,6 +108,7 @@ public class DanggnFacadeService {
     @Scheduled(fixedDelay = 60000, initialDelay = 0)
     @Transactional(readOnly = true)
     public void sendDanggnFirstRecordPlatformPushNoti() {
+        // 현재 활동하는 기수 조회
         List<Generation> generations = generationService.getAllActiveInAt(LocalDate.now());
         if (generations.isEmpty())
             return;
@@ -120,7 +122,7 @@ public class DanggnFacadeService {
                     if (currentFirstRecordPlatform == null || cachedFirstRecordPlatform.equals(currentFirstRecordPlatform)) {
                         return;
                     }
-                    // 변경된 부분 있으면 개인 팀 1 업데이트 푸시 알림 보낸 후 캐시 업데이트
+                    // 변경된 부분 있으면  업데이트 푸시 알림 보낸 후 캐시 업데이트
                     pushNotiEventPublisher.publishPushNotiSendEvent(new DanggnFirstRecordPlatformUpdatedVo(memberService.getAllDanggnPushNotiTargetableMembers()));
                     danggnCacheService.updateCachedFirstRecord(DanggnCacheKey.PLATFORM, generationNumber, currentFirstRecordPlatform);
                 }
