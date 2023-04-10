@@ -22,6 +22,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -83,7 +84,7 @@ public class DanggnFacadeService {
     @Scheduled(fixedDelay = 60000, initialDelay = 0)
     @Transactional(readOnly = true)
     public void sendDanggnFirstRecordMemberUpdatedPushNoti() {
-        List<Generation> generations = generationService.getAll();
+        List<Generation> generations = generationService.getAllActiveInAt(LocalDate.now());
         if (generations.isEmpty())
             return;
 
@@ -106,7 +107,7 @@ public class DanggnFacadeService {
     @Scheduled(fixedDelay = 60000, initialDelay = 0)
     @Transactional(readOnly = true)
     public void sendDanggnFirstRecordPlatformPushNoti() {
-        List<Generation> generations = generationService.getAll();
+        List<Generation> generations = generationService.getAllActiveInAt(LocalDate.now());
         if (generations.isEmpty())
             return;
 
