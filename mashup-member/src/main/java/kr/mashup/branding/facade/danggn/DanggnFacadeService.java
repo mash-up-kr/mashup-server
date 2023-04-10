@@ -4,6 +4,9 @@ import kr.mashup.branding.domain.danggn.DanggnScore;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
+import kr.mashup.branding.domain.pushnoti.vo.DanggnFirstRecordMemberUpdatedVo;
+import kr.mashup.branding.domain.pushnoti.vo.DanggnFirstRecordPlatformUpdatedVo;
+import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.danggn.DanggnCacheKey;
 import kr.mashup.branding.service.danggn.DanggnCacheService;
 import kr.mashup.branding.service.danggn.DanggnScoreService;
@@ -39,6 +42,8 @@ public class DanggnFacadeService {
     private final DanggnCacheService danggnCacheService;
 
     private final GenerationService generationService;
+
+    private final PushNotiEventPublisher pushNotiEventPublisher;
 
     @Transactional
     public DanggnScoreResponse addScore(
@@ -77,7 +82,7 @@ public class DanggnFacadeService {
 
     @Scheduled(fixedDelay = 60000, initialDelay = 0)
     @Transactional(readOnly = true)
-    public void sendFirstRecordMemberPushNoti() {
+    public void sendDanggnFirstRecordMemberUpdatedPushNoti() {
         List<Generation> generations = generationService.getAll();
         if (generations.isEmpty())
             return;
@@ -92,7 +97,7 @@ public class DanggnFacadeService {
                         return;
                     }
                     // 변경된 부분 있으면 개인 랭킹 1 업데이트 푸시 알림 보낸 후 캐시 업데이트
-                    // TODO: 푸시 알림 로직 ex) 당근 흔들기 개인 랭킹 1위가 업데이트 됐어요
+                    pushNotiEventPublisher.publishPushNotiSendEvent(new DanggnFirstRecordMemberUpdatedVo(memberService.getAllDanggnPushNotiTargetableMembers()));
                     danggnCacheService.updateCachedFirstRecord(DanggnCacheKey.MEMBER, generationNumber, currentFirstRecordMemberId);
                 }
         );
@@ -100,7 +105,7 @@ public class DanggnFacadeService {
 
     @Scheduled(fixedDelay = 60000, initialDelay = 0)
     @Transactional(readOnly = true)
-    public void sendFirstRecordPlatformPushNoti() {
+    public void sendDanggnFirstRecordPlatformPushNoti() {
         List<Generation> generations = generationService.getAll();
         if (generations.isEmpty())
             return;
@@ -115,7 +120,7 @@ public class DanggnFacadeService {
                         return;
                     }
                     // 변경된 부분 있으면 개인 팀 1 업데이트 푸시 알림 보낸 후 캐시 업데이트
-                    // TODO: 푸시 알림 로직 ex) 당근 흔들기 팀 랭킹 1위가 업데이트 됏어요
+                    pushNotiEventPublisher.publishPushNotiSendEvent(new DanggnFirstRecordPlatformUpdatedVo(memberService.getAllDanggnPushNotiTargetableMembers()));
                     danggnCacheService.updateCachedFirstRecord(DanggnCacheKey.PLATFORM, generationNumber, currentFirstRecordPlatform);
                 }
         );
