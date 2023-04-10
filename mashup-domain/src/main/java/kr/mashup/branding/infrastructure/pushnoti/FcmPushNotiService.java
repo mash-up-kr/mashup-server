@@ -36,7 +36,7 @@ public class FcmPushNotiService implements PushNotiService {
 
     private List<String> getAgreedFcmTokens(List<Member> members) {
         return members.stream()
-            .filter(Member::getPushNotificationAgreed)
+            .filter(Member::getNewsPushNotificationAgreed)
             .map(Member::getFcmToken)
             .filter(Objects::nonNull)
             .collect(Collectors.toList());

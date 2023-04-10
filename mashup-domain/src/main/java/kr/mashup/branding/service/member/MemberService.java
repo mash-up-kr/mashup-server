@@ -195,7 +195,7 @@ public class MemberService {
 
     public List<Member> getAllPushNotiTargetableMembers() {
         return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
-            .filter(Member::getPushNotificationAgreed)
+            .filter(Member::getNewsPushNotificationAgreed)
             .collect(Collectors.toList());
     }
 
