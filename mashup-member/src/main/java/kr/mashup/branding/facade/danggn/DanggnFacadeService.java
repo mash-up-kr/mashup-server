@@ -93,7 +93,7 @@ public class DanggnFacadeService {
                 generation -> {
                     Integer generationNumber = generation.getNumber();
                     String currentFirstRecordMemberId = danggnCacheService.findFirstRecordMemberId(generationNumber);
-                    String cachedFirstRecordMemberId = danggnCacheService.getCachedFirstRecord(DanggnCacheKey.MEMBER, generationNumber);
+                    String cachedFirstRecordMemberId = danggnCacheService.getCachedFirstRecordMemberId(generationNumber);
 
                     if (currentFirstRecordMemberId == null || cachedFirstRecordMemberId.equals(currentFirstRecordMemberId)) {
                         return;
@@ -117,7 +117,7 @@ public class DanggnFacadeService {
                 generation -> {
                     Integer generationNumber = generation.getNumber();
                     String currentFirstRecordPlatform = danggnCacheService.findFirstRecordPlatform(generationNumber);
-                    String cachedFirstRecordPlatform = danggnCacheService.getCachedFirstRecord(DanggnCacheKey.PLATFORM, generationNumber);
+                    String cachedFirstRecordPlatform = danggnCacheService.getCachedFirstRecordPlatform(generationNumber);
 
                     if (currentFirstRecordPlatform == null || cachedFirstRecordPlatform.equals(currentFirstRecordPlatform)) {
                         return;

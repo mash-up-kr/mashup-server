@@ -16,14 +16,14 @@ import static kr.mashup.branding.repository.danggn.DanggnScoreRepositoryCustomIm
 public class DanggnCacheService {
     private final DanggnScoreRepository danggnScoreRepository;
 
-    @Cacheable(cacheNames = "danggnFirstPlaceRecord", key = "#key + #generationNumber.toString()")
-    public String getCachedFirstRecord(DanggnCacheKey key, Integer generationNumber) {
-        if (DanggnCacheKey.MEMBER.equals(key)) {
-            return findFirstRecordMemberId(generationNumber);
-        } else if (DanggnCacheKey.PLATFORM.equals(key)) {
-            return findFirstRecordPlatform(generationNumber);
-        }
-        return null;
+    @Cacheable(cacheNames = "danggnFirstPlaceRecord", key = "T(kr.mashup.branding.service.danggn.DanggnCacheKey).MEMBER + #generationNumber.toString()")
+    public String getCachedFirstRecordMemberId(Integer generationNumber) {
+        return findFirstRecordMemberId(generationNumber);
+    }
+
+    @Cacheable(cacheNames = "danggnFirstPlaceRecord", key = "T(kr.mashup.branding.service.danggn.DanggnCacheKey).PLATFORM + #generationNumber.toString()")
+    public String getCachedFirstRecordPlatform(Integer generationNumber) {
+        return findFirstRecordPlatform(generationNumber);
     }
 
     @CachePut(cacheNames = "danggnFirstPlaceRecord", key = "#key + #generationNumber.toString()")
