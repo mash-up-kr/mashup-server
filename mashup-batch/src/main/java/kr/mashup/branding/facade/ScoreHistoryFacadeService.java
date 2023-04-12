@@ -32,7 +32,7 @@ public class ScoreHistoryFacadeService {
      */
     @Transactional
     public List<Member> create() {
-        List<Schedule> schedules = scheduleService.findAllByIsCounted(false);
+        List<Schedule> schedules = scheduleService.findEndedScheduleByIsCounted(false);
         Set<Member> updatedMember = new HashSet<>();
 
         schedules.forEach(schedule -> {

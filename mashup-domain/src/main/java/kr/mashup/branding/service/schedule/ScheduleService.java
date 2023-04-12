@@ -130,8 +130,8 @@ public class ScheduleService {
     }
 
 
-    public List<Schedule> findAllByIsCounted(boolean isCounted) {
-        return scheduleRepository.findAllByIsCounted(isCounted);
+    public List<Schedule> findEndedScheduleByIsCounted(boolean isCounted) {
+        return scheduleRepository.findAllByIsCountedAndEndedAtIsBefore(isCounted, LocalDateTime.now());
     }
 
     public Schedule findByStartDate(LocalDate startDate) {
