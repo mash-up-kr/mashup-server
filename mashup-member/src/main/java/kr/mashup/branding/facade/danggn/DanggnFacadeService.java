@@ -81,7 +81,7 @@ public class DanggnFacadeService {
         return goldenDanggnPercent;
     }
 
-    @Scheduled(fixedDelay = 60000, initialDelay = 0)
+    @Scheduled(cron = "0 0 09,13,19 * * *")
     @Transactional(readOnly = true)
     public void sendDanggnFirstRecordMemberUpdatedPushNoti() {
         // 현재 활동하는 기수 조회
@@ -95,7 +95,7 @@ public class DanggnFacadeService {
                     String currentFirstRecordMemberId = danggnCacheService.findFirstRecordMemberId(generationNumber);
                     String cachedFirstRecordMemberId = danggnCacheService.getCachedFirstRecordMemberId(generationNumber);
 
-                    if (currentFirstRecordMemberId == null || cachedFirstRecordMemberId.equals(currentFirstRecordMemberId)) {
+                    if (currentFirstRecordMemberId == null || currentFirstRecordMemberId.equals(cachedFirstRecordMemberId)) {
                         return;
                     }
                     // 변경된 부분 있으면 업데이트 푸시 알림 보낸 후 캐시 업데이트
@@ -105,7 +105,7 @@ public class DanggnFacadeService {
         );
     }
 
-    @Scheduled(fixedDelay = 60000, initialDelay = 0)
+    @Scheduled(cron = "0 0 09,13,19 * * *")
     @Transactional(readOnly = true)
     public void sendDanggnFirstRecordPlatformPushNoti() {
         // 현재 활동하는 기수 조회
@@ -119,7 +119,7 @@ public class DanggnFacadeService {
                     String currentFirstRecordPlatform = danggnCacheService.findFirstRecordPlatform(generationNumber);
                     String cachedFirstRecordPlatform = danggnCacheService.getCachedFirstRecordPlatform(generationNumber);
 
-                    if (currentFirstRecordPlatform == null || cachedFirstRecordPlatform.equals(currentFirstRecordPlatform)) {
+                    if (currentFirstRecordPlatform == null || currentFirstRecordPlatform.equals(cachedFirstRecordPlatform)) {
                         return;
                     }
                     // 변경된 부분 있으면  업데이트 푸시 알림 보낸 후 캐시 업데이트
