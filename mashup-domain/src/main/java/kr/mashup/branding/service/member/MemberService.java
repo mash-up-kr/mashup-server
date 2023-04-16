@@ -207,4 +207,10 @@ public class MemberService {
         return memberGenerationRepository.findByMemberIdAndGenerationNumber(memberId, generationNumber)
                 .orElseThrow(GenerationIntegrityFailException::new);
     }
+
+    public List<Member> getAllDanggnPushNotiTargetableMembers() {
+        return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
+                .filter(Member::getDanggnPushNotificationAgreed)
+                .collect(Collectors.toList());
+    }
 }

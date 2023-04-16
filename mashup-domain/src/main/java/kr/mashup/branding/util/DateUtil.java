@@ -26,6 +26,13 @@ public class DateUtil {
         return !(target.isBefore(start) || target.isAfter(end));
     }
 
+    public static boolean isInTime(
+            LocalDate start,
+            LocalDate end,
+            LocalDate target) {
+        return !(target.isBefore(start) || target.isAfter(end));
+    }
+
     public static boolean isContainDateRange(
         DateRange baseRange,
         DateRange targetRange
