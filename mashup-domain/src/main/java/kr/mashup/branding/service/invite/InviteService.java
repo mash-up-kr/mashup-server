@@ -9,6 +9,7 @@ import kr.mashup.branding.util.DateRange;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,6 +32,14 @@ public class InviteService {
             .orElseThrow(InviteNotFoundException::new);
     }
 
+    public Invite getOrThrow(final Long inviteCodeId){
+        return inviteRepository.findById(inviteCodeId).orElseThrow(InviteNotFoundException::new);
+    }
+
+    public List<Invite> getAllByGeneration(final Generation generation){
+        return inviteRepository.findAllByGeneration(generation);
+    }
+
     public Invite getOrThrow(final Platform platform, final Generation generation){
         return inviteRepository.findByPlatformAndGeneration(platform, generation)
                 .orElseThrow(InviteNotFoundException::new);
@@ -40,4 +49,7 @@ public class InviteService {
         return inviteRepository.findByCode(inviteCode);
     }
 
+    public void deleteCode(final Invite invite) {
+        inviteRepository.delete(invite);
+    }
 }
