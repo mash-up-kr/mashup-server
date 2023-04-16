@@ -17,7 +17,7 @@ public class InviteController {
     private final InviteFacadeService inviteFacadeService;
 
     @GetMapping
-    public ApiResponse<?> getInviteCodes(
+    public ApiResponse<List<InviteCodeResponse>> getInviteCodes(
             @RequestParam(defaultValue = "13", required = false) Integer generationNumber
     ) {
 
