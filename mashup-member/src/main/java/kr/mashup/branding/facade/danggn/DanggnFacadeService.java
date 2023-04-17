@@ -13,7 +13,7 @@ import kr.mashup.branding.service.danggn.DanggnScoreService;
 import kr.mashup.branding.service.danggn.DanggnShakeLogService;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.member.MemberService;
-import kr.mashup.branding.ui.danggn.response.DanggnMemberRankResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnMemberRankData;
 import kr.mashup.branding.ui.danggn.response.DanggnPlatformRankResponse;
 import kr.mashup.branding.ui.danggn.response.DanggnScoreResponse;
 import lombok.RequiredArgsConstructor;
@@ -60,9 +60,9 @@ public class DanggnFacadeService {
     }
 
     @Transactional(readOnly = true)
-    public List<DanggnMemberRankResponse> getMemberRankList(Integer generationNumber) {
+    public List<DanggnMemberRankData> getMemberRankList(Integer generationNumber) {
         return danggnScoreService.getDanggnScoreOrderedList(generationNumber)
-            .stream().map(DanggnMemberRankResponse::from).collect(Collectors.toList());
+            .stream().map(DanggnMemberRankData::from).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

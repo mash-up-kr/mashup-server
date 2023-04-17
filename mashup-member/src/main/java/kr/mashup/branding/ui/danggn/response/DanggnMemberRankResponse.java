@@ -1,23 +1,21 @@
 package kr.mashup.branding.ui.danggn.response;
 
-import kr.mashup.branding.domain.danggn.DanggnScore;
 import lombok.Getter;
 import lombok.Value;
+
+import java.util.List;
 
 @Getter
 @Value(staticConstructor = "of")
 public class DanggnMemberRankResponse {
-    Long memberId;
+    List<DanggnMemberRankData> danggnMemberRankDataList;
 
-    String memberName;
+    Integer limit;
 
-    Long totalShakeScore;
-
-    public static DanggnMemberRankResponse from(DanggnScore danggnScore) {
+    public static DanggnMemberRankResponse of(List<DanggnMemberRankData> danggnPlatformRankList, Integer limit) {
         return new DanggnMemberRankResponse(
-            danggnScore.getMemberGeneration().getMember().getId(),
-            danggnScore.getMemberGeneration().getMember().getName(),
-            danggnScore.getTotalShakeScore()
+            danggnPlatformRankList,
+            limit
         );
     }
 }

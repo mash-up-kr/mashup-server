@@ -5,6 +5,7 @@ import kr.mashup.branding.facade.danggn.DanggnFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.danggn.request.DanggnScoreAddRequest;
+import kr.mashup.branding.ui.danggn.response.DanggnMemberRankData;
 import kr.mashup.branding.ui.danggn.response.DanggnMemberRankResponse;
 import kr.mashup.branding.ui.danggn.response.DanggnPlatformRankResponse;
 import kr.mashup.branding.ui.danggn.response.DanggnScoreResponse;
@@ -42,7 +43,7 @@ public class DanggnController {
 
     @ApiOperation(value = "당근 흔들기 개인별 랭킹")
     @GetMapping("/rank/member")
-    public ApiResponse<List<DanggnMemberRankResponse>> getMemberRank(
+    public ApiResponse<List<DanggnMemberRankData>> getMemberRank(
         @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
         @RequestParam(defaultValue = "11", required = false) Integer limit
     ) {
@@ -51,10 +52,13 @@ public class DanggnController {
 
     @ApiOperation(value = "당근 흔들기 개인별 랭킹 전체")
     @GetMapping("/rank/member/all")
-    public ApiResponse<List<DanggnMemberRankResponse>> getAllMemberRank(
+    public ApiResponse<DanggnMemberRankResponse> getAllMemberRank(
         @RequestParam(defaultValue = "13", required = false) Integer generationNumber
     ) {
-        return ApiResponse.success(danggnFacadeService.getMemberRankList(generationNumber));
+        return ApiResponse.success(DanggnMemberRankResponse.of(
+            danggnFacadeService.getMemberRankList(generationNumber),
+            11
+        ));
     }
 
     @ApiOperation(value = "당근 흔들기 플랫폼별 랭킹")
