@@ -11,11 +11,4 @@ public class DanggnMemberRankResponse {
     List<DanggnMemberRankData> danggnMemberRankDataList;
 
     Integer limit;
-
-    public static DanggnMemberRankResponse of(List<DanggnMemberRankData> danggnPlatformRankList, Integer limit) {
-        return new DanggnMemberRankResponse(
-            danggnPlatformRankList,
-            limit
-        );
-    }
 }
