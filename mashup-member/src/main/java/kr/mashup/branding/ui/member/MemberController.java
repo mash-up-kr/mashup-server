@@ -92,7 +92,7 @@ public class MemberController {
             @ApiIgnore MemberAuth memberAuth
     ) {
         final TokenResponse tokenResponse
-                = memberFacadeService.getAccessToken(memberAuth.getMemberId());
+                = memberFacadeService.getAccessToken(memberAuth.getMemberId(), memberAuth.getMemberGenerationId());
 
         return ApiResponse.success(tokenResponse);
     }
