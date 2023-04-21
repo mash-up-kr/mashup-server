@@ -1,7 +1,7 @@
 package kr.mashup.branding.facade.member;
 
+import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
 import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.domain.generation.exception.GenerationNotFoundException;
 import kr.mashup.branding.domain.invite.Invite;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
@@ -139,7 +139,7 @@ public class MemberFacadeService {
     private MemberGeneration getLatestMemberGeneration(Member member) {
         return member.getMemberGenerations().stream().min(Comparator.comparing(
             memberGeneration -> memberGeneration.getGeneration().getNumber()
-        )).orElseThrow(GenerationNotFoundException::new);
+        )).orElseThrow(GenerationIntegrityFailException::new);
     }
 
     private String getToken(Member member) {

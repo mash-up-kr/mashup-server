@@ -4,7 +4,10 @@ import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
 import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.domain.member.*;
+import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.MemberGeneration;
+import kr.mashup.branding.domain.member.MemberStatus;
+import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
 import kr.mashup.branding.domain.member.exception.MemberNotFoundException;
 import kr.mashup.branding.domain.member.exception.MemberPendingException;
@@ -212,5 +215,9 @@ public class MemberService {
         return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
                 .filter(Member::getDanggnPushNotificationAgreed)
                 .collect(Collectors.toList());
+    }
+
+    public MemberGeneration findByMemberGenerationId(Long memberGenerationId) {
+        return memberGenerationRepository.findById(memberGenerationId).orElseThrow(GenerationIntegrityFailException::new);
     }
 }
