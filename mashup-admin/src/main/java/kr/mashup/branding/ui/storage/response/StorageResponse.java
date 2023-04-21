@@ -12,7 +12,7 @@ import java.util.Map;
 @Value(staticConstructor = "of")
 public class StorageResponse {
     String keyString;
-    Map<String, String> valueMap;
+    Map<String, Object> valueMap;
 
     public static StorageResponse from(Storage storage) throws IOException {
         return StorageResponse.of(

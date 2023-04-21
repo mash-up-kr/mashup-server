@@ -13,5 +13,5 @@ public class StorageRequest {
     String keyString;
 
     @NotNull
-    Map<String, String> valueMap;
+    Map<String, Object> valueMap;
 }

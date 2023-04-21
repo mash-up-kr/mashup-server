@@ -10,13 +10,13 @@ import java.util.Map;
 public class JsonUtil {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static Map<String, String> jsonToMap(String jsonString) throws IOException {
-        TypeReference<Map<String, String>> typeReference = new TypeReference<>() {
+    public static Map<String, Object> jsonToMap(String jsonString) throws IOException {
+        TypeReference<Map<String, Object>> typeReference = new TypeReference<>() {
         };
         return objectMapper.readValue(jsonString, typeReference);
     }
 
-    public static String serialize(Object object) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(object);
+    public static String serialize(Map<String, Object> map) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(map);
     }
 }
