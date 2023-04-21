@@ -5,10 +5,7 @@ import kr.mashup.branding.facade.danggn.DanggnFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.danggn.request.DanggnScoreAddRequest;
-import kr.mashup.branding.ui.danggn.response.DanggnMemberRankData;
-import kr.mashup.branding.ui.danggn.response.DanggnMemberRankResponse;
-import kr.mashup.branding.ui.danggn.response.DanggnPlatformRankResponse;
-import kr.mashup.branding.ui.danggn.response.DanggnScoreResponse;
+import kr.mashup.branding.ui.danggn.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -71,7 +68,7 @@ public class DanggnController {
 
     @ApiOperation(value = "황금 당근 확률")
     @GetMapping("/golden-danggn-percent")
-    public ApiResponse<Integer> getGoldenDanggnPercent() {
-        return ApiResponse.success(danggnFacadeService.getGoldenDanggnPercent());
+    public ApiResponse<GoldenDanggnPercentResponse> getGoldenDanggnPercent() {
+        return ApiResponse.success(GoldenDanggnPercentResponse.of(danggnFacadeService.getGoldenDanggnPercent()));
     }
 }
