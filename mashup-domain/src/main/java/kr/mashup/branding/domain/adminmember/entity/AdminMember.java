@@ -18,6 +18,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Getter
@@ -64,5 +65,9 @@ public class AdminMember {
         adminMember.phoneNumber = phoneNumber;
         adminMember.position = position;
         return adminMember;
+    }
+
+    public void setPassword(PasswordEncoder encoder, String resetPassword){
+        this.password = encoder.encode(resetPassword);
     }
 }

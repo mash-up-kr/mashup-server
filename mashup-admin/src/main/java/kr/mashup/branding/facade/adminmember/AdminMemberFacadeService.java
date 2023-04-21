@@ -2,6 +2,9 @@ package kr.mashup.branding.facade.adminmember;
 
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
+import kr.mashup.branding.domain.exception.ForbiddenException;
+import kr.mashup.branding.service.adminmember.LeaderCheckService;
+import kr.mashup.branding.ui.adminmember.AdminPasswordChangeRequest;
 import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.config.jwt.JwtService;
@@ -31,5 +34,24 @@ public class AdminMemberFacadeService {
 
         final AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
         return AdminMemberVo.from(adminMember);
+    }
+
+    @Transactional
+    public void resetPassword(
+        final Long adminMemberId,
+        final Long targetAdminId,
+        final String resetPassword) {
+
+        final AdminMember executor = adminMemberService.getByAdminMemberId(adminMemberId);
+        final AdminMember targetAdmin = adminMemberService.getByAdminMemberId(targetAdminId);
+
+        adminMemberService.resetPassword(targetAdmin, executor, resetPassword);
+    }
+    @Transactional
+    public void changePassword(Long adminMemberId, AdminPasswordChangeRequest request) {
+
+        final AdminMember me = adminMemberService.getByAdminMemberId(adminMemberId);
+
+        adminMemberService.changePassword(me, request.getCurrentPassword(), request.getChangePassword());
     }
 }
