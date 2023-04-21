@@ -99,7 +99,10 @@ public enum ResultCode {
     INVITE_NOT_FOUND("초대 코드가 존재하지 않습니다."),
 
     // Push Noti (푸시)
-    PUSH_NOTI_FAILED_TO_SEND("푸시 노티 발송에 실패했습니다.");
+    PUSH_NOTI_FAILED_TO_SEND("푸시 노티 발송에 실패했습니다."),
+
+    // Storage
+    STORAGE_NOT_FOUND("키에 해당하는 값을 찾을 수 없습니다");
 
 
     private final String message;
