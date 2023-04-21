@@ -10,7 +10,7 @@ import java.util.Map;
 public class JsonUtil {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static Map<String, Object> jsonToMap(String jsonString) throws IOException {
+    public static Map<String, Object> deserialize(String jsonString) throws IOException {
         TypeReference<Map<String, Object>> typeReference = new TypeReference<>() {
         };
         return objectMapper.readValue(jsonString, typeReference);

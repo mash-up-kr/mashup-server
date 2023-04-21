@@ -17,7 +17,7 @@ public class StorageResponse {
     public static StorageResponse from(Storage storage) throws IOException {
         return StorageResponse.of(
             storage.getKeyString(),
-            JsonUtil.jsonToMap(storage.getValueMap())
+            JsonUtil.deserialize(storage.getValueMap())
         );
     }
 }
