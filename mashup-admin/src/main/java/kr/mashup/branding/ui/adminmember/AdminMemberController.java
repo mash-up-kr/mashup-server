@@ -1,16 +1,12 @@
 package kr.mashup.branding.ui.adminmember;
 
+import kr.mashup.branding.EmptyResponse;
 import kr.mashup.branding.domain.adminmember.vo.AdminLoginCommand;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
 import kr.mashup.branding.ui.adminmember.vo.AdminMemberResponse;
 import kr.mashup.branding.ui.adminmember.vo.LoginRequest;
 import kr.mashup.branding.ui.adminmember.vo.LoginResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import kr.mashup.branding.facade.adminmember.AdminMemberFacadeService;
 import kr.mashup.branding.facade.adminmember.LoginResponseVo;
@@ -44,5 +40,37 @@ public class AdminMemberController {
 
         return ApiResponse.success(AdminMemberResponse.from(adminMemberVo));
     }
+
+    @PostMapping("/{adminId}/password/reset")
+    public ApiResponse<EmptyResponse> resetPassword(
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
+        @PathVariable("adminId") Long targetAdminId,
+        @RequestBody AdminPasswordResetRequest request
+    ){
+        adminMemberFacadeService.resetPassword(adminMemberId, targetAdminId, request.getResetPassword());
+
+        return ApiResponse.success();
+    }
+
+    @DeleteMapping("/{adminId}")
+    public ApiResponse<EmptyResponse> deleteAdminMember(
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
+        @PathVariable("adminId") Long targetAdminId
+    ){
+        adminMemberFacadeService.deleteAdminMember(adminMemberId, targetAdminId);
+
+        return ApiResponse.success();
+    }
+
+    @PostMapping("/{adminId}/password/change")
+    public ApiResponse<EmptyResponse> changePassword(
+        @ApiIgnore @ModelAttribute("adminId") Long adminMemberId,
+        @RequestBody AdminPasswordChangeRequest request
+    ){
+        adminMemberFacadeService.changePassword(adminMemberId, request);
+
+        return ApiResponse.success();
+    }
+
 
 }
