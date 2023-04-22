@@ -47,12 +47,8 @@ public class DanggnFacadeService {
     private final PushNotiEventPublisher pushNotiEventPublisher;
 
     @Transactional
-    public DanggnScoreResponse addScore(
-        Long memberId,
-        Integer generationNumber,
-        Long score
-    ) {
-        final MemberGeneration memberGeneration = memberService.findByMemberIdAndGenerationNumber(memberId, generationNumber);
+    public DanggnScoreResponse addScore(Long memberGenerationId, Long score) {
+        final MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
         DanggnScore danggnScore = danggnScoreService.findByMemberGeneration(memberGeneration);
         danggnScore.addScore(score);
         danggnShakeLogService.createLog(memberGeneration, score);

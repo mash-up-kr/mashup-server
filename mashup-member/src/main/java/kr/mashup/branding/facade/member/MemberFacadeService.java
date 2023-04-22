@@ -1,8 +1,10 @@
 package kr.mashup.branding.facade.member;
 
+import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.invite.Invite;
 import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberInvalidInviteCodeException;
 import kr.mashup.branding.domain.scorehistory.ScoreHistory;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
 
 @Service
@@ -52,8 +55,7 @@ public class MemberFacadeService {
         final Member member =
             memberService.getActiveOrThrowByIdentificationAndPassword(identification, password);
         // Token 생성
-        final Long memberId = member.getId();
-        final String token = jwtService.encode(memberId);
+        final String token = getToken(member);
 
         Platform latestPlatform = memberService.getLatestPlatform(member);
 
@@ -89,7 +91,7 @@ public class MemberFacadeService {
                 request.getFcmToken());
 
         final Member member = memberService.save(memberCreateDto);
-        final String token = jwtService.encode(member.getId());
+        final String token = getToken(member);
         Platform latestPlatform = memberService.getLatestPlatform(member);
 
         // 회원가입 시점에 기본 활동 점수 부여
@@ -113,8 +115,8 @@ public class MemberFacadeService {
         memberService.deleteMember(memberId);
     }
 
-    public TokenResponse getAccessToken(Long memberId) {
-        final String token = jwtService.encode(memberId);
+    public TokenResponse getAccessToken(Long memberId, Long memberGenerationId) {
+        final String token = jwtService.encode(memberId, memberGenerationId);
         return TokenResponse.of(token);
     }
 
@@ -132,5 +134,16 @@ public class MemberFacadeService {
                 request.getDanggnPushNotificationAgreed()
         );
         return true;
+    }
+
+    private MemberGeneration getLatestMemberGeneration(Member member) {
+        return member.getMemberGenerations().stream().min(Comparator.comparing(
+            memberGeneration -> memberGeneration.getGeneration().getNumber()
+        )).orElseThrow(GenerationIntegrityFailException::new);
+    }
+
+    private String getToken(Member member) {
+        final MemberGeneration latestMemberGeneration = getLatestMemberGeneration(member);
+        return jwtService.encode(member.getId(), latestMemberGeneration.getId());
     }
 }
