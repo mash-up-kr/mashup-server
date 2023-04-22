@@ -54,4 +54,11 @@ public class AdminMemberFacadeService {
 
         adminMemberService.changePassword(me, request.getCurrentPassword(), request.getChangePassword());
     }
+
+    @Transactional
+    public void deleteAdminMember(final Long adminMemberId,final Long targetAdminId) {
+        final AdminMember me = adminMemberService.getByAdminMemberId(adminMemberId);
+        final AdminMember targetAdmin = adminMemberService.getByAdminMemberId(targetAdminId);
+        adminMemberService.deleteAdminMember(me, targetAdmin);
+    }
 }

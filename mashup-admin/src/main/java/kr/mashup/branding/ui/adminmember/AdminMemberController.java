@@ -41,7 +41,6 @@ public class AdminMemberController {
         return ApiResponse.success(AdminMemberResponse.from(adminMemberVo));
     }
 
-    // 어드민 멤버 삭제,
     @PostMapping("/{adminId}/password/reset")
     public ApiResponse<EmptyResponse> resetPassword(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
@@ -53,20 +52,19 @@ public class AdminMemberController {
         return ApiResponse.success();
     }
 
-    @PostMapping("/{adminId}/password/reset")
-    public ApiResponse<EmptyResponse> resetPassword(
+    @DeleteMapping("/{adminId}")
+    public ApiResponse<EmptyResponse> deleteAdminMember(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
-        @PathVariable("adminId") Long targetAdminId,
-        @RequestBody AdminPasswordResetRequest request
+        @PathVariable("adminId") Long targetAdminId
     ){
-        adminMemberFacadeService.resetPassword(adminMemberId, targetAdminId, request.getResetPassword());
+        adminMemberFacadeService.deleteAdminMember(adminMemberId, targetAdminId);
 
         return ApiResponse.success();
     }
 
     @PostMapping("/{adminId}/password/change")
     public ApiResponse<EmptyResponse> changePassword(
-        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
+        @ApiIgnore @ModelAttribute("adminId") Long adminMemberId,
         @RequestBody AdminPasswordChangeRequest request
     ){
         adminMemberFacadeService.changePassword(adminMemberId, request);

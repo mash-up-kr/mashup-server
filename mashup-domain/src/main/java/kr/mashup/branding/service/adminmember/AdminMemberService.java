@@ -105,6 +105,13 @@ public class AdminMemberService {
         me.setPassword(passwordEncoder, changePassword);
     }
 
+    public void deleteAdminMember(AdminMember executor, AdminMember targetAdmin) {
+
+        checkLeaderOrSubLeader(executor);
+
+        adminMemberRepository.delete(targetAdmin);
+    }
+
     private void checkLeaderOrSubLeader(final AdminMember executor) {
         final boolean isLeader = leaderCheckService.isMashUpLeader(executor);
         final boolean isSubLeader = leaderCheckService.isMashUpSubLeader(executor);
@@ -113,6 +120,7 @@ public class AdminMemberService {
             throw new ForbiddenException();
         }
     }
+
 
 
 }
