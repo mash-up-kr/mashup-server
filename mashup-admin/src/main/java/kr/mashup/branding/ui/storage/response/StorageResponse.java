@@ -1,7 +1,6 @@
 package kr.mashup.branding.ui.storage.response;
 
 import kr.mashup.branding.domain.storage.Storage;
-import kr.mashup.branding.util.JsonUtil;
 import lombok.Getter;
 import lombok.Value;
 
@@ -14,9 +13,6 @@ public class StorageResponse {
     Map<String, Object> valueMap;
 
     public static StorageResponse from(Storage storage) {
-        return StorageResponse.of(
-            storage.getKeyString(),
-            JsonUtil.deserialize(storage.getValueMap())
-        );
+        return StorageResponse.of(storage.getKeyString(), storage.getValueMap());
     }
 }

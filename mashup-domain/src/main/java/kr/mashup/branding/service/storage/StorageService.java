@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -14,7 +15,7 @@ public class StorageService {
     private final StorageRepository storageRepository;
 
     @Transactional
-    public Storage upsert(String keyString, String valueMap) {
+    public Storage upsert(String keyString, Map<String, Object> valueMap) {
         Storage newStorage = storageRepository.findByKeyString(keyString).map(storage -> {
             storage.setValueMap(valueMap);
             return storage;
