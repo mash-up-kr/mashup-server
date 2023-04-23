@@ -1,20 +1,19 @@
 package kr.mashup.branding.facade.danggn;
 
 import kr.mashup.branding.domain.danggn.DanggnScore;
+import kr.mashup.branding.domain.danggn.DanggnTodayMessage;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.pushnoti.vo.DanggnFirstRecordMemberUpdatedVo;
 import kr.mashup.branding.domain.pushnoti.vo.DanggnFirstRecordPlatformUpdatedVo;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
-import kr.mashup.branding.service.danggn.DanggnCacheKey;
-import kr.mashup.branding.service.danggn.DanggnCacheService;
-import kr.mashup.branding.service.danggn.DanggnScoreService;
-import kr.mashup.branding.service.danggn.DanggnShakeLogService;
+import kr.mashup.branding.service.danggn.*;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.danggn.response.DanggnMemberRankData;
 import kr.mashup.branding.ui.danggn.response.DanggnPlatformRankResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnRandomMessageResponse;
 import kr.mashup.branding.ui.danggn.response.DanggnScoreResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,6 +41,8 @@ public class DanggnFacadeService {
     private final DanggnScoreService danggnScoreService;
 
     private final DanggnCacheService danggnCacheService;
+
+    private final DanggnTodayMessageService danggnTodayMessageService;
 
     private final GenerationService generationService;
 
@@ -75,6 +77,12 @@ public class DanggnFacadeService {
 
     public Integer getGoldenDanggnPercent() {
         return goldenDanggnPercent;
+    }
+
+    public DanggnRandomMessageResponse getRandomTodayMessage() {
+        List<DanggnTodayMessage> danggnTodayMessageList = danggnTodayMessageService.findAll();
+        Collections.shuffle(danggnTodayMessageList);
+        return DanggnRandomMessageResponse.from(danggnTodayMessageList.get(0));
     }
 
     @Scheduled(cron = "0 0 09,13,19 * * *")
