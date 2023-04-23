@@ -6,7 +6,7 @@ import kr.mashup.branding.repository.storage.StorageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -23,6 +23,7 @@ public class StorageService {
         return storageRepository.save(newStorage);
     }
 
+    @Transactional(readOnly = true)
     public Storage findByKey(String keyString) {
         return storageRepository.findByKeyString(keyString).orElseThrow(StorageNotFoundException::new);
     }
