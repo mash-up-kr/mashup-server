@@ -94,18 +94,18 @@ public class DanggnFacadeService {
             return;
 
         generations.forEach(
-            generation -> {
-                Integer generationNumber = generation.getNumber();
-                String currentFirstRecordMemberId = danggnCacheService.findFirstRecordMemberId(generationNumber);
-                String cachedFirstRecordMemberId = danggnCacheService.getCachedFirstRecordMemberId(generationNumber);
+                generation -> {
+                    Integer generationNumber = generation.getNumber();
+                    String currentFirstRecordMemberId = danggnCacheService.findFirstRecordMemberId(generationNumber);
+                    String cachedFirstRecordMemberId = danggnCacheService.getCachedFirstRecordMemberId(generationNumber);
 
-                if (currentFirstRecordMemberId == null || currentFirstRecordMemberId.equals(cachedFirstRecordMemberId)) {
-                    return;
+                    if (currentFirstRecordMemberId == null || currentFirstRecordMemberId.equals(cachedFirstRecordMemberId)) {
+                        return;
+                    }
+                    // 변경된 부분 있으면 업데이트 푸시 알림 보낸 후 캐시 업데이트
+                    pushNotiEventPublisher.publishPushNotiSendEvent(new DanggnFirstRecordMemberUpdatedVo(memberService.getAllDanggnPushNotiTargetableMembers()));
+                    danggnCacheService.updateCachedFirstRecord(DanggnCacheKey.MEMBER, generationNumber, currentFirstRecordMemberId);
                 }
-                // 변경된 부분 있으면 업데이트 푸시 알림 보낸 후 캐시 업데이트
-                pushNotiEventPublisher.publishPushNotiSendEvent(new DanggnFirstRecordMemberUpdatedVo(memberService.getAllDanggnPushNotiTargetableMembers()));
-                danggnCacheService.updateCachedFirstRecord(DanggnCacheKey.MEMBER, generationNumber, currentFirstRecordMemberId);
-            }
         );
     }
 
