@@ -71,4 +71,10 @@ public class DanggnController {
     public ApiResponse<GoldenDanggnPercentResponse> getGoldenDanggnPercent() {
         return ApiResponse.success(GoldenDanggnPercentResponse.of(danggnFacadeService.getGoldenDanggnPercent()));
     }
+
+    @ApiOperation(value = "랜덤 오늘의 메시지")
+    @GetMapping("/random-today-message")
+    public ApiResponse<DanggnRandomMessageResponse> getRandomTodayMessage() {
+        return ApiResponse.success(danggnFacadeService.getRandomTodayMessage());
+    }
 }
