@@ -17,7 +17,7 @@ public class StorageController {
     private final StorageFacadeService storageFacadeService;
 
     @ApiOperation("get value")
-    @GetMapping("/{key}")
+    @GetMapping("/key/{key}")
     public ApiResponse<StorageResponse> getValue(@PathVariable String key) {
         return ApiResponse.success(StorageResponse.from(storageFacadeService.findByKeyString(key)));
     }
