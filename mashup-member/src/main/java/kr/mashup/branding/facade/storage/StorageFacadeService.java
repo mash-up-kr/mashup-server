@@ -11,10 +11,6 @@ public class StorageFacadeService {
 
     private final StorageService storageService;
 
-    public Storage upsert(String keyString, String valueMap) {
-        return storageService.upsert(keyString, valueMap);
-    }
-
     public Storage findByKeyString(String keyString) {
         return storageService.findByKey(keyString);
     }

@@ -5,7 +5,6 @@ import kr.mashup.branding.util.JsonUtil;
 import lombok.Getter;
 import lombok.Value;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Getter
@@ -14,7 +13,7 @@ public class StorageResponse {
     String keyString;
     Map<String, Object> valueMap;
 
-    public static StorageResponse from(Storage storage) throws IOException {
+    public static StorageResponse from(Storage storage) {
         return StorageResponse.of(
             storage.getKeyString(),
             JsonUtil.deserialize(storage.getValueMap())

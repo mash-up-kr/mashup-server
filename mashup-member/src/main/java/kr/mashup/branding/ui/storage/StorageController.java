@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/api/v1/storage")
 @RequiredArgsConstructor
@@ -20,7 +18,7 @@ public class StorageController {
 
     @ApiOperation("get value")
     @GetMapping("/{key}")
-    public ApiResponse<StorageResponse> getValue(@PathVariable String key) throws IOException {
+    public ApiResponse<StorageResponse> getValue(@PathVariable String key) {
         return ApiResponse.success(StorageResponse.from(storageFacadeService.findByKeyString(key)));
     }
 }

@@ -102,7 +102,12 @@ public enum ResultCode {
     PUSH_NOTI_FAILED_TO_SEND("푸시 노티 발송에 실패했습니다."),
 
     // Storage
-    STORAGE_NOT_FOUND("키에 해당하는 값을 찾을 수 없습니다");
+    STORAGE_NOT_FOUND("키에 해당하는 값을 찾을 수 없습니다"),
+
+    // JsonUtil
+    JSON_DESERIALIZE_UNABLE("객체를 json string 을 deserialize 할 수 없습니다"),
+    JSON_SERIALIZE_UNABLE("json string 을 객체로 serialize 할 수 없습니다");
+
 
 
     private final String message;

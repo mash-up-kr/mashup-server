@@ -9,7 +9,7 @@ import kr.mashup.branding.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/storage")
@@ -19,16 +19,16 @@ public class StorageController {
 
     @ApiOperation("key-value 저장")
     @PostMapping
-    public ApiResponse<StorageResponse> upsert(@RequestBody StorageRequest storageRequest) throws IOException {
-        return ApiResponse.success(StorageResponse.from(storageFacadeService.upsert(
+    public ApiResponse<StorageResponse> upsert(@Valid @RequestBody StorageRequest storageRequest) {
+        return ApiResponse.success(storageFacadeService.upsert(
             storageRequest.getKeyString(),
             JsonUtil.serialize(storageRequest.getValueMap())
-        )));
+        ));
     }
 
     @ApiOperation("get value")
     @GetMapping("/{key}")
-    public ApiResponse<StorageResponse> getValue(@PathVariable String key) throws IOException {
-        return ApiResponse.success(StorageResponse.from(storageFacadeService.findByKeyString(key)));
+    public ApiResponse<StorageResponse> getValue(@PathVariable String key) {
+        return ApiResponse.success(storageFacadeService.findByKeyString(key));
     }
 }
