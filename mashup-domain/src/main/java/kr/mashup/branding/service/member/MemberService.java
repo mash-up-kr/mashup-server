@@ -1,5 +1,16 @@
 package kr.mashup.branding.service.member;
 
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
@@ -15,17 +26,8 @@ import kr.mashup.branding.dto.member.MemberCreateDto;
 import kr.mashup.branding.repository.member.MemberGenerationRepository;
 import kr.mashup.branding.repository.member.MemberRepository;
 import kr.mashup.branding.repository.member.MemberRepositoryCustomImpl.MemberScoreQueryResult;
+import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -219,5 +221,10 @@ public class MemberService {
 
     public MemberGeneration findByMemberGenerationId(Long memberGenerationId) {
         return memberGenerationRepository.findById(memberGenerationId).orElseThrow(GenerationIntegrityFailException::new);
+    }
+
+    public Boolean isActiveGeneration(MemberGeneration memberGeneration) {
+        Generation generation = memberGeneration.getGeneration();
+        return DateUtil.isInTime(generation.getStartedAt(), generation.getEndedAt(), LocalDate.now());
     }
 }
