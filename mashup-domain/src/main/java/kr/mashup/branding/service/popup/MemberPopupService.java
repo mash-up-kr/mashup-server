@@ -24,11 +24,11 @@ public class MemberPopupService {
 
 	public Boolean isPossibleMemberPopup(Member member, Storage storage) {
 		Optional<MemberPopup> memberPopup = memberPopupRepository.findByMemberAndStorage(member, storage);
-		// 팝업 또는 페이지에 방문하지 않은 경우
+		// 팝업 또는 페이지에 접근하지 않은 경우
 		if (memberPopup.isEmpty()) {
 			return true;
 		}
-		// 페이지에 방문하지 않은 경우 && 마지막으로 본 일자가 현재 보다 과거인 경우
-		return !memberPopup.get().getHasVisited() && memberPopup.get().getLastViewedAt().isBefore(LocalDate.now());
+		// 페이지에 방문하지 않은 경우(팝업 상태 활성화) && 마지막으로 본 일자가 현재 보다 과거인 경우
+		return memberPopup.get().getIsEnabled() && memberPopup.get().getLastViewedAt().isBefore(LocalDate.now());
 	}
 }

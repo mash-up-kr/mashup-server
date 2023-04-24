@@ -79,7 +79,7 @@ public enum ResultCode {
     GENERATION_NOT_FOUND("기수가 존재하지 않습니다."),
     GENERATION_ALREADY_EXISTS("이미 존재하는 기수입니다."),
     MEMBER_GENERATION_NOT_FOUND("사용자의 기수 정보가 존재하지 않습니다."),
-    INACTIVE_GENERATION("활동하지 않느 기수입니다."),
+    INACTIVE_GENERATION("활동하지 않는 기수입니다."),
 
     // AttendanceCode (출석 코드)
     ATTENDANCE_CODE_DUPLICATED("이미 사용된 코드입니다."),
@@ -108,9 +108,6 @@ public enum ResultCode {
     // JsonUtil
     JSON_DESERIALIZE_UNABLE("객체를 json string 을 deserialize 할 수 없습니다"),
     JSON_SERIALIZE_UNABLE("json string 을 객체로 serialize 할 수 없습니다"),
-
-    // Member Popup
-    MEMBER_POPUP_NOT_FOUND("팝업을 찾을 수 없습니다."),
     ;
 
 

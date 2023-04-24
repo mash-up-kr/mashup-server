@@ -41,7 +41,7 @@ public class MemberPopupController {
 	}
 
 	@ApiOperation(
-		value = "페이지 방문 업데이트",
+		value = "팝업 비활성화",
 		notes =
 			"<h2>Error Code</h2>" +
 				"<p>" +
@@ -51,12 +51,12 @@ public class MemberPopupController {
 				"</p>"
 
 	)
-	@PatchMapping("/{popupType}/visit")
-	public ApiResponse<EmptyResponse> updateIsVisible(
+	@PatchMapping("/{popupType}/disabled")
+	public ApiResponse<EmptyResponse> updateDisabled(
 		@ApiIgnore MemberAuth memberAuth,
 		@PathVariable String popupType
 	) {
-		memberPopupFacadeService.updateHasVisited(memberAuth.getMemberGenerationId(), popupType);
+		memberPopupFacadeService.updateDisabled(memberAuth.getMemberGenerationId(), popupType);
 		return ApiResponse.success();
 	}
 

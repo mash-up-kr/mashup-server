@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberPopup extends BaseEntity {
 
-	private Boolean hasVisited;		// 페이지 접근 여부
+	private Boolean isEnabled;			// 팝업 활성화 여부
 
-	private LocalDate lastViewedAt;	// 팝업 마지막으로 본 날짜
+	private LocalDate lastViewedAt;		// 팝업 마지막으로 본 날짜
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "member_id")
@@ -32,28 +32,28 @@ public class MemberPopup extends BaseEntity {
 	private Storage storage;
 
 	public static MemberPopup of(
-		Boolean isVisible,
+		Boolean isEnabled,
 		LocalDate lastViewedAt,
 		Member member,
 		Storage storage
 	) {
-		return new MemberPopup(isVisible, lastViewedAt, member, storage);
+		return new MemberPopup(isEnabled, lastViewedAt, member, storage);
 	}
 
 	private MemberPopup(
-		Boolean hasVisited,
+		Boolean isEnabled,
 		LocalDate lastViewedAt,
 		Member member,
 		Storage storage
 	) {
-		this.hasVisited = hasVisited;
+		this.isEnabled = isEnabled;
 		this.lastViewedAt = lastViewedAt;
 		this.member = member;
 		this.storage = storage;
 	}
 
-	public void updateHasVisited(Boolean isVisible) {
-		this.hasVisited = isVisible;
+	public void updateIsEnabled(Boolean isEnabled) {
+		this.isEnabled = isEnabled;
 	}
 
 	public void updateLastViewedAt(LocalDate at) {

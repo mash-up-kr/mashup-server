@@ -52,13 +52,13 @@ public class MemberPopupFacadeService {
 	}
 
 	@Transactional
-	public void updateHasVisited(
+	public void updateDisabled(
 		Long memberGenerationId,
 		String popupType
 	) {
 
 		MemberPopup memberPopup = getUpdatableByMemberGenerationAndStorage(memberGenerationId, popupType);
-		memberPopup.updateHasVisited(true);
+		memberPopup.updateIsEnabled(false);
 	}
 
 	@Transactional
