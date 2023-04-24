@@ -1,4 +1,4 @@
-package kr.mashup.branding.facade.memberpopup;
+package kr.mashup.branding.facade.popup;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import kr.mashup.branding.domain.member.exception.InactiveGenerationException;
 import kr.mashup.branding.domain.popup.MemberPopup;
 import kr.mashup.branding.domain.storage.Storage;
 import kr.mashup.branding.service.member.MemberService;
-import kr.mashup.branding.service.memberpopup.MemberPopupService;
+import kr.mashup.branding.service.popup.MemberPopupService;
 import kr.mashup.branding.service.storage.StorageService;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;

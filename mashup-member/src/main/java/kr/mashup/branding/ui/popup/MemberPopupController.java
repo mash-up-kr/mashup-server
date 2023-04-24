@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.memberpopup;
+package kr.mashup.branding.ui.popup;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
-import kr.mashup.branding.facade.memberpopup.MemberPopupFacadeService;
+import kr.mashup.branding.facade.popup.MemberPopupFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.EmptyResponse;

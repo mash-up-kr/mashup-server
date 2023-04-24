@@ -1,4 +1,4 @@
-package kr.mashup.branding.service.memberpopup;
+package kr.mashup.branding.service.popup;
 
 import java.time.LocalDate;
 import java.util.Optional;
