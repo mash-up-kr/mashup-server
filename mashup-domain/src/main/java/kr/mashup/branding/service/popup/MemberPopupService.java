@@ -19,7 +19,7 @@ public class MemberPopupService {
 
 	public MemberPopup findOrSaveMemberPopupByMemberAndStorage(Member member, Storage storage) {
 		return memberPopupRepository.findByMemberAndStorage(member, storage)
-			.orElseGet(() -> memberPopupRepository.save(MemberPopup.of(false, LocalDate.now(), member, storage)));
+			.orElseGet(() -> memberPopupRepository.save(MemberPopup.of(true, LocalDate.now(), member, storage)));
 	}
 
 	public Boolean isPossibleMemberPopup(Member member, Storage storage) {
