@@ -3,13 +3,14 @@ package kr.mashup.branding.domain.popup;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.member.Member;
-import kr.mashup.branding.domain.storage.Storage;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,29 +28,28 @@ public class MemberPopup extends BaseEntity {
 	@JoinColumn(name = "member_id")
 	private Member member;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "storage_id")
-	private Storage storage;
+	@Enumerated(EnumType.STRING)
+	private PopupType popupType;
 
 	public static MemberPopup of(
 		Boolean isEnabled,
 		LocalDate lastViewedAt,
 		Member member,
-		Storage storage
+		PopupType popupType
 	) {
-		return new MemberPopup(isEnabled, lastViewedAt, member, storage);
+		return new MemberPopup(isEnabled, lastViewedAt, member, popupType);
 	}
 
 	private MemberPopup(
 		Boolean isEnabled,
 		LocalDate lastViewedAt,
 		Member member,
-		Storage storage
+		PopupType popupType
 	) {
 		this.isEnabled = isEnabled;
 		this.lastViewedAt = lastViewedAt;
 		this.member = member;
-		this.storage = storage;
+		this.popupType = popupType;
 	}
 
 	public void updateIsEnabled(Boolean isEnabled) {

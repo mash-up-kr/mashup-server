@@ -10,11 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.exception.InactiveGenerationException;
 import kr.mashup.branding.domain.popup.MemberPopup;
-import kr.mashup.branding.domain.storage.Storage;
+import kr.mashup.branding.domain.popup.PopupType;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.popup.MemberPopupService;
 import kr.mashup.branding.service.storage.StorageService;
-import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,63 +25,57 @@ public class MemberPopupFacadeService {
 	private final MemberService memberService;
 	private final StorageService storageService;
 
-	public List<String> getPossiblePopupKeys(
+	public List<PopupType> getEnabledPopupTypes(
 		Long memberGenerationId
 	) {
 
-		List<String> possiblePopupKeys = new ArrayList<>();
+		List<PopupType> enabledMemberPopupTypes = new ArrayList<>();
 		MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
 
 		// 멤버의 기수가 활동 중인 기수가 아닌 경우
 		if (!memberService.isActiveGeneration(memberGeneration)) {
-			return possiblePopupKeys;
+			return enabledMemberPopupTypes;
 		}
 
-		// 현재 운영하는 팝업의 Storage key 와 운영기간(새로운 팝업 추가시 변경이 필요한 값)
-		String popupKey = "danggnPopup";
-		Storage storage = storageService.findByKey(popupKey);
-		LocalDate popupStartedAt = LocalDate.of(2023, 4, 1);
-		LocalDate popupEndedAt = LocalDate.of(2023, 5, 15);
+		// 운영 가능한 팝업 중에 멤버가 볼 수 있는 팝업 조회
+		List<PopupType> activePopupTypes = PopupType.findActives(LocalDate.now());
+		activePopupTypes.stream()
+			.filter(popupType -> memberPopupService.isEnabledMemberPopup(memberGeneration.getMember(), popupType))
+			.forEach(enabledMemberPopupTypes::add);
 
-		if (DateUtil.isInTime(popupStartedAt, popupEndedAt, LocalDate.now())
-			&& memberPopupService.isPossibleMemberPopup(memberGeneration.getMember(), storage)) {
-			possiblePopupKeys.add(popupKey);
-		}
-		return possiblePopupKeys;
+		return enabledMemberPopupTypes;
 	}
 
 	@Transactional
 	public void updateDisabled(
 		Long memberGenerationId,
-		String popupType
+		PopupType popupType
 	) {
 
-		MemberPopup memberPopup = getUpdatableByMemberGenerationAndStorage(memberGenerationId, popupType);
+		MemberPopup memberPopup = getUpdatableByMemberGenerationAndType(memberGenerationId, popupType);
 		memberPopup.updateIsEnabled(false);
 	}
 
 	@Transactional
 	public void updateLastViewedAt(
 		Long memberGenerationId,
-		String popupType
+		PopupType popupType
 	) {
 
-		MemberPopup memberPopup = getUpdatableByMemberGenerationAndStorage(memberGenerationId, popupType);
+		MemberPopup memberPopup = getUpdatableByMemberGenerationAndType(memberGenerationId, popupType);
 		memberPopup.updateLastViewedAt(LocalDate.now());
 	}
 
-	private MemberPopup getUpdatableByMemberGenerationAndStorage(
+	private MemberPopup getUpdatableByMemberGenerationAndType(
 		Long memberGenerationId,
-		String popupType
+		PopupType popupType
 	) {
-
-		Storage storage = storageService.findByKey(popupType);
 
 		MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
 		if (!memberService.isActiveGeneration(memberGeneration)) {
 			throw new InactiveGenerationException();
 		}
 
-		return memberPopupService.findOrSaveMemberPopupByMemberAndStorage(memberGeneration.getMember(), storage);
+		return memberPopupService.findOrSaveMemberPopupByMemberAndType(memberGeneration.getMember(), popupType);
 	}
 }

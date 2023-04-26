@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.popup.MemberPopup;
-import kr.mashup.branding.domain.storage.Storage;
+import kr.mashup.branding.domain.popup.PopupType;
 import kr.mashup.branding.repository.memberpopup.MemberPopupRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -17,13 +17,13 @@ public class MemberPopupService {
 
 	private final MemberPopupRepository memberPopupRepository;
 
-	public MemberPopup findOrSaveMemberPopupByMemberAndStorage(Member member, Storage storage) {
-		return memberPopupRepository.findByMemberAndStorage(member, storage)
-			.orElseGet(() -> memberPopupRepository.save(MemberPopup.of(true, LocalDate.now(), member, storage)));
+	public MemberPopup findOrSaveMemberPopupByMemberAndType(Member member, PopupType popupType) {
+		return memberPopupRepository.findByMemberAndPopupType(member, popupType)
+			.orElseGet(() -> memberPopupRepository.save(MemberPopup.of(true, LocalDate.now(), member, popupType)));
 	}
 
-	public Boolean isPossibleMemberPopup(Member member, Storage storage) {
-		Optional<MemberPopup> memberPopup = memberPopupRepository.findByMemberAndStorage(member, storage);
+	public Boolean isEnabledMemberPopup(Member member, PopupType popupType) {
+		Optional<MemberPopup> memberPopup = memberPopupRepository.findByMemberAndPopupType(member, popupType);
 		// 팝업 또는 페이지에 접근하지 않은 경우
 		if (memberPopup.isEmpty()) {
 			return true;

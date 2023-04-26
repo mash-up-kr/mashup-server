@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
+import kr.mashup.branding.domain.popup.PopupType;
 import kr.mashup.branding.facade.popup.MemberPopupFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
@@ -34,10 +35,10 @@ public class MemberPopupController {
 
 	)
 	@GetMapping
-	public ApiResponse<List<String>> getPossiblePopupKeys(
+	public ApiResponse<List<PopupType>> getEnabledPopupTypes(
 		@ApiIgnore MemberAuth memberAuth
 	) {
-		return ApiResponse.success(memberPopupFacadeService.getPossiblePopupKeys(memberAuth.getMemberGenerationId()));
+		return ApiResponse.success(memberPopupFacadeService.getEnabledPopupTypes(memberAuth.getMemberGenerationId()));
 	}
 
 	@ApiOperation(
@@ -54,7 +55,7 @@ public class MemberPopupController {
 	@PatchMapping("/{popupType}/disabled")
 	public ApiResponse<EmptyResponse> updateDisabled(
 		@ApiIgnore MemberAuth memberAuth,
-		@PathVariable String popupType
+		@PathVariable PopupType popupType
 	) {
 		memberPopupFacadeService.updateDisabled(memberAuth.getMemberGenerationId(), popupType);
 		return ApiResponse.success();
@@ -74,7 +75,7 @@ public class MemberPopupController {
 	@PatchMapping("/{popupType}/last-viewed")
 	public ApiResponse<EmptyResponse> updateLastViewedAt(
 		@ApiIgnore MemberAuth memberAuth,
-		@PathVariable String popupType
+		@PathVariable PopupType popupType
 	) {
 		memberPopupFacadeService.updateLastViewedAt(memberAuth.getMemberGenerationId(), popupType);
 		return ApiResponse.success();
