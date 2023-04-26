@@ -1,11 +1,16 @@
 package kr.mashup.branding.facade.pushnoti;
 
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.mashup.branding.domain.pushnoti.DataKeyType;
+import kr.mashup.branding.domain.pushnoti.LinkType;
 import kr.mashup.branding.domain.pushnoti.vo.PushNotiSendVo;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
@@ -19,7 +24,8 @@ public class PushNotiFacadeService {
             new PushNotiSendVo(
                 memberService.getAllPushNotiTargetableMembers(),
                 title,
-                body
+                body,
+                Map.of(DataKeyType.LINK.getKey(), LinkType.MAIN.toString())
             )
         );
     }
