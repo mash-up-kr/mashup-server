@@ -1,6 +1,6 @@
 package kr.mashup.branding.domain.popup;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,7 +22,7 @@ public class MemberPopup extends BaseEntity {
 
 	private Boolean isEnabled;			// 팝업 활성화 여부
 
-	private LocalDate lastViewedAt;		// 팝업 마지막으로 본 날짜
+	private LocalDateTime lastViewedAt;		// 팝업 마지막으로 본 날짜
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "member_id")
@@ -33,7 +33,7 @@ public class MemberPopup extends BaseEntity {
 
 	public static MemberPopup of(
 		Boolean isEnabled,
-		LocalDate lastViewedAt,
+		LocalDateTime lastViewedAt,
 		Member member,
 		PopupType popupType
 	) {
@@ -42,7 +42,7 @@ public class MemberPopup extends BaseEntity {
 
 	private MemberPopup(
 		Boolean isEnabled,
-		LocalDate lastViewedAt,
+		LocalDateTime lastViewedAt,
 		Member member,
 		PopupType popupType
 	) {
@@ -56,7 +56,7 @@ public class MemberPopup extends BaseEntity {
 		this.isEnabled = isEnabled;
 	}
 
-	public void updateLastViewedAt(LocalDate at) {
+	public void updateLastViewedAt(LocalDateTime at) {
 		this.lastViewedAt = at;
 	}
 }

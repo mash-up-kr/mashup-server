@@ -1,6 +1,7 @@
 package kr.mashup.branding.service.popup;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class MemberPopupService {
 
 	public MemberPopup findOrSaveMemberPopupByMemberAndType(Member member, PopupType popupType) {
 		return memberPopupRepository.findByMemberAndPopupType(member, popupType)
-			.orElseGet(() -> memberPopupRepository.save(MemberPopup.of(true, LocalDate.now(), member, popupType)));
+			.orElseGet(() -> memberPopupRepository.save(MemberPopup.of(true, LocalDateTime.now(), member, popupType)));
 	}
 
 	public Boolean isEnabledMemberPopup(Member member, PopupType popupType) {
@@ -29,6 +30,6 @@ public class MemberPopupService {
 			return true;
 		}
 		// 페이지에 방문하지 않은 경우(팝업 상태 활성화) && 마지막으로 본 일자가 현재 보다 과거인 경우
-		return memberPopup.get().getIsEnabled() && memberPopup.get().getLastViewedAt().isBefore(LocalDate.now());
+		return memberPopup.get().getIsEnabled() && memberPopup.get().getLastViewedAt().toLocalDate().isBefore(LocalDate.now());
 	}
 }

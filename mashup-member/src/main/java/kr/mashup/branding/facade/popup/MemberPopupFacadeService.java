@@ -1,6 +1,7 @@
 package kr.mashup.branding.facade.popup;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class MemberPopupFacadeService {
 	) {
 
 		MemberPopup memberPopup = getUpdatableByMemberGenerationAndType(memberGenerationId, popupType);
-		memberPopup.updateLastViewedAt(LocalDate.now());
+		memberPopup.updateLastViewedAt(LocalDateTime.now());
 	}
 
 	private MemberPopup getUpdatableByMemberGenerationAndType(
