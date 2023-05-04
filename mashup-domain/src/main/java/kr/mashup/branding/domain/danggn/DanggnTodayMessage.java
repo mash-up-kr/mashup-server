@@ -17,4 +17,15 @@ public class DanggnTodayMessage {
     private Long id;
 
     private String message;
+
+    private DanggnTodayMessage(String message) {
+        this.message = message;
+    }
+    public static DanggnTodayMessage of(String message) {
+        return new DanggnTodayMessage(message);
+    }
+
+    public void updateMessage(String message) {
+        this.message = message;
+    }
 }
