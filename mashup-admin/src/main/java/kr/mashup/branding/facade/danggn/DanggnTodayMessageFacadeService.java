@@ -38,14 +38,15 @@ public class DanggnTodayMessageFacadeService {
 
     @Transactional(rollbackFor = Exception.class)
     public TodayMessageResponse updateTodayMessage(Long id, TodayMessageRequest todayMessageRequest) {
-        DanggnTodayMessage updateMessage =
-                danggnTodayMessageService.updateTodayMessage(id, todayMessageRequest.getMessage());
+        DanggnTodayMessage updateMessage = danggnTodayMessageService.readTodayMessage(id);
+        danggnTodayMessageService.updateTodayMessage(updateMessage, todayMessageRequest.getMessage());
 
         return TodayMessageResponse.from(updateMessage);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void deleteTodayMessage(Long id) {
-        danggnTodayMessageService.deleteTodayMessage(id);
+        DanggnTodayMessage deleteMessage = danggnTodayMessageService.readTodayMessage(id);
+        danggnTodayMessageService.deleteTodayMessage(deleteMessage);
     }
 }

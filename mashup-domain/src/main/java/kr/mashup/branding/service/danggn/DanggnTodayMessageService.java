@@ -1,6 +1,7 @@
 package kr.mashup.branding.service.danggn;
 
 import kr.mashup.branding.domain.danggn.DanggnTodayMessage;
+import kr.mashup.branding.domain.danggn.Exception.DanggnTodayMessageNotFoundException;
 import kr.mashup.branding.repository.danggn.DanggnTodayMessageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,8 @@ public class DanggnTodayMessageService {
     }
 
     public DanggnTodayMessage readTodayMessage(Long id) {
-        return danggnTodayMessageRepository.findById(id).orElse(null);
+        return danggnTodayMessageRepository.findById(id).
+                orElseThrow(DanggnTodayMessageNotFoundException::new);
     }
 
     public DanggnTodayMessage createTodayMessage(String message) {
@@ -29,15 +31,13 @@ public class DanggnTodayMessageService {
         return newMessage;
     }
 
-    public DanggnTodayMessage updateTodayMessage(Long id, String message) {
-        DanggnTodayMessage updateMessage = danggnTodayMessageRepository.getById(id);
-        log.info("updateMessage = {}", updateMessage);
+    public DanggnTodayMessage updateTodayMessage(DanggnTodayMessage updateMessage, String message) {
         updateMessage.updateMessage(message);
 
         return updateMessage;
     }
 
-    public void deleteTodayMessage(Long id) {
-        danggnTodayMessageRepository.deleteById(id);
+    public void deleteTodayMessage(DanggnTodayMessage message) {
+        danggnTodayMessageRepository.delete(message);
     }
 }
