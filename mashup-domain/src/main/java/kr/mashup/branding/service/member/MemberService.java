@@ -227,4 +227,8 @@ public class MemberService {
         Generation generation = memberGeneration.getGeneration();
         return DateUtil.isInTime(generation.getStartedAt(), generation.getEndedAt(), LocalDate.now());
     }
+
+    public List<MemberGeneration> findByGeneration(Generation generation) {
+        return memberGenerationRepository.findByGeneration(generation);
+    }
 }
