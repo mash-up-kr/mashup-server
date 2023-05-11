@@ -19,17 +19,21 @@ public class DanggnNotificationRecordService {
 
 	private final DanggnNotificationPlatformRecordRepository danggnNotificationPlatformRecordRepository;
 
-	public DanggnNotificationMemberRecord findDanggnNotificationMemberRecordByMemberGenerationOrSave(MemberGeneration memberGeneration) {
+	public DanggnNotificationMemberRecord findMemberRecordOrSave(MemberGeneration memberGeneration) {
 		return danggnNotificationMemberRecordRepository.findByMemberGeneration(memberGeneration)
 			.orElseGet(() -> danggnNotificationMemberRecordRepository.save(DanggnNotificationMemberRecord.of(memberGeneration, 0L)));
 	}
 
-	public DanggnNotificationPlatformRecord findDanggnNotificationPlatformRecordByPlatform(Generation generation, Platform platform) {
+	public DanggnNotificationPlatformRecord findPlatformRecordOrSave(Generation generation, Platform platform) {
 		return danggnNotificationPlatformRecordRepository.findByPlatformAndGeneration(platform, generation)
 			.orElseGet(() -> danggnNotificationPlatformRecordRepository.save(DanggnNotificationPlatformRecord.of(generation, platform, 0L)));
 	}
 
-	public Boolean isUpdatedUnit(Long latestScore, Long previousScore, Long unit) {
+	public Boolean isThresholdNotificationSent(Long latestScore, Long previousScore, Long unit) {
 		return (latestScore / unit) > (previousScore / unit);
+	}
+
+	public Long calculateUnit(Long latestScore, Long unit) {
+		return (latestScore / unit) * unit;
 	}
 }
