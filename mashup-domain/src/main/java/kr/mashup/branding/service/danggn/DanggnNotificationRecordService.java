@@ -28,12 +28,4 @@ public class DanggnNotificationRecordService {
 		return danggnNotificationPlatformRecordRepository.findByPlatformAndGeneration(platform, generation)
 			.orElseGet(() -> danggnNotificationPlatformRecordRepository.save(DanggnNotificationPlatformRecord.of(generation, platform, 0L)));
 	}
-
-	public Boolean isThresholdNotificationSent(Long latestScore, Long previousScore, Long unit) {
-		return (latestScore / unit) > (previousScore / unit);
-	}
-
-	public Long calculateUnit(Long latestScore, Long unit) {
-		return (latestScore / unit) * unit;
-	}
 }
