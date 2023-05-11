@@ -13,7 +13,7 @@ public class DanggnNotificationMemberRecordUpdatedVo extends PushNotiSendVo {
     private static final String body = "어케했누;;; 전체 랭킹을 확인해보세요.";
     private static final Map<String, String> dataMap = Map.of(DataKeyType.LINK.getKey(), LinkType.DANGGN.toString());
 
-    public DanggnNotificationMemberRecordUpdatedVo(Long unit, Member member, List<Member> members) {
-        super(members, String.format(title, member.getName(), new DecimalFormat("###,###").format(unit)), body, dataMap);
+    public DanggnNotificationMemberRecordUpdatedVo(Long stage, Member member, List<Member> members) {
+        super(members, String.format(title, member.getName(), new DecimalFormat("###,###").format(stage)), body, dataMap);
     }
 }

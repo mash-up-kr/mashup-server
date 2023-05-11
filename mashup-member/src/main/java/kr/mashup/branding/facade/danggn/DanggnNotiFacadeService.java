@@ -129,7 +129,7 @@ public class DanggnNotiFacadeService {
                     record.updateLastNotificationSentScore(latestScore);
                     pushNotiEventPublisher.publishPushNotiSendEvent(
                         new DanggnNotificationMemberRecordUpdatedVo(
-                            DanggnNotificationSentUnit.MEMBER_RECORD.calculateUnit(latestScore),
+                            DanggnNotificationSentUnit.MEMBER_RECORD.calculateStage(latestScore),
                             record.getMemberGeneration().getMember(),
                             memberService.getAllDanggnPushNotiTargetableMembers()));
                 });
@@ -164,7 +164,7 @@ public class DanggnNotiFacadeService {
                         record.updateLastNotificationSentScore(latestScore);
                         pushNotiEventPublisher.publishPushNotiSendEvent(
                             new DanggnNotificationPlatformRecordUpdatedVo(
-                                DanggnNotificationSentUnit.PLATFORM_RECORD.calculateUnit(latestScore),
+                                DanggnNotificationSentUnit.PLATFORM_RECORD.calculateStage(latestScore),
                                 platform,
                                 memberService.getAllDanggnPushNotiTargetableMembers()));
                     });

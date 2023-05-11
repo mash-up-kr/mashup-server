@@ -15,7 +15,7 @@ public enum DanggnNotificationSentUnit {
 		return (previous / this.unit) >= (latest / this.unit);
 	}
 
-	public Long calculateUnit(Long score) {
-		return score / this.unit * this.unit;
+	public Long calculateStage(Long latest) {
+		return (latest / this.unit) * this.unit;
 	}
 }

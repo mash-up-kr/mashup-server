@@ -14,7 +14,7 @@ public class DanggnNotificationPlatformRecordUpdatedVo extends PushNotiSendVo {
     private static final String body = "어케했누;;; 전체 랭킹을 확인해보세요.";
     private static final Map<String, String> dataMap = Map.of(DataKeyType.LINK.getKey(), LinkType.DANGGN.toString());
 
-    public DanggnNotificationPlatformRecordUpdatedVo(Long unit, Platform platform, List<Member> members) {
-        super(members, String.format(title, platform.toString(), new DecimalFormat("###,###").format(unit)), body, dataMap);
+    public DanggnNotificationPlatformRecordUpdatedVo(Long stage, Platform platform, List<Member> members) {
+        super(members, String.format(title, platform.toString(), new DecimalFormat("###,###").format(stage)), body, dataMap);
     }
 }
