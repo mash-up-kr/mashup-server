@@ -56,8 +56,6 @@ public class DanggnNotiFacadeService {
     public void sendDanggnFirstRecordMemberUpdatedPushNoti() {
         // 현재 활동하는 기수 조회
         List<Generation> generations = generationService.getAllActiveInAt(LocalDate.now());
-        if (generations.isEmpty())
-            return;
 
         generations.forEach(
                 generation -> {
@@ -80,8 +78,6 @@ public class DanggnNotiFacadeService {
     public void sendDanggnFirstRecordPlatformPushNoti() {
         // 현재 활동하는 기수 조회
         List<Generation> generations = generationService.getAllActiveInAt(LocalDate.now());
-        if (generations.isEmpty())
-            return;
 
         generations.forEach(
             generation -> {
@@ -107,8 +103,6 @@ public class DanggnNotiFacadeService {
     public void sendDanggnMemberRecordPushNoti() {
         // 현재 활동하는 기수 조회
         List<Generation> generations = generationService.getAllActiveInAt(LocalDate.now());
-        if (generations.isEmpty())
-            return;
 
         generations.forEach(
             generation -> {
@@ -142,8 +136,6 @@ public class DanggnNotiFacadeService {
     public void sendDanggnPlatformRecordPushNoti() {
         // 현재 활동하는 기수 조회
         List<Generation> generations = generationService.getAllActiveInAt(LocalDate.now());
-        if (generations.isEmpty())
-            return;
 
         generations.forEach(
             generation -> {
