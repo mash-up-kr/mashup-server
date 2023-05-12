@@ -14,7 +14,7 @@ public enum Platform {
     SPRING("Spring"),
     IOS("iOS"),
     ANDROID("Android"),
-    DESIGN("Design"),
+    DESIGN("Product Design"),
     WEB("Web"),
     NODE("Node");
 
