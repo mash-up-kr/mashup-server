@@ -15,6 +15,6 @@ public class DanggnNotificationPlatformRecordUpdatedVo extends PushNotiSendVo {
     private static final Map<String, String> dataMap = Map.of(DataKeyType.LINK.getKey(), LinkType.DANGGN.toString());
 
     public DanggnNotificationPlatformRecordUpdatedVo(Long stage, Platform platform, List<Member> members) {
-        super(members, String.format(title, platform.toString(), new DecimalFormat("###,###").format(stage)), body, dataMap);
+        super(members, String.format(title, platform.getName(), new DecimalFormat("###,###").format(stage)), body, dataMap);
     }
 }
