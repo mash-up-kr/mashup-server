@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: ENC(HTKu28l0T1PUSC2ADGNQ49I9LRJRdUlxQIaIabDeLqqmhId6cUH0cxnJJpTZMpAPS+t7nbfz+iMwizWSVoWWVSMBzToNOb99/y6fiAxrnEKaZ/UxrfU67IR+z9ciC2kVh+u3PReTxOI0nzMRdSrKA9gi/f1nTmPh+mxqiL9Z+uCdzKBYhoLAzLZDGPrUDuGp50m1GjiLXEn9wBXMGSE7xIwcg/IXFeVvuAA9FGTarko/qs/dqBmJhgjYZe9Dp+BRlpaivqsCPaDCqEC1cza80NXgxt2ZUCYHg8NdkyY7bU2M1Zwx1sFrDK1VSoUCe/Kpj2LHdCfOb+M839MTrVHAV7yhF6AOx9ergCsIgqsxU3H63RDf/LBmHO1Jb/OSRysB)
+    url: ENC(6ZJOYpZZWRXFFNzP7s46U/KFFTpIGR352yxB6BMZXQZ/24T4ulA4yhmJPDrDEl5Ry7ghqRwzvwe96QDkWNwN10VFDdBa16bFTVr5joYP97bVbQR/dXbuD0T07TcXS8I1d06htHO09xZnQra/kIQOdkezFNZ1ErR4DxvilFKV31s=)
     username: ENC(L6CNxJcaxJhR6xn+BaBbe+XlLT8GCYnLHIEOcZqF3QWl8uiaZumx4K/PcCcxTfgR)
     password: ENC(eUHoqXv2Z8lUGrSQZJgZ9U7vhcOrtvnc04CxgC5Uo9PUpQz5ZoGEA7d2Ui2MsLNx)
   jpa:
@@ -11,7 +11,7 @@ spring:
         default_batch_fetch_size: 1000
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
 sms:
   toast:
     url: https://api-sms.cloud.toast.com/
