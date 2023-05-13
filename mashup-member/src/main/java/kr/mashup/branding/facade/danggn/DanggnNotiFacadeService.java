@@ -14,6 +14,7 @@ import kr.mashup.branding.domain.danggn.DanggnNotificationMemberRecord;
 import kr.mashup.branding.domain.danggn.DanggnNotificationPlatformRecord;
 import kr.mashup.branding.domain.danggn.DanggnScore;
 import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.pushnoti.vo.DanggnFirstRecordMemberUpdatedVo;
@@ -47,10 +48,6 @@ public class DanggnNotiFacadeService {
 
     private final PushNotiEventPublisher pushNotiEventPublisher;
 
-    private static final Long DANGGN_NOTIFICATION_MEMBER_RECORD_UNIT = 10_000L;
-
-    private static final Long DANGGN_NOTIFICATION_PLATFORM_RECORD_UNIT = 100_000L;
-
     @Scheduled(cron = "0 0 09,13,19 * * *")
     @Transactional(readOnly = true)
     public void sendDanggnFirstRecordMemberUpdatedPushNoti() {
@@ -60,14 +57,15 @@ public class DanggnNotiFacadeService {
         generations.forEach(
                 generation -> {
                     Integer generationNumber = generation.getNumber();
-                    String currentFirstRecordMemberId = danggnCacheService.findFirstRecordMemberId(generationNumber);
+                    Member currentFirstRecordMember = danggnCacheService.findFirstRecordMember(generationNumber);
+                    String currentFirstRecordMemberId = currentFirstRecordMember.getId().toString();
                     String cachedFirstRecordMemberId = danggnCacheService.getCachedFirstRecordMemberId(generationNumber);
 
-                    if (currentFirstRecordMemberId == null || currentFirstRecordMemberId.equals(cachedFirstRecordMemberId)) {
+                    if (currentFirstRecordMemberId.equals(cachedFirstRecordMemberId)) {
                         return;
                     }
                     // 변경된 부분 있으면 업데이트 푸시 알림 보낸 후 캐시 업데이트
-                    pushNotiEventPublisher.publishPushNotiSendEvent(new DanggnFirstRecordMemberUpdatedVo(memberService.getAllDanggnPushNotiTargetableMembers()));
+                    pushNotiEventPublisher.publishPushNotiSendEvent(new DanggnFirstRecordMemberUpdatedVo(currentFirstRecordMember, memberService.getAllDanggnPushNotiTargetableMembers()));
                     danggnCacheService.updateCachedFirstRecord(DanggnCacheKey.MEMBER, generationNumber, currentFirstRecordMemberId);
                 }
         );
@@ -82,18 +80,17 @@ public class DanggnNotiFacadeService {
         generations.forEach(
             generation -> {
                 Integer generationNumber = generation.getNumber();
-                String currentFirstRecordPlatform = danggnCacheService.findFirstRecordPlatform(generationNumber);
+                Platform currentFirstRecordPlatform = danggnCacheService.findFirstRecordPlatform(generationNumber);
                 String cachedFirstRecordPlatform = danggnCacheService.getCachedFirstRecordPlatform(generationNumber);
 
-                if (currentFirstRecordPlatform == null || currentFirstRecordPlatform.equals(
-                    cachedFirstRecordPlatform)) {
+                if (currentFirstRecordPlatform.toString().equals(cachedFirstRecordPlatform)) {
                     return;
                 }
                 // 변경된 부분 있으면  업데이트 푸시 알림 보낸 후 캐시 업데이트
                 pushNotiEventPublisher.publishPushNotiSendEvent(
-                    new DanggnFirstRecordPlatformUpdatedVo(memberService.getAllDanggnPushNotiTargetableMembers()));
+                    new DanggnFirstRecordPlatformUpdatedVo(currentFirstRecordPlatform, memberService.getAllDanggnPushNotiTargetableMembers()));
                 danggnCacheService.updateCachedFirstRecord(DanggnCacheKey.PLATFORM, generationNumber,
-                    currentFirstRecordPlatform);
+                    currentFirstRecordPlatform.toString());
             }
         );
     }
