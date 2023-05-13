@@ -105,6 +105,9 @@ public enum ResultCode {
     // Storage
     STORAGE_NOT_FOUND("키에 해당하는 값을 찾을 수 없습니다"),
 
+    // Danggn
+    TODAY_MESSAGE_NOT_FOUND("존재하지 않는 메시지입니다."),
+
     // JsonUtil
     JSON_DESERIALIZE_UNABLE("객체를 json string 을 deserialize 할 수 없습니다"),
     JSON_SERIALIZE_UNABLE("json string 을 객체로 serialize 할 수 없습니다"),
