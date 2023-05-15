@@ -33,13 +33,18 @@ public class PushNotiFacadeService {
         );
     }
 
-    public void sendPushNotiToPartialMembers(List<Long> memberIds, String title, String body) {
+    public void sendPushNotiToPartialMembers(
+        List<Long> memberIds,
+        String title,
+        String body,
+        String keyType,
+        String linkType) {
         pushNotiEventPublisher.publishPushNotiSendEvent(
             new PushNotiSendVo(
                 memberService.getPushNotiTargetableMembers(memberIds),
                 title,
                 body,
-                Map.of(DataKeyType.LINK.getKey(), LinkType.MAIN.toString())
+                Map.of(DataKeyType.valueOf(keyType).getKey(), LinkType.valueOf(linkType).toString())
             )
         );
     }

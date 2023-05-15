@@ -32,7 +32,12 @@ public class PushNotiController {
     public ApiResponse<EmptyResponse> sendPushNotiToPartialMembers(
         @Valid @RequestBody SendMePushNotiRequest request
     ) {
-        pushNotiFacadeService.sendPushNotiToPartialMembers(request.getMemberIds(), request.getTitle(), request.getBody());
+        pushNotiFacadeService.sendPushNotiToPartialMembers(
+            request.getMemberIds(),
+            request.getTitle(),
+            request.getBody(),
+            request.getKeyType(),
+            request.getLinkType());
 
         return ApiResponse.success(EmptyResponse.of());
     }

@@ -14,4 +14,8 @@ public class SendMePushNotiRequest {
     private String body;
 
     private List<Long> memberIds;
+
+    private String keyType = "link";
+
+    private String linkType = "MAIN";
 }
