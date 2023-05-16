@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -187,6 +189,13 @@ public class MemberService {
         return memberRepository.countActiveByPlatformAndGeneration(platform, generation);
     }
 
+    private void checkAllActiveStatus(List<Member> members) {
+        for(Member member : members){
+            if (member.getStatus() != MemberStatus.ACTIVE) {
+                throw new MemberPendingException();
+            }
+        }
+    }
 
     private void checkActiveStatus(Member member) {
         if (member.getStatus() != MemberStatus.ACTIVE) {
@@ -200,6 +209,13 @@ public class MemberService {
 
     public List<Member> getAllPushNotiTargetableMembers() {
         return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
+            .filter(Member::getNewsPushNotificationAgreed)
+            .collect(Collectors.toList());
+    }
+
+    public List<Member> getPushNotiTargetableMembers(List<Long> memberIds) {
+        return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
+            .filter(member -> memberIds.contains(member.getId()))
             .filter(Member::getNewsPushNotificationAgreed)
             .collect(Collectors.toList());
     }
