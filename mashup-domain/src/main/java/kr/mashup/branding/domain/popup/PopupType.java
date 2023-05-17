@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum PopupType {
 
-	DANGGN(LocalDate.of(2023, 4, 1), LocalDate.of(2023, 5, 15)), // 운영기간은 수정 필요
+	DANGGN(LocalDate.of(2023, 5, 18), LocalDate.of(2023, 6, 2)),
 	;
 
 	private final LocalDate startedAt;
