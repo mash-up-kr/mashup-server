@@ -1,23 +1,29 @@
 package kr.mashup.branding.facade.danggn;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import kr.mashup.branding.domain.danggn.DanggnScore;
+import kr.mashup.branding.domain.danggn.DanggnTodayMessage;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.service.danggn.DanggnScoreService;
 import kr.mashup.branding.service.danggn.DanggnShakeLogService;
+import kr.mashup.branding.service.danggn.DanggnTodayMessageService;
 import kr.mashup.branding.service.member.MemberService;
-import kr.mashup.branding.ui.danggn.response.DanggnMemberRankResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnMemberRankData;
 import kr.mashup.branding.ui.danggn.response.DanggnPlatformRankResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnRandomMessageResponse;
 import kr.mashup.branding.ui.danggn.response.DanggnScoreResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -30,14 +36,11 @@ public class DanggnFacadeService {
 
     private final DanggnScoreService danggnScoreService;
 
+    private final DanggnTodayMessageService danggnTodayMessageService;
 
     @Transactional
-    public DanggnScoreResponse addScore(
-        Long memberId,
-        Integer generationNumber,
-        Long score
-    ) {
-        final MemberGeneration memberGeneration = memberService.findByMemberIdAndGenerationNumber(memberId, generationNumber);
+    public DanggnScoreResponse addScore(Long memberGenerationId, Long score) {
+        final MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
         DanggnScore danggnScore = danggnScoreService.findByMemberGeneration(memberGeneration);
         danggnScore.addScore(score);
         danggnShakeLogService.createLog(memberGeneration, score);
@@ -45,9 +48,9 @@ public class DanggnFacadeService {
     }
 
     @Transactional(readOnly = true)
-    public List<DanggnMemberRankResponse> getMemberRankList(Integer generationNumber) {
+    public List<DanggnMemberRankData> getMemberRankList(Integer generationNumber) {
         return danggnScoreService.getDanggnScoreOrderedList(generationNumber)
-            .stream().map(DanggnMemberRankResponse::from).collect(Collectors.toList());
+            .stream().map(DanggnMemberRankData::from).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -64,6 +67,12 @@ public class DanggnFacadeService {
 
     public Integer getGoldenDanggnPercent() {
         return goldenDanggnPercent;
+    }
+
+    public DanggnRandomMessageResponse getRandomTodayMessage() {
+        List<DanggnTodayMessage> danggnTodayMessageList = danggnTodayMessageService.findAll();
+        Collections.shuffle(danggnTodayMessageList);
+        return DanggnRandomMessageResponse.from(danggnTodayMessageList.get(0));
     }
 
     private List<DanggnPlatformRankResponse> getExistingPlatformRankList(Integer generationNumber) {

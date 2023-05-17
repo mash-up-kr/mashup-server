@@ -79,6 +79,7 @@ public enum ResultCode {
     GENERATION_NOT_FOUND("기수가 존재하지 않습니다."),
     GENERATION_ALREADY_EXISTS("이미 존재하는 기수입니다."),
     MEMBER_GENERATION_NOT_FOUND("사용자의 기수 정보가 존재하지 않습니다."),
+    INACTIVE_GENERATION("활동하지 않는 기수입니다."),
 
     // AttendanceCode (출석 코드)
     ATTENDANCE_CODE_DUPLICATED("이미 사용된 코드입니다."),
@@ -99,7 +100,19 @@ public enum ResultCode {
     INVITE_NOT_FOUND("초대 코드가 존재하지 않습니다."),
 
     // Push Noti (푸시)
-    PUSH_NOTI_FAILED_TO_SEND("푸시 노티 발송에 실패했습니다.");
+    PUSH_NOTI_FAILED_TO_SEND("푸시 노티 발송에 실패했습니다."),
+
+    // Storage
+    STORAGE_NOT_FOUND("키에 해당하는 값을 찾을 수 없습니다"),
+
+    // Danggn
+    TODAY_MESSAGE_NOT_FOUND("존재하지 않는 메시지입니다."),
+
+    // JsonUtil
+    JSON_DESERIALIZE_UNABLE("객체를 json string 을 deserialize 할 수 없습니다"),
+    JSON_SERIALIZE_UNABLE("json string 을 객체로 serialize 할 수 없습니다"),
+    ;
+
 
 
     private final String message;

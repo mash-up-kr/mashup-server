@@ -7,4 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor(staticName = "of")
 public class MemberAuth {
     private Long memberId;
+    private Long memberGenerationId;
 }

@@ -5,9 +5,7 @@ import kr.mashup.branding.facade.danggn.DanggnFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.danggn.request.DanggnScoreAddRequest;
-import kr.mashup.branding.ui.danggn.response.DanggnMemberRankResponse;
-import kr.mashup.branding.ui.danggn.response.DanggnPlatformRankResponse;
-import kr.mashup.branding.ui.danggn.response.DanggnScoreResponse;
+import kr.mashup.branding.ui.danggn.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -33,28 +31,31 @@ public class DanggnController {
     @PostMapping("/score")
     public ApiResponse<DanggnScoreResponse> addDanggnScore(
         @ApiIgnore MemberAuth auth,
-        @RequestBody DanggnScoreAddRequest req,
-        @RequestParam Integer generationNumber
+        @RequestBody DanggnScoreAddRequest req
     ) {
-        DanggnScoreResponse response = danggnFacadeService.addScore(auth.getMemberId(), generationNumber, req.getScore());
+        DanggnScoreResponse response = danggnFacadeService.addScore(auth.getMemberGenerationId(), req.getScore());
         return ApiResponse.success(response);
     }
 
     @ApiOperation(value = "당근 흔들기 개인별 랭킹")
     @GetMapping("/rank/member")
-    public ApiResponse<List<DanggnMemberRankResponse>> getMemberRank(
+    public ApiResponse<List<DanggnMemberRankData>> getMemberRank(
         @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
         @RequestParam(defaultValue = "11", required = false) Integer limit
     ) {
-        return ApiResponse.success(danggnFacadeService.getMemberRankList(generationNumber).subList(0, limit));
+        List<DanggnMemberRankData> danggnMemberRankDataList = danggnFacadeService.getMemberRankList(generationNumber);
+        return ApiResponse.success(danggnMemberRankDataList.subList(0, Math.min(danggnMemberRankDataList.size(), limit)));
     }
 
     @ApiOperation(value = "당근 흔들기 개인별 랭킹 전체")
     @GetMapping("/rank/member/all")
-    public ApiResponse<List<DanggnMemberRankResponse>> getAllMemberRank(
+    public ApiResponse<DanggnMemberRankResponse> getAllMemberRank(
         @RequestParam(defaultValue = "13", required = false) Integer generationNumber
     ) {
-        return ApiResponse.success(danggnFacadeService.getMemberRankList(generationNumber));
+        return ApiResponse.success(DanggnMemberRankResponse.of(
+            danggnFacadeService.getMemberRankList(generationNumber),
+            11
+        ));
     }
 
     @ApiOperation(value = "당근 흔들기 플랫폼별 랭킹")
@@ -67,7 +68,13 @@ public class DanggnController {
 
     @ApiOperation(value = "황금 당근 확률")
     @GetMapping("/golden-danggn-percent")
-    public ApiResponse<Integer> getGoldenDanggnPercent() {
-        return ApiResponse.success(danggnFacadeService.getGoldenDanggnPercent());
+    public ApiResponse<GoldenDanggnPercentResponse> getGoldenDanggnPercent() {
+        return ApiResponse.success(GoldenDanggnPercentResponse.of(danggnFacadeService.getGoldenDanggnPercent()));
+    }
+
+    @ApiOperation(value = "랜덤 오늘의 메시지")
+    @GetMapping("/random-today-message")
+    public ApiResponse<DanggnRandomMessageResponse> getRandomTodayMessage() {
+        return ApiResponse.success(danggnFacadeService.getRandomTodayMessage());
     }
 }

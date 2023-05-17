@@ -1,10 +1,25 @@
 package kr.mashup.branding.service.member;
 
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
 import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.domain.member.*;
+import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.MemberGeneration;
+import kr.mashup.branding.domain.member.MemberStatus;
+import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
 import kr.mashup.branding.domain.member.exception.MemberNotFoundException;
 import kr.mashup.branding.domain.member.exception.MemberPendingException;
@@ -12,19 +27,11 @@ import kr.mashup.branding.dto.member.MemberCreateDto;
 import kr.mashup.branding.repository.member.MemberGenerationRepository;
 import kr.mashup.branding.repository.member.MemberRepository;
 import kr.mashup.branding.repository.member.MemberRepositoryCustomImpl.MemberScoreQueryResult;
+import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -182,6 +189,13 @@ public class MemberService {
         return memberRepository.countActiveByPlatformAndGeneration(platform, generation);
     }
 
+    private void checkAllActiveStatus(List<Member> members) {
+        for(Member member : members){
+            if (member.getStatus() != MemberStatus.ACTIVE) {
+                throw new MemberPendingException();
+            }
+        }
+    }
 
     private void checkActiveStatus(Member member) {
         if (member.getStatus() != MemberStatus.ACTIVE) {
@@ -195,7 +209,14 @@ public class MemberService {
 
     public List<Member> getAllPushNotiTargetableMembers() {
         return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
-            .filter(Member::getPushNotificationAgreed)
+            .filter(Member::getNewsPushNotificationAgreed)
+            .collect(Collectors.toList());
+    }
+
+    public List<Member> getPushNotiTargetableMembers(List<Long> memberIds) {
+        return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
+            .filter(member -> memberIds.contains(member.getId()))
+            .filter(Member::getNewsPushNotificationAgreed)
             .collect(Collectors.toList());
     }
 
@@ -206,5 +227,24 @@ public class MemberService {
     public MemberGeneration findByMemberIdAndGenerationNumber(Long memberId, Integer generationNumber) {
         return memberGenerationRepository.findByMemberIdAndGenerationNumber(memberId, generationNumber)
                 .orElseThrow(GenerationIntegrityFailException::new);
+    }
+
+    public List<Member> getAllDanggnPushNotiTargetableMembers() {
+        return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
+                .filter(Member::getDanggnPushNotificationAgreed)
+                .collect(Collectors.toList());
+    }
+
+    public MemberGeneration findByMemberGenerationId(Long memberGenerationId) {
+        return memberGenerationRepository.findById(memberGenerationId).orElseThrow(GenerationIntegrityFailException::new);
+    }
+
+    public Boolean isActiveGeneration(MemberGeneration memberGeneration) {
+        Generation generation = memberGeneration.getGeneration();
+        return DateUtil.isInTime(generation.getStartedAt(), generation.getEndedAt(), LocalDate.now());
+    }
+
+    public List<MemberGeneration> findByGeneration(Generation generation) {
+        return memberGenerationRepository.findByGeneration(generation);
     }
 }

@@ -69,6 +69,11 @@ public class Invite extends BaseEntity {
 			.build();
 	}
 
+	public void modifyValidCodeDateRange(DateRange dateRange){
+		this.startedAt = dateRange.getStart();
+		this.endedAt = dateRange.getEnd();
+	}
+
 	/**
 	 * Platform 앞에서 2글자 + 기수 숫자변환(0~999기) + 나머지 랜덤문자열(3글자 랜덤)
 	 * ex) Spring, 8기 -> SP(Spring) + AAI(008기) + WEZ(랜덤 3글자) -> SPAAIWEZ

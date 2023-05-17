@@ -25,7 +25,9 @@ public class AccessResponse {
     // 정렬 ASC
     private List<Integer> generations;
 
-    private Boolean pushNotificationAgreed;
+    private Boolean newsPushNotificationAgreed;
+
+    private Boolean danggnPushNotificationAgreed;
 
     public static AccessResponse of(Member member, Platform platform, String token) {
         return new AccessResponse(
@@ -38,7 +40,8 @@ public class AccessResponse {
                         .map(it-> it.getGeneration().getNumber())
                         .sorted()
                         .collect(Collectors.toList()),
-                member.getPushNotificationAgreed());
+                member.getNewsPushNotificationAgreed(),
+                member.getDanggnPushNotificationAgreed());
     }
 
 }

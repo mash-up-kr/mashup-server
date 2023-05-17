@@ -6,9 +6,11 @@ import kr.mashup.branding.domain.adminmember.exception.AdminMemberNotFoundExcept
 import kr.mashup.branding.domain.adminmember.exception.AdminMemberUsernameDuplicatedException;
 import kr.mashup.branding.domain.adminmember.vo.AdminLoginCommand;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberSignUpCommand;
-import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
+import kr.mashup.branding.domain.exception.BadRequestException;
+import kr.mashup.branding.domain.exception.ForbiddenException;
 import kr.mashup.branding.repository.adminmember.AdminMemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +24,9 @@ import java.util.Optional;
 @Service
 public class AdminMemberService {
 
+    private final LeaderCheckService leaderCheckService;
     private final AdminMemberRepository adminMemberRepository;
+    @Qualifier("fourTimesRoundPasswordEncoder")
     private final PasswordEncoder passwordEncoder;
 
     public AdminMember signUp(final AdminMemberSignUpCommand command) {
@@ -78,4 +82,45 @@ public class AdminMemberService {
             throw new AdminMemberLoginFailedException();
         }
     }
+
+    public void resetPassword(
+        final AdminMember executor,
+        final AdminMember targetAdmin,
+        final String resetPassword) {
+
+        checkLeaderOrSubLeader(executor);
+
+        targetAdmin.setPassword(passwordEncoder,resetPassword);
+    }
+
+    public void changePassword(
+        final AdminMember me,
+        final String currentPassword,
+        final String changePassword) {
+
+        if(!passwordEncoder.matches(currentPassword, me.getPassword())){
+            throw new BadRequestException();
+        }
+
+        me.setPassword(passwordEncoder, changePassword);
+    }
+
+    public void deleteAdminMember(AdminMember executor, AdminMember targetAdmin) {
+
+        checkLeaderOrSubLeader(executor);
+
+        adminMemberRepository.delete(targetAdmin);
+    }
+
+    private void checkLeaderOrSubLeader(final AdminMember executor) {
+        final boolean isLeader = leaderCheckService.isMashUpLeader(executor);
+        final boolean isSubLeader = leaderCheckService.isMashUpSubLeader(executor);
+
+        if(!isLeader && !isSubLeader){
+            throw new ForbiddenException();
+        }
+    }
+
+
+
 }

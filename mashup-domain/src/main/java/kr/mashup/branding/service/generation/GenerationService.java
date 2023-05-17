@@ -9,13 +9,16 @@ import kr.mashup.branding.repository.generation.GenerationRepository;
 import kr.mashup.branding.service.generation.vo.GenerationCreateVo;
 import kr.mashup.branding.service.generation.vo.GenerationUpdateVo;
 import kr.mashup.branding.util.DateRange;
+import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -72,5 +75,12 @@ public class GenerationService {
         generation.changeDate(generationDateRange);
 
         return generation;
+    }
+
+    public List<Generation> getAllActiveInAt(LocalDate at) {
+        return generationRepository.findAll()
+                .stream()
+                .filter(generation -> DateUtil.isInTime(generation.getStartedAt(), generation.getEndedAt(), at))
+                .collect(Collectors.toList());
     }
 }
