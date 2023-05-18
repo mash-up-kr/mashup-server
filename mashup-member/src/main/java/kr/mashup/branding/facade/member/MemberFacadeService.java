@@ -57,7 +57,7 @@ public class MemberFacadeService {
         // Token 생성
         final String token = getToken(member);
 
-        Platform latestPlatform = memberService.getLatestPlatform(member);
+        final Platform latestPlatform = memberService.getLatestPlatform(member);
 
         // 로그인 시점에 푸시 알림을 위한 정보 업데이트
         member.updatePushNotificationInfo(request.getOsType(), request.getFcmToken());

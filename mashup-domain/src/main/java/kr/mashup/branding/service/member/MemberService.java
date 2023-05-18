@@ -29,6 +29,7 @@ import kr.mashup.branding.repository.member.MemberRepository;
 import kr.mashup.branding.repository.member.MemberRepositoryCustomImpl.MemberScoreQueryResult;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -161,6 +162,16 @@ public class MemberService {
         member.changePassword(rawPassword, newPassword, passwordEncoder);
 
         return member;
+    }
+
+    @Transactional
+    public void resetPassword(
+        String id,
+        String newPassword
+    ){
+        final Member member = memberRepository.findByIdentification(id)
+            .orElseThrow(MemberNotFoundException::new);
+        member.setPassword(newPassword,passwordEncoder);
     }
 
     public Member activate(Long memberId) {
