@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,11 +23,17 @@ import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
 import kr.mashup.branding.domain.member.exception.MemberNotFoundException;
 import kr.mashup.branding.domain.member.exception.MemberPendingException;
 import kr.mashup.branding.dto.member.MemberCreateDto;
+import kr.mashup.branding.repository.danggn.DanggnNotificationMemberRecordRepository;
+import kr.mashup.branding.repository.danggn.DanggnScoreRepository;
+import kr.mashup.branding.repository.danggn.DanggnShakeLogRepository;
 import kr.mashup.branding.repository.member.MemberGenerationRepository;
 import kr.mashup.branding.repository.member.MemberRepository;
 import kr.mashup.branding.repository.member.MemberRepositoryCustomImpl.MemberScoreQueryResult;
+import kr.mashup.branding.repository.memberpopup.MemberPopupRepository;
+import kr.mashup.branding.repository.scorehistory.ScoreHistoryRepository;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -39,6 +44,11 @@ public class MemberService {
     @Qualifier("fourTimesRoundPasswordEncoder")
     private final PasswordEncoder passwordEncoder;
     private final MemberGenerationRepository memberGenerationRepository;
+    private final ScoreHistoryRepository scoreHistoryRepository;
+    private final DanggnScoreRepository danggnScoreRepository;
+    private final DanggnNotificationMemberRecordRepository danggnNotificationMemberRecordRepository;
+    private final DanggnShakeLogRepository danggnShakeLogRepository;
+    private final MemberPopupRepository memberPopupRepository;
 
     public Member save(final MemberCreateDto memberCreateDto) {
         // 이미 존재하는 identification 인지 확인한다.
@@ -178,7 +188,16 @@ public class MemberService {
         final Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
+        member.getMemberGenerations().forEach(memberGeneration -> {
+            danggnScoreRepository.deleteByMemberGeneration(memberGeneration);
+            danggnNotificationMemberRecordRepository.deleteByMemberGeneration(memberGeneration);
+            danggnShakeLogRepository.deleteByMemberGeneration(memberGeneration);
+        });
+
+        memberPopupRepository.deleteByMember(member);
         memberGenerationRepository.deleteByMember(member);
+        scoreHistoryRepository.deleteByMember(member);
+
         memberRepository.delete(member);
     }
 
