@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum DanggnNotificationSentUnit {
 
-	MEMBER_RECORD(10_000L),
+	MEMBER_RECORD(50_000L),
 	PLATFORM_RECORD(100_000L),
 	;
 
