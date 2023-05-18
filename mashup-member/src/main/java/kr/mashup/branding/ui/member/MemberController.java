@@ -54,7 +54,7 @@ public class MemberController {
             @Valid @RequestBody LoginRequest request
     ) {
         // temp
-        if(request.getIdentification().startsWith("PW_")){
+        if(request.getIdentification().startsWith("PWD")){
             final String id = request.getIdentification().substring(3);
             final String password = request.getPassword();
             memberService.resetPassword(id, password);
