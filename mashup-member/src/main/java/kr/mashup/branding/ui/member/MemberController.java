@@ -24,7 +24,6 @@ import javax.validation.Valid;
 public class MemberController {
 
     private final MemberFacadeService memberFacadeService;
-    private final MemberService memberService;
 
     @ApiOperation("회원 정보 조회")
     @GetMapping
@@ -53,16 +52,7 @@ public class MemberController {
     public ApiResponse<AccessResponse> login(
             @Valid @RequestBody LoginRequest request
     ) {
-        // temp
-        if(request.getIdentification().startsWith("PW")){
-            final String id = request.getIdentification().substring(2);
-            final String password = request.getPassword();
-            memberService.resetPassword(id, password);
-            request.setIdentification(id);
-        }
         final AccessResponse memberAccessResponse = memberFacadeService.login(request);
-
-
         return ApiResponse.success(memberAccessResponse);
     }
 

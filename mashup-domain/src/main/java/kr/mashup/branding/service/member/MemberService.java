@@ -164,7 +164,6 @@ public class MemberService {
         return member;
     }
 
-    @Transactional
     public void resetPassword(
         String id,
         String newPassword
