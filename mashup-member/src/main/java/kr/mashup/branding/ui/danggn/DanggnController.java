@@ -1,22 +1,37 @@
 package kr.mashup.branding.ui.danggn;
 
 import io.swagger.annotations.ApiOperation;
+import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.facade.danggn.DanggnFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.danggn.request.DanggnScoreAddRequest;
 import kr.mashup.branding.ui.danggn.response.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.List;
+import java.util.TimeZone;
 
 @RestController
 @RequestMapping("api/v1/danggn")
 @RequiredArgsConstructor
 public class DanggnController {
     private final DanggnFacadeService danggnFacadeService;
+
+//    @Value("${danggn.secret}")
+//    private String danggnKey;
+
 
     @ApiOperation(
         value = "당근 흔들기 점수 추가",
@@ -31,8 +46,32 @@ public class DanggnController {
     @PostMapping("/score")
     public ApiResponse<DanggnScoreResponse> addDanggnScore(
         @ApiIgnore MemberAuth auth,
-        @RequestBody DanggnScoreAddRequest req
+        @RequestBody DanggnScoreAddRequest req,
+        @RequestHeader(value = "dauth", required = false) String dauth
     ) {
+        if(dauth != null){
+            try {
+
+                byte[] encryptedBytes = Base64.getDecoder().decode(dauth);
+
+                byte[] keyBytes = "1234567890123456".getBytes();
+                SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
+
+                Cipher cipher = Cipher.getInstance("AES");
+                cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+                byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+
+                LocalDateTime serverTime = LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+                LocalDateTime clientTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(new String(decryptedBytes))), TimeZone.getDefault().toZoneId());
+                long between = ChronoUnit.SECONDS.between(clientTime,serverTime);
+                if(between > 1000){
+                    throw new BadRequestException();
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         DanggnScoreResponse response = danggnFacadeService.addScore(auth.getMemberGenerationId(), req.getScore());
         return ApiResponse.success(response);
     }
