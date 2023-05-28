@@ -8,6 +8,7 @@ import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.danggn.request.DanggnScoreAddRequest;
 import kr.mashup.branding.ui.danggn.response.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -23,6 +24,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.TimeZone;
 
+@Slf4j
 @RestController
 @RequestMapping("api/v1/danggn")
 @RequiredArgsConstructor
@@ -63,7 +65,9 @@ public class DanggnController {
 
                 LocalDateTime serverTime = LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
                 LocalDateTime clientTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(new String(decryptedBytes))), TimeZone.getDefault().toZoneId());
-                long between = ChronoUnit.SECONDS.between(clientTime,serverTime);
+                Long between = ChronoUnit.SECONDS.between(clientTime,serverTime);
+                log.info(between.toString());
+
                 if(between > 1000){
                     throw new BadRequestException();
                 }
