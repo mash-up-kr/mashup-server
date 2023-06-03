@@ -3,9 +3,6 @@ package kr.mashup.branding.facade.member;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.Platform;
-import kr.mashup.branding.domain.scorehistory.ScoreHistory;
-import kr.mashup.branding.domain.scorehistory.ScoreType;
-import kr.mashup.branding.repository.member.MemberRepositoryCustomImpl;
 import kr.mashup.branding.repository.member.MemberRepositoryCustomImpl.MemberScoreQueryResult;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.member.MemberService;
@@ -92,4 +89,11 @@ public class MemberFacadeService {
         return MemberDetailResponse.of(memberName, identification, generationNumber, platform.name(), scoreHistories);
     }
 
+    @Transactional
+    public void resetPassword(
+        String id,
+        String newPassword
+    ) {
+        memberService.resetPassword(id, newPassword);
+    }
 }
