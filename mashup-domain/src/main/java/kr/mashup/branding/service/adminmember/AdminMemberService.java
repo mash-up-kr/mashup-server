@@ -11,6 +11,8 @@ import kr.mashup.branding.domain.exception.ForbiddenException;
 import kr.mashup.branding.repository.adminmember.AdminMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -121,6 +123,7 @@ public class AdminMemberService {
         }
     }
 
-
-
+    public Page<AdminMember> readAdminMembers(Pageable pageable) {
+        return adminMemberRepository.findAll(pageable);
+    }
 }

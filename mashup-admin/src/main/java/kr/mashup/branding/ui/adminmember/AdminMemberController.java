@@ -1,11 +1,15 @@
 package kr.mashup.branding.ui.adminmember;
 
+import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.EmptyResponse;
 import kr.mashup.branding.domain.adminmember.vo.AdminLoginCommand;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
 import kr.mashup.branding.ui.adminmember.vo.AdminMemberResponse;
 import kr.mashup.branding.ui.adminmember.vo.LoginRequest;
 import kr.mashup.branding.ui.adminmember.vo.LoginResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import kr.mashup.branding.facade.adminmember.AdminMemberFacadeService;
@@ -13,6 +17,8 @@ import kr.mashup.branding.facade.adminmember.LoginResponseVo;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -72,5 +78,12 @@ public class AdminMemberController {
         return ApiResponse.success();
     }
 
+    /** 어드민 멤버 리스트 조회 */
+    @ApiOperation("어드민 멤버 리스트 조회")
+    @GetMapping
+    public ApiResponse<List<AdminMemberResponse>> readAdminMembers(@PageableDefault Pageable pageable) {
+        Page<AdminMemberVo> data = adminMemberFacadeService.readAdminMembers(pageable);
 
+        return ApiResponse.success(data.map(AdminMemberResponse::from));
+    }
 }

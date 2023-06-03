@@ -5,6 +5,9 @@ import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
 import kr.mashup.branding.domain.exception.ForbiddenException;
 import kr.mashup.branding.service.adminmember.LeaderCheckService;
 import kr.mashup.branding.ui.adminmember.AdminPasswordChangeRequest;
+import kr.mashup.branding.ui.adminmember.vo.AdminMemberResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.config.jwt.JwtService;
@@ -12,6 +15,8 @@ import kr.mashup.branding.domain.adminmember.vo.AdminLoginCommand;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -60,5 +65,12 @@ public class AdminMemberFacadeService {
         final AdminMember me = adminMemberService.getByAdminMemberId(adminMemberId);
         final AdminMember targetAdmin = adminMemberService.getByAdminMemberId(targetAdminId);
         adminMemberService.deleteAdminMember(me, targetAdmin);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AdminMemberVo> readAdminMembers(Pageable pageable) {
+        Page<AdminMember> data = adminMemberService.readAdminMembers(pageable);
+
+        return data.map(AdminMemberVo::from);
     }
 }
