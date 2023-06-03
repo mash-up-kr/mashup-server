@@ -10,4 +10,6 @@ import kr.mashup.branding.domain.member.MemberGeneration;
 public interface DanggnNotificationMemberRecordRepository extends JpaRepository<DanggnNotificationMemberRecord, Long> {
 
 	Optional<DanggnNotificationMemberRecord> findByMemberGeneration(MemberGeneration memberGeneration);
+
+	void deleteByMemberGeneration(MemberGeneration memberGeneration);
 }

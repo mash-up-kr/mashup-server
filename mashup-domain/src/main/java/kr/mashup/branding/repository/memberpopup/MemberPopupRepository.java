@@ -11,4 +11,6 @@ import kr.mashup.branding.domain.popup.PopupType;
 public interface MemberPopupRepository extends JpaRepository<MemberPopup, Long> {
 
 	Optional<MemberPopup> findByMemberAndPopupType(Member member, PopupType popupType);
+
+	void deleteByMember(Member member);
 }
