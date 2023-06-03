@@ -3,6 +3,7 @@ package kr.mashup.branding.ui.adminmember;
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.EmptyResponse;
 import kr.mashup.branding.domain.adminmember.vo.AdminLoginCommand;
+import kr.mashup.branding.domain.adminmember.vo.AdminMemberSignUpCommand;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
 import kr.mashup.branding.ui.adminmember.vo.AdminMemberResponse;
 import kr.mashup.branding.ui.adminmember.vo.LoginRequest;
@@ -85,5 +86,14 @@ public class AdminMemberController {
         Page<AdminMemberVo> data = adminMemberFacadeService.readAdminMembers(pageable);
 
         return ApiResponse.success(data.map(AdminMemberResponse::from));
+    }
+
+    /** 어드민 멤버 생성 */
+    @ApiOperation("어드민 멤버 생성")
+    @PostMapping
+    public ApiResponse<AdminMemberResponse> createAdminMember(@RequestBody AdminMemberSignUpCommand signUpCommand) {
+        AdminMemberVo data = adminMemberFacadeService.createAdminMember(signUpCommand);
+
+        return ApiResponse.success(AdminMemberResponse.from(data));
     }
 }
