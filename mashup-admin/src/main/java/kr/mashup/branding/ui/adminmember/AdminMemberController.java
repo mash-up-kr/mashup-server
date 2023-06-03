@@ -1,7 +1,9 @@
 package kr.mashup.branding.ui.adminmember;
 
+import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.EmptyResponse;
 import kr.mashup.branding.domain.adminmember.vo.AdminLoginCommand;
+import kr.mashup.branding.domain.adminmember.vo.AdminMemberSignUpCommand;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
 import kr.mashup.branding.ui.adminmember.vo.AdminMemberResponse;
 import kr.mashup.branding.ui.adminmember.vo.LoginRequest;
@@ -13,6 +15,9 @@ import kr.mashup.branding.facade.adminmember.LoginResponseVo;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -72,5 +77,21 @@ public class AdminMemberController {
         return ApiResponse.success();
     }
 
+    /** 어드민 멤버 리스트 조회 */
+    @ApiOperation("어드민 멤버 리스트 조회")
+    @GetMapping
+    public ApiResponse<List<AdminMemberResponse>> readAdminMembers() {
+        List<AdminMemberVo> data = adminMemberFacadeService.readAdminMembers();
 
+        return ApiResponse.success(data.stream().map(AdminMemberResponse::from).collect(Collectors.toList()));
+    }
+
+    /** 어드민 멤버 생성 */
+    @ApiOperation("어드민 멤버 생성")
+    @PostMapping
+    public ApiResponse<AdminMemberResponse> createAdminMember(@RequestBody AdminMemberSignUpCommand signUpCommand) {
+        AdminMemberVo data = adminMemberFacadeService.createAdminMember(signUpCommand);
+
+        return ApiResponse.success(AdminMemberResponse.from(data));
+    }
 }

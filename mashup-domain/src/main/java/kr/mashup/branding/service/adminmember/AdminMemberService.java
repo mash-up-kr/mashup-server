@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Validated
@@ -30,7 +31,6 @@ public class AdminMemberService {
     private final PasswordEncoder passwordEncoder;
 
     public AdminMember signUp(final AdminMemberSignUpCommand command) {
-
         checkNotDuplicatedUsername(command);
 
         final AdminMember adminMember = AdminMember.of(
@@ -121,6 +121,7 @@ public class AdminMemberService {
         }
     }
 
-
-
+    public List<AdminMember> readAdminMembers() {
+        return adminMemberRepository.findAll();
+    }
 }

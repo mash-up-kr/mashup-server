@@ -1,9 +1,8 @@
 package kr.mashup.branding.facade.adminmember;
 
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
+import kr.mashup.branding.domain.adminmember.vo.AdminMemberSignUpCommand;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
-import kr.mashup.branding.domain.exception.ForbiddenException;
-import kr.mashup.branding.service.adminmember.LeaderCheckService;
 import kr.mashup.branding.ui.adminmember.AdminPasswordChangeRequest;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +11,9 @@ import kr.mashup.branding.domain.adminmember.vo.AdminLoginCommand;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -60,5 +62,19 @@ public class AdminMemberFacadeService {
         final AdminMember me = adminMemberService.getByAdminMemberId(adminMemberId);
         final AdminMember targetAdmin = adminMemberService.getByAdminMemberId(targetAdminId);
         adminMemberService.deleteAdminMember(me, targetAdmin);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AdminMemberVo> readAdminMembers() {
+        List<AdminMember> adminMembers = adminMemberService.readAdminMembers();
+
+        return adminMembers.stream().map(AdminMemberVo::from).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public AdminMemberVo createAdminMember(AdminMemberSignUpCommand signUpCommand) {
+        AdminMember adminMember = adminMemberService.signUp(signUpCommand);
+
+        return AdminMemberVo.from(adminMember);
     }
 }
