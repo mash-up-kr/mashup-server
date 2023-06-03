@@ -22,3 +22,6 @@ aws:
   ses:
     access-key: ENC(aQntk9Wm8gCrHsIvt+q7+cIDTGI6hWIlRisZXE3q/BNACqKQXrXnpzrgnhHIpeALhhAe82v0niu93NTZyomkwQ==)
     secret-key: ENC(/B1+2Mflsgv1enwFvvmdzffHKGM0F6MV/Of6hdLyE+f6zkDI25TF8Av502lO0cV7PeYKdHje0FJPo22idqzsVQaRN1QM9cqvHbs1hgudDkE=)
+
+cipherKey: ENC(DvN35rX337al/XKbdH/YHkPyh/LKwqL30pi7pZmikFYPlDEa37Rcr4TkmW8v2m9+Pjrjmqvp0QSjC5NQyd7zaQ==)
+cipherTime: 3

@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.danggn;
 
 import io.swagger.annotations.ApiOperation;
+import kr.mashup.branding.aop.cipher.CheckApiCipherTime;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.facade.danggn.DanggnFacadeService;
 import kr.mashup.branding.security.MemberAuth;
@@ -26,12 +27,6 @@ import java.util.List;
 public class DanggnController {
     private final DanggnFacadeService danggnFacadeService;
 
-    @Value("${danggnKey}")
-    private String danggnKey;
-
-    @Value("${danggnTime}")
-    private String danggnTime;
-
     @ApiOperation(
         value = "당근 흔들기 점수 추가",
         notes =
@@ -43,14 +38,12 @@ public class DanggnController {
 
     )
     @PostMapping("/score")
+    @CheckApiCipherTime(alwaysRequired = false)
     public ApiResponse<DanggnScoreResponse> addDanggnScore(
         @ApiIgnore MemberAuth auth,
         @RequestBody DanggnScoreAddRequest req,
-        @RequestHeader(value = "dauth", required = false) String dAuth
+        @RequestHeader(value = "cipher", required = false) String cipher // for swagger, used in aop
     ) {
-        if(dAuth != null){
-            checkClientTimeDifference(dAuth);
-        }
         DanggnScoreResponse response = danggnFacadeService.addScore(auth.getMemberGenerationId(), req.getScore());
         return ApiResponse.success(response);
     }
@@ -97,15 +90,4 @@ public class DanggnController {
         return ApiResponse.success(danggnFacadeService.getRandomTodayMessage());
     }
 
-
-    private void checkClientTimeDifference(String auth){
-        final String clientEpochTime = CipherUtil.decryptAES128(auth, danggnKey);
-        final LocalDateTime clientTime = DateUtil.fromEpochString(clientEpochTime);
-        final LocalDateTime serverTime = LocalDateTime.now();
-        final Long timeDifference = ChronoUnit.SECONDS.between(clientTime, serverTime);
-        log.info(timeDifference.toString());
-        if(timeDifference > Long.parseLong(danggnTime)) {
-            throw new BadRequestException();
-        }
-    }
 }
