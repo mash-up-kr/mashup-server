@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 @Slf4j
 public class CipherUtil {
@@ -12,13 +13,14 @@ public class CipherUtil {
 
     private static final String AES_128 = "AES";
 
-    public static byte[] decryptAES128(
+    public static String decryptAES128(
         final String encryptedKey,
-        final byte[] symmetricKey){
+        final String symmetricKey){
 
-        byte[] encryptedBytes = Base64.getDecoder().decode(encryptedKey);
+        final byte[] encryptedBytes = Base64.getDecoder().decode(encryptedKey);
+        final byte[] symmetricBytes = symmetricKey.getBytes(StandardCharsets.UTF_8);
 
-        SecretKeySpec secretKeySpec = new SecretKeySpec(symmetricKey, AES_128);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(symmetricBytes, AES_128);
 
         final byte[] decryptedKey;
         try{
@@ -28,7 +30,7 @@ public class CipherUtil {
         } catch (Exception e){
             throw new BadRequestException();
         }
-        return decryptedKey;
+        return new String(decryptedKey);
     }
 
     private CipherUtil() {

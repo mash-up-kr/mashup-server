@@ -2,6 +2,7 @@ package kr.mashup.branding.util;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 public class DateUtil {
 
@@ -51,6 +52,14 @@ public class DateUtil {
             = baseEndedAt.isAfter(targetEndedAt) || baseEndedAt.isEqual(targetEndedAt);
 
         return isBaseStartBeforeOrEqualTargetStart && isBaseEndAfterOrEqualTargetEnd;
+    }
+
+    public static LocalDateTime fromEpoch(Long epochSecond){
+        return LocalDateTime.ofEpochSecond(epochSecond, 0, ZoneOffset.of("+9"));
+    }
+
+    public static LocalDateTime fromEpochString(String epochSecond){
+        return fromEpoch(Long.parseLong(epochSecond));
     }
 
 }

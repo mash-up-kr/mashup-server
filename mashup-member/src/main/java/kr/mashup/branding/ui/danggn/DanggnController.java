@@ -8,18 +8,14 @@ import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.danggn.request.DanggnScoreAddRequest;
 import kr.mashup.branding.ui.danggn.response.*;
 import kr.mashup.branding.util.CipherUtil;
+import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.annotation.PostConstruct;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -53,25 +49,12 @@ public class DanggnController {
         @RequestHeader(value = "dauth", required = false) String dAuth
     ) {
         if(dAuth != null){
-
-            final String decryptDauth = new String(CipherUtil.decryptAES128(dAuth, danggnKey.getBytes(StandardCharsets.UTF_8)));
-            final Long clientEpochSecond = Long.parseLong(decryptDauth);
-
-            final LocalDateTime clientTime = LocalDateTime.ofEpochSecond(clientEpochSecond, 0, ZoneOffset.of("+9"));
-            final LocalDateTime serverTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
-
-            final Long between = ChronoUnit.SECONDS.between(clientTime,serverTime);
-            log.info(between.toString());
-
-            if(between > Long.parseLong(danggnTime)) {
-                throw new BadRequestException();
-            }
-
+            checkClientTimeDifference(dAuth);
         }
-
         DanggnScoreResponse response = danggnFacadeService.addScore(auth.getMemberGenerationId(), req.getScore());
         return ApiResponse.success(response);
     }
+
 
     @ApiOperation(value = "당근 흔들기 개인별 랭킹")
     @GetMapping("/rank/member")
@@ -114,4 +97,15 @@ public class DanggnController {
         return ApiResponse.success(danggnFacadeService.getRandomTodayMessage());
     }
 
+
+    private void checkClientTimeDifference(String auth){
+        final String clientEpochTime = CipherUtil.decryptAES128(auth, danggnKey);
+        final LocalDateTime clientTime = DateUtil.fromEpochString(clientEpochTime);
+        final LocalDateTime serverTime = LocalDateTime.now();
+        final Long timeDifference = ChronoUnit.SECONDS.between(clientTime, serverTime);
+        log.info(timeDifference.toString());
+        if(timeDifference > Long.parseLong(danggnTime)) {
+            throw new BadRequestException();
+        }
+    }
 }
