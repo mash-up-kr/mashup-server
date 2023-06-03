@@ -1,17 +1,26 @@
 package kr.mashup.branding.ui.danggn;
 
 import io.swagger.annotations.ApiOperation;
+import kr.mashup.branding.aop.cipher.CheckApiCipherTime;
+import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.facade.danggn.DanggnFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.danggn.request.DanggnScoreAddRequest;
 import kr.mashup.branding.ui.danggn.response.*;
+import kr.mashup.branding.util.CipherUtil;
+import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("api/v1/danggn")
 @RequiredArgsConstructor
@@ -29,13 +38,16 @@ public class DanggnController {
 
     )
     @PostMapping("/score")
+    @CheckApiCipherTime(alwaysRequired = false)
     public ApiResponse<DanggnScoreResponse> addDanggnScore(
         @ApiIgnore MemberAuth auth,
-        @RequestBody DanggnScoreAddRequest req
+        @RequestBody DanggnScoreAddRequest req,
+        @RequestHeader(value = "cipher", required = false) String cipher // for swagger, used in aop
     ) {
         DanggnScoreResponse response = danggnFacadeService.addScore(auth.getMemberGenerationId(), req.getScore());
         return ApiResponse.success(response);
     }
+
 
     @ApiOperation(value = "당근 흔들기 개인별 랭킹")
     @GetMapping("/rank/member")
@@ -77,4 +89,5 @@ public class DanggnController {
     public ApiResponse<DanggnRandomMessageResponse> getRandomTodayMessage() {
         return ApiResponse.success(danggnFacadeService.getRandomTodayMessage());
     }
+
 }
