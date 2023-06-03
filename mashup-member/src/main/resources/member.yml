@@ -7,3 +7,4 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+danggnKey:  ENC(DvN35rX337al/XKbdH/YHkPyh/LKwqL30pi7pZmikFYPlDEa37Rcr4TkmW8v2m9+Pjrjmqvp0QSjC5NQyd7zaQ==)
