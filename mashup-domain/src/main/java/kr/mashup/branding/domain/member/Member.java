@@ -151,4 +151,8 @@ public class Member extends BaseEntity {
         this.newsPushNotificationAgreed = newsPushNotificationAgreed;
         this.danggnPushNotificationAgreed = danggnPushNotificationAgreed;
     }
+
+    public void setPassword(String newPassword, PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(newPassword);
+    }
 }

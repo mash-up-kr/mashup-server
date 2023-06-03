@@ -2,6 +2,7 @@ package kr.mashup.branding.ui.member.request;
 
 import kr.mashup.branding.domain.member.OsType;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;

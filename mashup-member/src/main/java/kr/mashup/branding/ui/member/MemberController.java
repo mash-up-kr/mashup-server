@@ -1,8 +1,10 @@
 package kr.mashup.branding.ui.member;
 
 import io.swagger.annotations.ApiOperation;
+import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.facade.member.MemberFacadeService;
 import kr.mashup.branding.security.MemberAuth;
+import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.member.request.LoginRequest;
 import kr.mashup.branding.ui.member.request.SignUpRequest;
@@ -50,9 +52,7 @@ public class MemberController {
     public ApiResponse<AccessResponse> login(
             @Valid @RequestBody LoginRequest request
     ) {
-        final AccessResponse memberAccessResponse
-                = memberFacadeService.login(request);
-
+        final AccessResponse memberAccessResponse = memberFacadeService.login(request);
         return ApiResponse.success(memberAccessResponse);
     }
 

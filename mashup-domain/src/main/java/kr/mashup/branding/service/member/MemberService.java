@@ -173,6 +173,15 @@ public class MemberService {
         return member;
     }
 
+    public void resetPassword(
+        String id,
+        String newPassword
+    ){
+        final Member member = memberRepository.findByIdentification(id)
+            .orElseThrow(MemberNotFoundException::new);
+        member.setPassword(newPassword,passwordEncoder);
+    }
+
     public Member activate(Long memberId) {
 
         final Member member = memberRepository.findById(memberId)
