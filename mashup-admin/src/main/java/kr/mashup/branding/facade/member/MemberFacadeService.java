@@ -91,6 +91,14 @@ public class MemberFacadeService {
     }
 
     @Transactional
+    public void resetPassword(
+        String id,
+        String newPassword
+    ) {
+        memberService.resetPassword(id, newPassword);
+    }
+
+    @Transactional
     public void withdraw(Long memberId) {
         memberService.deleteMember(memberId);
     }
