@@ -4,9 +4,6 @@ import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberSignUpCommand;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
 import kr.mashup.branding.ui.adminmember.AdminPasswordChangeRequest;
-import kr.mashup.branding.ui.adminmember.vo.AdminMemberResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.config.jwt.JwtService;
@@ -14,6 +11,9 @@ import kr.mashup.branding.domain.adminmember.vo.AdminLoginCommand;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -65,10 +65,10 @@ public class AdminMemberFacadeService {
     }
 
     @Transactional(readOnly = true)
-    public Page<AdminMemberVo> readAdminMembers(Pageable pageable) {
-        Page<AdminMember> adminMembers = adminMemberService.readAdminMembers(pageable);
+    public List<AdminMemberVo> readAdminMembers() {
+        List<AdminMember> adminMembers = adminMemberService.readAdminMembers();
 
-        return adminMembers.map(AdminMemberVo::from);
+        return adminMembers.stream().map(AdminMemberVo::from).collect(Collectors.toList());
     }
 
     @Transactional

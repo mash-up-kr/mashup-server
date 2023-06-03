@@ -12,13 +12,12 @@ import kr.mashup.branding.repository.adminmember.AdminMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Validated
@@ -126,7 +125,7 @@ public class AdminMemberService {
         }
     }
 
-    public Page<AdminMember> readAdminMembers(Pageable pageable) {
-        return adminMemberRepository.findAll(pageable);
+    public List<AdminMember> readAdminMembers() {
+        return adminMemberRepository.findAll();
     }
 }
