@@ -10,7 +10,6 @@ import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.ForbiddenException;
 import kr.mashup.branding.repository.adminmember.AdminMemberRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 @Service
-@Slf4j
 public class AdminMemberService {
 
     private final LeaderCheckService leaderCheckService;
@@ -33,8 +31,6 @@ public class AdminMemberService {
     private final PasswordEncoder passwordEncoder;
 
     public AdminMember signUp(final AdminMemberSignUpCommand command) {
-        log.info("password - {}", command.getPassword());
-
         checkNotDuplicatedUsername(command);
 
         final AdminMember adminMember = AdminMember.of(
