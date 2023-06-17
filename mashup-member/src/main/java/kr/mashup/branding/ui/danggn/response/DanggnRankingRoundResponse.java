@@ -1,8 +1,10 @@
 package kr.mashup.branding.ui.danggn.response;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import kr.mashup.branding.domain.danggn.DanggnRankingRound;
+import kr.mashup.branding.util.DateUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
@@ -17,6 +19,8 @@ public class DanggnRankingRoundResponse {
 
 	LocalDate endedAt;
 
+	Integer dateCount;
+
 	DanggnRankingRewardResponse danggnRankingReward;
 
 	public static DanggnRankingRoundResponse of(DanggnRankingRound danggnRankingRound, DanggnRankingRewardResponse danggnRankingReward) {
@@ -24,6 +28,7 @@ public class DanggnRankingRoundResponse {
 			danggnRankingRound.getNumber(),
 			danggnRankingRound.getStartedAt().toLocalDate(),
 			danggnRankingRound.getEndedAt().toLocalDate(),
+			DateUtil.countDayFromNow(danggnRankingRound.getEndedAt(), LocalDateTime.now()),
 			danggnRankingReward
 		);
 	}

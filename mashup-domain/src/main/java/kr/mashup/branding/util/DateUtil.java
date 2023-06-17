@@ -3,6 +3,7 @@ package kr.mashup.branding.util;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
 public class DateUtil {
 
@@ -62,4 +63,10 @@ public class DateUtil {
         return fromEpoch(Long.parseLong(epochSecond));
     }
 
+    public static Integer countDayFromNow(LocalDateTime startedAt, LocalDateTime currentTime) {
+        return (int) ChronoUnit.DAYS.between(
+            currentTime.truncatedTo(ChronoUnit.DAYS),
+            startedAt.truncatedTo(ChronoUnit.DAYS)
+        );
+    }
 }
