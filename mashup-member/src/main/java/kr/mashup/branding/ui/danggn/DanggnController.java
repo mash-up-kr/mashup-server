@@ -1,24 +1,33 @@
 package kr.mashup.branding.ui.danggn;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.aop.cipher.CheckApiCipherTime;
-import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.facade.danggn.DanggnFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.danggn.request.DanggnScoreAddRequest;
-import kr.mashup.branding.ui.danggn.response.*;
-import kr.mashup.branding.util.CipherUtil;
-import kr.mashup.branding.util.DateUtil;
+import kr.mashup.branding.ui.danggn.response.DanggnMemberRankData;
+import kr.mashup.branding.ui.danggn.response.DanggnMemberRankResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnPlatformRankResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnRandomMessageResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnRankingRoundResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnRankingRoundsResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnScoreResponse;
+import kr.mashup.branding.ui.danggn.response.GoldenDanggnPercentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -90,4 +99,15 @@ public class DanggnController {
         return ApiResponse.success(danggnFacadeService.getRandomTodayMessage());
     }
 
+    @ApiOperation(value = "당근 랭킹 회차 다건 조회")
+    @GetMapping("/ranking-round")
+    public ApiResponse<DanggnRankingRoundsResponse> getAllRankingRound(@ApiIgnore MemberAuth auth) {
+        return ApiResponse.success(danggnFacadeService.getAllRankingRoundByMemberGeneration(auth.getMemberGenerationId()));
+    }
+
+    @ApiOperation(value = "당근 랭킹 회차 단건 조회")
+    @GetMapping("/ranking-round/{danggnRankingRoundId}")
+    public ApiResponse<DanggnRankingRoundResponse> getRankingRoundById(@PathVariable Long danggnRankingRoundId) {
+        return ApiResponse.success(danggnFacadeService.getRankingRoundById(danggnRankingRoundId));
+    }
 }
