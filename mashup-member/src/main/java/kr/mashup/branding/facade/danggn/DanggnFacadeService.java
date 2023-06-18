@@ -20,7 +20,7 @@ import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.service.danggn.DanggnRankingRewardService;
-import kr.mashup.branding.service.danggn.DanggnRankingRewardStatus;
+import kr.mashup.branding.domain.danggn.DanggnRankingRewardStatus;
 import kr.mashup.branding.service.danggn.DanggnRankingRoundService;
 import kr.mashup.branding.service.danggn.DanggnScoreService;
 import kr.mashup.branding.service.danggn.DanggnShakeLogService;

@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import kr.mashup.branding.domain.danggn.DanggnRankingReward;
 import kr.mashup.branding.domain.danggn.DanggnRankingRound;
 import kr.mashup.branding.domain.member.Member;
-import kr.mashup.branding.service.danggn.DanggnRankingRewardStatus;
+import kr.mashup.branding.domain.danggn.DanggnRankingRewardStatus;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

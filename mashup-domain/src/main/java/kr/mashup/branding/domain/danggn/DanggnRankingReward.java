@@ -3,7 +3,6 @@ package kr.mashup.branding.domain.danggn;
 import javax.persistence.Entity;
 
 import kr.mashup.branding.domain.BaseEntity;
-import kr.mashup.branding.service.danggn.DanggnRankingRewardStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

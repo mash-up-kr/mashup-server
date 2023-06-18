@@ -1,4 +1,4 @@
-package kr.mashup.branding.service.danggn;
+package kr.mashup.branding.domain.danggn;
 
 public enum DanggnRankingRewardStatus {
 
