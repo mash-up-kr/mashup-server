@@ -16,9 +16,11 @@ import kr.mashup.branding.domain.danggn.DanggnRankingReward;
 import kr.mashup.branding.domain.danggn.DanggnRankingRound;
 import kr.mashup.branding.domain.danggn.DanggnScore;
 import kr.mashup.branding.domain.danggn.DanggnTodayMessage;
+import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.service.danggn.DanggnRankingRewardService;
+import kr.mashup.branding.service.danggn.DanggnRankingRewardStatus;
 import kr.mashup.branding.service.danggn.DanggnRankingRoundService;
 import kr.mashup.branding.service.danggn.DanggnScoreService;
 import kr.mashup.branding.service.danggn.DanggnShakeLogService;
@@ -88,14 +90,6 @@ public class DanggnFacadeService {
     }
 
     @Transactional
-    public DanggnRankingRoundResponse getRankingRoundById(Long danggnRankingRoundId) {
-        final DanggnRankingRound currentDanggnRankingRound = danggnRankingRoundService.findByIdOrThrow(danggnRankingRoundId);
-        final Optional<DanggnRankingRound> previousDanggnRankingRound = danggnRankingRoundService.getPreviousById(danggnRankingRoundId);
-
-        final DanggnRankingRewardResponse rewardResponse = getDanggnRankingRewardResponse(previousDanggnRankingRound);
-        return DanggnRankingRoundResponse.of(currentDanggnRankingRound, rewardResponse);
-    }
-
     public DanggnRankingRoundsResponse getAllRankingRoundByMemberGeneration(Long memberGenerationId) {
         final MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
         List<DanggnRankingRoundsResponse.DanggnRankingRoundSimpleResponse> simpleResponses = danggnRankingRoundService.findPastAndCurrentByGeneration(memberGeneration.getGeneration())
@@ -103,6 +97,15 @@ public class DanggnFacadeService {
             .map(DanggnRankingRoundsResponse.DanggnRankingRoundSimpleResponse::from)
             .collect(Collectors.toList());
         return DanggnRankingRoundsResponse.from(simpleResponses);
+    }
+
+    @Transactional
+    public DanggnRankingRoundResponse getRankingRoundById(Long danggnRankingRoundId) {
+        final DanggnRankingRound currentDanggnRankingRound = danggnRankingRoundService.findByIdOrThrow(danggnRankingRoundId);
+        final Optional<DanggnRankingRound> previousDanggnRankingRound = danggnRankingRoundService.getPreviousById(danggnRankingRoundId);
+
+        final DanggnRankingRewardResponse rewardResponse = getDanggnRankingRewardResponse(previousDanggnRankingRound);
+        return DanggnRankingRoundResponse.of(currentDanggnRankingRound, rewardResponse);
     }
 
     private List<DanggnPlatformRankResponse> getExistingPlatformRankList(Integer generationNumber) {
@@ -122,11 +125,11 @@ public class DanggnFacadeService {
 
     private DanggnRankingRewardResponse getDanggnRankingRewardResponse(Optional<DanggnRankingRound> danggnRankingRound) {
 
-        final DanggnRankingReward danggnRankingReward = danggnRankingRound.isPresent() ? danggnRankingRewardService.findByDanggnRankingRoundOrNull(danggnRankingRound) : null;
+        final DanggnRankingReward reward = danggnRankingRewardService.findByDanggnRankingRoundOrNull(danggnRankingRound);
+        final DanggnRankingRewardStatus status =
+            reward == null ? DanggnRankingRewardStatus.NO_FIRST_PLACE_MEMBER : reward.getRankingRewardStatus();
 
-        String name = danggnRankingReward != null ?
-            memberService.getActiveOrThrowById(danggnRankingReward.getFirstPlaceRecordMemberId()).getName() : null;
-        String comment = danggnRankingReward != null ? danggnRankingReward.getComment() : null;
-        return DanggnRankingRewardResponse.of(name, comment);
+        final Member member = status.hasFirstPlaceMember() ? memberService.getActiveOrThrowById(reward.getFirstPlaceRecordMemberId()) : null;
+        return DanggnRankingRewardResponse.of(reward, member, status);
     }
 }

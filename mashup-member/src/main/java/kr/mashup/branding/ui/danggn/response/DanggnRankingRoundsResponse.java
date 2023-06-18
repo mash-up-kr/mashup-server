@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.Value;
 
 @Value(staticConstructor = "from")
-@Getter
 public class DanggnRankingRoundsResponse {
 
 	List<DanggnRankingRoundSimpleResponse> DanggnRankingRounds;
@@ -18,13 +17,13 @@ public class DanggnRankingRoundsResponse {
 	@Getter
 	public static class DanggnRankingRoundSimpleResponse {
 
-		Long danggnRankingRoundId;
+		Long id;
 
 		Integer number;
 
-		LocalDate startedAt;
+		LocalDate startDate;
 
-		LocalDate endedAt;
+		LocalDate endDate;
 
 		public static DanggnRankingRoundSimpleResponse from(DanggnRankingRound danggnRankingRound) {
 			return new DanggnRankingRoundSimpleResponse(
