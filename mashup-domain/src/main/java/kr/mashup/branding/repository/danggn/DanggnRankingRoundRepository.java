@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import kr.mashup.branding.domain.danggn.DanggnRankingRound;
 
-public interface DanggnRankingRoundRepository extends JpaRepository<DanggnRankingRound, Long> {
+public interface DanggnRankingRoundRepository extends JpaRepository<DanggnRankingRound, Long>, DanggnRankingRoundRepositoryCustom {
 
 	List<DanggnRankingRound> findByGenerationId(Long generationId);
 

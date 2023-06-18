@@ -21,11 +21,8 @@ public class DanggnRankingRoundService {
 
 	private final DanggnRankingRoundRepository danggnRankingRoundRepository;
 
-	public DanggnRankingRound findCurrentByGeneration(Generation generation) {
-		return danggnRankingRoundRepository.findByGenerationId(generation.getId())
-			.stream()
-			.filter(round -> DateUtil.isInTime(round.getStartedAt(), round.getEndedAt(), LocalDateTime.now()))
-			.findFirst()
+	public DanggnRankingRound findCurrentByGeneration(Integer generationNumber) {
+		return danggnRankingRoundRepository.retrieveCurrentByGenerationNum(generationNumber)
 			.orElseThrow(DanggnRankingRoundNotFoundException::new);
 	}
 

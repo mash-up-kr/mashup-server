@@ -10,5 +10,5 @@ import kr.mashup.branding.domain.member.Platform;
 
 public interface DanggnNotificationPlatformRecordRepository extends JpaRepository<DanggnNotificationPlatformRecord, Long> {
 
-	Optional<DanggnNotificationPlatformRecord> findByPlatformAndGeneration(Platform platform, Generation generation);
+	Optional<DanggnNotificationPlatformRecord> findByPlatformAndGenerationAndDanggnRankingRoundId(Platform platform, Generation generation, Long danggnRankingRoundId);
 }

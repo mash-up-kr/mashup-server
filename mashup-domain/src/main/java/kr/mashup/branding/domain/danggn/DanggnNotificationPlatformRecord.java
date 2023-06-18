@@ -32,22 +32,27 @@ public class DanggnNotificationPlatformRecord {
 
     private Long lastNotificationSentScore;
 
+    private Long danggnRankingRoundId;
+
     public static DanggnNotificationPlatformRecord of(
         Generation generation,
         Platform platform,
-        Long lastNotificationSentScore
+        Long lastNotificationSentScore,
+        Long danggnRankingRoundId
     ) {
-        return new DanggnNotificationPlatformRecord(generation, platform, lastNotificationSentScore);
+        return new DanggnNotificationPlatformRecord(generation, platform, lastNotificationSentScore, danggnRankingRoundId);
     }
 
     private DanggnNotificationPlatformRecord(
         Generation generation,
         Platform platform,
-        Long lastNotificationSentScore
+        Long lastNotificationSentScore,
+        Long danggnRankingRoundId
     ) {
         this.generation = generation;
         this.platform = platform;
         this.lastNotificationSentScore = lastNotificationSentScore;
+        this.danggnRankingRoundId = danggnRankingRoundId;
     }
 
     public void updateLastNotificationSentScore(Long lastNotificationSentScore) {

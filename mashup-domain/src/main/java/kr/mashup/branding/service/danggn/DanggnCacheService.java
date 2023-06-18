@@ -20,13 +20,13 @@ public class DanggnCacheService {
     private final DanggnScoreRepository danggnScoreRepository;
 
     @Cacheable(cacheNames = "danggnFirstPlaceRecord", key = "T(kr.mashup.branding.service.danggn.DanggnCacheKey).MEMBER + #generationNumber.toString()")
-    public String getCachedFirstRecordMemberId(Integer generationNumber) {
-        return findFirstRecordMember(generationNumber).getId().toString();
+    public String getCachedFirstRecordMemberId(Integer generationNumber, Long danggnRankingRoundId) {
+        return findFirstRecordMember(generationNumber, danggnRankingRoundId).getId().toString();
     }
 
     @Cacheable(cacheNames = "danggnFirstPlaceRecord", key = "T(kr.mashup.branding.service.danggn.DanggnCacheKey).PLATFORM + #generationNumber.toString()")
-    public String getCachedFirstRecordPlatform(Integer generationNumber) {
-        return findFirstRecordPlatform(generationNumber).toString();
+    public String getCachedFirstRecordPlatform(Integer generationNumber, Long danggnRankingRoundId) {
+        return findFirstRecordPlatform(generationNumber, danggnRankingRoundId).toString();
     }
 
     @CachePut(cacheNames = "danggnFirstPlaceRecord", key = "#key + #generationNumber.toString()")
@@ -34,8 +34,8 @@ public class DanggnCacheService {
         return value;
     }
 
-    public Member findFirstRecordMember(Integer generationNumber) {
-        List<DanggnScore> danggnScores = danggnScoreRepository.findOrderedListByGenerationNum(generationNumber);
+    public Member findFirstRecordMember(Integer generationNumber, Long danggnRankingRoundId) {
+        List<DanggnScore> danggnScores = danggnScoreRepository.findOrderedListByGenerationNum(generationNumber, danggnRankingRoundId);
 
         if (danggnScores.isEmpty()) {
             return null;
@@ -45,8 +45,8 @@ public class DanggnCacheService {
                 .getMember();
     }
 
-    public Platform findFirstRecordPlatform(Integer generationNumber) {
-        List<DanggnScorePlatformQueryResult> results = danggnScoreRepository.findOrderedDanggnScorePlatformListByGenerationNum(generationNumber);
+    public Platform findFirstRecordPlatform(Integer generationNumber, Long danggnRankingRoundId) {
+        List<DanggnScorePlatformQueryResult> results = danggnScoreRepository.findOrderedDanggnScorePlatformListByGenerationNum(generationNumber, danggnRankingRoundId);
 
         if (results.isEmpty()) {
             return null;

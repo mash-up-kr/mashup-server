@@ -62,19 +62,21 @@ public class DanggnController {
     @GetMapping("/rank/member")
     public ApiResponse<List<DanggnMemberRankData>> getMemberRank(
         @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
-        @RequestParam(defaultValue = "11", required = false) Integer limit
+        @RequestParam(defaultValue = "11", required = false) Integer limit,
+        @RequestParam(required = false) Long danggnRankingRoundId
     ) {
-        List<DanggnMemberRankData> danggnMemberRankDataList = danggnFacadeService.getMemberRankList(generationNumber);
+        List<DanggnMemberRankData> danggnMemberRankDataList = danggnFacadeService.getMemberRankList(generationNumber, danggnRankingRoundId);
         return ApiResponse.success(danggnMemberRankDataList.subList(0, Math.min(danggnMemberRankDataList.size(), limit)));
     }
 
     @ApiOperation(value = "당근 흔들기 개인별 랭킹 전체")
     @GetMapping("/rank/member/all")
     public ApiResponse<DanggnMemberRankResponse> getAllMemberRank(
-        @RequestParam(defaultValue = "13", required = false) Integer generationNumber
+        @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
+        @RequestParam(required = false) Long danggnRankingRoundId
     ) {
         return ApiResponse.success(DanggnMemberRankResponse.of(
-            danggnFacadeService.getMemberRankList(generationNumber),
+            danggnFacadeService.getMemberRankList(generationNumber, danggnRankingRoundId),
             11
         ));
     }
@@ -82,9 +84,10 @@ public class DanggnController {
     @ApiOperation(value = "당근 흔들기 플랫폼별 랭킹")
     @GetMapping("/rank/platform")
     public ApiResponse<List<DanggnPlatformRankResponse>> getPlatformRank(
-        @RequestParam(defaultValue = "13", required = false) Integer generationNumber
+        @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
+        @RequestParam(required = false) Long danggnRankingRoundId
     ) {
-        return ApiResponse.success(danggnFacadeService.getPlatformRankList(generationNumber));
+        return ApiResponse.success(danggnFacadeService.getPlatformRankList(generationNumber, danggnRankingRoundId));
     }
 
     @ApiOperation(value = "황금 당근 확률")

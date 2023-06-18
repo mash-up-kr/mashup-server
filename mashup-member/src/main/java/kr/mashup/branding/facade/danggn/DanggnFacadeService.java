@@ -55,21 +55,31 @@ public class DanggnFacadeService {
     @Transactional
     public DanggnScoreResponse addScore(Long memberGenerationId, Long score) {
         final MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
-        DanggnScore danggnScore = danggnScoreService.findByMemberGeneration(memberGeneration);
+        final Long currentDanggnRankingRoundId = danggnRankingRoundService.findCurrentByGeneration(memberGeneration.getGeneration().getNumber()).getId();
+
+        DanggnScore danggnScore = danggnScoreService.findByMemberGenerationOrSave(memberGeneration, currentDanggnRankingRoundId);
         danggnScore.addScore(score);
         danggnShakeLogService.createLog(memberGeneration, score);
         return DanggnScoreResponse.of(danggnScore.getTotalShakeScore());
     }
 
     @Transactional(readOnly = true)
-    public List<DanggnMemberRankData> getMemberRankList(Integer generationNumber) {
-        return danggnScoreService.getDanggnScoreOrderedList(generationNumber)
+    public List<DanggnMemberRankData> getMemberRankList(Integer generationNumber, Long danggnRankingRoundId) {
+        if (danggnRankingRoundId == null) { // danggnRankingRoundId 가 없으면 현재 운영중인 회차 아이디 반환
+            danggnRankingRoundId = danggnRankingRoundService.findCurrentByGeneration(generationNumber).getId();
+        }
+
+        return danggnScoreService.getDanggnScoreOrderedList(generationNumber, danggnRankingRoundId)
             .stream().map(DanggnMemberRankData::from).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<DanggnPlatformRankResponse> getPlatformRankList(Integer generationNumber) {
-        List<DanggnPlatformRankResponse> existingPlatformRankList = getExistingPlatformRankList(generationNumber);
+    public List<DanggnPlatformRankResponse> getPlatformRankList(Integer generationNumber, Long danggnRankingRoundId) {
+        if (danggnRankingRoundId == null) { // danggnRankingRoundId 가 없으면 현재 운영중인 회차 아이디 반환
+            danggnRankingRoundId = danggnRankingRoundService.findCurrentByGeneration(generationNumber).getId();
+        }
+
+        List<DanggnPlatformRankResponse> existingPlatformRankList = getExistingPlatformRankList(generationNumber, danggnRankingRoundId);
 
         Set<Platform> notExistingPlatforms = getNotExistingPlatforms(existingPlatformRankList);
         List<DanggnPlatformRankResponse> notExistingPlatformRankList = notExistingPlatforms.stream()
@@ -108,8 +118,8 @@ public class DanggnFacadeService {
         return DanggnRankingRoundResponse.of(currentDanggnRankingRound, rewardResponse);
     }
 
-    private List<DanggnPlatformRankResponse> getExistingPlatformRankList(Integer generationNumber) {
-        return danggnScoreService.getDanggnScorePlatformOrderedList(generationNumber).stream()
+    private List<DanggnPlatformRankResponse> getExistingPlatformRankList(Integer generationNumber, Long danggnRankingRoundId) {
+        return danggnScoreService.getDanggnScorePlatformOrderedList(generationNumber, danggnRankingRoundId).stream()
             .map(queryResult -> DanggnPlatformRankResponse.of(queryResult.getPlatform(), queryResult.getTotalScore()))
             .collect(Collectors.toList());
     }

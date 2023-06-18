@@ -5,7 +5,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 
 import kr.mashup.branding.domain.member.MemberGeneration;
 import lombok.AccessLevel;
@@ -20,25 +20,30 @@ public class DanggnNotificationMemberRecord {
     @GeneratedValue
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_generation_id")
     private MemberGeneration memberGeneration;
 
     private Long lastNotificationSentScore;
 
+    private Long danggnRankingRoundId;
+
     public static DanggnNotificationMemberRecord of(
         MemberGeneration memberGeneration,
-        Long lastNotificationSentScore
+        Long lastNotificationSentScore,
+        Long danggnRankingRoundId
     ) {
-        return new DanggnNotificationMemberRecord(memberGeneration, lastNotificationSentScore);
+        return new DanggnNotificationMemberRecord(memberGeneration, lastNotificationSentScore, danggnRankingRoundId);
     }
 
     private DanggnNotificationMemberRecord(
         MemberGeneration memberGeneration,
-        Long lastNotificationSentScore
+        Long lastNotificationSentScore,
+        Long danggnRankingRoundId
     ) {
         this.memberGeneration = memberGeneration;
         this.lastNotificationSentScore = lastNotificationSentScore;
+        this.danggnRankingRoundId = danggnRankingRoundId;
     }
 
     public void updateLastNotificationSentScore(Long lastNotificationSentScore) {
