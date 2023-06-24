@@ -107,6 +107,7 @@ public enum ResultCode {
 
     // Danggn
     TODAY_MESSAGE_NOT_FOUND("존재하지 않는 메시지입니다."),
+    RANKING_ROUND_NOT_FOUND("당근 랭킹 회차가 존재하지 않습니다."),
 
     // JsonUtil
     JSON_DESERIALIZE_UNABLE("객체를 json string 을 deserialize 할 수 없습니다"),

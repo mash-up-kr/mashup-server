@@ -19,13 +19,13 @@ public class DanggnNotificationRecordService {
 
 	private final DanggnNotificationPlatformRecordRepository danggnNotificationPlatformRecordRepository;
 
-	public DanggnNotificationMemberRecord findMemberRecordOrSave(MemberGeneration memberGeneration) {
-		return danggnNotificationMemberRecordRepository.findByMemberGeneration(memberGeneration)
-			.orElseGet(() -> danggnNotificationMemberRecordRepository.save(DanggnNotificationMemberRecord.of(memberGeneration, 0L)));
+	public DanggnNotificationMemberRecord findMemberRecordOrSave(MemberGeneration memberGeneration, Long danggnRankingRoundId) {
+		return danggnNotificationMemberRecordRepository.findByMemberGenerationAndDanggnRankingRoundId(memberGeneration, danggnRankingRoundId)
+			.orElseGet(() -> danggnNotificationMemberRecordRepository.save(DanggnNotificationMemberRecord.of(memberGeneration, 0L, danggnRankingRoundId)));
 	}
 
-	public DanggnNotificationPlatformRecord findPlatformRecordOrSave(Generation generation, Platform platform) {
-		return danggnNotificationPlatformRecordRepository.findByPlatformAndGeneration(platform, generation)
-			.orElseGet(() -> danggnNotificationPlatformRecordRepository.save(DanggnNotificationPlatformRecord.of(generation, platform, 0L)));
+	public DanggnNotificationPlatformRecord findPlatformRecordOrSave(Generation generation, Platform platform, Long danggnRankingRoundId) {
+		return danggnNotificationPlatformRecordRepository.findByPlatformAndGenerationAndDanggnRankingRoundId(platform, generation, danggnRankingRoundId)
+			.orElseGet(() -> danggnNotificationPlatformRecordRepository.save(DanggnNotificationPlatformRecord.of(generation, platform, 0L, danggnRankingRoundId)));
 	}
 }
