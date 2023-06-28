@@ -44,11 +44,6 @@ public class DanggnRankingRoundService {
 			.collect(Collectors.toList());
 	}
 
-	public Optional<DanggnRankingRound> getRecentFinished() {
-		LocalDateTime now = LocalDateTime.now();
-		return danggnRankingRoundRepository.findAllByEndedAtBefore(now).stream().max(Comparator.comparingInt(DanggnRankingRound::getNumber));
-	}
-
 	public List<DanggnRankingRound> getAllSorted() {
 		return danggnRankingRoundRepository.findAll().stream()
 			.sorted(Comparator.comparingInt(DanggnRankingRound::getNumber).reversed())

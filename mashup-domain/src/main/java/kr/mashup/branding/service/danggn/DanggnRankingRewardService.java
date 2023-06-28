@@ -32,4 +32,8 @@ public class DanggnRankingRewardService {
 	public void save(DanggnRankingReward danggnRankingReward) {
 		danggnRankingRewardRepository.save(danggnRankingReward);
 	}
+
+	public Boolean existsByDanggnRankingRoundId(Long danggnRankingRoundId) {
+		return danggnRankingRewardRepository.existsByDanggnRankingRoundId(danggnRankingRoundId);
+	}
 }
