@@ -1,6 +1,7 @@
 package kr.mashup.branding.facade.danggn;
 
 import kr.mashup.branding.domain.danggn.*;
+import kr.mashup.branding.domain.danggn.Exception.DanggnRankingRewardNotAllowedException;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
@@ -101,6 +102,19 @@ public class DanggnFacadeService {
         return DanggnRankingRoundResponse.of(currentDanggnRankingRound, rewardResponse);
     }
 
+    @Transactional
+    public void writeDanggnRankingRewardComment(
+        Long memberId,
+        Long danggnRankingRoundId,
+        String comment
+    ) {
+        DanggnRankingReward danggnRankingReward = danggnRankingRewardService.findById(danggnRankingRoundId);
+        if(danggnRankingReward.getFirstPlaceRecordMemberId() != memberId) {
+            throw new DanggnRankingRewardNotAllowedException();
+        }
+        danggnRankingRewardService.writeComment(danggnRankingRoundId, comment);
+    }
+
     private List<DanggnPlatformRankResponse> getExistingPlatformRankList(Integer generationNumber, Long danggnRankingRoundId) {
         return danggnScoreService.getDanggnScorePlatformOrderedList(generationNumber, danggnRankingRoundId).stream()
             .map(queryResult -> DanggnPlatformRankResponse.of(queryResult.getPlatform(), queryResult.getTotalScore()))
@@ -120,7 +134,7 @@ public class DanggnFacadeService {
 
         final DanggnRankingReward reward = danggnRankingRewardService.findByDanggnRankingRoundOrNull(danggnRankingRound);
         final DanggnRankingRewardStatus status =
-            reward == null ? DanggnRankingRewardStatus.FIRST_PLACE_MEMBER_NOT_EXISTED : reward.getRankingRewardStatus();
+            (reward == null || reward.getFirstPlaceRecordMemberId() == null) ? DanggnRankingRewardStatus.FIRST_PLACE_MEMBER_NOT_EXISTED : reward.getRankingRewardStatus();
 
         final Member member = status.hasFirstPlaceMember() ? memberService.getActiveOrThrowById(reward.getFirstPlaceRecordMemberId()) : null;
         return DanggnRankingRewardResponse.of(reward, member, status);
