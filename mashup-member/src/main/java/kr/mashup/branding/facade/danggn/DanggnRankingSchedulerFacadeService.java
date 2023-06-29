@@ -5,10 +5,13 @@ import kr.mashup.branding.domain.danggn.DanggnRankingRound;
 import kr.mashup.branding.domain.danggn.DanggnScore;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.generation.exception.GenerationNotFoundException;
+import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.popup.PopupType;
 import kr.mashup.branding.service.danggn.DanggnRankingRewardService;
 import kr.mashup.branding.service.danggn.DanggnRankingRoundService;
 import kr.mashup.branding.service.danggn.DanggnScoreService;
 import kr.mashup.branding.service.generation.GenerationService;
+import kr.mashup.branding.service.popup.MemberPopupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,8 @@ public class DanggnRankingSchedulerFacadeService {
 
     private final GenerationService generationService;
 
+    private final MemberPopupService memberPopupService;
+
     @Scheduled(cron = "0 0 0/1 * * *")
     @Transactional
     public void updateFirstMember() {
@@ -44,8 +49,10 @@ public class DanggnRankingSchedulerFacadeService {
                 List<DanggnScore> danggnScoreList = danggnScoreService.getDanggnScoreOrderedList(currentGeneration.getNumber(), danggnRankingRound.getId());
                 DanggnScore firstScore = danggnScoreList.stream().findFirst().orElse(null);
                 if (firstScore != null) {
-                    DanggnRankingReward danggnRankingReward = DanggnRankingReward.from(firstScore.getMemberGeneration().getMember().getId(), currentGeneration.getId());
+                    Member firstScoredMember = firstScore.getMemberGeneration().getMember();
+                    DanggnRankingReward danggnRankingReward = DanggnRankingReward.from(firstScoredMember.getId(), currentGeneration.getId());
                     danggnRankingRewardService.save(danggnRankingReward);
+                    memberPopupService.save(firstScoredMember, PopupType.DANGGN_REWARD);
                 }
             }
         });

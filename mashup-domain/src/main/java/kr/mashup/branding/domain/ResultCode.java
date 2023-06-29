@@ -110,6 +110,8 @@ public enum ResultCode {
     RANKING_ROUND_NOT_FOUND("당근 랭킹 회차가 존재하지 않습니다."),
     RANKING_REWARD_NOT_ALLOWED("해당 회차 당근 랭킹 리워드에 권한이 없습니다"),
 
+    RANKING_REWARD_ALREADY_WRITTEN("이미 해당 리워드에 코멘트를 작성하였습니다"),
+
 
     // JsonUtil
     JSON_DESERIALIZE_UNABLE("객체를 json string 을 deserialize 할 수 없습니다"),

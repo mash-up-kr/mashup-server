@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 public enum PopupType {
 
 	DANGGN(LocalDate.of(2023, 5, 18), LocalDate.of(2023, 6, 2)),
+
+	DANGGN_REWARD(LocalDate.MIN, LocalDate.MAX)
 	;
 
 	private final LocalDate startedAt;

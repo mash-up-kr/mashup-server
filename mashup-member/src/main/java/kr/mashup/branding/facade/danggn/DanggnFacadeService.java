@@ -1,6 +1,7 @@
 package kr.mashup.branding.facade.danggn;
 
 import kr.mashup.branding.domain.danggn.*;
+import kr.mashup.branding.domain.danggn.Exception.DanggnRankingRewardAlreadyWrittenException;
 import kr.mashup.branding.domain.danggn.Exception.DanggnRankingRewardNotAllowedException;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
@@ -109,6 +110,9 @@ public class DanggnFacadeService {
         String comment
     ) {
         DanggnRankingReward danggnRankingReward = danggnRankingRewardService.findById(danggnRankingRewardId);
+        if(danggnRankingReward.getComment() != null) {
+            throw new DanggnRankingRewardAlreadyWrittenException();
+        }
         if(danggnRankingReward.getFirstPlaceRecordMemberId() != memberId) {
             throw new DanggnRankingRewardNotAllowedException();
         }
