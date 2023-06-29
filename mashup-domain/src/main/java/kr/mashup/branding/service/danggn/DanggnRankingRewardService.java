@@ -20,8 +20,8 @@ public class DanggnRankingRewardService {
 			.orElse(null);
 	}
 
-	public DanggnRankingReward findById(Long danggnRankingRoundId) {
-		return danggnRankingRewardRepository.findById(danggnRankingRoundId).orElseThrow(DanggnRankingRewardNotFoundException::new);
+	public DanggnRankingReward findById(Long danggnRankingRewardId) {
+		return danggnRankingRewardRepository.findById(danggnRankingRewardId).orElseThrow(DanggnRankingRewardNotFoundException::new);
 	}
 
 	public void writeComment(Long danggnRankingRoundId, String comment) {

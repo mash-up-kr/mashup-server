@@ -116,13 +116,13 @@ public class DanggnController {
     }
 
     @ApiOperation(value = "당근 1등 리워드 코멘트 작성")
-    @PostMapping("/ranking-reward-comment/{danggnRankingRoundId}")
+    @PostMapping("/ranking-reward-comment/{danggnRankingRewardId}")
     public ApiResponse<Boolean> writeDanggnRankingRewardComment(
         @ApiIgnore MemberAuth memberAuth,
         @RequestBody DanggnRankingRewardRequest request,
-        @PathVariable Long danggnRankingRoundId
+        @PathVariable Long danggnRankingRewardId
     ) {
-        danggnFacadeService.writeDanggnRankingRewardComment(memberAuth.getMemberId(), danggnRankingRoundId, request.getComment());
+        danggnFacadeService.writeDanggnRankingRewardComment(memberAuth.getMemberId(), danggnRankingRewardId, request.getComment());
         return ApiResponse.success(true);
     }
 }

@@ -105,14 +105,14 @@ public class DanggnFacadeService {
     @Transactional
     public void writeDanggnRankingRewardComment(
         Long memberId,
-        Long danggnRankingRoundId,
+        Long danggnRankingRewardId,
         String comment
     ) {
-        DanggnRankingReward danggnRankingReward = danggnRankingRewardService.findById(danggnRankingRoundId);
+        DanggnRankingReward danggnRankingReward = danggnRankingRewardService.findById(danggnRankingRewardId);
         if(danggnRankingReward.getFirstPlaceRecordMemberId() != memberId) {
             throw new DanggnRankingRewardNotAllowedException();
         }
-        danggnRankingRewardService.writeComment(danggnRankingRoundId, comment);
+        danggnRankingRewardService.writeComment(danggnRankingRewardId, comment);
     }
 
     private List<DanggnPlatformRankResponse> getExistingPlatformRankList(Integer generationNumber, Long danggnRankingRoundId) {
