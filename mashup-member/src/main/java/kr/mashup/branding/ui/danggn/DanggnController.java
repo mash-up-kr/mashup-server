@@ -125,4 +125,10 @@ public class DanggnController {
         danggnFacadeService.writeDanggnRankingRewardComment(memberAuth.getMemberId(), danggnRankingRewardId, request.getComment());
         return ApiResponse.success(true);
     }
+
+    @ApiOperation(value = "당근 랭킹 회차 단건 조회")
+    @GetMapping("/ranking-round/test/{danggnRankingRoundId}")
+    public ApiResponse<DanggnRankingRoundResponse> getRankingRoundBytestId(@PathVariable Long danggnRankingRoundId) {
+        return ApiResponse.success(danggnFacadeService.getRankingRoundById(danggnRankingRoundId));
+    }
 }
