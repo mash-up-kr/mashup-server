@@ -9,4 +9,6 @@ import kr.mashup.branding.domain.danggn.DanggnRankingReward;
 public interface DanggnRankingRewardRepository extends JpaRepository<DanggnRankingReward, Long> {
 
 	Optional<DanggnRankingReward> findByDanggnRankingRoundId(Long danggnRankingRoundId);
+
+	Boolean existsByDanggnRankingRoundId(Long danggnRankingRoundId);
 }

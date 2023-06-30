@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum PopupType {
 
+	DANGGN_REWARD(LocalDate.MIN, LocalDate.MAX),
 	DANGGN(LocalDate.of(2023, 5, 18), LocalDate.of(2023, 6, 2)),			// 당근 흔들기 릴리즈 팝업 타입
 	DANGGN_UPDATE(LocalDate.of(2023, 6, 26), LocalDate.of(2023, 7, 26)), 	// 당근 흔들기 업데이트 팝업 타입 FIXME: 배포 일자에 맞춰서, 노출 일자 수정 필요
 	;

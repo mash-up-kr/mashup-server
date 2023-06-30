@@ -6,12 +6,14 @@ import kr.mashup.branding.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DanggnRankingReward extends BaseEntity {
 
+	@Setter
 	private String comment;
 
 	private Long firstPlaceRecordMemberId;

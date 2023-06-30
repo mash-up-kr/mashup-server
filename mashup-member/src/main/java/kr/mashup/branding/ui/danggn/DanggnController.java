@@ -2,6 +2,7 @@ package kr.mashup.branding.ui.danggn;
 
 import java.util.List;
 
+import kr.mashup.branding.ui.danggn.request.DanggnRankingRewardRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -112,5 +113,16 @@ public class DanggnController {
     @GetMapping("/ranking-round/{danggnRankingRoundId}")
     public ApiResponse<DanggnRankingRoundResponse> getRankingRoundById(@PathVariable Long danggnRankingRoundId) {
         return ApiResponse.success(danggnFacadeService.getRankingRoundById(danggnRankingRoundId));
+    }
+
+    @ApiOperation(value = "당근 1등 리워드 코멘트 작성")
+    @PostMapping("/ranking-reward-comment/{danggnRankingRewardId}")
+    public ApiResponse<Boolean> writeDanggnRankingRewardComment(
+        @ApiIgnore MemberAuth memberAuth,
+        @RequestBody DanggnRankingRewardRequest request,
+        @PathVariable Long danggnRankingRewardId
+    ) {
+        danggnFacadeService.writeDanggnRankingRewardComment(memberAuth.getMemberId(), danggnRankingRewardId, request.getComment());
+        return ApiResponse.success(true);
     }
 }

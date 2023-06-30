@@ -1,5 +1,6 @@
 package kr.mashup.branding.repository.danggn;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,4 +13,6 @@ public interface DanggnRankingRoundRepository extends JpaRepository<DanggnRankin
 	List<DanggnRankingRound> findByGenerationId(Long generationId);
 
 	Optional<DanggnRankingRound> findByNumberAndGenerationId(Integer number, Long generationId);
+
+	List<DanggnRankingRound> findAllByEndedAtBefore(LocalDateTime time);
 }
