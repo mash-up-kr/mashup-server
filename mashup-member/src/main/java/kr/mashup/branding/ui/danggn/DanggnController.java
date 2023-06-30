@@ -116,7 +116,7 @@ public class DanggnController {
     }
 
     @ApiOperation(value = "당근 1등 리워드 코멘트 작성")
-    @PostMapping("/ranking-reward/comment/{danggnRankingRewardId}")
+    @PostMapping("/ranking-reward-comment/{danggnRankingRewardId}")
     public ApiResponse<Boolean> writeDanggnRankingRewardComment(
         @ApiIgnore MemberAuth memberAuth,
         @RequestBody DanggnRankingRewardRequest request,
