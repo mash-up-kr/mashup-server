@@ -2,7 +2,6 @@ package kr.mashup.branding.ui.danggn;
 
 import java.util.List;
 
-import kr.mashup.branding.ui.danggn.request.DanggnRankingRewardRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +16,7 @@ import kr.mashup.branding.aop.cipher.CheckApiCipherTime;
 import kr.mashup.branding.facade.danggn.DanggnFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
+import kr.mashup.branding.ui.danggn.request.DanggnRankingRewardRequest;
 import kr.mashup.branding.ui.danggn.request.DanggnScoreAddRequest;
 import kr.mashup.branding.ui.danggn.response.DanggnMemberRankData;
 import kr.mashup.branding.ui.danggn.response.DanggnMemberRankResponse;
@@ -106,13 +106,17 @@ public class DanggnController {
     @ApiOperation(value = "당근 랭킹 회차 다건 조회")
     @GetMapping("/ranking-round")
     public ApiResponse<DanggnRankingRoundsResponse> getAllRankingRound(@ApiIgnore MemberAuth auth) {
-        return ApiResponse.success(danggnFacadeService.getAllRankingRoundByMemberGeneration(auth.getMemberGenerationId()));
+        return ApiResponse.success(
+            danggnFacadeService.getAllRankingRoundByMemberGeneration(auth.getMemberGenerationId()));
     }
 
     @ApiOperation(value = "당근 랭킹 회차 단건 조회")
     @GetMapping("/ranking-round/{danggnRankingRoundId}")
-    public ApiResponse<DanggnRankingRoundResponse> getRankingRoundById(@PathVariable Long danggnRankingRoundId) {
-        return ApiResponse.success(danggnFacadeService.getRankingRoundById(danggnRankingRoundId));
+    public ApiResponse<DanggnRankingRoundResponse> getRankingRoundById(
+        @ApiIgnore MemberAuth auth,
+        @PathVariable Long danggnRankingRoundId
+    ) {
+        return ApiResponse.success(danggnFacadeService.getRankingRoundById(auth.getMemberId(), danggnRankingRoundId));
     }
 
     @ApiOperation(value = "당근 1등 리워드 코멘트 작성")

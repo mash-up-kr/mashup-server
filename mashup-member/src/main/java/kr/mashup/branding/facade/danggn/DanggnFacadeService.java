@@ -1,23 +1,42 @@
 package kr.mashup.branding.facade.danggn;
 
-import kr.mashup.branding.domain.danggn.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.mashup.branding.domain.danggn.DanggnRankingReward;
+import kr.mashup.branding.domain.danggn.DanggnRankingRewardStatus;
+import kr.mashup.branding.domain.danggn.DanggnRankingRound;
+import kr.mashup.branding.domain.danggn.DanggnScore;
+import kr.mashup.branding.domain.danggn.DanggnTodayMessage;
 import kr.mashup.branding.domain.danggn.Exception.DanggnRankingRewardAlreadyWrittenException;
 import kr.mashup.branding.domain.danggn.Exception.DanggnRankingRewardNotAllowedException;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
-import kr.mashup.branding.service.danggn.*;
+import kr.mashup.branding.service.danggn.DanggnRankingRewardService;
+import kr.mashup.branding.service.danggn.DanggnRankingRoundService;
+import kr.mashup.branding.service.danggn.DanggnScoreService;
+import kr.mashup.branding.service.danggn.DanggnShakeLogService;
+import kr.mashup.branding.service.danggn.DanggnTodayMessageService;
 import kr.mashup.branding.service.member.MemberService;
-import kr.mashup.branding.ui.danggn.response.*;
+import kr.mashup.branding.ui.danggn.response.DanggnMemberRankData;
+import kr.mashup.branding.ui.danggn.response.DanggnPlatformRankResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnRandomMessageResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnRankingRoundResponse;
 import kr.mashup.branding.ui.danggn.response.DanggnRankingRoundResponse.DanggnRankingRewardResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnRankingRoundsResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnScoreResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -94,12 +113,12 @@ public class DanggnFacadeService {
     }
 
     @Transactional
-    public DanggnRankingRoundResponse getRankingRoundById(Long danggnRankingRoundId) {
+    public DanggnRankingRoundResponse getRankingRoundById(Long memberId, Long danggnRankingRoundId) {
         final DanggnRankingRound currentDanggnRankingRound = danggnRankingRoundService.findByIdOrThrow(danggnRankingRoundId);
         final Optional<DanggnRankingRound> previousDanggnRankingRound = danggnRankingRoundService.getPreviousById(danggnRankingRoundId);
 
         // 조회하는 회차의 전 회차 1등 공지사항 조회
-        final DanggnRankingRewardResponse rewardResponse = getDanggnRankingRewardResponse(previousDanggnRankingRound);
+        final DanggnRankingRewardResponse rewardResponse = getDanggnRankingRewardResponse(memberId, previousDanggnRankingRound);
         return DanggnRankingRoundResponse.of(currentDanggnRankingRound, rewardResponse);
     }
 
@@ -134,13 +153,14 @@ public class DanggnFacadeService {
         return entirePlatforms;
     }
 
-    private DanggnRankingRewardResponse getDanggnRankingRewardResponse(Optional<DanggnRankingRound> danggnRankingRound) {
+    private DanggnRankingRewardResponse getDanggnRankingRewardResponse(Long memberId, Optional<DanggnRankingRound> danggnRankingRound) {
 
         final DanggnRankingReward reward = danggnRankingRewardService.findByDanggnRankingRoundOrNull(danggnRankingRound);
         final DanggnRankingRewardStatus status =
             (reward == null || reward.getFirstPlaceRecordMemberId() == null) ? DanggnRankingRewardStatus.FIRST_PLACE_MEMBER_NOT_EXISTED : reward.getRankingRewardStatus();
 
         final Member member = status.hasFirstPlaceMember() ? memberService.getActiveOrThrowById(reward.getFirstPlaceRecordMemberId()) : null;
-        return DanggnRankingRewardResponse.of(reward, member, status);
+        final Boolean isFirstPlaceMember = member != null && Objects.equals(memberId, member.getId());
+        return DanggnRankingRewardResponse.of(reward, member, status, isFirstPlaceMember);
     }
 }
