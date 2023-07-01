@@ -1,5 +1,7 @@
 package kr.mashup.branding.ui.danggn.response;
 
+import java.time.LocalDateTime;
+
 import kr.mashup.branding.domain.danggn.DanggnRankingReward;
 import kr.mashup.branding.domain.danggn.DanggnRankingRewardStatus;
 import kr.mashup.branding.domain.danggn.DanggnRankingRound;
@@ -7,8 +9,6 @@ import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
@@ -46,12 +46,15 @@ public class DanggnRankingRoundResponse {
 
 		DanggnRankingRewardStatus status;
 
-		public static DanggnRankingRewardResponse of(DanggnRankingReward danggnRankingReward, Member member, DanggnRankingRewardStatus danggnRankingRewardStatus) {
+		Boolean isFirstPlaceMember;
+
+		public static DanggnRankingRewardResponse of(DanggnRankingReward danggnRankingReward, Member member, DanggnRankingRewardStatus danggnRankingRewardStatus, Boolean isFirstPlaceMember) {
 			return new DanggnRankingRewardResponse(
 				danggnRankingRewardStatus.hasFirstPlaceMember() ? danggnRankingReward.getId() : null,
 				danggnRankingRewardStatus.hasFirstPlaceMember() ? member.getName() : null,
 				danggnRankingRewardStatus.hasFirstPlaceMember() ? danggnRankingReward.getComment() : null,
-				danggnRankingRewardStatus
+				danggnRankingRewardStatus,
+				isFirstPlaceMember
 			);
 		}
 	}
