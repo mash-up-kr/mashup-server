@@ -5,6 +5,7 @@ import kr.mashup.branding.ui.storage.response.StorageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -19,5 +20,9 @@ public class StorageFacadeService {
 
     public StorageResponse findByKeyString(String keyString) {
         return StorageResponse.from(storageService.findByKey(keyString));
+    }
+
+    public List<String> findAllKeys() {
+        return storageService.findAllKeys();
     }
 }
