@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/storage")
@@ -35,7 +34,7 @@ public class StorageController {
 
     @ApiOperation("key 리스트 가져오기")
     @GetMapping("/keys")
-    public ApiResponse<List<String>> getKeys() {
-        return ApiResponse.success(storageFacadeService.findAllKeys());
+    public ApiResponse<KeyResponse> getKeys() {
+        return ApiResponse.success(KeyResponse.from(storageFacadeService.findAllKeys()));
     }
 }
