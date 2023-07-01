@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -26,5 +29,10 @@ public class StorageService {
     @Transactional(readOnly = true)
     public Storage findByKey(String keyString) {
         return storageRepository.findByKeyString(keyString).orElseThrow(StorageNotFoundException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> findAllKeys() {
+        return storageRepository.findAll().stream().map(Storage::getKeyString).collect(Collectors.toList());
     }
 }
