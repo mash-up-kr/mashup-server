@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.member.MemberGeneration;
+import kr.mashup.branding.domain.member.MemberStatus;
+import kr.mashup.branding.ui.member.request.MemberStatusUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -37,11 +40,12 @@ public class MemberFacadeService {
     private final ScoreHistoryService scoreHistoryService;
 
     @Transactional(readOnly = true)
-    public Page<MemberResponse> getAllActive(Integer generationNumber, Platform platform, String searchName, Pageable pageable) {
+    public Page<MemberResponse> getAllNotRun(Integer generationNumber, Platform platform, String searchName, Pageable pageable) {
 
         final Generation generation = generationService.getByNumberOrThrow(generationNumber);
 
-        final Page<MemberScoreQueryResult> queryResults = memberService.getActiveAllByGeneration(generation, platform, searchName, pageable);
+        final Page<MemberScoreQueryResult> queryResults
+                = memberService.getActiveAllByGeneration(generation, platform, searchName, pageable);
 
         final List<MemberResponse> response = new ArrayList<>();
 
@@ -53,7 +57,8 @@ public class MemberFacadeService {
                 member.getName(),
                 member.getIdentification(),
                 result.getPlatform().name(),
-                result.getScore());
+                result.getScore(),
+                member.getStatus());
 
             response.add(memberResponse);
         }
@@ -68,13 +73,18 @@ public class MemberFacadeService {
         // 활동점수 히스토리
         // 제목, 세미나정보, 등록일시, 점수, 총활동점수,
         final Generation generation = generationService.getByNumberOrThrow(generationNumber);
-        final Member member = memberService.getActiveOrThrowById(memberId);
-        final String memberName = member.getName();
-        final String identification = member.getIdentification();
-        final Platform platform = memberService.getPlatform(member, generation);
-        AtomicReference<Double> accumulatedScore = new AtomicReference<>(0.0);
 
-        List<ScoreHistoryResponse> scoreHistories = scoreHistoryService
+        final Member member = memberService.findMemberById(memberId);
+
+        final String memberName = member.getName();
+
+        final String identification = member.getIdentification();
+
+        final Platform platform = memberService.getPlatform(member, generation);
+
+        final AtomicReference<Double> accumulatedScore = new AtomicReference<>(0.0);
+
+        final List<ScoreHistoryResponse> scoreHistories = scoreHistoryService
             .getByMemberAndGeneration(member, generation)
             .stream()
             .sorted(Comparator.comparingLong(it -> it.getDate().toInstant(ZoneOffset.UTC).getEpochSecond()))
@@ -85,21 +95,35 @@ public class MemberFacadeService {
                 return ScoreHistoryResponse.from(it, accumulatedScore.get());
             })
             .collect(Collectors.toList());
+
         Collections.reverse(scoreHistories);
 
-        return MemberDetailResponse.of(memberName, identification, generationNumber, platform.name(), scoreHistories);
+        return MemberDetailResponse.of(memberName, identification, generationNumber, platform.name(), scoreHistories, member.getStatus());
     }
 
     @Transactional
     public void resetPassword(
-        String id,
-        String newPassword
+        final String identification,
+        final String newPassword
     ) {
-        memberService.resetPassword(id, newPassword);
+        memberService.resetPassword(identification, newPassword);
     }
 
     @Transactional
     public void withdraw(Long memberId) {
         memberService.deleteMember(memberId);
+    }
+
+    @Transactional
+    public void updateMemberStatus(Integer generationNumber, MemberStatusUpdateRequest memberStatusUpdateRequest) {
+
+        final Generation generation = generationService.getByNumberOrThrow(generationNumber);
+
+        final MemberStatus memberStatus = memberStatusUpdateRequest.getMemberStatus();
+
+        final List<Long> memberIds = memberStatusUpdateRequest.getMemberIds();
+
+        List<Member> members = memberIds.stream().map(memberService::findMemberById).collect(Collectors.toList());
+        memberService.updateStatus(memberStatus, generation, memberStatusUpdateRequest.getPlatform(), members);
     }
 }
