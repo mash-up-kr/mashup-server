@@ -7,12 +7,10 @@ import kr.mashup.branding.domain.application.ApplicationQueryVo;
 import kr.mashup.branding.domain.application.result.UpdateApplicationResultVo;
 import kr.mashup.branding.domain.email.EmailRequest;
 import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.domain.notification.sms.SmsRequest;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
 import kr.mashup.branding.service.application.ApplicationService;
 import kr.mashup.branding.service.email.EmailNotificationService;
 import kr.mashup.branding.service.generation.GenerationService;
-import kr.mashup.branding.service.notification.NotificationService;
 import kr.mashup.branding.ui.application.vo.ApplicationDetailResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationSimpleResponse;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +32,6 @@ public class AdminApplicationFacadeService {
     private final AdminMemberService adminMemberService;
     private final ApplicationService applicationService;
     private final GenerationService generationService;
-    private final NotificationService notificationService;
     private final EmailNotificationService emailNotificationService;
 
     public Page<ApplicationSimpleResponse> getApplications(Long adminMemberId, ApplicationQueryRequest applicationQueryRequest) {
@@ -52,13 +49,10 @@ public class AdminApplicationFacadeService {
         final AdminMember adminMember = adminMemberService.getByAdminMemberId(adminMemberId);
         final Application application = applicationService.getApplicationFromAdmin(adminMember, applicationId);
 
-        final List<SmsRequest> smsRequests
-            = notificationService.getSmsRequestsByApplicantId(application.getApplicant().getApplicantId());
-
         final List<EmailRequest> emailRequests =
             emailNotificationService.getEmailRequestsByApplicationId(application.getApplicationId());
 
-        return ApplicationDetailResponse.of(application, smsRequests, emailRequests);
+        return ApplicationDetailResponse.of(application, emailRequests);
     }
 
     @Transactional

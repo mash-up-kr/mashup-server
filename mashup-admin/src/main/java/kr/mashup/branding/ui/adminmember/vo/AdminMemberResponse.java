@@ -11,9 +11,8 @@ public class AdminMemberResponse {
     private Long adminMemberId;
     private String username;
     private Position position;
-    private String phoneNumber;
 
     public static AdminMemberResponse from(AdminMemberVo adminMemberVo){
-        return AdminMemberResponse.of(adminMemberVo.getAdminMemberId(), adminMemberVo.getUsername(), adminMemberVo.getPosition(), adminMemberVo.getPhoneNumber());
+        return AdminMemberResponse.of(adminMemberVo.getAdminMemberId(), adminMemberVo.getUsername(), adminMemberVo.getPosition());
     }
 }
