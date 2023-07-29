@@ -1,21 +1,20 @@
 package kr.mashup.branding.facade.popup;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.exception.InactiveGenerationException;
 import kr.mashup.branding.domain.popup.MemberPopup;
 import kr.mashup.branding.domain.popup.PopupType;
+import kr.mashup.branding.service.danggn.DanggnRankingRoundService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.popup.MemberPopupService;
-import kr.mashup.branding.service.storage.StorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class MemberPopupFacadeService {
 
 	private final MemberPopupService memberPopupService;
 	private final MemberService memberService;
-	private final StorageService storageService;
+	private final DanggnRankingRoundService danggnRankingRoundService;
 
 	public List<PopupType> getEnabledPopupTypes(
 		Long memberGenerationId
@@ -43,6 +42,11 @@ public class MemberPopupFacadeService {
 		activePopupTypes.stream()
 			.filter(popupType -> memberPopupService.isEnabledMemberPopup(memberGeneration.getMember(), popupType))
 			.forEach(enabledMemberPopupTypes::add);
+
+		// 당근 1등 리워드 팝업의 경우, 최근 1등인 경우에만 노출
+		if (!danggnRankingRoundService.isLatestFirstPlaceMember(memberGeneration.getGeneration().getNumber(), memberGeneration.getMember().getId())) {
+			enabledMemberPopupTypes.remove(PopupType.DANGGN_REWARD);
+		}
 
 		return enabledMemberPopupTypes;
 	}
