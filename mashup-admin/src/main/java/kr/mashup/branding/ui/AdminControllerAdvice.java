@@ -1,8 +1,10 @@
 package kr.mashup.branding.ui;
 
-import java.security.Principal;
-
+import kr.mashup.branding.domain.ResultCode;
+import kr.mashup.branding.domain.exception.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,14 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import kr.mashup.branding.domain.ResultCode;
-import kr.mashup.branding.domain.exception.BadRequestException;
-import kr.mashup.branding.domain.exception.ForbiddenException;
-import kr.mashup.branding.domain.exception.InternalServerErrorException;
-import kr.mashup.branding.domain.exception.NotFoundException;
-import kr.mashup.branding.domain.exception.ServiceUnavailableException;
-import kr.mashup.branding.domain.exception.UnauthorizedException;
-import lombok.extern.slf4j.Slf4j;
+import java.security.Principal;
 
 @Slf4j
 @RestControllerAdvice
@@ -105,6 +100,13 @@ public class AdminControllerAdvice {
     public ApiResponse<?> handleIllegalArgumentException(Exception e) {
         log.error("handleIllegalArgumentException", e);
         return ApiResponse.failure(ResultCode.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiResponse<?> handleAccessDeniedException(AccessDeniedException e) {
+        log.error("handleAccessDeniedException", e);
+        return ApiResponse.failure(ResultCode.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)
