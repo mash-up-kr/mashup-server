@@ -15,7 +15,7 @@ public interface MemberGenerationRepository extends JpaRepository<MemberGenerati
     Optional<MemberGeneration> findByMemberAndGeneration(Member member, Generation generation);
     List<MemberGeneration> findByMember(Member member);
     List<MemberGeneration> findByGeneration(Generation generation);
-
+    Boolean existsByMemberAndGeneration(Member member, Generation generation);
 }
 /**
  * MemberGeneration 연관관계

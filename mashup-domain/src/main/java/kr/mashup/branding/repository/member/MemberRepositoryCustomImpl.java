@@ -36,7 +36,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     private final NumberPath<Double> sumAlias = Expressions.numberPath(Double.class, "score");
 
     @Override
-    public Page<MemberScoreQueryResult> findAllActiveByGeneration(Generation generation, Platform platform, String searchName, Pageable pageable) {
+    public Page<MemberScoreQueryResult> findAllNotRunByGeneration(Generation generation, Platform platform, String searchName, Pageable pageable) {
         //기본 정렬은 이름 기준
         final Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "name"));
 
@@ -47,7 +47,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
             // 점수가 없는 멤버도 있을 수 있으니 left join, 취소 여부는 on 절에서 판단해서 where 절에서 삭제되지 않게끔 함
             .leftJoin(scoreHistory).on(scoreHistory.member.eq(member).and(scoreHistory.generation.eq(generation)).and(scoreHistory.isCanceled.eq(false)))
             .join(memberGeneration).on(memberGeneration.member.eq(member).and(memberGeneration.generation.eq(generation)))
-            .where(nameContains(searchName), member.status.eq(MemberStatus.ACTIVE), platformEq(platform))
+            .where(nameContains(searchName), member.status.ne(MemberStatus.RUN), platformEq(platform))
             .groupBy(member, memberGeneration)
             .orderBy(getOrderSpecifier(sort))
             .offset(pageable.getOffset())

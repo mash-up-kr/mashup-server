@@ -77,6 +77,14 @@ public class MemberService {
         return member;
     }
 
+    public MemberGeneration saveMemberGeneration(Member member, Generation generation, Platform platform) {
+        return memberGenerationRepository.save(MemberGeneration.of(member, generation, platform));
+    }
+
+    public void deleteMemberGeneration(MemberGeneration memberGeneration) {
+        memberGenerationRepository.delete(memberGeneration);
+    }
+
 
     //2-1. 회원 조회 - active 상태만
     public Member getActiveOrThrowById(Long memberId) {
@@ -86,11 +94,8 @@ public class MemberService {
         return member;
     }
 
-    public Member getActiveOrThrowByIdentification(String identification) {
-        final Member member
-            = memberRepository.findByIdentification(identification).orElseThrow(MemberNotFoundException::new);
-        checkActiveStatus(member);
-        return member;
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     }
 
     public boolean isDuplicatedIdentification(String identification) {
@@ -117,7 +122,7 @@ public class MemberService {
         Pageable pageable
     ) {
 
-        return memberRepository.findAllActiveByGeneration(generation, platform, searchName, pageable);
+        return memberRepository.findAllNotRunByGeneration(generation, platform, searchName, pageable);
     }
 
     public List<Member> getAllByPlatformAndGeneration(
@@ -141,12 +146,6 @@ public class MemberService {
             pageable
         );
     }
-
-    //2-2 회원 조회 - pending 상태만
-    public Page<Member> getPendingMembers(Pageable pageable) {
-        return memberRepository.findAllByStatus(MemberStatus.PENDING, pageable);
-    }
-
 
     //기수 조회
     public List<MemberGeneration> getMemberGenerations(Member member) {
@@ -174,11 +173,12 @@ public class MemberService {
     }
 
     public void resetPassword(
-        String id,
-        String newPassword
+        final String identification,
+        final String newPassword
     ){
-        final Member member = memberRepository.findByIdentification(id)
-            .orElseThrow(MemberNotFoundException::new);
+        final Member member = memberRepository.findByIdentification(identification)
+                .orElseThrow(MemberNotFoundException::new);
+
         member.setPassword(newPassword,passwordEncoder);
     }
 
@@ -186,6 +186,7 @@ public class MemberService {
 
         final Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
+
         member.activate();
 
         return member;
@@ -257,6 +258,10 @@ public class MemberService {
                 .orElseThrow(GenerationIntegrityFailException::new);
     }
 
+    public Boolean existMemberGenerationByMemberAndGeneration(Member member, Generation generation) {
+        return memberGenerationRepository.existsByMemberAndGeneration(member, generation);
+    }
+
     public List<Member> getAllDanggnPushNotiTargetableMembers() {
         return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
                 .filter(Member::getDanggnPushNotificationAgreed)
@@ -274,5 +279,39 @@ public class MemberService {
 
     public List<MemberGeneration> findByGeneration(Generation generation) {
         return memberGenerationRepository.findByGeneration(generation);
+    }
+
+    public void updateStatus(MemberStatus memberStatus, Generation generation, Platform platform, List<Member> members) {
+        switch (memberStatus) {
+            case ACTIVE:
+                for (final Member member : members) {
+                    if (!existMemberGenerationByMemberAndGeneration(member, generation)) { // memberGeneration 없으면 생성
+                        saveMemberGeneration(member, generation, platform);
+                    }
+
+                    member.setStatus(memberStatus);
+                }
+                break;
+            case INACTIVE:
+                for (final Member member : members) {
+                    if (existMemberGenerationByMemberAndGeneration(member, generation)) { // memberGeneration 있을면 삭제
+
+                        final MemberGeneration memberGeneration
+                                = findByMemberIdAndGenerationNumber(member.getId(), generation.getNumber());
+
+                        deleteMemberGeneration(memberGeneration);
+                    }
+
+                    member.setStatus(memberStatus);
+                }
+                break;
+            case RUN:
+                for (final Member member : members) {
+                    member.setStatus(memberStatus);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 }
