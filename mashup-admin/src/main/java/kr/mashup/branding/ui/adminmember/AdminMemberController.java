@@ -8,6 +8,7 @@ import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
 import kr.mashup.branding.ui.adminmember.vo.AdminMemberResponse;
 import kr.mashup.branding.ui.adminmember.vo.LoginRequest;
 import kr.mashup.branding.ui.adminmember.vo.LoginResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import kr.mashup.branding.facade.adminmember.AdminMemberFacadeService;
@@ -88,6 +89,7 @@ public class AdminMemberController {
 
     /** 어드민 멤버 생성 */
     @ApiOperation("어드민 멤버 생성")
+    @PreAuthorize("hasAnyAuthority('MASHUP_LEADER', 'MASHUP_SUBLEADER')")
     @PostMapping
     public ApiResponse<AdminMemberResponse> createAdminMember(@RequestBody AdminMemberSignUpCommand signUpCommand) {
         AdminMemberVo data = adminMemberFacadeService.createAdminMember(signUpCommand);
