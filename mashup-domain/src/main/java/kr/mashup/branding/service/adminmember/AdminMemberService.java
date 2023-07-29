@@ -65,6 +65,13 @@ public class AdminMemberService {
         return adminMember;
     }
 
+    public List<AdminMember> getByAdminMemberIds(final List<Long> adminMemberIds) {
+
+        final List<AdminMember> adminMembers = adminMemberRepository
+            .findAdminMembersByAdminMemberIdIn(adminMemberIds);
+
+        return adminMembers;
+    }
 
     private void checkNotDuplicatedUsername(AdminMemberSignUpCommand command) {
         if (adminMemberRepository.existsByUsername(command.getUsername())) {
@@ -87,6 +94,16 @@ public class AdminMemberService {
         checkLeaderOrSubLeader(executor);
 
         targetAdmin.setPassword(passwordEncoder,resetPassword);
+    }
+
+    public void resetPassword(
+        final AdminMember executor,
+        final List<AdminMember> targetAdmins,
+        final String resetPassword) {
+
+        checkLeaderOrSubLeader(executor);
+        targetAdmins
+            .forEach(it->it.setPassword(passwordEncoder,resetPassword));
     }
 
     public void changePassword(
