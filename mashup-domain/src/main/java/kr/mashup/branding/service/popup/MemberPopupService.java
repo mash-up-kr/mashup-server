@@ -33,6 +33,6 @@ public class MemberPopupService {
 	}
 
 	public void save(Member member, PopupType popupType) {
-		memberPopupRepository.save(MemberPopup.of(true, LocalDateTime.now(), member, popupType));
+		memberPopupRepository.save(MemberPopup.of(true, LocalDateTime.now().minusDays(1), member, popupType));
 	}
 }
