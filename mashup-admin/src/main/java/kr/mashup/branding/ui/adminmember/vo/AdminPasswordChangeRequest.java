@@ -1,4 +1,4 @@
-package kr.mashup.branding.ui.adminmember;
+package kr.mashup.branding.ui.adminmember.vo;
 
 import lombok.Getter;
 

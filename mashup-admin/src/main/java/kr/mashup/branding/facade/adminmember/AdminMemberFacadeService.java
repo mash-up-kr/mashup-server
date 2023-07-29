@@ -3,7 +3,9 @@ package kr.mashup.branding.facade.adminmember;
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberSignUpCommand;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
-import kr.mashup.branding.ui.adminmember.AdminPasswordChangeRequest;
+import kr.mashup.branding.ui.adminmember.vo.AdminDeleteRequest;
+import kr.mashup.branding.ui.adminmember.vo.AdminPasswordChangeRequest;
+import kr.mashup.branding.ui.adminmember.vo.AdminPasswordResetRequest;
 import org.springframework.stereotype.Service;
 
 import kr.mashup.branding.config.jwt.JwtService;
@@ -41,13 +43,12 @@ public class AdminMemberFacadeService {
     @Transactional
     public void resetPassword(
         final Long adminMemberId,
-        final Long targetAdminId,
-        final String resetPassword) {
+        final AdminPasswordResetRequest request) {
 
         final AdminMember executor = adminMemberService.getByAdminMemberId(adminMemberId);
-        final AdminMember targetAdmin = adminMemberService.getByAdminMemberId(targetAdminId);
+        final List<AdminMember> targetAdmins = adminMemberService.getByAdminMemberIds(request.getAdminIds());
 
-        adminMemberService.resetPassword(targetAdmin, executor, resetPassword);
+        adminMemberService.resetPassword(executor, targetAdmins, request.getResetPassword());
     }
     @Transactional
     public void changePassword(Long adminMemberId, AdminPasswordChangeRequest request) {
@@ -58,10 +59,14 @@ public class AdminMemberFacadeService {
     }
 
     @Transactional
-    public void deleteAdminMember(final Long adminMemberId,final Long targetAdminId) {
+    public void deleteAdminMember(
+        final Long adminMemberId,
+        final AdminDeleteRequest request
+    ) {
         final AdminMember me = adminMemberService.getByAdminMemberId(adminMemberId);
-        final AdminMember targetAdmin = adminMemberService.getByAdminMemberId(targetAdminId);
-        adminMemberService.deleteAdminMember(me, targetAdmin);
+        final List<AdminMember> targetAdmins = adminMemberService.getByAdminMemberIds(request.getAdminIds());
+
+        targetAdmins.forEach(it -> adminMemberService.deleteAdminMember(me, it));
     }
 
     @Transactional(readOnly = true)

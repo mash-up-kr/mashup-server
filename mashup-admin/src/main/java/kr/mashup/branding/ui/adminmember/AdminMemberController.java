@@ -5,9 +5,7 @@ import kr.mashup.branding.EmptyResponse;
 import kr.mashup.branding.domain.adminmember.vo.AdminLoginCommand;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberSignUpCommand;
 import kr.mashup.branding.domain.adminmember.vo.AdminMemberVo;
-import kr.mashup.branding.ui.adminmember.vo.AdminMemberResponse;
-import kr.mashup.branding.ui.adminmember.vo.LoginRequest;
-import kr.mashup.branding.ui.adminmember.vo.LoginResponse;
+import kr.mashup.branding.ui.adminmember.vo.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,23 +45,22 @@ public class AdminMemberController {
         return ApiResponse.success(AdminMemberResponse.from(adminMemberVo));
     }
 
-    @PostMapping("/{adminId}/password/reset")
+    @PostMapping("/password/reset")
     public ApiResponse<EmptyResponse> resetPassword(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
-        @PathVariable("adminId") Long targetAdminId,
         @RequestBody AdminPasswordResetRequest request
     ){
-        adminMemberFacadeService.resetPassword(adminMemberId, targetAdminId, request.getResetPassword());
+        adminMemberFacadeService.resetPassword(adminMemberId, request);
 
         return ApiResponse.success();
     }
 
-    @DeleteMapping("/{adminId}")
-    public ApiResponse<EmptyResponse> deleteAdminMember(
+    @DeleteMapping
+    public ApiResponse<EmptyResponse> deleteAdminMembers(
         @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
-        @PathVariable("adminId") Long targetAdminId
+        @RequestBody AdminDeleteRequest request
     ){
-        adminMemberFacadeService.deleteAdminMember(adminMemberId, targetAdminId);
+        adminMemberFacadeService.deleteAdminMember(adminMemberId, request);
 
         return ApiResponse.success();
     }
