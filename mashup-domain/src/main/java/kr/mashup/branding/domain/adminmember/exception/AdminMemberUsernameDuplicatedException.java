@@ -1,7 +1,10 @@
 package kr.mashup.branding.domain.adminmember.exception;
 
-public class AdminMemberUsernameDuplicatedException extends RuntimeException {
-    public AdminMemberUsernameDuplicatedException(String message) {
-        super(message);
+import kr.mashup.branding.domain.ResultCode;
+import kr.mashup.branding.domain.exception.BadRequestException;
+
+public class AdminMemberUsernameDuplicatedException extends BadRequestException {
+    public AdminMemberUsernameDuplicatedException() {
+        super(ResultCode.ADMIN_MEMBER_USERNAME_DUPLICATED);
     }
 }

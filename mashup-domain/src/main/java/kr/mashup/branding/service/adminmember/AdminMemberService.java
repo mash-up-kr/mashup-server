@@ -75,8 +75,7 @@ public class AdminMemberService {
 
     private void checkNotDuplicatedUsername(AdminMemberSignUpCommand command) {
         if (adminMemberRepository.existsByUsername(command.getUsername())) {
-            throw new AdminMemberUsernameDuplicatedException(
-                "이미 사용중인 username 입니다. username: " + command.getUsername());
+            throw new AdminMemberUsernameDuplicatedException();
         }
     }
 
