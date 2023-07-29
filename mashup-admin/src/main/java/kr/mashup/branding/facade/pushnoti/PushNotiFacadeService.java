@@ -1,24 +1,21 @@
 package kr.mashup.branding.facade.pushnoti;
 
-import java.util.List;
-import java.util.Map;
-
-import kr.mashup.branding.service.adminmember.AdminMemberService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import kr.mashup.branding.domain.pushnoti.DataKeyType;
 import kr.mashup.branding.domain.pushnoti.LinkType;
 import kr.mashup.branding.domain.pushnoti.vo.PushNotiSendVo;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PushNotiFacadeService {
-    private final AdminMemberService adminMemberService;
     private final MemberService memberService;
     private final PushNotiEventPublisher pushNotiEventPublisher;
 
