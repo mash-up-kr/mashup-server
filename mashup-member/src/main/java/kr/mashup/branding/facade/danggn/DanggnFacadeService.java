@@ -1,42 +1,25 @@
 package kr.mashup.branding.facade.danggn;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import kr.mashup.branding.domain.danggn.DanggnRankingReward;
-import kr.mashup.branding.domain.danggn.DanggnRankingRewardStatus;
-import kr.mashup.branding.domain.danggn.DanggnRankingRound;
-import kr.mashup.branding.domain.danggn.DanggnScore;
-import kr.mashup.branding.domain.danggn.DanggnTodayMessage;
+import kr.mashup.branding.domain.danggn.*;
 import kr.mashup.branding.domain.danggn.Exception.DanggnRankingRewardAlreadyWrittenException;
 import kr.mashup.branding.domain.danggn.Exception.DanggnRankingRewardNotAllowedException;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
-import kr.mashup.branding.service.danggn.DanggnRankingRewardService;
-import kr.mashup.branding.service.danggn.DanggnRankingRoundService;
-import kr.mashup.branding.service.danggn.DanggnScoreService;
-import kr.mashup.branding.service.danggn.DanggnShakeLogService;
-import kr.mashup.branding.service.danggn.DanggnTodayMessageService;
+import kr.mashup.branding.domain.pushnoti.vo.DanggnRewardUpdatedVo;
+import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
+import kr.mashup.branding.service.danggn.*;
 import kr.mashup.branding.service.member.MemberService;
-import kr.mashup.branding.ui.danggn.response.DanggnMemberRankData;
-import kr.mashup.branding.ui.danggn.response.DanggnPlatformRankResponse;
-import kr.mashup.branding.ui.danggn.response.DanggnRandomMessageResponse;
-import kr.mashup.branding.ui.danggn.response.DanggnRankingRoundResponse;
+import kr.mashup.branding.ui.danggn.response.*;
 import kr.mashup.branding.ui.danggn.response.DanggnRankingRoundResponse.DanggnRankingRewardResponse;
-import kr.mashup.branding.ui.danggn.response.DanggnRankingRoundsResponse;
-import kr.mashup.branding.ui.danggn.response.DanggnScoreResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +37,8 @@ public class DanggnFacadeService {
     private final DanggnRankingRoundService danggnRankingRoundService;
 
     private final DanggnRankingRewardService danggnRankingRewardService;
+
+    private final PushNotiEventPublisher pushNotiEventPublisher;
 
     @Transactional
     public DanggnScoreResponse addScore(Long memberGenerationId, Long score) {
@@ -136,6 +121,16 @@ public class DanggnFacadeService {
             throw new DanggnRankingRewardNotAllowedException();
         }
         danggnRankingRewardService.writeComment(danggnRankingRewardId, comment);
+
+        DanggnRankingRound danggnRankingRound = danggnRankingRoundService.findByIdOrThrow(danggnRankingReward.getDanggnRankingRoundId());
+        Member member = memberService.getActiveOrThrowById(danggnRankingReward.getFirstPlaceRecordMemberId());
+        pushNotiEventPublisher.publishPushNotiSendEvent(
+                new DanggnRewardUpdatedVo(
+                        danggnRankingRound.getNumber(),
+                        member,
+                        memberService.getAllDanggnPushNotiTargetableMembers()
+                )
+        );
     }
 
     private List<DanggnPlatformRankResponse> getExistingPlatformRankList(Integer generationNumber, Long danggnRankingRoundId) {
