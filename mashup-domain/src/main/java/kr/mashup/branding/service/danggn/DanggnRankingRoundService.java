@@ -1,8 +1,10 @@
 package kr.mashup.branding.service.danggn;
 
+import kr.mashup.branding.domain.danggn.DanggnRankingReward;
 import kr.mashup.branding.domain.danggn.DanggnRankingRound;
 import kr.mashup.branding.domain.danggn.Exception.DanggnRankingRoundNotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.repository.danggn.DanggnRankingRewardRepository;
 import kr.mashup.branding.repository.danggn.DanggnRankingRoundRepository;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class DanggnRankingRoundService {
 
 	private final DanggnRankingRoundRepository danggnRankingRoundRepository;
+	private final DanggnRankingRewardRepository danggnRankingRewardRepository;
 
 	public DanggnRankingRound findCurrentByGeneration(Integer generationNumber) {
 		return danggnRankingRoundRepository.retrieveCurrentByGenerationNum(generationNumber)
@@ -52,5 +55,23 @@ public class DanggnRankingRoundService {
 
 	public void save(DanggnRankingRound danggnRankingRound) {
 		danggnRankingRoundRepository.save(danggnRankingRound);
+	}
+
+	public Boolean isLatestFirstPlaceMember(Integer generationNumber, Long memberId) {
+		Optional<DanggnRankingRound> current = danggnRankingRoundRepository.retrieveCurrentByGenerationNum(generationNumber);
+		if (current.isEmpty()) {
+			return false;
+		}
+
+		Optional<DanggnRankingRound> previous = danggnRankingRoundRepository.findByNumberAndGenerationId(current.get().getNumber() - 1, current.get().getGenerationId());
+		if (previous.isEmpty()) {
+			return false;
+		}
+
+		Long firstPlaceRecordMemberId = danggnRankingRewardRepository.findByDanggnRankingRoundId(previous.get().getId())
+				.map(DanggnRankingReward::getFirstPlaceRecordMemberId)
+				.orElse(null);
+
+		return memberId == firstPlaceRecordMemberId;
 	}
 }
