@@ -17,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Validated
 @RequiredArgsConstructor
@@ -36,9 +35,6 @@ public class AdminMemberService {
         final AdminMember adminMember = AdminMember.of(
             command.getUsername(),
             passwordEncoder.encode(command.getPassword()),
-            Optional.ofNullable(command.getPhoneNumber())
-                .map(String::trim)
-                .orElse(null),
             command.getPosition()
         );
 
