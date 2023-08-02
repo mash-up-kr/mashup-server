@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.danggn.response;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import kr.mashup.branding.domain.danggn.DanggnRankingRound;
@@ -25,12 +26,18 @@ public class DanggnRankingRoundsResponse {
 
 		LocalDate endDate;
 
+		Boolean isRunning;
+
 		public static DanggnRankingRoundSimpleResponse from(DanggnRankingRound danggnRankingRound) {
+			LocalDateTime now = LocalDateTime.now();
+			LocalDateTime startedAt = danggnRankingRound.getStartedAt().toLocalDate().atStartOfDay();
+			LocalDateTime endedAt = danggnRankingRound.getEndedAt().toLocalDate().plusDays(1L).atStartOfDay();
 			return new DanggnRankingRoundSimpleResponse(
 				danggnRankingRound.getId(),
 				danggnRankingRound.getNumber(),
 				danggnRankingRound.getStartedAt().toLocalDate(),
-				danggnRankingRound.getEndedAt().toLocalDate()
+				danggnRankingRound.getEndedAt().toLocalDate(),
+				now.isAfter(startedAt) && now.isBefore(endedAt)
 			);
 		}
 	}
