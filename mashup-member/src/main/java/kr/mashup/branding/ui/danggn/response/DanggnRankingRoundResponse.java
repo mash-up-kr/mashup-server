@@ -24,13 +24,19 @@ public class DanggnRankingRoundResponse {
 
 	DanggnRankingRewardResponse danggnRankingReward;
 
+	Boolean isRunning;
+
 	public static DanggnRankingRoundResponse of(DanggnRankingRound danggnRankingRound, DanggnRankingRewardResponse danggnRankingReward) {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime startedAt = danggnRankingRound.getStartedAt().toLocalDate().atStartOfDay();
+		LocalDateTime endedAt = danggnRankingRound.getEndedAt().toLocalDate().plusDays(1L).atStartOfDay();
 		return new DanggnRankingRoundResponse(
 			danggnRankingRound.getNumber(),
 			danggnRankingRound.getStartedAt(),
 			danggnRankingRound.getEndedAt(),
-			DateUtil.countDayFromNow(danggnRankingRound.getEndedAt(), LocalDateTime.now()),
-			danggnRankingReward
+			DateUtil.countDayFromNow(danggnRankingRound.getEndedAt(), now),
+			danggnRankingReward,
+			now.isAfter(startedAt) && now.isBefore(endedAt)
 		);
 	}
 
