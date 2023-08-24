@@ -25,6 +25,10 @@ public class MemberGeneration extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Platform platform;
 
+    private String projectTeamName;
+
+    private String role;
+
     public static MemberGeneration of(Member member, Generation generation, Platform platform){
         return new MemberGeneration(member, generation, platform);
     }
@@ -36,5 +40,13 @@ public class MemberGeneration extends BaseEntity {
         this.member = member;
         this.generation = generation;
         this.platform = platform;
+    }
+
+    public void update(
+            String projectTeamName,
+            String role
+    ) {
+        this.projectTeamName = projectTeamName;
+        this.role = role;
     }
 }
