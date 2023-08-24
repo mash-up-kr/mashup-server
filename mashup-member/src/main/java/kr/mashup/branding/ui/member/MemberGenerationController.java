@@ -30,7 +30,7 @@ public class MemberGenerationController {
     }
 
     @ApiOperation("멤버 기수 정보 업데이트")
-    @PatchMapping("{id}")
+    @PatchMapping("/my/{id}")
     public ApiResponse<Boolean> updateMy(
             @ApiIgnore MemberAuth memberAuth,
             @PathVariable Long id,
