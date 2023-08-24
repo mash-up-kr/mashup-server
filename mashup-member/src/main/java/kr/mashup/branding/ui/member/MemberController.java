@@ -1,17 +1,12 @@
 package kr.mashup.branding.ui.member;
 
 import io.swagger.annotations.ApiOperation;
-import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.facade.member.MemberFacadeService;
 import kr.mashup.branding.security.MemberAuth;
-import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.member.request.LoginRequest;
-import kr.mashup.branding.ui.member.request.SignUpRequest;
-import kr.mashup.branding.ui.member.request.ValidInviteRequest;
-import kr.mashup.branding.ui.member.response.*;
 import kr.mashup.branding.ui.EmptyResponse;
-import kr.mashup.branding.ui.member.request.PushNotificationRequest;
+import kr.mashup.branding.ui.member.request.*;
+import kr.mashup.branding.ui.member.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -108,5 +103,4 @@ public class MemberController {
 
         return ApiResponse.success(updatePushNotificationAgreedResponse);
     }
-
 }

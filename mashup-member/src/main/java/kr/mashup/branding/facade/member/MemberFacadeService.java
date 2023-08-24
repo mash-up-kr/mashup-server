@@ -14,20 +14,15 @@ import kr.mashup.branding.security.JwtService;
 import kr.mashup.branding.service.invite.InviteService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
-import kr.mashup.branding.ui.member.request.LoginRequest;
-import kr.mashup.branding.ui.member.request.PushNotificationRequest;
-import kr.mashup.branding.ui.member.request.SignUpRequest;
-import kr.mashup.branding.ui.member.request.ValidInviteRequest;
-import kr.mashup.branding.ui.member.response.AccessResponse;
-import kr.mashup.branding.ui.member.response.MemberInfoResponse;
-import kr.mashup.branding.ui.member.response.TokenResponse;
-import kr.mashup.branding.ui.member.response.ValidResponse;
+import kr.mashup.branding.ui.member.request.*;
+import kr.mashup.branding.ui.member.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.List;
 
 
 @Service
@@ -136,6 +131,25 @@ public class MemberFacadeService {
         return true;
     }
 
+    @Transactional(readOnly = true)
+    public MemberGenerationsResponse findMemberGenerationByMemberId(Long memberId) {
+        Member member = memberService.getActiveOrThrowById(memberId);
+        return MemberGenerationsResponse.of(memberService.findMemberGenerationByMemberId(member));
+    }
+
+    @Transactional
+    public Boolean updateMemberGenerationById(
+            Long memberId,
+            Long memberGenerationId,
+            MemberGenerationRequest request
+    ) {
+        Member member = memberService.getActiveOrThrowById(memberId);
+        checkMemberGenerationIsIn(memberGenerationId, member.getMemberGenerations());
+
+        memberService.updateMemberGeneration(memberGenerationId, request.getProjectTeamName(), request.getRole());
+        return true;
+    }
+
     private MemberGeneration getLatestMemberGeneration(Member member) {
         return member.getMemberGenerations().stream().min(Comparator.comparing(
             memberGeneration -> memberGeneration.getGeneration().getNumber()
@@ -145,5 +159,13 @@ public class MemberFacadeService {
     private String getToken(Member member) {
         final MemberGeneration latestMemberGeneration = getLatestMemberGeneration(member);
         return jwtService.encode(member.getId(), latestMemberGeneration.getId());
+    }
+
+    private void checkMemberGenerationIsIn(Long memberGenerationId, List<MemberGeneration> memberGenerations) {
+        var result = memberGenerations.stream()
+                .anyMatch(memberGeneration -> memberGeneration.getId().equals(memberGenerationId));
+        if (!result) {
+            throw new GenerationIntegrityFailException();
+        }
     }
 }

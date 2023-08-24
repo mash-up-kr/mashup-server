@@ -14,7 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -81,8 +80,6 @@ public class ScoreHistory extends BaseEntity {
         isCanceled = true;
         this.memo = memo;
     }
-
-
 
     private ScoreHistory(String type, String name, Double score, LocalDateTime date, String scheduleName,
                          Generation generation, Member member, boolean isCanceled, String memo) {
