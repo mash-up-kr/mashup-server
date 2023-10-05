@@ -72,6 +72,16 @@ public class Generation extends BaseEntity {
         this.endedAt = newEndedDate;
     }
 
+    public GenerationStatus getStatus(){
+
+        // 현재 일자 기준으로 기수 종료일자가 미래이거나 같은 경우
+        if (DateUtil.isStartBeforeOrEqualEnd(LocalDate.now(), endedAt)) {
+            return GenerationStatus.ON_GOING;
+        }
+
+        return GenerationStatus.DONE;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
