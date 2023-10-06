@@ -1,5 +1,6 @@
 package kr.mashup.branding.ui.member.response;
 
+import kr.mashup.branding.domain.generation.GenerationStatus;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,13 +19,16 @@ public class MemberGenerationResponse {
 
     private String role;                // 역할
 
+    private GenerationStatus status;    // 기수 상태
+
     public static MemberGenerationResponse of(MemberGeneration memberGeneration) {
         return new MemberGenerationResponse(
                 memberGeneration.getId(),
                 memberGeneration.getGeneration().getNumber(),
                 memberGeneration.getPlatform().getName(),
                 memberGeneration.getProjectTeamName(),
-                memberGeneration.getRole()
+                memberGeneration.getRole(),
+                memberGeneration.getGeneration().getStatus()
         );
     }
 }
