@@ -1,5 +1,19 @@
 package kr.mashup.branding.facade.attendance;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.attendance.AttendanceCode;
@@ -22,17 +36,13 @@ import kr.mashup.branding.service.attendance.AttendanceCodeService;
 import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.schedule.ScheduleService;
-import kr.mashup.branding.ui.attendance.response.*;
+import kr.mashup.branding.ui.attendance.response.AttendanceCheckResponse;
+import kr.mashup.branding.ui.attendance.response.AttendanceInfo;
+import kr.mashup.branding.ui.attendance.response.PersonalAttendanceResponse;
+import kr.mashup.branding.ui.attendance.response.PlatformAttendanceResponse;
+import kr.mashup.branding.ui.attendance.response.TotalAttendanceResponse;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -311,6 +321,7 @@ public class AttendanceFacadeService {
                 members.stream()
                         .map(member -> PlatformAttendanceResponse.MemberInfo.of(
                                 member.getName(),
+                                member.getId(),
                                 getAttendanceInfoByMember(
                                         member,
                                         schedule.getEventList(),
