@@ -1,5 +1,14 @@
 package kr.mashup.branding.ui.member;
 
+import javax.validation.Valid;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.member.MemberFacadeService;
 import kr.mashup.branding.security.MemberAuth;
@@ -7,10 +16,7 @@ import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.member.request.MemberGenerationRequest;
 import kr.mashup.branding.ui.member.response.MemberGenerationsResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/v1/member-generations")
@@ -18,7 +24,8 @@ import javax.validation.Valid;
 public class MemberGenerationController {
 
     private final MemberFacadeService memberFacadeService;
-    @ApiOperation("멤버 기수 정보 조회")
+
+    @ApiOperation("나의 기수 정보 조회")
     @GetMapping("/my")
     public ApiResponse<MemberGenerationsResponse> findMy(
             @ApiIgnore MemberAuth memberAuth

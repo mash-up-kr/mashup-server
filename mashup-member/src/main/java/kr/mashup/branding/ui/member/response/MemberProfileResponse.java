@@ -1,10 +1,13 @@
 package kr.mashup.branding.ui.member.response;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.MemberProfile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
@@ -32,7 +35,9 @@ public class MemberProfileResponse {
 
     private String linkedInLink;            // 링크드인 링크
 
-    public static MemberProfileResponse from(MemberProfile memberProfile) {
+    private List<MemberGenerationResponse> memberGenerations;
+
+    public static MemberProfileResponse from(MemberProfile memberProfile, List<MemberGeneration> memberGenerations) {
         return new MemberProfileResponse(
                 memberProfile.getMemberId(),
                 memberProfile.getBirthDate(),
@@ -44,7 +49,10 @@ public class MemberProfileResponse {
                 memberProfile.getGithubLink(),
                 memberProfile.getPortfolioLink(),
                 memberProfile.getBlogLink(),
-                memberProfile.getLinkedInLink()
+                memberProfile.getLinkedInLink(),
+                memberGenerations.stream()
+                    .map(MemberGenerationResponse::of)
+                    .collect(Collectors.toList())
         );
     }
 }
