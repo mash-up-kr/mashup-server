@@ -28,6 +28,7 @@ import kr.mashup.branding.ui.member.request.PushNotificationRequest;
 import kr.mashup.branding.ui.member.request.SignUpRequest;
 import kr.mashup.branding.ui.member.request.ValidInviteRequest;
 import kr.mashup.branding.ui.member.response.AccessResponse;
+import kr.mashup.branding.ui.member.response.ExistsResponse;
 import kr.mashup.branding.ui.member.response.MemberGenerationsResponse;
 import kr.mashup.branding.ui.member.response.MemberInfoResponse;
 import kr.mashup.branding.ui.member.response.TokenResponse;
@@ -129,6 +130,12 @@ public class MemberFacadeService {
     public ValidResponse checkDuplicatedIdentification(String identification) {
         boolean isExist = memberService.isDuplicatedIdentification(identification);
         return ValidResponse.of(!isExist);
+    }
+
+    @Transactional(readOnly = true)
+    public ExistsResponse existsIdentification(String identification) {
+        boolean isExist = memberService.existsIdentification(identification);
+        return ExistsResponse.of(isExist);
     }
 
     @Transactional

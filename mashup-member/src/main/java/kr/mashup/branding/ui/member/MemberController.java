@@ -23,6 +23,7 @@ import kr.mashup.branding.ui.member.request.PushNotificationRequest;
 import kr.mashup.branding.ui.member.request.SignUpRequest;
 import kr.mashup.branding.ui.member.request.ValidInviteRequest;
 import kr.mashup.branding.ui.member.response.AccessResponse;
+import kr.mashup.branding.ui.member.response.ExistsResponse;
 import kr.mashup.branding.ui.member.response.MemberInfoResponse;
 import kr.mashup.branding.ui.member.response.TokenResponse;
 import kr.mashup.branding.ui.member.response.ValidResponse;
@@ -120,13 +121,24 @@ public class MemberController {
         return ApiResponse.success(updatePushNotificationAgreedResponse);
     }
 
+    @ApiOperation("ID 존재 여부 조회")
+    @GetMapping("{id}/exists")
+    public ApiResponse<ExistsResponse> existsIdentification(
+        @PathVariable String id
+    ) {
+        final ExistsResponse response
+            = memberFacadeService.existsIdentification(id);
+
+        return ApiResponse.success(response);
+    }
+
     @ApiOperation("비밀번호 변경")
-    @PutMapping("/{identification}/password")
+    @PutMapping("/{id}/password")
     public ApiResponse<EmptyResponse> changePassword(
-        @PathVariable String identification,
+        @PathVariable String id,
         @RequestBody MemberPasswordChangeRequest request
     ){
-        memberFacadeService.changePassword(identification, request);
+        memberFacadeService.changePassword(id, request);
 
         return ApiResponse.success();
     }
