@@ -65,7 +65,7 @@ public class AdminMemberController {
         return ApiResponse.success();
     }
 
-    @PostMapping("/{adminId}/password/change")
+    @PostMapping("/password/change")
     public ApiResponse<EmptyResponse> changePassword(
         @ApiIgnore @ModelAttribute("adminId") Long adminMemberId,
         @RequestBody AdminPasswordChangeRequest request
@@ -79,9 +79,9 @@ public class AdminMemberController {
     @ApiOperation("어드민 멤버 리스트 조회")
     @GetMapping
     public ApiResponse<List<AdminMemberResponse>> readAdminMembers() {
-        List<AdminMemberVo> data = adminMemberFacadeService.readAdminMembers();
+        final List<AdminMemberVo> adminMemberVos = adminMemberFacadeService.readAdminMembers();
 
-        return ApiResponse.success(data.stream().map(AdminMemberResponse::from).collect(Collectors.toList()));
+        return ApiResponse.success(adminMemberVos.stream().map(AdminMemberResponse::from).collect(Collectors.toList()));
     }
 
     /** 어드민 멤버 생성 */
@@ -89,8 +89,8 @@ public class AdminMemberController {
     @PreAuthorize("hasAnyAuthority('MASHUP_LEADER', 'MASHUP_SUBLEADER')")
     @PostMapping
     public ApiResponse<AdminMemberResponse> createAdminMember(@RequestBody AdminMemberSignUpCommand signUpCommand) {
-        AdminMemberVo data = adminMemberFacadeService.createAdminMember(signUpCommand);
+        final AdminMemberVo adminMemberVo = adminMemberFacadeService.createAdminMember(signUpCommand);
 
-        return ApiResponse.success(AdminMemberResponse.from(data));
+        return ApiResponse.success(AdminMemberResponse.from(adminMemberVo));
     }
 }
