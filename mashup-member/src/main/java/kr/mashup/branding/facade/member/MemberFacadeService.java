@@ -1,5 +1,12 @@
 package kr.mashup.branding.facade.member;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.invite.Invite;
@@ -14,15 +21,19 @@ import kr.mashup.branding.security.JwtService;
 import kr.mashup.branding.service.invite.InviteService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
-import kr.mashup.branding.ui.member.request.*;
-import kr.mashup.branding.ui.member.response.*;
+import kr.mashup.branding.ui.member.request.LoginRequest;
+import kr.mashup.branding.ui.member.request.MemberGenerationRequest;
+import kr.mashup.branding.ui.member.request.MemberPasswordChangeRequest;
+import kr.mashup.branding.ui.member.request.PushNotificationRequest;
+import kr.mashup.branding.ui.member.request.SignUpRequest;
+import kr.mashup.branding.ui.member.request.ValidInviteRequest;
+import kr.mashup.branding.ui.member.response.AccessResponse;
+import kr.mashup.branding.ui.member.response.ExistsResponse;
+import kr.mashup.branding.ui.member.response.MemberGenerationsResponse;
+import kr.mashup.branding.ui.member.response.MemberInfoResponse;
+import kr.mashup.branding.ui.member.response.TokenResponse;
+import kr.mashup.branding.ui.member.response.ValidResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
 
 
 @Service
@@ -121,6 +132,12 @@ public class MemberFacadeService {
         return ValidResponse.of(!isExist);
     }
 
+    @Transactional(readOnly = true)
+    public ExistsResponse existsIdentification(String identification) {
+        boolean isExist = memberService.existsIdentification(identification);
+        return ExistsResponse.of(isExist);
+    }
+
     @Transactional
     public Boolean updatePushNotificationAgreed(Long memberId, PushNotificationRequest request) {
         Member member = memberService.getActiveOrThrowById(memberId);
@@ -148,6 +165,14 @@ public class MemberFacadeService {
 
         memberService.updateMemberGeneration(memberGenerationId, request.getProjectTeamName(), request.getRole());
         return true;
+    }
+
+    @Transactional
+    public void changePassword(
+        String identification,
+        MemberPasswordChangeRequest request
+    ) {
+        memberService.resetPassword(identification, request.getNewPassword());
     }
 
     private MemberGeneration getLatestMemberGeneration(Member member) {

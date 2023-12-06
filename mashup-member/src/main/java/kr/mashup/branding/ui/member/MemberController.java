@@ -1,17 +1,34 @@
 package kr.mashup.branding.ui.member;
 
+import javax.validation.Valid;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.member.MemberFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.EmptyResponse;
-import kr.mashup.branding.ui.member.request.*;
-import kr.mashup.branding.ui.member.response.*;
+import kr.mashup.branding.ui.member.request.LoginRequest;
+import kr.mashup.branding.ui.member.request.MemberPasswordChangeRequest;
+import kr.mashup.branding.ui.member.request.PushNotificationRequest;
+import kr.mashup.branding.ui.member.request.SignUpRequest;
+import kr.mashup.branding.ui.member.request.ValidInviteRequest;
+import kr.mashup.branding.ui.member.response.AccessResponse;
+import kr.mashup.branding.ui.member.response.ExistsResponse;
+import kr.mashup.branding.ui.member.response.MemberInfoResponse;
+import kr.mashup.branding.ui.member.response.TokenResponse;
+import kr.mashup.branding.ui.member.response.ValidResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/v1/members")
@@ -102,5 +119,27 @@ public class MemberController {
                 = memberFacadeService.updatePushNotificationAgreed(memberAuth.getMemberId(), request);
 
         return ApiResponse.success(updatePushNotificationAgreedResponse);
+    }
+
+    @ApiOperation("ID 존재 여부 조회")
+    @GetMapping("{id}/exists")
+    public ApiResponse<ExistsResponse> existsIdentification(
+        @PathVariable String id
+    ) {
+        final ExistsResponse response
+            = memberFacadeService.existsIdentification(id);
+
+        return ApiResponse.success(response);
+    }
+
+    @ApiOperation("비밀번호 변경")
+    @PutMapping("/{id}/password")
+    public ApiResponse<EmptyResponse> changePassword(
+        @PathVariable String id,
+        @RequestBody MemberPasswordChangeRequest request
+    ){
+        memberFacadeService.changePassword(id, request);
+
+        return ApiResponse.success();
     }
 }
