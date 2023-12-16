@@ -1,5 +1,6 @@
 package kr.mashup.branding.ui.member.response;
 
+import kr.mashup.branding.domain.member.CurrentMemberStatus;
 import kr.mashup.branding.domain.member.MemberStatus;
 import lombok.Getter;
 import lombok.Value;
@@ -12,5 +13,6 @@ public class MemberResponse {
     private String identification;
     private String platform;
     private Double score;
-    private MemberStatus memberStatus;
+    private CurrentMemberStatus memberStatus;
+
 }

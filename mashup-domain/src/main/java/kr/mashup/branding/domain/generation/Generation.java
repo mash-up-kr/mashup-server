@@ -72,6 +72,10 @@ public class Generation extends BaseEntity {
         this.endedAt = newEndedDate;
     }
 
+    public boolean isInProgress(LocalDate baseTime){
+        return DateUtil.isInTime(startedAt, baseTime, endedAt);
+    }
+
     public GenerationStatus getStatus(){
 
         // 현재 일자 기준으로 기수 종료일자가 미래이거나 같은 경우
