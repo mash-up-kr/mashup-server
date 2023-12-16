@@ -1,8 +1,9 @@
-package kr.mashup.branding.dto.member;
+package kr.mashup.branding.service.member;
 
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.OsType;
 import kr.mashup.branding.domain.member.Platform;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

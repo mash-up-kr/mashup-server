@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@ToString(of = {"adminMemberId", "username", "phoneNumber", "position", "createdAt", "updatedAt"})
+@ToString(of = {"adminMemberId", "username", "position", "createdAt", "updatedAt"})
 @EqualsAndHashCode(of = "adminMemberId")
 @EntityListeners(AuditingEntityListener.class)
 public class AdminMember {

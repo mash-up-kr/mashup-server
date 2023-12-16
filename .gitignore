@@ -35,3 +35,4 @@ out/
 
 ### VS Code ###
 .vscode/
+/mashup-domain/src/main/generated/
