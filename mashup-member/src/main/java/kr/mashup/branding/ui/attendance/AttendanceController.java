@@ -1,13 +1,20 @@
 package kr.mashup.branding.ui.attendance;
 
-import kr.mashup.branding.ui.attendance.request.AttendanceCheckRequest;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.facade.attendance.AttendanceFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
+import kr.mashup.branding.ui.attendance.request.AttendanceCheckRequest;
 import kr.mashup.branding.ui.attendance.response.AttendanceCheckResponse;
 import kr.mashup.branding.ui.attendance.response.PersonalAttendanceResponse;
 import kr.mashup.branding.ui.attendance.response.PlatformAttendanceResponse;
@@ -32,18 +39,20 @@ public class AttendanceController {
                 "ATTENDANCE_TIME_OVER</br>" +
                 "ATTENDANCE_CODE_NOT_FOUND</br>" +
                 "ATTENDANCE_CODE_INVALID(등록된 코드와 다름)</br>" +
-                "ATTENDANCE_ALREADY_CHECKED" +
+                "ATTENDANCE_ALREADY_CHECKED</br>" +
+                "ATTENDANCE_DISTANCE_OUT_OF_RANGE" +
                 "</p>"
 
     )
     @PostMapping("/check")
     public ApiResponse<AttendanceCheckResponse> check(
         @ApiIgnore MemberAuth auth,
-        @RequestBody AttendanceCheckRequest req
+        @RequestBody AttendanceCheckRequest req,
+        @RequestHeader(value = "cipher", required = false) String cipher // for swagger, used in aop
     ) {
 
         final AttendanceCheckResponse response
-                = attendanceFacadeService.checkAttendance(auth.getMemberId(), req.getCheckingCode());
+                = attendanceFacadeService.checkAttendance(auth.getMemberId(), req);
 
         return ApiResponse.success(response);
     }
