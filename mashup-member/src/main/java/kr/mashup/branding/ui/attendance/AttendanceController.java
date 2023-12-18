@@ -48,7 +48,7 @@ public class AttendanceController {
     public ApiResponse<AttendanceCheckResponse> check(
         @ApiIgnore MemberAuth auth,
         @RequestBody AttendanceCheckRequest req,
-        @RequestHeader(value = "cipher") String cipher // for swagger, used in aop
+        @RequestHeader(value = "cipher", required = false) String cipher // for swagger, used in aop
     ) {
 
         final AttendanceCheckResponse response
