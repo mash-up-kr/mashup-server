@@ -36,6 +36,7 @@ import kr.mashup.branding.service.attendance.AttendanceCodeService;
 import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.schedule.ScheduleService;
+import kr.mashup.branding.ui.attendance.request.AttendanceCheckRequest;
 import kr.mashup.branding.ui.attendance.response.AttendanceCheckResponse;
 import kr.mashup.branding.ui.attendance.response.AttendanceInfo;
 import kr.mashup.branding.ui.attendance.response.PersonalAttendanceResponse;
@@ -51,6 +52,7 @@ public class AttendanceFacadeService {
     private final static long PUSH_SCHEDULE_INTERVAL_MINUTES = 1;
     private final static long ATTENDANCE_START_AFTER_MINUTES = 1;
     private final static long ATTENDANCE_END_AFTER_MINUTES = 3;
+    private final static long ATTENDANCE_DISTANCE = 300;
     private final AttendanceService attendanceService;
     private final MemberService memberService;
     private final ScheduleService scheduleService;
@@ -63,7 +65,7 @@ public class AttendanceFacadeService {
     @Transactional
     public AttendanceCheckResponse checkAttendance(
             final Long memberId,
-            final String checkingCode
+            final AttendanceCheckRequest request
     ) {
 
         final LocalDateTime checkTime = LocalDateTime.now();
@@ -72,12 +74,11 @@ public class AttendanceFacadeService {
         final Event event;
         final AttendanceCode attendanceCode;
         try {
-            attendanceCode = attendanceCodeService.getByCodeOrThrow(checkingCode);
+            attendanceCode = attendanceCodeService.getByCodeOrThrow(request.getCheckingCode());
             event = attendanceCode.getEvent();
         } catch (NotFoundException e) {
             throw new BadRequestException(ResultCode.ATTENDANCE_CODE_INVALID);
         }
-
 
         //멤버 최신 기수 확인
         final int latestGenerationNumber = member.getMemberGenerations()
@@ -93,8 +94,8 @@ public class AttendanceFacadeService {
             throw new NotFoundException(ResultCode.EVENT_NOT_FOUND);
         }
 
-
-        validAlreadyCheckAttendance(member, event);
+        validateAlreadyCheckAttendance(member, event);
+        validateWithinAttendanceDistance(request.getLatitude(), request.getLongitude(), event.getSchedule());
 
         // 출석 체크
         final Attendance attendance = attendanceService.checkAttendance(
@@ -178,7 +179,7 @@ public class AttendanceFacadeService {
     /**
      * 이미 출석 체크를 했는지 판별
      */
-    private void validAlreadyCheckAttendance(Member member, Event event) {
+    private void validateAlreadyCheckAttendance(Member member, Event event) {
         final boolean isAlreadyCheck = attendanceService.isExist(member, event);
         if (isAlreadyCheck) {
             throw new BadRequestException(ResultCode.ATTENDANCE_ALREADY_CHECKED);
@@ -397,5 +398,20 @@ public class AttendanceFacadeService {
                     attendanceAt
             );
         }).collect(Collectors.toList());
+    }
+
+    /**
+     * 현재 위치가 출석체크 가능한지 판별
+     */
+    private void validateWithinAttendanceDistance(Double latitude, Double longitude, Schedule schedule) {
+
+        if (schedule.isOnline()) {
+            return;
+        }
+
+        final boolean isWithinAttendanceDistance = schedule.getLocation().isWithinDistance(latitude, longitude, ATTENDANCE_DISTANCE);
+        if (!isWithinAttendanceDistance) {
+            throw new BadRequestException(ResultCode.ATTENDANCE_DISTANCE_OUT_OF_RANGE);
+        }
     }
 }
