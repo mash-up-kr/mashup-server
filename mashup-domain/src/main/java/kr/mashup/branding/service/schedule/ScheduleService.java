@@ -28,7 +28,7 @@ public class ScheduleService {
     private final AttendanceCodeRepository attendanceCodeRepository;
 
     public Schedule create(Generation generation, ScheduleCreateDto dto) {
-        Schedule schedule = Schedule.of(generation, dto.getName(), dto.getDateRange());
+        Schedule schedule = Schedule.of(generation, dto.getName(), dto.getDateRange(), dto.getLatitude(), dto.getLongitude());
         return scheduleRepository.save(schedule);
     }
 
@@ -109,6 +109,7 @@ public class ScheduleService {
         schedule.changeName(scheduleCreateDto.getName());
         schedule.changeGeneration(generation);
         schedule.changeDate(scheduleCreateDto.getDateRange().getStart(), scheduleCreateDto.getDateRange().getEnd());
+        schedule.changeLocation(scheduleCreateDto.getLatitude(), scheduleCreateDto.getLongitude());
 
         return schedule;
     }

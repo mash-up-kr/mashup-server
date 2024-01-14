@@ -3,7 +3,9 @@ package kr.mashup.branding.domain.schedule;
 import javax.persistence.Embeddable;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Embeddable
 @Getter
 public class Location {
@@ -11,6 +13,11 @@ public class Location {
     private Double longitude;
 
     private static final double EARTH_RADIUS = 6371000; // 지구 반지름 (미터)
+
+    public Location(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
     /**
      * Haversine 공식을 사용하여 두 지점 간의 거리 계산
