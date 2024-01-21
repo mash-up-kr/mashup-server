@@ -192,7 +192,7 @@ public class ApplicationFacadeService {
         return applicationAssembler.toApplicationResponse(application);
     }
 
-    public List<RecruitScheduleResponse> getRecruitSchedule(Long generationNumber) {
+    public List<RecruitScheduleResponse> getRecruitSchedule(Integer generationNumber) {
         final Generation generation = generationService.getByNumberOrThrow(generationNumber);
 
         return recruitmentScheduleService.getAll(generation)

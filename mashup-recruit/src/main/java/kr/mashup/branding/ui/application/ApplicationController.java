@@ -125,7 +125,7 @@ public class ApplicationController {
     @ApiOperation("기수 별 스케줄 조회")
     @GetMapping("/schedule/{generationNumber")
     public ApiResponse<List<RecruitScheduleResponse>> getRecruitSchedule(
-        @PathVariable Long generationNumber
+        @PathVariable Integer generationNumber
     ){
         final List<RecruitScheduleResponse> response = applicationFacadeService.getRecruitSchedule(generationNumber);
 
