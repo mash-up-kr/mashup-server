@@ -12,10 +12,17 @@ import kr.mashup.branding.domain.application.ApplicationCreationRequestInvalidEx
 import kr.mashup.branding.domain.application.form.ApplicationForm;
 import kr.mashup.branding.domain.application.form.ApplicationFormNotFoundException;
 import kr.mashup.branding.domain.email.EmailTemplateName;
+import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.recruitmentschedule.RecruitmentSchedule;
+import kr.mashup.branding.domain.team.Team;
 import kr.mashup.branding.service.applicant.ApplicantService;
 import kr.mashup.branding.service.application.ApplicationFormService;
+import kr.mashup.branding.service.generation.GenerationService;
+import kr.mashup.branding.service.recruitmentschedule.RecruitmentScheduleService;
 import kr.mashup.branding.service.team.TeamService;
+import kr.mashup.branding.ui.application.vo.ApplicationFormResponse;
 import kr.mashup.branding.ui.application.vo.ApplicationResponse;
+import kr.mashup.branding.ui.application.vo.RecruitScheduleResponse;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -38,8 +45,26 @@ public class ApplicationFacadeService {
     private final ApplicationFormService applicationFormService;
     private final ApplicationEventPublisher eventPublisher;
     private final ApplicationAssembler applicationAssembler;
+    private final GenerationService generationService;
+    private final RecruitmentScheduleService recruitmentScheduleService;
+
+    /**
+     * 지원서 목록 조회
+     */
+    public List<ApplicationFormResponse> getApplicationForms(final Integer generationNumber) {
+
+        final Generation generation =
+            generationService.getByNumberOrThrow(generationNumber);
+        final List<Team> teams = teamService.findAllTeamsByGeneration(generation);
+
+        return applicationFormService
+            .getApplicationFormsByTeam(teams)
+            .stream()
+            .map(ApplicationFormResponse::of)
+            .collect(Collectors.toList());
 
 
+    }
     /**
      * 각 팀의 지원서 상세페이지 접근시 빈 지원서 생성 또는 기존 지원서 조회
      */
@@ -165,5 +190,14 @@ public class ApplicationFacadeService {
             = applicationService.updateConfirmationForTest(applicantId,updateConfirmationVo);
 
         return applicationAssembler.toApplicationResponse(application);
+    }
+
+    public List<RecruitScheduleResponse> getRecruitSchedule(Integer generationNumber) {
+        final Generation generation = generationService.getByNumberOrThrow(generationNumber);
+
+        return recruitmentScheduleService.getAll(generation)
+            .stream()
+            .map(RecruitScheduleResponse::of)
+            .collect(Collectors.toList());
     }
 }

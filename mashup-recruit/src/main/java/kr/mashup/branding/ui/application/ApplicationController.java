@@ -3,11 +3,8 @@ package kr.mashup.branding.ui.application;
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.facade.application.ApplicationFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
-import kr.mashup.branding.ui.application.vo.ApplicationResponse;
-import kr.mashup.branding.ui.application.vo.ApplicationSubmitRequest;
-import kr.mashup.branding.ui.application.vo.CreateApplicationRequest;
-import kr.mashup.branding.ui.application.vo.UpdateApplicationRequest;
-import kr.mashup.branding.ui.application.vo.UpdateConfirmationRequest;
+import kr.mashup.branding.ui.application.vo.*;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,6 +24,18 @@ import java.util.List;
 public class ApplicationController {
 
     private final ApplicationFacadeService applicationFacadeService;
+
+    @ApiOperation("지원서 목록 조회")
+    @GetMapping("/generationNumber")
+    public ApiResponse<List<ApplicationFormResponse>> getApplications(
+        @PathVariable Integer generationNumber
+    ){
+        final List<ApplicationFormResponse> response
+            = applicationFacadeService.getApplicationForms(generationNumber);
+
+        return ApiResponse.success(response);
+    }
+
 
     /**
      * 팀 id(or name) 받아서 만들기
@@ -109,6 +118,16 @@ public class ApplicationController {
     ) {
         final ApplicationResponse response
             = applicationFacadeService.updateConfirm(applicantId, applicationId, updateConfirmationRequest);
+
+        return ApiResponse.success(response);
+    }
+
+    @ApiOperation("기수 별 스케줄 조회")
+    @GetMapping("/schedule/{generationNumber")
+    public ApiResponse<List<RecruitScheduleResponse>> getRecruitSchedule(
+        @PathVariable Integer generationNumber
+    ){
+        final List<RecruitScheduleResponse> response = applicationFacadeService.getRecruitSchedule(generationNumber);
 
         return ApiResponse.success(response);
     }

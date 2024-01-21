@@ -141,4 +141,8 @@ public class ApplicationFormService {
     public Page<ApplicationForm> getApplicationForms(Generation generation, ApplicationFormQueryVo applicationFormQueryVo) {
         return applicationFormRepository.findByApplicationFormQueryVo(generation, applicationFormQueryVo);
     }
+
+    public  List<ApplicationForm> getApplicationFormsByTeam(List<Team> teams){
+        return applicationFormRepository.findByTeamIn(teams);
+    }
 }
