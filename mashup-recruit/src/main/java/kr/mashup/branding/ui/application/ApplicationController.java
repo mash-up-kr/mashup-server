@@ -26,7 +26,7 @@ public class ApplicationController {
     private final ApplicationFacadeService applicationFacadeService;
 
     @ApiOperation("지원서 목록 조회")
-    @GetMapping("/generationNumber")
+    @GetMapping("/list/{generationNumber}")
     public ApiResponse<List<ApplicationFormResponse>> getApplications(
         @PathVariable Integer generationNumber
     ){
@@ -123,7 +123,7 @@ public class ApplicationController {
     }
 
     @ApiOperation("기수 별 스케줄 조회")
-    @GetMapping("/schedule/{generationNumber")
+    @GetMapping("/schedule/{generationNumber}")
     public ApiResponse<List<RecruitScheduleResponse>> getRecruitSchedule(
         @PathVariable Integer generationNumber
     ){
