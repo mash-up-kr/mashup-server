@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/api/v1/test/**").permitAll()
             .antMatchers("/api/v1/teams/**").permitAll()
+            .antMatchers("/api/v1/application/schedule/*").permitAll()
             .antMatchers("/api/v1/applicants/login").permitAll()
             .anyRequest().hasAuthority(APPLICANT_ROLE_NAME);
         http.cors().configurationSource(corsConfigurationSource());
