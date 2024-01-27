@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/applications")
@@ -127,7 +129,12 @@ public class ApplicationController {
     public ApiResponse<List<RecruitScheduleResponse>> getRecruitSchedule(
         @PathVariable Integer generationNumber
     ){
-        final List<RecruitScheduleResponse> response = applicationFacadeService.getRecruitSchedule(generationNumber);
+        final List<RecruitScheduleResponse> response =
+                applicationFacadeService
+                        .getRecruitSchedule(generationNumber)
+                        .stream()
+                        .sorted(Comparator.comparing(RecruitScheduleResponse::getEventOccurredAt))
+                        .collect(Collectors.toList());
 
         return ApiResponse.success(response);
     }
