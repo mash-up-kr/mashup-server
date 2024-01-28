@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,14 +16,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
 
-import kr.mashup.branding.domain.ResultCode;
-import kr.mashup.branding.domain.schedule.exception.ScheduleAlreadyPublishedException;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.util.Assert;
 
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.schedule.exception.ScheduleAlreadyPublishedException;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
@@ -60,6 +60,9 @@ public class Schedule extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private ScheduleStatus status;
+
+    @Embedded
+    private Location location;
 
     @CreatedBy
     private String createdBy;
@@ -146,4 +149,8 @@ public class Schedule extends BaseEntity {
     }
 
     public Boolean isShowable() { return this.status == ScheduleStatus.PUBLIC; }
+
+    public Boolean isOnline() {
+        return this.location == null;
+    }
 }

@@ -13,9 +13,7 @@ import static kr.mashup.branding.repository.member.MemberRepositoryCustomImpl.Me
 
 public interface MemberRepositoryCustom {
 
-    Page<MemberScoreQueryResult> findAllNotRunByGeneration(Generation generation, Platform platform, String searchName, Pageable pageable);
-
-    Long countActiveByPlatformAndGeneration(Platform platform, Generation generation);
+    Page<MemberScoreQueryResult> findAllByGeneration(Generation generation, Platform platform, String searchName, Pageable pageable);
 
     List<Member> findActiveByPlatformAndGeneration(Platform platform, Generation generation);
 
@@ -25,7 +23,3 @@ public interface MemberRepositoryCustom {
 
     List<Member> findAllActiveByGeneration(Generation generation);
 }
-/**
- * Member 연관관계
- * one to many : memberGeneration, attendance
- */

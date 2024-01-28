@@ -16,7 +16,7 @@ import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberInvalidInviteCodeException;
 import kr.mashup.branding.domain.scorehistory.ScoreHistory;
 import kr.mashup.branding.domain.scorehistory.ScoreType;
-import kr.mashup.branding.dto.member.MemberCreateDto;
+import kr.mashup.branding.service.member.MemberCreateDto;
 import kr.mashup.branding.security.JwtService;
 import kr.mashup.branding.service.invite.InviteService;
 import kr.mashup.branding.service.member.MemberService;

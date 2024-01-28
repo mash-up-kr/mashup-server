@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.BaseEntity;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,6 @@ import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
 import kr.mashup.branding.domain.member.exception.MemberNotFoundException;
 import kr.mashup.branding.domain.member.exception.MemberPendingException;
-import kr.mashup.branding.dto.member.MemberCreateDto;
 import kr.mashup.branding.repository.danggn.DanggnNotificationMemberRecordRepository;
 import kr.mashup.branding.repository.danggn.DanggnScoreRepository;
 import kr.mashup.branding.repository.danggn.DanggnShakeLogRepository;
@@ -34,6 +34,7 @@ import kr.mashup.branding.repository.scorehistory.ScoreHistoryRepository;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -77,7 +78,11 @@ public class MemberService {
         return member;
     }
 
-    public MemberGeneration saveMemberGeneration(Member member, Generation generation, Platform platform) {
+    public MemberGeneration saveMemberGeneration(
+        final Member member,
+        final Generation generation,
+        final Platform platform
+    ) {
         return memberGenerationRepository.save(MemberGeneration.of(member, generation, platform));
     }
 
@@ -122,7 +127,7 @@ public class MemberService {
         Pageable pageable
     ) {
 
-        return memberRepository.findAllNotRunByGeneration(generation, platform, searchName, pageable);
+        return memberRepository.findAllByGeneration(generation, platform, searchName, pageable);
     }
 
     public List<Member> getAllByPlatformAndGeneration(
@@ -135,17 +140,6 @@ public class MemberService {
         );
     }
 
-    public Page<Member> getAllByPlatformAndGeneration(
-        Platform platform,
-        Generation generation,
-        Pageable pageable
-    ) {
-        return memberRepository.findActiveByPlatformAndGeneration(
-            platform,
-            generation,
-            pageable
-        );
-    }
 
     //기수 조회
     public List<MemberGeneration> getMemberGenerations(Member member) {
@@ -159,19 +153,6 @@ public class MemberService {
         return memberGenerations.get(memberGenerations.size() - 1).getPlatform();
     }
 
-    public Member changePassword(
-        Long memberId,
-        String rawPassword,
-        String newPassword
-    ) {
-        final Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
-        checkActiveStatus(member);
-        member.changePassword(rawPassword, newPassword, passwordEncoder);
-
-        return member;
-    }
-
     public void resetPassword(
         final String identification,
         final String newPassword
@@ -182,18 +163,6 @@ public class MemberService {
         member.setPassword(newPassword,passwordEncoder);
     }
 
-    public Member activate(Long memberId) {
-
-        final Member member = memberRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
-
-        member.activate();
-
-        return member;
-    }
-
-
-    //4. 회원 삭제
     public void deleteMember(Long memberId) {
         final Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
@@ -211,25 +180,9 @@ public class MemberService {
         memberRepository.delete(member);
     }
 
-    public Long getTotalCountByPlatformAndGeneration(
-        Platform platform,
-        Generation generation
-    ) {
-        return memberRepository.countActiveByPlatformAndGeneration(platform, generation);
-    }
-
     public boolean existsIdentification(String identification) {
         return memberRepository.existsByIdentification(identification);
     }
-
-    private void checkAllActiveStatus(List<Member> members) {
-        for(Member member : members){
-            if (member.getStatus() != MemberStatus.ACTIVE) {
-                throw new MemberPendingException();
-            }
-        }
-    }
-
     private void checkActiveStatus(Member member) {
         if (member.getStatus() != MemberStatus.ACTIVE) {
             throw new MemberPendingException();
@@ -330,9 +283,45 @@ public class MemberService {
     ) {
         var memberGeneration = memberGenerationRepository.findById(memberGenerationId)
                 .orElseThrow(GenerationIntegrityFailException::new);
-        memberGeneration.update(
+        memberGeneration.updateProjectInfo(
                 projectTeamName,
                 role
         );
+    }
+
+    public List<Member> findAllByMemberIds(final List<Long> memberIds) {
+        final List<Member> members = memberRepository.findAllById(memberIds);
+        if(memberIds.size() != members.size()){
+            throw new MemberNotFoundException();
+        }
+
+        return members;
+    }
+
+    @Transactional
+    public void transfer(final Generation oldGeneration, final Generation newGeneration, final List<Member> members) {
+
+        final List<Long> memberIds =
+            members.stream().map(BaseEntity::getId).collect(Collectors.toList());
+
+        final List<MemberGeneration> newMemberGenerations =
+            memberGenerationRepository
+                .findByMemberIdsAndGenerationNumber(memberIds, oldGeneration.getNumber())
+                .stream()
+                .map(memberGeneration ->
+                    MemberGeneration.of(memberGeneration.getMember(), newGeneration, memberGeneration.getPlatform()))
+                .collect(Collectors.toList());
+
+        memberGenerationRepository.saveAll(newMemberGenerations);
+    }
+
+    @Transactional
+    public void dropOut(final Generation generation,final List<Member> members) {
+
+        final List<Long> memberIds = members.stream().map(BaseEntity::getId).collect(Collectors.toList());
+
+        memberGenerationRepository
+            .findByMemberIdsAndGenerationNumber(memberIds, generation.getNumber())
+            .forEach(MemberGeneration::dropOut);
     }
 }

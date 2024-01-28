@@ -91,6 +91,7 @@ public enum ResultCode {
     ATTENDANCE_ALREADY_CHECKED("이미 출석 체크를 했습니다."),
     ATTENDANCE_TIME_BEFORE("아직 출석 체크 시간이 아닙니다."),
     ATTENDANCE_TIME_OVER("출석 체크 시간이 지났습니다."),
+    ATTENDANCE_DISTANCE_OUT_OF_RANGE("유효한 출석체크 거리를 벗어났습니다."),
 
     // Score HISTORY
     SCORETYPE_INVALID_NAME("잘못된 점수 타입 이름입니다."),

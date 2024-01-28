@@ -12,6 +12,7 @@ import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.MemberStatus;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.util.QueryUtils;
@@ -36,18 +37,18 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     private final NumberPath<Double> sumAlias = Expressions.numberPath(Double.class, "score");
 
     @Override
-    public Page<MemberScoreQueryResult> findAllNotRunByGeneration(Generation generation, Platform platform, String searchName, Pageable pageable) {
+    public Page<MemberScoreQueryResult> findAllByGeneration(Generation generation, Platform platform, String searchName, Pageable pageable) {
         //기본 정렬은 이름 기준
         final Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "name"));
 
         final QueryResults<MemberScoreQueryResult> results = queryFactory
             // score sum 은 numberPath sumAlias 로 접근한다. 정렬 필드에 score 가 있을 시에도 사용
-            .select(Projections.constructor(MemberScoreQueryResult.class, member, memberGeneration.platform, scoreHistory.score.sum().coalesce(0d).as(sumAlias)))
+            .select(Projections.constructor(MemberScoreQueryResult.class, member, memberGeneration, scoreHistory.score.sum().coalesce(0d).as(sumAlias)))
             .from(member)
             // 점수가 없는 멤버도 있을 수 있으니 left join, 취소 여부는 on 절에서 판단해서 where 절에서 삭제되지 않게끔 함
             .leftJoin(scoreHistory).on(scoreHistory.member.eq(member).and(scoreHistory.generation.eq(generation)).and(scoreHistory.isCanceled.eq(false)))
             .join(memberGeneration).on(memberGeneration.member.eq(member).and(memberGeneration.generation.eq(generation)))
-            .where(nameContains(searchName), member.status.ne(MemberStatus.RUN), platformEq(platform))
+            .where(nameContains(searchName), platformEq(platform))
             .groupBy(member, memberGeneration)
             .orderBy(getOrderSpecifier(sort))
             .offset(pageable.getOffset())
@@ -93,22 +94,8 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     @RequiredArgsConstructor
     public static class MemberScoreQueryResult {
         private final Member member;
-        private final Platform platform;
+        private final MemberGeneration memberGeneration;
         private final Double score;
-    }
-
-    @Override
-    public Long countActiveByPlatformAndGeneration(Platform platform, Generation generation) {
-        final Integer count = queryFactory
-            .select(member.count())
-            .from(member)
-            .join(memberGeneration).on(memberGeneration.member.eq(member))
-            .where(memberGeneration.platform.eq(platform)
-                .and(memberGeneration.generation.eq(generation))
-                .and(member.status.eq(MemberStatus.ACTIVE)))
-            .fetch().size();
-
-        return count.longValue();
     }
 
     @Override
