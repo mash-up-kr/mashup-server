@@ -11,6 +11,6 @@ public class TeamResponse {
     private String name;
 
     public static TeamResponse from(Team team){
-        return new TeamResponse(team.getTeamId(), team.getName().toLowerCase());
+        return new TeamResponse(team.getTeamId(), team.getName());
     }
 }
