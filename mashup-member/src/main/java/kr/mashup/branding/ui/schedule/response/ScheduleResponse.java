@@ -24,6 +24,10 @@ public class ScheduleResponse {
 
     Integer generationNumber;
 
+    Double latitude;
+
+    Double longitude;
+
     List<EventResponse> eventList;
 
     public static ScheduleResponse from(Schedule schedule, Integer dateCount) {
@@ -34,6 +38,8 @@ public class ScheduleResponse {
             schedule.getStartedAt(),
             schedule.getEndedAt(),
             schedule.getGeneration().getNumber(),
+            schedule.getLocation() == null ? null : schedule.getLocation().getLatitude(),
+            schedule.getLocation() == null ? null : schedule.getLocation().getLongitude(),
             schedule.getEventList()
                 .stream()
                 .map(EventResponse::from)
