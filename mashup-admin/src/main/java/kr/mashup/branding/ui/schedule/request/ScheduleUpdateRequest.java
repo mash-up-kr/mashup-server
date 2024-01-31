@@ -25,6 +25,12 @@ public class ScheduleUpdateRequest {
     @NotNull
     private LocalDateTime endedAt;
 
+    @NotNull
+    private Double latitude;
+
+    @NotNull
+    private Double longitude;
+
     @NotEmpty
     private List<EventCreateRequest> eventsCreateRequests;
 }

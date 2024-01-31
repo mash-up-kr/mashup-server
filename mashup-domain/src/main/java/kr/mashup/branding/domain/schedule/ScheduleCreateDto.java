@@ -9,4 +9,6 @@ import lombok.Value;
 public class ScheduleCreateDto {
     String name;
     DateRange dateRange;
+    Double latitude;
+    Double longitude;
 }
