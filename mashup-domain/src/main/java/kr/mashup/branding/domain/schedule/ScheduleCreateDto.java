@@ -11,4 +11,6 @@ public class ScheduleCreateDto {
     DateRange dateRange;
     Double latitude;
     Double longitude;
+    String address;
+    String placeName;
 }
