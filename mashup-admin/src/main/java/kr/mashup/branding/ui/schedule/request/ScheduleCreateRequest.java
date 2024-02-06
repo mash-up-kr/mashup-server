@@ -29,6 +29,12 @@ public class ScheduleCreateRequest {
     @NotNull
     private Double longitude;
 
+    @NotNull
+    private String address;
+
+    @NotNull
+    private String placeName;
+
     @NotEmpty
     private List<EventCreateRequest> eventsCreateRequests;
 

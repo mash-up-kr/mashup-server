@@ -70,8 +70,8 @@ public class Schedule extends BaseEntity {
     @LastModifiedBy
     private String updatedBy;
 
-    public static Schedule of(Generation generation, String name, DateRange dateRange, Double latitude, Double longitude) {
-        return new Schedule(generation, name, dateRange, new Location(latitude, longitude));
+    public static Schedule of(Generation generation, String name, DateRange dateRange, Location location) {
+        return new Schedule(generation, name, dateRange, location);
     }
 
     public Schedule(Generation generation, String name, DateRange dateRange, Location location) {
@@ -129,8 +129,8 @@ public class Schedule extends BaseEntity {
         this.endedAt = endDate;
     }
 
-    public void changeLocation(Double latitude, Double longitude) {
-        this.location = new Location(latitude, longitude);
+    public void changeLocation(Location location) {
+        this.location = location;
     }
 
     public void changeStartDate(LocalDateTime newStartDate) {

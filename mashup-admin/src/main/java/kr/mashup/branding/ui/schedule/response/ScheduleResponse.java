@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.schedule.Location;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleStatus;
 import lombok.Getter;
@@ -23,9 +24,7 @@ public class ScheduleResponse {
 
     Integer generationNumber;
 
-    Double latitude;
-
-    Double longitude;
+    Location location;
 
     List<EventResponse> eventList;
 
@@ -44,8 +43,7 @@ public class ScheduleResponse {
             schedule.getStartedAt(),
             schedule.getEndedAt(),
             schedule.getGeneration().getNumber(),
-            schedule.getLocation() == null ? null : schedule.getLocation().getLatitude(),
-            schedule.getLocation() == null ? null : schedule.getLocation().getLongitude(),
+            schedule.getLocation() == null ? null : schedule.getLocation(),
             schedule.getEventList()
                 .stream()
                 .map(EventResponse::from)

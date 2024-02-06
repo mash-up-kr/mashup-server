@@ -31,6 +31,12 @@ public class ScheduleUpdateRequest {
     @NotNull
     private Double longitude;
 
+    @NotNull
+    private String address;
+
+    @NotNull
+    private String placeName;
+
     @NotEmpty
     private List<EventCreateRequest> eventsCreateRequests;
 }
