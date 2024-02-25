@@ -25,16 +25,12 @@ public class ScheduleUpdateRequest {
     @NotNull
     private LocalDateTime endedAt;
 
-    @NotNull
     private Double latitude;
 
-    @NotNull
     private Double longitude;
 
-    @NotNull
     private String address;
 
-    @NotNull
     private String placeName;
 
     @NotEmpty

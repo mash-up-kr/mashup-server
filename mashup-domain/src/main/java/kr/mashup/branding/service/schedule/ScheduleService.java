@@ -28,9 +28,18 @@ public class ScheduleService {
     private final AttendanceCodeRepository attendanceCodeRepository;
 
     public Schedule create(Generation generation, ScheduleCreateDto dto) {
-        Location location = new Location(dto.getLatitude(), dto.getLongitude(), dto.getAddress(), dto.getPlaceName());
+        Location location = createLocation(dto);
         Schedule schedule = Schedule.of(generation, dto.getName(), dto.getDateRange(), location);
+
         return scheduleRepository.save(schedule);
+    }
+
+    private Location createLocation(ScheduleCreateDto dto) {
+        if (dto.getLatitude() == null || dto.getLongitude() == null || dto.getAddress() == null || dto.getPlaceName() == null) {
+            return new Location(null, null, null, "ZOOM");
+        }
+
+        return new Location(dto.getLatitude(), dto.getLongitude(), dto.getAddress(), dto.getPlaceName());
     }
 
     public Schedule getByIdOrThrow(Long scheduleId) {
