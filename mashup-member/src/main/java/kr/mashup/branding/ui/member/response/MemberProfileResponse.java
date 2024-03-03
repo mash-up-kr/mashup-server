@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.member.response;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,7 @@ public class MemberProfileResponse {
 
     private String introduction;            // 자기소개
 
-    private String residence;               // 거주기
+    private String residence;               // 거주지
 
     private String socialNetworkServiceLink; // 인스타그램 링크
 
@@ -52,6 +53,7 @@ public class MemberProfileResponse {
                 memberProfile.getLinkedInLink(),
                 memberGenerations.stream()
                     .map(MemberGenerationResponse::of)
+                    .sorted(Comparator.comparing(MemberGenerationResponse::getNumber).reversed())
                     .collect(Collectors.toList())
         );
     }
