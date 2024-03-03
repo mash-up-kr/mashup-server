@@ -1,22 +1,24 @@
 package kr.mashup.branding.ui.member.response;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import kr.mashup.branding.domain.member.MemberGeneration;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
 public class MemberGenerationsResponse {
 
-    private List<MemberGenerationResponse> memberGenerations;
+	private List<MemberGenerationResponse> memberGenerations;
 
-    public static MemberGenerationsResponse of(List<MemberGeneration> memberGenerations) {
-        List<MemberGenerationResponse> responses = memberGenerations.stream()
-                .map(MemberGenerationResponse::of)
-                .collect(Collectors.toList());
-        return new MemberGenerationsResponse(responses);
-    }
+	public static MemberGenerationsResponse of(List<MemberGeneration> memberGenerations) {
+		List<MemberGenerationResponse> responses = memberGenerations.stream()
+			.map(MemberGenerationResponse::of)
+			.sorted(Comparator.comparing(MemberGenerationResponse::getNumber).reversed())
+			.collect(Collectors.toList());
+		return new MemberGenerationsResponse(responses);
+	}
 }
