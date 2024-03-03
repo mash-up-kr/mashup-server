@@ -156,6 +156,6 @@ public class Schedule extends BaseEntity {
     public Boolean isShowable() { return this.status == ScheduleStatus.PUBLIC; }
 
     public Boolean isOnline() {
-        return this.location == null;
+        return this.location == null || this.location.getLatitude() == null || this.location.getLongitude() == null;
     }
 }
