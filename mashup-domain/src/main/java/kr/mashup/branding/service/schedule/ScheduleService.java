@@ -120,7 +120,7 @@ public class ScheduleService {
         schedule.changeGeneration(generation);
         schedule.changeDate(scheduleCreateDto.getDateRange().getStart(), scheduleCreateDto.getDateRange().getEnd());
 
-        Location location = new Location(scheduleCreateDto.getLatitude(), scheduleCreateDto.getLongitude(), scheduleCreateDto.getAddress(), scheduleCreateDto.getPlaceName());
+        Location location = createLocation(scheduleCreateDto);
         schedule.changeLocation(location);
 
         return schedule;
