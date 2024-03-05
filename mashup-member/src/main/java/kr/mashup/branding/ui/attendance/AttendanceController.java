@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
+import kr.mashup.branding.aop.cipher.CheckApiCipherTime;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.facade.attendance.AttendanceFacadeService;
 import kr.mashup.branding.security.MemberAuth;
@@ -45,6 +46,7 @@ public class AttendanceController {
 
     )
     @PostMapping("/check")
+    @CheckApiCipherTime
     public ApiResponse<AttendanceCheckResponse> check(
         @ApiIgnore MemberAuth auth,
         @RequestBody AttendanceCheckRequest req,
