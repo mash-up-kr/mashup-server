@@ -3,14 +3,25 @@ package kr.mashup.branding.domain.schedule;
 import javax.persistence.Embeddable;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Embeddable
 @Getter
 public class Location {
     private Double latitude;
     private Double longitude;
+    private String address;
+    private String placeName; // 장소명
 
     private static final double EARTH_RADIUS = 6371000; // 지구 반지름 (미터)
+
+    public Location(Double latitude, Double longitude, String address, String placeName) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
+        this.placeName = placeName;
+    }
 
     /**
      * Haversine 공식을 사용하여 두 지점 간의 거리 계산

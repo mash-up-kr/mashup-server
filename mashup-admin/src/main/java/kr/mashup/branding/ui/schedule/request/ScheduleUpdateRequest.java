@@ -25,6 +25,14 @@ public class ScheduleUpdateRequest {
     @NotNull
     private LocalDateTime endedAt;
 
+    private Double latitude;
+
+    private Double longitude;
+
+    private String address;
+
+    private String placeName;
+
     @NotEmpty
     private List<EventCreateRequest> eventsCreateRequests;
 }

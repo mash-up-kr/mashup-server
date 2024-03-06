@@ -3,7 +3,6 @@ package kr.mashup.branding.ui.schedule.request;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -22,6 +21,14 @@ public class ScheduleCreateRequest {
 
     @NotNull
     private LocalDateTime endedAt;
+
+    private Double latitude;
+
+    private Double longitude;
+
+    private String address;
+
+    private String placeName;
 
     @NotEmpty
     private List<EventCreateRequest> eventsCreateRequests;

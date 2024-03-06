@@ -70,11 +70,11 @@ public class Schedule extends BaseEntity {
     @LastModifiedBy
     private String updatedBy;
 
-    public static Schedule of(Generation generation, String name, DateRange dateRange) {
-        return new Schedule(generation, name, dateRange);
+    public static Schedule of(Generation generation, String name, DateRange dateRange, Location location) {
+        return new Schedule(generation, name, dateRange, location);
     }
 
-    public Schedule(Generation generation, String name, DateRange dateRange) {
+    public Schedule(Generation generation, String name, DateRange dateRange, Location location) {
         checkStartBeforeOrEqualEnd(dateRange.getStart(), dateRange.getEnd());
 
         this.generation = generation;
@@ -83,6 +83,7 @@ public class Schedule extends BaseEntity {
         this.endedAt = dateRange.getEnd();
         this.status = ScheduleStatus.ADMIN_ONLY;
         this.isCounted = false; // 기본값은 false 로 설정(배치가 수행되지 않음)
+        this.location = location;
     }
 
     public void publishSchedule(){
@@ -128,6 +129,10 @@ public class Schedule extends BaseEntity {
         this.endedAt = endDate;
     }
 
+    public void changeLocation(Location location) {
+        this.location = location;
+    }
+
     public void changeStartDate(LocalDateTime newStartDate) {
         checkStartBeforeOrEqualEnd(newStartDate, endedAt);
         this.startedAt = newStartDate;
@@ -151,6 +156,6 @@ public class Schedule extends BaseEntity {
     public Boolean isShowable() { return this.status == ScheduleStatus.PUBLIC; }
 
     public Boolean isOnline() {
-        return this.location == null;
+        return this.location == null || this.location.getLatitude() == null || this.location.getLongitude() == null;
     }
 }
