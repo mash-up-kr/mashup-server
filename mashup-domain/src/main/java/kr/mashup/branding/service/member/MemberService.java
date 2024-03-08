@@ -5,13 +5,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kr.mashup.branding.domain.BaseEntity;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
@@ -23,6 +24,7 @@ import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
 import kr.mashup.branding.domain.member.exception.MemberNotFoundException;
 import kr.mashup.branding.domain.member.exception.MemberPendingException;
+import kr.mashup.branding.repository.attendance.AttendanceRepository;
 import kr.mashup.branding.repository.danggn.DanggnNotificationMemberRecordRepository;
 import kr.mashup.branding.repository.danggn.DanggnScoreRepository;
 import kr.mashup.branding.repository.danggn.DanggnShakeLogRepository;
@@ -34,12 +36,12 @@ import kr.mashup.branding.repository.scorehistory.ScoreHistoryRepository;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class MemberService {
+    private final AttendanceRepository attendanceRepository;
 
     private final MemberRepository memberRepository;
     @Qualifier("fourTimesRoundPasswordEncoder")
@@ -176,6 +178,7 @@ public class MemberService {
         memberPopupRepository.deleteByMember(member);
         memberGenerationRepository.deleteByMember(member);
         scoreHistoryRepository.deleteByMember(member);
+        attendanceRepository.deleteByMember(member);
 
         memberRepository.delete(member);
     }
