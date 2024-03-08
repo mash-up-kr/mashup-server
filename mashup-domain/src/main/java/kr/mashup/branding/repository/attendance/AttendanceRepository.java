@@ -14,6 +14,8 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long>, C
     Optional<Attendance> findByMemberAndEvent(Member member, Event event);
     List<Attendance> findAllByMember(Member member);
 
+    void deleteByMember(Member member);
+
 }
 /**
  * Attendance 연관관계
