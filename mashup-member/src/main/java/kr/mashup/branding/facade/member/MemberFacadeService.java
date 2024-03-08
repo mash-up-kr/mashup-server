@@ -176,7 +176,7 @@ public class MemberFacadeService {
     }
 
     private MemberGeneration getLatestMemberGeneration(Member member) {
-        return member.getMemberGenerations().stream().min(Comparator.comparing(
+        return member.getMemberGenerations().stream().max(Comparator.comparing(
             memberGeneration -> memberGeneration.getGeneration().getNumber()
         )).orElseThrow(GenerationIntegrityFailException::new);
     }
