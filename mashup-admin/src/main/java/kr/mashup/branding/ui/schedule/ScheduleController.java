@@ -29,7 +29,6 @@ public class ScheduleController {
 
     private final ScheduleFacadeService scheduleFacadeService;
 
-
     @ApiOperation("스케줄 조회")
     @GetMapping
     public ApiResponse<List<ScheduleResponse>> getSchedules(
@@ -53,7 +52,6 @@ public class ScheduleController {
 
         return ApiResponse.success(response);
     }
-
 
     @ApiOperation("스케줄 생성")
     @PostMapping
