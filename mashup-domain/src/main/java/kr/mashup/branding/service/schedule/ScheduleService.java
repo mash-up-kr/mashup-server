@@ -10,6 +10,8 @@ import kr.mashup.branding.repository.attendancecode.AttendanceCodeRepository;
 import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.util.DateRange;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.DataException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,14 +30,19 @@ public class ScheduleService {
     private final AttendanceCodeRepository attendanceCodeRepository;
 
     public Schedule create(Generation generation, ScheduleCreateDto dto) {
-        Location location = createLocation(dto);
-        Schedule schedule = Schedule.of(generation, dto.getName(), dto.getDateRange(), location);
+        try {
+            Location location = createLocation(dto);
+            Schedule schedule = Schedule.of(generation, dto.getName(), dto.getDateRange(), location);
 
-        return scheduleRepository.save(schedule);
+            return scheduleRepository.save(schedule);
+        } catch (DataIntegrityViolationException exception) {
+            throw new IllegalArgumentException("주소와 장소명은 40자까지만 작성할 수 있습니다.");
+        }
     }
 
     private Location createLocation(ScheduleCreateDto dto) {
-        if (dto.getLatitude() == null || dto.getLongitude() == null || dto.getAddress() == null || dto.getPlaceName() == null) {
+        if (dto.getLatitude() == null || dto.getLongitude() == null
+                || dto.getAddress() == null || dto.getPlaceName() == null) {
             return new Location(null, null, null, "ZOOM");
         }
 
@@ -44,7 +51,7 @@ public class ScheduleService {
 
     public Schedule getByIdOrThrow(Long scheduleId) {
         return scheduleRepository.findById(scheduleId)
-            .orElseThrow(() -> new NotFoundException(ResultCode.SCHEDULE_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ResultCode.SCHEDULE_NOT_FOUND));
     }
 
     public Schedule getByIdAndStatusOrThrow(Long scheduleId, ScheduleStatus status) {
@@ -58,7 +65,7 @@ public class ScheduleService {
 
     public Page<Schedule> getByGeneration(Generation generation, String searchWord, ScheduleStatus status, Pageable pageable) {
         return scheduleRepository
-            .retrieveByGeneration(generation, searchWord, status, pageable);
+                .retrieveByGeneration(generation, searchWord, status, pageable);
     }
 
     public Event addEvents(Schedule schedule, EventCreateDto dto) {
@@ -67,14 +74,14 @@ public class ScheduleService {
 
         final String code = generateAttendanceCodeString();
         final Event event
-            = Event.of(schedule, dto.getEventName(), dto.getDateRange(), code);
+                = Event.of(schedule, dto.getEventName(), dto.getDateRange(), code);
 
         schedule.addEvent(event);
 
         return event;
     }
 
-    public void updateAttendanceTime(Event event, DateRange attendanceTime, DateRange lateTime){
+    public void updateAttendanceTime(Event event, DateRange attendanceTime, DateRange lateTime) {
         final AttendanceCode attendanceCode = event.getAttendanceCode();
         attendanceCode.changeAttendanceTime(attendanceTime);
         attendanceCode.changeLateTime(lateTime);
@@ -82,11 +89,11 @@ public class ScheduleService {
 
     public Event getEventOrThrow(Schedule schedule, Long eventId) {
         return schedule
-            .getEventList()
-            .stream()
-            .filter(it -> it.getId().equals(eventId))
-            .findFirst()
-            .orElseThrow(EventNotFoundException::new);
+                .getEventList()
+                .stream()
+                .filter(it -> it.getId().equals(eventId))
+                .findFirst()
+                .orElseThrow(EventNotFoundException::new);
     }
 
     public Content addContent(Event event, ContentsCreateDto dto) {
@@ -94,7 +101,7 @@ public class ScheduleService {
         onlyHidingScheduleCanChanged(schedule);
 
         final Content content
-            = Content.of(event, dto.getTitle(), dto.getDescription(), dto.getStartedAt());
+                = Content.of(event, dto.getTitle(), dto.getDescription(), dto.getStartedAt());
 
         return content;
     }
@@ -152,7 +159,7 @@ public class ScheduleService {
                 .orElseThrow(ScheduleNotFoundException::new);
     }
 
-    private String generateAttendanceCodeString(){
+    private String generateAttendanceCodeString() {
 
         String code = null;
 
