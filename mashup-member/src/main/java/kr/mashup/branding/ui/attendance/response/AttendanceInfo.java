@@ -14,4 +14,8 @@ public class AttendanceInfo {
     AttendanceStatus status;
     @ApiModelProperty(notes = "결석일 경우 null")
     LocalDateTime attendanceAt;
+
+    public static AttendanceInfo beforeSchedule() {
+        return new AttendanceInfo(AttendanceStatus.NOT_YET, null);
+    }
 }

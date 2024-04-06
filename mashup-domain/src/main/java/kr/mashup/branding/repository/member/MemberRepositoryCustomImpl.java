@@ -129,8 +129,8 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return queryFactory
             .selectFrom(member)
             .join(memberGeneration).on(memberGeneration.member.eq(member))
-            .where(memberGeneration.generation.startedAt.before(at)
-                .and(memberGeneration.generation.endedAt.after(at))
+            .where(memberGeneration.generation.startedAt.loe(at)
+                .and(memberGeneration.generation.endedAt.goe(at))
             )
             .fetch();
     }
