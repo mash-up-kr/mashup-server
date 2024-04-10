@@ -64,6 +64,9 @@ public class Schedule extends BaseEntity {
     @Embedded
     private Location location;
 
+    @Enumerated(EnumType.STRING)
+    private ScheduleType scheduleType;
+
     @CreatedBy
     private String createdBy;
 
