@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import kr.mashup.branding.domain.schedule.ScheduleType;
 import lombok.*;
 
 @Getter
@@ -29,6 +30,8 @@ public class ScheduleCreateRequest {
     private String address;
 
     private String placeName;
+
+    private ScheduleType scheduleType;
 
     @NotEmpty
     private List<EventCreateRequest> eventsCreateRequests;

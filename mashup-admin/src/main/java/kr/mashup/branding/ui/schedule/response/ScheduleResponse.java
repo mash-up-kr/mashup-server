@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import kr.mashup.branding.domain.schedule.Location;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleStatus;
+import kr.mashup.branding.domain.schedule.ScheduleType;
 import lombok.Getter;
 import lombok.Value;
 
@@ -26,6 +27,8 @@ public class ScheduleResponse {
 
     Location location;
 
+    ScheduleType scheduleType;
+
     List<EventResponse> eventList;
 
     ScheduleStatus status;
@@ -44,6 +47,7 @@ public class ScheduleResponse {
             schedule.getEndedAt(),
             schedule.getGeneration().getNumber(),
             schedule.getLocation() == null ? null : schedule.getLocation(),
+            schedule.getScheduleType(),
             schedule.getEventList()
                 .stream()
                 .map(EventResponse::from)

@@ -73,11 +73,11 @@ public class Schedule extends BaseEntity {
     @LastModifiedBy
     private String updatedBy;
 
-    public static Schedule of(Generation generation, String name, DateRange dateRange, Location location) {
-        return new Schedule(generation, name, dateRange, location);
+    public static Schedule of(Generation generation, String name, DateRange dateRange, Location location, ScheduleType scheduleType) {
+        return new Schedule(generation, name, dateRange, location, scheduleType);
     }
 
-    public Schedule(Generation generation, String name, DateRange dateRange, Location location) {
+    public Schedule(Generation generation, String name, DateRange dateRange, Location location, ScheduleType scheduleType) {
         checkStartBeforeOrEqualEnd(dateRange.getStart(), dateRange.getEnd());
 
         this.generation = generation;
@@ -87,6 +87,7 @@ public class Schedule extends BaseEntity {
         this.status = ScheduleStatus.ADMIN_ONLY;
         this.isCounted = false; // 기본값은 false 로 설정(배치가 수행되지 않음)
         this.location = location;
+        this.scheduleType = scheduleType;
     }
 
     public void publishSchedule(){
@@ -144,6 +145,10 @@ public class Schedule extends BaseEntity {
     public void changeEndDate(LocalDateTime newEndDate) {
         checkStartBeforeOrEqualEnd(startedAt, newEndDate);
         this.endedAt = newEndDate;
+    }
+
+    public void changeScheduleType(ScheduleType scheduleType) {
+        this.scheduleType = scheduleType;
     }
 
     private void checkStartBeforeOrEqualEnd(LocalDateTime startedAt, LocalDateTime endedAt) {
