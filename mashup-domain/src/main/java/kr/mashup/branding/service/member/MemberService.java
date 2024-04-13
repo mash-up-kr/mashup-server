@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.schedule.ScheduleType;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -200,6 +201,22 @@ public class MemberService {
         return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
             .filter(Member::getNewsPushNotificationAgreed)
             .collect(Collectors.toList());
+    }
+
+    public List<Member> getPushNotiTargetableMembersByScheduleType(ScheduleType scheduleType) {
+        LocalDate now = LocalDate.now();
+        return memberRepository.findAllByCurrentGenerationAt(now).stream()
+            .filter(Member::getNewsPushNotificationAgreed)
+            .filter(member -> isAvailableByScheduleTypeAndLocalDate(member, scheduleType, now))
+            .collect(Collectors.toList());
+    }
+
+    private Boolean isAvailableByScheduleTypeAndLocalDate(Member member, ScheduleType scheduleType, LocalDate now) {
+        List<MemberGeneration> memberGenerations = member.getMemberGenerations();
+        return !memberGenerations.stream().filter(memberGeneration ->
+            memberGeneration.getGeneration().isInProgress(now) &&
+                memberGeneration.getPlatform().checkAvailabilityByScheduleType(scheduleType)
+        ).toList().isEmpty();
     }
 
     public List<Member> getPushNotiTargetableMembers(List<Long> memberIds) {

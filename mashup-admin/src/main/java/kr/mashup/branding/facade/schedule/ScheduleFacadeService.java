@@ -82,7 +82,7 @@ public class ScheduleFacadeService {
         scheduleService.publishSchedule(schedule);
 
         pushNotiEventPublisher.publishPushNotiSendEvent(
-            new SeminarUpdatedVo(memberService.getAllPushNotiTargetableMembers())
+            new SeminarUpdatedVo(memberService.getPushNotiTargetableMembersByScheduleType(schedule.getScheduleType()), schedule.getScheduleType())
         );
     }
 
