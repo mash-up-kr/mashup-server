@@ -1,5 +1,6 @@
 package kr.mashup.branding.ui.schedule;
 
+import kr.mashup.branding.security.MemberAuth;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponseList;
 import lombok.RequiredArgsConstructor;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/schedules")
@@ -50,6 +52,26 @@ public class ScheduleController {
     ) {
         final ScheduleResponseList res =
             scheduleFacadeService.getByGenerationNum(generationNumber);
+
+        return ApiResponse.success(res);
+    }
+
+    @ApiOperation(
+        value = "기수로 내 스케줄 조회",
+        notes =
+            "<h2> Error Code</h2>" +
+                "<p>" +
+                "GENERATION_NOT_FOUND</br>" +
+                "SCHEDULE_NOT_FOUND" +
+                "</p>"
+    )
+    @GetMapping("/my/generations/{generationNumber}")
+    public ApiResponse<ScheduleResponseList> getMySchedulesByGenerationNumber(
+        @ApiIgnore MemberAuth auth,
+        @PathVariable Integer generationNumber
+    ) {
+        final ScheduleResponseList res =
+            scheduleFacadeService.getMemberSchedulesByGenerationNum(generationNumber, auth.getMemberId());
 
         return ApiResponse.success(res);
     }

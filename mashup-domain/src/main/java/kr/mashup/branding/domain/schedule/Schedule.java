@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
 
+import kr.mashup.branding.domain.member.Platform;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.util.Assert;
@@ -29,6 +30,8 @@ import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static kr.mashup.branding.domain.schedule.ScheduleType.*;
 
 @Entity
 @Getter
@@ -88,7 +91,7 @@ public class Schedule extends BaseEntity {
         this.status = ScheduleStatus.ADMIN_ONLY;
         this.isCounted = false; // 기본값은 false 로 설정(배치가 수행되지 않음)
         this.location = location;
-        this.scheduleType = Objects.requireNonNullElse(scheduleType, ScheduleType.ALL);
+        this.scheduleType = Objects.requireNonNullElse(scheduleType, ALL);
     }
 
     public void publishSchedule(){
@@ -149,7 +152,7 @@ public class Schedule extends BaseEntity {
     }
 
     public void changeScheduleType(ScheduleType scheduleType) {
-        this.scheduleType = Objects.requireNonNullElse(scheduleType, ScheduleType.ALL);
+        this.scheduleType = Objects.requireNonNullElse(scheduleType, ALL);
     }
 
     private void checkStartBeforeOrEqualEnd(LocalDateTime startedAt, LocalDateTime endedAt) {
@@ -166,5 +169,15 @@ public class Schedule extends BaseEntity {
 
     public Boolean isOnline() {
         return this.location == null || this.location.getLatitude() == null || this.location.getLongitude() == null;
+    }
+
+    public Boolean checkAvailabilityByPlatform(Platform platform) {
+        if (scheduleType == ALL) return true;
+        if (scheduleType == SPRING && platform == Platform.SPRING) return true;
+        if (scheduleType == IOS && platform == Platform.IOS) return true;
+        if (scheduleType == DESIGN && platform == Platform.DESIGN) return true;
+        if (scheduleType == WEB && platform == Platform.WEB) return true;
+        if (scheduleType == NODE && platform == Platform.NODE) return true;
+        return false;
     }
 }
