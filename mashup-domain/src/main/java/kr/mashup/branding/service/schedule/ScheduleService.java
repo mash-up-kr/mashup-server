@@ -62,9 +62,9 @@ public class ScheduleService {
         return scheduleRepository.findByGenerationAndStatusOrderByStartedAtAsc(generation, status);
     }
 
-    public Page<Schedule> getByGeneration(Generation generation, String searchWord, ScheduleStatus status, Pageable pageable) {
+    public Page<Schedule> getByGeneration(Generation generation, String searchWord, ScheduleType scheduleType, ScheduleStatus status, Pageable pageable) {
         return scheduleRepository
-                .retrieveByGeneration(generation, searchWord, status, pageable);
+                .retrieveByGenerationAndScheduleType(generation, searchWord, scheduleType, status, pageable);
     }
 
     public Event addEvents(Schedule schedule, EventCreateDto dto) {

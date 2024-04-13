@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface ScheduleRepositoryCustom {
 
-    Page<Schedule> retrieveByGeneration(Generation generation, String searchWord, ScheduleStatus status, Pageable pageable);
+    Page<Schedule> retrieveByGenerationAndScheduleType(Generation generation, String searchWord, ScheduleType scheduleType, ScheduleStatus status, Pageable pageable);
 
     Optional<Schedule> retrieveByStartDateAndScheduleType(LocalDate startDate, ScheduleType scheduleType);
 }

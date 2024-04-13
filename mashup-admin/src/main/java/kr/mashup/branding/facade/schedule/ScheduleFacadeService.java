@@ -2,10 +2,7 @@ package kr.mashup.branding.facade.schedule;
 
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.pushnoti.vo.SeminarUpdatedVo;
-import kr.mashup.branding.domain.schedule.ContentsCreateDto;
-import kr.mashup.branding.domain.schedule.Event;
-import kr.mashup.branding.domain.schedule.Schedule;
-import kr.mashup.branding.domain.schedule.ScheduleCreateDto;
+import kr.mashup.branding.domain.schedule.*;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.member.MemberService;
@@ -37,12 +34,12 @@ public class ScheduleFacadeService {
     private final PushNotiEventPublisher pushNotiEventPublisher;
     private final MemberService memberService;
 
-    public Page<ScheduleResponse> getSchedules(Integer generationNumber, String searchWord, Pageable pageable) {
+    public Page<ScheduleResponse> getSchedules(Integer generationNumber, String searchWord, ScheduleType scheduleType, Pageable pageable) {
 
         final Generation generation
                 = generationService.getByNumberOrThrow(generationNumber);
 
-        final Page<Schedule> schedules = scheduleService.getByGeneration(generation, searchWord, null, pageable);
+        final Page<Schedule> schedules = scheduleService.getByGeneration(generation, searchWord, scheduleType, null, pageable);
         final List<ScheduleResponse> scheduleResponses = schedules
                 .stream()
                 .map(ScheduleResponse::from)

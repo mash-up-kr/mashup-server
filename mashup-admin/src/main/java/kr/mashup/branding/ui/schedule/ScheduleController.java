@@ -3,6 +3,7 @@ package kr.mashup.branding.ui.schedule;
 import javax.validation.Valid;
 
 import kr.mashup.branding.EmptyResponse;
+import kr.mashup.branding.domain.schedule.ScheduleType;
 import kr.mashup.branding.ui.schedule.request.ScheduleUpdateRequest;
 import kr.mashup.branding.ui.schedule.response.QrCodeResponse;
 import kr.mashup.branding.ui.schedule.request.QrCodeGenerateRequest;
@@ -32,12 +33,12 @@ public class ScheduleController {
     @ApiOperation("스케줄 조회")
     @GetMapping
     public ApiResponse<List<ScheduleResponse>> getSchedules(
-            @RequestParam(defaultValue = "13", required = false) Integer generationNumber,
+            @RequestParam(defaultValue = "14", required = false) Integer generationNumber,
+            @RequestParam(defaultValue = "ALL", required = false) ScheduleType scheduleType,
             @RequestParam(required = false) String searchWord,
             @PageableDefault Pageable pageable
     ) {
-        final Page<ScheduleResponse> responses
-                = scheduleFacadeService.getSchedules(generationNumber, searchWord, pageable);
+        final Page<ScheduleResponse> responses = scheduleFacadeService.getSchedules(generationNumber, searchWord, scheduleType, pageable);
 
         return ApiResponse.success(responses);
     }
