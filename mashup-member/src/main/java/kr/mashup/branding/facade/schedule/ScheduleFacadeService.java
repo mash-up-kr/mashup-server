@@ -20,6 +20,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +51,7 @@ public class ScheduleFacadeService {
         final Generation generation = generationService.getByNumberOrThrow(generationNumber);
         List<Schedule> scheduleList = getFilteredSchedules(generation).stream()
             .filter(schedule -> schedule.checkAvailabilityByPlatform(platform))
-            .toList();
+            .collect(Collectors.toList());
         return createScheduleResponseList(generation, scheduleList);
     }
 
