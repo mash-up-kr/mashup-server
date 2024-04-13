@@ -18,14 +18,22 @@ public class SeminarUpdatedVo extends PushNotiSendVo {
     }
 
     private static String generatePushBody(String body, ScheduleType scheduleType) {
-        return switch (scheduleType) {
-            case ALL -> "전체 " + body;
-            case IOS -> "iOS팀 " + body;
-            case WEB -> "웹팀 " + body;
-            case NODE -> "노드팀 " + body;
-            case DESIGN -> "디자인팀 " + body;
-            case SPRING -> "스프링팀 " + body;
-            case ANDROID -> "안드로이드팀 " + body;
-        };
+        switch (scheduleType) {
+            case ALL:
+                return "전체 " + body;
+            case IOS:
+                return "iOS팀 " + body;
+            case WEB:
+                return "웹팀 " + body;
+            case NODE:
+                return "노드팀 " + body;
+            case DESIGN:
+                return "디자인팀 " + body;
+            case SPRING:
+                return "스프링팀 " + body;
+            case ANDROID:
+                return "안드로이드팀 " + body;
+        }
+        throw new IllegalStateException();
     }
 }
