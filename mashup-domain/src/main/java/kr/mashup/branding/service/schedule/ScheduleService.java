@@ -10,7 +10,6 @@ import kr.mashup.branding.repository.attendancecode.AttendanceCodeRepository;
 import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.util.DateRange;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.exception.DataException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -152,12 +151,12 @@ public class ScheduleService {
     }
 
 
-    public List<Schedule> findEndedScheduleByIsCounted(boolean isCounted) {
-        return scheduleRepository.findAllByIsCountedAndEndedAtIsBefore(isCounted, LocalDateTime.now());
+    public List<Schedule> findEndedScheduleByIsCountedAndScheduleType(boolean isCounted, ScheduleType scheduleType) {
+        return scheduleRepository.findAllByIsCountedAndEndedAtIsBeforeAndScheduleType(isCounted, LocalDateTime.now(), scheduleType);
     }
 
-    public Schedule findByStartDate(LocalDate startDate) {
-        return scheduleRepository.retrieveByStartDate(startDate)
+    public Schedule findScheduleByStartDateAndScheduleType(LocalDate startDate, ScheduleType scheduleType) {
+        return scheduleRepository.retrieveByStartDateAndScheduleType(startDate, scheduleType)
                 .orElseThrow(ScheduleNotFoundException::new);
     }
 

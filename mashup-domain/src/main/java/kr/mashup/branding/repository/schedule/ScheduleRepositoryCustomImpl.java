@@ -9,6 +9,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleStatus;
+import kr.mashup.branding.domain.schedule.ScheduleType;
 import kr.mashup.branding.util.QueryUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -72,12 +73,15 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
         return schedule.status.eq(status);
     }
 
-    public Optional<Schedule> retrieveByStartDate(LocalDate startDate) {
+    public Optional<Schedule> retrieveByStartDateAndScheduleType(LocalDate startDate, ScheduleType scheduleType) {
         return Optional.ofNullable(queryFactory
                 .selectFrom(schedule)
-                .where(schedule.startedAt.between(
+                .where(
+                    schedule.startedAt.between(
                         startDate.atStartOfDay(),
-                        LocalDateTime.of(startDate, LocalTime.MAX).withNano(0)))
+                        LocalDateTime.of(startDate, LocalTime.MAX).withNano(0))
+                        .and(schedule.scheduleType.eq(scheduleType))
+                )
                 .fetchOne());
 
     }
