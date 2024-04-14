@@ -48,25 +48,6 @@ public class ScheduleController {
     )
     @GetMapping("/generations/{generationNumber}")
     public ApiResponse<ScheduleResponseList> getByGenerationNumber(
-        @PathVariable Integer generationNumber
-    ) {
-        final ScheduleResponseList res =
-            scheduleFacadeService.getByGenerationNum(generationNumber);
-
-        return ApiResponse.success(res);
-    }
-
-    @ApiOperation(
-        value = "기수로 내 스케줄 조회",
-        notes =
-            "<h2> Error Code</h2>" +
-                "<p>" +
-                "GENERATION_NOT_FOUND</br>" +
-                "SCHEDULE_NOT_FOUND" +
-                "</p>"
-    )
-    @GetMapping("/my/generations/{generationNumber}")
-    public ApiResponse<ScheduleResponseList> getMySchedulesByGenerationNumber(
         @ApiIgnore MemberAuth auth,
         @PathVariable Integer generationNumber
     ) {

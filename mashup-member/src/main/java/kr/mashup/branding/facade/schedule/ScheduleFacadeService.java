@@ -39,13 +39,6 @@ public class ScheduleFacadeService {
     }
 
     @Transactional(readOnly = true)
-    public ScheduleResponseList getByGenerationNum(Integer generationNumber) {
-        final Generation generation = generationService.getByNumberOrThrow(generationNumber);
-        List<Schedule> scheduleList = getFilteredSchedules(generation);
-        return createScheduleResponseList(generation, scheduleList);
-    }
-
-    @Transactional(readOnly = true)
     public ScheduleResponseList getMemberSchedulesByGenerationNum(Integer generationNumber, Long memberId) {
         final Platform platform = memberService.getLatestPlatform(memberService.findMemberById(memberId));
         final Generation generation = generationService.getByNumberOrThrow(generationNumber);
