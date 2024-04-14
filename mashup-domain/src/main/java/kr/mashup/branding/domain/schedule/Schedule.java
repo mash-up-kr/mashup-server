@@ -3,7 +3,6 @@ package kr.mashup.branding.domain.schedule;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -91,7 +90,7 @@ public class Schedule extends BaseEntity {
         this.status = ScheduleStatus.ADMIN_ONLY;
         this.isCounted = false; // 기본값은 false 로 설정(배치가 수행되지 않음)
         this.location = location;
-        this.scheduleType = Objects.requireNonNullElse(scheduleType, ALL);
+        this.scheduleType = scheduleType;
     }
 
     public void publishSchedule(){
@@ -152,7 +151,7 @@ public class Schedule extends BaseEntity {
     }
 
     public void changeScheduleType(ScheduleType scheduleType) {
-        this.scheduleType = Objects.requireNonNullElse(scheduleType, ALL);
+        this.scheduleType = scheduleType;
     }
 
     private void checkStartBeforeOrEqualEnd(LocalDateTime startedAt, LocalDateTime endedAt) {

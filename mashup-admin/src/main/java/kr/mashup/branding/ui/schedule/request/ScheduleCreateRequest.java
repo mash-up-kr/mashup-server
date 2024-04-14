@@ -31,7 +31,7 @@ public class ScheduleCreateRequest {
 
     private String placeName;
 
-    private ScheduleType scheduleType;
+    private ScheduleType scheduleType = ScheduleType.ALL;
 
     @NotEmpty
     private List<EventCreateRequest> eventsCreateRequests;
