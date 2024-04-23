@@ -6,7 +6,7 @@ Server for Mash-Up Recruit, Mash-Up Admin, Mash-Up App
 <table>
     <td align="center"><a href="https://github.com/kh0712"><img src="https://github.com/kh0712.png" width="100px;" alt=""/><br /><sub><b>김경환</b></sub></a><br />💻</a></td>
     <td align="center"><a href="https://github.com/eunjungL"><img src="https://github.com/eunjungL.png" width="100px;" alt=""/><br /><sub><b>이은정</b></sub></a><br />💻</a></td>
-    <td align="center"><a href="https://github.com/hocaron"><img src="https://github.com/210-reverof.png" width="100px;" alt=""/><br /><sub><b>호선우</b></sub></a><br />💻</a></td>
+    <td align="center"><a href="https://github.com/hocaron"><img src="https://github.com/hocaron.png" width="100px;" alt=""/><br /><sub><b>호선우</b></sub></a><br />💻</a></td>
     <td align="center"><a href="https://github.com/alertjjm"><img src="https://github.com/alertjjm.png" width="100px;" alt=""/><br /><sub><b>정종민</b></sub></a><br />💻</a></td>
   </tr>
 </table>
