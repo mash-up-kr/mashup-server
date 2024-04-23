@@ -140,9 +140,10 @@ public class ScheduleFacadeService {
 
         scheduleService.updateAttendanceTime(event, attendantTime,lateTime);
 
-        final String qrCodeUrl = QrGenerator.generate(event.getAttendanceCode().getCode());
+        final String attendanceCode = event.getAttendanceCode().getCode();
+        final String qrCodeUrl = QrGenerator.generate(attendanceCode);
 
-        return QrCodeResponse.of(qrCodeUrl);
+        return QrCodeResponse.of(qrCodeUrl, attendanceCode);
     }
 
     private void doUpdateSchedule(Schedule schedule, ScheduleCreateRequest request) {
