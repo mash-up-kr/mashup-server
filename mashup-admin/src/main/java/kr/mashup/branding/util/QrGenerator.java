@@ -3,7 +3,7 @@ package kr.mashup.branding.util;
 
 public class QrGenerator {
 
-    private static final String QR_URL = "https://chart.apis.google.com/chart";
+    private static final String QR_URL = "https://quickchart.io/chart";
     private static final String QR_TYPE = "qr";
     private static final String QR_SIZE = "300x300";
 
