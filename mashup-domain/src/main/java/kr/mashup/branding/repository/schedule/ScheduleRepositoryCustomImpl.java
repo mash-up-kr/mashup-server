@@ -9,6 +9,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleStatus;
+import kr.mashup.branding.domain.schedule.ScheduleType;
 import kr.mashup.branding.util.QueryUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,13 +32,14 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Schedule> retrieveByGeneration(Generation _generation, String searchWord, ScheduleStatus status, Pageable pageable) {
+    public Page<Schedule> retrieveByGenerationAndScheduleType(Generation _generation, String searchWord, ScheduleType scheduleType, ScheduleStatus status, Pageable pageable) {
         final Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "startedAt"));
 
         final QueryResults<Schedule> queryResults = queryFactory
                 .selectFrom(schedule)
                 .join(schedule.generation, generation).fetchJoin()
                 .where(generation.eq(_generation)
+                        .and(schedule.scheduleType.eq(scheduleType))
                         .and(eqStatus(status))
                         .and(isContainSearchWord(searchWord)))
                 .orderBy(getOrderSpecifier(sort))
@@ -72,12 +74,15 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
         return schedule.status.eq(status);
     }
 
-    public Optional<Schedule> retrieveByStartDate(LocalDate startDate) {
+    public Optional<Schedule> retrieveByStartDateAndScheduleType(LocalDate startDate, ScheduleType scheduleType) {
         return Optional.ofNullable(queryFactory
                 .selectFrom(schedule)
-                .where(schedule.startedAt.between(
+                .where(
+                    schedule.startedAt.between(
                         startDate.atStartOfDay(),
-                        LocalDateTime.of(startDate, LocalTime.MAX).withNano(0)))
+                        LocalDateTime.of(startDate, LocalTime.MAX).withNano(0))
+                        .and(schedule.scheduleType.eq(scheduleType))
+                )
                 .fetchOne());
 
     }

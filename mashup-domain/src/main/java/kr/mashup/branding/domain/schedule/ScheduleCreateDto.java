@@ -13,4 +13,5 @@ public class ScheduleCreateDto {
     Double longitude;
     String address;
     String placeName;
+    ScheduleType scheduleType;
 }

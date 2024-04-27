@@ -3,6 +3,7 @@ package kr.mashup.branding.repository.schedule;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleStatus;
+import kr.mashup.branding.domain.schedule.ScheduleType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public interface ScheduleRepositoryCustom {
 
-    Page<Schedule> retrieveByGeneration(Generation generation, String searchWord, ScheduleStatus status, Pageable pageable);
+    Page<Schedule> retrieveByGenerationAndScheduleType(Generation generation, String searchWord, ScheduleType scheduleType, ScheduleStatus status, Pageable pageable);
 
-    Optional<Schedule> retrieveByStartDate(LocalDate startDate);
+    Optional<Schedule> retrieveByStartDateAndScheduleType(LocalDate startDate, ScheduleType scheduleType);
 }

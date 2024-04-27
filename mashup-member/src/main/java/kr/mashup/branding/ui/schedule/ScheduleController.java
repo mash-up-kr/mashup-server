@@ -1,5 +1,6 @@
 package kr.mashup.branding.ui.schedule;
 
+import kr.mashup.branding.security.MemberAuth;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponse;
 import kr.mashup.branding.ui.schedule.response.ScheduleResponseList;
 import lombok.RequiredArgsConstructor;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/schedules")
@@ -46,10 +48,11 @@ public class ScheduleController {
     )
     @GetMapping("/generations/{generationNumber}")
     public ApiResponse<ScheduleResponseList> getByGenerationNumber(
+        @ApiIgnore MemberAuth auth,
         @PathVariable Integer generationNumber
     ) {
         final ScheduleResponseList res =
-            scheduleFacadeService.getByGenerationNum(generationNumber);
+            scheduleFacadeService.getMemberSchedulesByGenerationNum(generationNumber, auth.getMemberId());
 
         return ApiResponse.success(res);
     }

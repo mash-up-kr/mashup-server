@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kr.mashup.branding.domain.schedule.Schedule;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -199,6 +200,14 @@ public class MemberService {
     public List<Member> getAllPushNotiTargetableMembers() {
         return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
             .filter(Member::getNewsPushNotificationAgreed)
+            .collect(Collectors.toList());
+    }
+
+    public List<Member> getPushNotiTargetableMembersBySchedule(Schedule schedule) {
+        LocalDate now = LocalDate.now();
+        return memberRepository.findAllByCurrentGenerationAt(now).stream()
+            .filter(Member::getNewsPushNotificationAgreed)
+            .filter(member -> schedule.checkAvailabilityByPlatform(getLatestPlatform(member)))
             .collect(Collectors.toList());
     }
 

@@ -10,7 +10,6 @@ import kr.mashup.branding.repository.attendancecode.AttendanceCodeRepository;
 import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.util.DateRange;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.exception.DataException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +31,7 @@ public class ScheduleService {
     public Schedule create(Generation generation, ScheduleCreateDto dto) {
         try {
             Location location = createLocation(dto);
-            Schedule schedule = Schedule.of(generation, dto.getName(), dto.getDateRange(), location);
+            Schedule schedule = Schedule.of(generation, dto.getName(), dto.getDateRange(), location, dto.getScheduleType());
 
             return scheduleRepository.save(schedule);
         } catch (DataIntegrityViolationException exception) {
@@ -63,9 +62,9 @@ public class ScheduleService {
         return scheduleRepository.findByGenerationAndStatusOrderByStartedAtAsc(generation, status);
     }
 
-    public Page<Schedule> getByGeneration(Generation generation, String searchWord, ScheduleStatus status, Pageable pageable) {
+    public Page<Schedule> getByGeneration(Generation generation, String searchWord, ScheduleType scheduleType, ScheduleStatus status, Pageable pageable) {
         return scheduleRepository
-                .retrieveByGeneration(generation, searchWord, status, pageable);
+                .retrieveByGenerationAndScheduleType(generation, searchWord, scheduleType, status, pageable);
     }
 
     public Event addEvents(Schedule schedule, EventCreateDto dto) {
@@ -130,6 +129,8 @@ public class ScheduleService {
         Location location = createLocation(scheduleCreateDto);
         schedule.changeLocation(location);
 
+        schedule.changeScheduleType(scheduleCreateDto.getScheduleType());
+
         return schedule;
     }
 
@@ -150,12 +151,12 @@ public class ScheduleService {
     }
 
 
-    public List<Schedule> findEndedScheduleByIsCounted(boolean isCounted) {
-        return scheduleRepository.findAllByIsCountedAndEndedAtIsBefore(isCounted, LocalDateTime.now());
+    public List<Schedule> findEndedScheduleByIsCountedAndScheduleType(boolean isCounted, ScheduleType scheduleType) {
+        return scheduleRepository.findAllByIsCountedAndEndedAtIsBeforeAndScheduleType(isCounted, LocalDateTime.now(), scheduleType);
     }
 
-    public Schedule findByStartDate(LocalDate startDate) {
-        return scheduleRepository.retrieveByStartDate(startDate)
+    public Schedule findScheduleByStartDateAndScheduleType(LocalDate startDate, ScheduleType scheduleType) {
+        return scheduleRepository.retrieveByStartDateAndScheduleType(startDate, scheduleType)
                 .orElseThrow(ScheduleNotFoundException::new);
     }
 

@@ -1,5 +1,6 @@
 package kr.mashup.branding.ui.schedule.request;
 
+import kr.mashup.branding.domain.schedule.ScheduleType;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -32,6 +33,8 @@ public class ScheduleUpdateRequest {
     private String address;
 
     private String placeName;
+
+    private ScheduleType scheduleType = ScheduleType.ALL;
 
     @NotEmpty
     private List<EventCreateRequest> eventsCreateRequests;
