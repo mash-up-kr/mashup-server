@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
 
+import kr.mashup.branding.domain.member.Platform;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.util.Assert;
@@ -28,6 +29,8 @@ import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static kr.mashup.branding.domain.schedule.ScheduleType.*;
 
 @Entity
 @Getter
@@ -64,17 +67,20 @@ public class Schedule extends BaseEntity {
     @Embedded
     private Location location;
 
+    @Enumerated(EnumType.STRING)
+    private ScheduleType scheduleType;
+
     @CreatedBy
     private String createdBy;
 
     @LastModifiedBy
     private String updatedBy;
 
-    public static Schedule of(Generation generation, String name, DateRange dateRange, Location location) {
-        return new Schedule(generation, name, dateRange, location);
+    public static Schedule of(Generation generation, String name, DateRange dateRange, Location location, ScheduleType scheduleType) {
+        return new Schedule(generation, name, dateRange, location, scheduleType);
     }
 
-    public Schedule(Generation generation, String name, DateRange dateRange, Location location) {
+    public Schedule(Generation generation, String name, DateRange dateRange, Location location, ScheduleType scheduleType) {
         checkStartBeforeOrEqualEnd(dateRange.getStart(), dateRange.getEnd());
 
         this.generation = generation;
@@ -84,6 +90,7 @@ public class Schedule extends BaseEntity {
         this.status = ScheduleStatus.ADMIN_ONLY;
         this.isCounted = false; // 기본값은 false 로 설정(배치가 수행되지 않음)
         this.location = location;
+        this.scheduleType = scheduleType;
     }
 
     public void publishSchedule(){
@@ -143,6 +150,10 @@ public class Schedule extends BaseEntity {
         this.endedAt = newEndDate;
     }
 
+    public void changeScheduleType(ScheduleType scheduleType) {
+        this.scheduleType = scheduleType;
+    }
+
     private void checkStartBeforeOrEqualEnd(LocalDateTime startedAt, LocalDateTime endedAt) {
         if (!DateUtil.isStartBeforeOrEqualEnd(startedAt, endedAt)) {
             throw new IllegalArgumentException("유효하지 않은 시작시간과 끝나는 시간입니다.");
@@ -157,5 +168,15 @@ public class Schedule extends BaseEntity {
 
     public Boolean isOnline() {
         return this.location == null || this.location.getLatitude() == null || this.location.getLongitude() == null;
+    }
+
+    public Boolean checkAvailabilityByPlatform(Platform platform) {
+        if (scheduleType == ALL) return true;
+        if (scheduleType == SPRING && platform == Platform.SPRING) return true;
+        if (scheduleType == IOS && platform == Platform.IOS) return true;
+        if (scheduleType == DESIGN && platform == Platform.DESIGN) return true;
+        if (scheduleType == WEB && platform == Platform.WEB) return true;
+        if (scheduleType == NODE && platform == Platform.NODE) return true;
+        return false;
     }
 }

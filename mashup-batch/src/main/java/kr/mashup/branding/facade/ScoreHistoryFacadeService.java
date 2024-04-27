@@ -3,6 +3,7 @@ package kr.mashup.branding.facade;
 import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.schedule.Schedule;
+import kr.mashup.branding.domain.schedule.ScheduleType;
 import kr.mashup.branding.domain.scorehistory.ScoreHistory;
 import kr.mashup.branding.domain.scorehistory.ScoreType;
 import kr.mashup.branding.service.attendance.AttendanceService;
@@ -32,7 +33,7 @@ public class ScoreHistoryFacadeService {
      */
     @Transactional
     public List<Member> create() {
-        List<Schedule> schedules = scheduleService.findEndedScheduleByIsCounted(false);
+        List<Schedule> schedules = scheduleService.findEndedScheduleByIsCountedAndScheduleType(false, ScheduleType.ALL);
         Set<Member> updatedMember = new HashSet<>();
 
         schedules.forEach(schedule -> {
@@ -90,7 +91,7 @@ public class ScoreHistoryFacadeService {
      * @param scheduleStartDate
      */
     public void delete(LocalDate scheduleStartDate) {
-        Schedule schedule = scheduleService.findByStartDate(scheduleStartDate);
+        Schedule schedule = scheduleService.findScheduleByStartDateAndScheduleType(scheduleStartDate, ScheduleType.ALL);
         List<ScoreHistory> scoreHistories = scoreHistoryService.findAttendanceScoreByDate(scheduleStartDate);
 
         scoreHistoryService.deleteAll(scoreHistories);
