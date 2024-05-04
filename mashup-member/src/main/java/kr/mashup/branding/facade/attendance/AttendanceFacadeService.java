@@ -26,6 +26,7 @@ import kr.mashup.branding.ui.attendance.request.AttendanceCheckRequest;
 import kr.mashup.branding.ui.attendance.response.*;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,13 +37,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AttendanceFacadeService {
 
     private final static long PUSH_SCHEDULE_INTERVAL_MINUTES = 1;
     private final static long ATTENDANCE_START_AFTER_MINUTES = 1;
     private final static long ATTENDANCE_END_AFTER_MINUTES = 3;
-    private final static double ATTENDANCE_DISTANCE = 50;
+    private final static double ATTENDANCE_DISTANCE = 500;
     private final AttendanceService attendanceService;
     private final MemberService memberService;
     private final ScheduleService scheduleService;
@@ -401,6 +403,8 @@ public class AttendanceFacadeService {
 
         final boolean isWithinAttendanceDistance = schedule.getLocation().isWithinDistance(latitude, longitude, ATTENDANCE_DISTANCE);
         if (!isWithinAttendanceDistance) {
+            log.info("[ATTENDANCE_DISTANCE] isWithinAttendanceDistance lat:{}, lon:{}, scheduleId:{}",
+                latitude, longitude,schedule.getId());
             throw new BadRequestException(ResultCode.ATTENDANCE_DISTANCE_OUT_OF_RANGE);
         }
     }
