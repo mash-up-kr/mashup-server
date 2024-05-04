@@ -41,11 +41,11 @@ public class ScheduleService {
 
     private Location createLocation(ScheduleCreateDto dto) {
         if (dto.getLatitude() == null || dto.getLongitude() == null
-                || dto.getAddress() == null || dto.getPlaceName() == null) {
+                || dto.getRoadAddress() == null || dto.getDetailAddress() == null) {
             return new Location(null, null, null, "ZOOM");
         }
 
-        return new Location(dto.getLatitude(), dto.getLongitude(), dto.getAddress(), dto.getPlaceName());
+        return new Location(dto.getLatitude(), dto.getLongitude(), dto.getRoadAddress(), dto.getDetailAddress());
     }
 
     public Schedule getByIdOrThrow(Long scheduleId) {

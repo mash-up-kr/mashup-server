@@ -1,7 +1,5 @@
 package kr.mashup.branding.domain.schedule;
 
-import java.time.LocalDateTime;
-
 import kr.mashup.branding.util.DateRange;
 import lombok.Value;
 
@@ -11,7 +9,7 @@ public class ScheduleCreateDto {
     DateRange dateRange;
     Double latitude;
     Double longitude;
-    String address;
-    String placeName;
+    String roadAddress;
+    String detailAddress;
     ScheduleType scheduleType;
 }
