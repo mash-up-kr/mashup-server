@@ -36,8 +36,6 @@ public class ScheduleUpdateRequest {
 
     private ScheduleType scheduleType = ScheduleType.ALL;
 
-    private ScheduleType scheduleType = ScheduleType.ALL;
-
     @NotEmpty
     private List<EventCreateRequest> eventsCreateRequests;
 }
