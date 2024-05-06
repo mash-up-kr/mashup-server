@@ -33,6 +33,8 @@ public class ScheduleCreateRequest {
 
     private ScheduleType scheduleType = ScheduleType.ALL;
 
+    private ScheduleType scheduleType = ScheduleType.ALL;
+
     @NotEmpty
     private List<EventCreateRequest> eventsCreateRequests;
 
