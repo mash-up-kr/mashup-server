@@ -33,7 +33,7 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
 
     @Override
     public Page<Schedule> retrieveByGenerationAndScheduleType(Generation _generation, String searchWord, ScheduleType scheduleType, ScheduleStatus status, Pageable pageable) {
-        final Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.ASC, "startedAt"));
+        final Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.DESC, "startedAt"));
 
         final QueryResults<Schedule> queryResults = queryFactory
                 .selectFrom(schedule)

@@ -38,7 +38,8 @@ public class ScheduleController {
             @RequestParam(required = false) String searchWord,
             @PageableDefault Pageable pageable
     ) {
-        final Page<ScheduleResponse> responses = scheduleFacadeService.getSchedules(generationNumber, searchWord, scheduleType, pageable);
+        final Page<ScheduleResponse> responses =
+            scheduleFacadeService.getSchedules(generationNumber, searchWord, scheduleType, pageable);
 
         return ApiResponse.success(responses);
     }
