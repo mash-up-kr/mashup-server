@@ -6,6 +6,7 @@ import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.schedule.*;
 import kr.mashup.branding.domain.schedule.exception.*;
+import kr.mashup.branding.repository.attendance.AttendanceRepository;
 import kr.mashup.branding.repository.attendancecode.AttendanceCodeRepository;
 import kr.mashup.branding.repository.schedule.ScheduleRepository;
 import kr.mashup.branding.util.DateRange;
@@ -27,6 +28,7 @@ import java.util.UUID;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final AttendanceCodeRepository attendanceCodeRepository;
+    private final AttendanceRepository attendanceRepository;
 
     public Schedule create(Generation generation, ScheduleCreateDto dto) {
         try {
@@ -119,8 +121,15 @@ public class ScheduleService {
         scheduleRepository.delete(schedule);
     }
 
+    private void passedScheduleMustNotBeDeleted(Schedule schedule) {
+        if (schedule.getStartedAt().isBefore(LocalDateTime.now())) {
+            throw new ScheduleNotDeletableException();
+        }
+    }
+
     public Schedule updateSchedule(Schedule schedule, Generation generation, ScheduleCreateDto scheduleCreateDto) {
         onlyHidingScheduleCanChanged(schedule);
+        validateAttendanceExists(schedule);
 
         schedule.changeName(scheduleCreateDto.getName());
         schedule.changeGeneration(generation);
@@ -134,20 +143,23 @@ public class ScheduleService {
         return schedule;
     }
 
-    private void passedScheduleMustNotBeDeleted(Schedule schedule) {
-        if (schedule.getStartedAt().isBefore(LocalDateTime.now())) {
-            throw new ScheduleNotDeletableException();
-        }
-    }
+    private void validateAttendanceExists(Schedule schedule) {
+        boolean isAttendanceExists = schedule.getEventList().stream()
+                .anyMatch(attendanceRepository::existsByEvent);
 
-    public void hideSchedule(Schedule schedule) {
-        schedule.hide();
+        if (isAttendanceExists) {
+            throw new ScheduleNotUpdatableException();
+        }
     }
 
     private void onlyHidingScheduleCanChanged(Schedule schedule) {
         if (schedule.getStatus() == ScheduleStatus.PUBLIC) {
             throw new ScheduleAlreadyPublishedException();
         }
+    }
+
+    public void hideSchedule(Schedule schedule) {
+        schedule.hide();
     }
 
 
