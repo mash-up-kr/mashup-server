@@ -18,7 +18,7 @@ public class MashongMission {
 
     private MissionType missionType;
 
-    private MissionStrategyType missionStrategy;
+    private MissionStrategyType missionStrategyType;
 
     private String name;
 }
