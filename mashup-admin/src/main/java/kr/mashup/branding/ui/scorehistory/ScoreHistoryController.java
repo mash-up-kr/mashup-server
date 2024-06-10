@@ -40,7 +40,8 @@ public class ScoreHistoryController {
         return ApiResponse.success(EmptyResponse.of());
     }
 
-    @PostMapping()
+    // TODO: 추후 프로세스 타입 추가
+    @PostMapping("process")
     public void createScore() {
         scoreHistoryProcessor.create();
     }
