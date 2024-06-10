@@ -6,7 +6,6 @@ import kr.mashup.branding.repository.mashong.MashongMissionLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,9 @@ public class MashongMissionLogService {
         return mashongMissionLogList.stream().max(Comparator.comparing(MashongMissionLog::getLevel));
     }
 
-    public void save(Long memberGenerationId, MashongMissionLevel mashongMissionLevel) {
-        mashongMissionLogRepository.save(MashongMissionLog.of(memberGenerationId, mashongMissionLevel, LocalDateTime.now()));
+    public MashongMissionLog getMissionLog(MashongMissionLevel mashongMissionLevel, Long memberGenerationId) {
+        return mashongMissionLogRepository.findByMissionLevelIdAndMemberGenerationId(mashongMissionLevel.getId(), memberGenerationId).orElse(
+            mashongMissionLogRepository.save(MashongMissionLog.of(memberGenerationId, mashongMissionLevel))
+        );
     }
 }

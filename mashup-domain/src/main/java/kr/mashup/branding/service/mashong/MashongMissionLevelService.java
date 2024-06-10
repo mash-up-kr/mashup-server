@@ -21,4 +21,13 @@ public class MashongMissionLevelService {
     public MashongMissionLevel findMissionLevel(Long missionLevelId) {
         return mashongMissionLevelRepository.findById(missionLevelId).orElseThrow(RuntimeException::new); //todo runtime;
     }
+
+    public MashongMissionLevel findNextMissionLevel(Long missionLevelId) {
+        MashongMissionLevel missionLevel = findMissionLevel(missionLevelId);
+        List<MashongMissionLevel> mashongMissionLevelList = mashongMissionLevelRepository.findAllByMissionId(missionLevel.getMissionId());
+        return mashongMissionLevelList.stream()
+            .filter(level -> level.getLevel() == missionLevel.getLevel() + 1)
+            .findFirst()
+            .orElse(null);
+    }
 }

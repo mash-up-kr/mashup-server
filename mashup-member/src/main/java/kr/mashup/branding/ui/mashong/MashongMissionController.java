@@ -1,8 +1,9 @@
 package kr.mashup.branding.ui.mashong;
 
 import io.swagger.annotations.ApiOperation;
-import kr.mashup.branding.facade.mashong.MashongFacadeService;
+import kr.mashup.branding.facade.mashong.MashongMissionFacadeService;
 import kr.mashup.branding.security.MemberAuth;
+import kr.mashup.branding.service.mashong.dto.MissionStatus;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,13 +14,13 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1/mashong")
+@RequestMapping("api/v1/mashong-mission")
 @RequiredArgsConstructor
-public class MashongController {
-    private final MashongFacadeService mashongFacadeService;
+public class MashongMissionController {
+    private final MashongMissionFacadeService mashongMissionFacadeService;
 
     @ApiOperation(
-        value = "매숑이 출석",
+        value = "매숑이 미션들 상태",
         notes =
             "<h2>Error Code</h2>" +
                 "<p>" +
@@ -28,11 +29,11 @@ public class MashongController {
                 "</p>"
 
     )
-    @PostMapping("/attend")
-    public ApiResponse<Boolean> attend(
-        @ApiIgnore MemberAuth memberAuth
+    @PostMapping("/status")
+    public ApiResponse<MissionStatus> missionStatus(
+        @ApiIgnore MemberAuth memberAuth,
+        Long missionId
     ) {
-        Boolean result = mashongFacadeService.attend(memberAuth.getMemberId());
-        return ApiResponse.success(result);
+        return ApiResponse.success(mashongMissionFacadeService.missionStatus(memberAuth.getMemberGenerationId(), missionId));
     }
 }

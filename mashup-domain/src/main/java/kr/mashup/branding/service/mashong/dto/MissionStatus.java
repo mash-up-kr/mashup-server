@@ -1,32 +1,45 @@
 package kr.mashup.branding.service.mashong.dto;
 
+import kr.mashup.branding.domain.mashong.MashongMissionLevel;
+import kr.mashup.branding.domain.mashong.MashongMissionLog;
 import lombok.Getter;
 
 @Getter
 public class MissionStatus {
-    private Boolean isAchieved;
-    private Long currentStatus;
+    private Long level;
+    private Long goal;
     private String title;
-    private String description;
+    private Long compensation;
+    private Long currentStatus;
+    private Boolean isCompensated;
 
     private MissionStatus(
-        Boolean isAchieved,
-        Long currentStatus,
+        Long level,
+        Long goal,
         String title,
-        String description
+        Long compensation,
+        Long currentStatus,
+        Boolean isCompensated
     ) {
-        this.isAchieved = isAchieved;
-        this.currentStatus = currentStatus;
+        this.level = level;
+        this.goal = goal;
         this.title = title;
-        this.description = description;
+        this.compensation = compensation;
+        this.currentStatus = currentStatus;
+        this.isCompensated = isCompensated;
     }
 
     public static MissionStatus of(
-        Boolean isAchieved,
-        Long currentStatus,
-        String title,
-        String description
+        MashongMissionLevel mashongMissionLevel,
+        MashongMissionLog mashongMissionLog
     ) {
-        return new MissionStatus(isAchieved, currentStatus, title, description);
+        return new MissionStatus(
+            mashongMissionLevel.getLevel(),
+            mashongMissionLevel.getMissionGoalValue(),
+            mashongMissionLevel.getTitle(),
+            mashongMissionLevel.getCompensationValue(),
+            mashongMissionLog.getCurrentStatus(),
+            mashongMissionLog.getIsCompensated()
+        );
     }
 }

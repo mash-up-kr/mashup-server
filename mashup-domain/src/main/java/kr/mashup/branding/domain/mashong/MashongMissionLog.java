@@ -23,14 +23,23 @@ public class MashongMissionLog {
 
     private Long missionId;
 
+    private Long currentStatus;
+
     private LocalDateTime achievedAt;
+
+    private Boolean isCompensated;
 
     public static MashongMissionLog of(
         Long memberGenerationId,
-        MashongMissionLevel mashongMissionLevel,
-        LocalDateTime achievedAt
+        MashongMissionLevel mashongMissionLevel
     ) {
-        return new MashongMissionLog(memberGenerationId, mashongMissionLevel.getId(), mashongMissionLevel.getLevel(), mashongMissionLevel.getMissionId(), achievedAt);
+        return new MashongMissionLog(memberGenerationId, mashongMissionLevel.getId(), mashongMissionLevel.getLevel(), mashongMissionLevel.getMissionId(), 0L, null, false);
+    }
+
+    public void incrementCurrentStatus(
+        Long value
+    ) {
+        this.currentStatus += value;
     }
 
     private MashongMissionLog(
@@ -38,12 +47,16 @@ public class MashongMissionLog {
         Long missionLevelId,
         Long level,
         Long missionId,
-        LocalDateTime achievedAt
+        Long currentStatus,
+        LocalDateTime achievedAt,
+        Boolean isCompensated
     ) {
         this.memberGenerationId = memberGenerationId;
         this.missionLevelId = missionLevelId;
         this.level = level;
         this.missionId = missionId;
+        this.currentStatus = currentStatus;
         this.achievedAt = achievedAt;
+        this.isCompensated = isCompensated;
     }
 }
