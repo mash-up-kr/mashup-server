@@ -13,10 +13,6 @@ import java.util.List;
 public class MashongMissionService {
     private final MashongMissionRepository mashongMissionRepository;
 
-    public MashongMission findMission(Long missionId) {
-        return mashongMissionRepository.findById(missionId).orElseThrow(RuntimeException::new);//todo runtimeexception
-    }
-
     public List<MashongMission> findAll() {
         return mashongMissionRepository.findAll();
     }

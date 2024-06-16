@@ -20,6 +20,9 @@ public class MashongMission {
     private MissionType missionType;
 
     @Enumerated(EnumType.STRING)
+    private MissionRepeatType missionRepeatType;
+
+    @Enumerated(EnumType.STRING)
     private MissionStrategyType missionStrategyType;
 
     private String name;

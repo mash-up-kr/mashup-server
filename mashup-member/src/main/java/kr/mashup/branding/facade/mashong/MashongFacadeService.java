@@ -1,14 +1,8 @@
 package kr.mashup.branding.facade.mashong;
 
-import kr.mashup.branding.domain.mashong.MashongMissionLevel;
-import kr.mashup.branding.domain.mashong.MashongMissionLog;
-import kr.mashup.branding.domain.mashong.MashongPopcorn;
-import kr.mashup.branding.domain.mashong.MissionStrategyType;
+import kr.mashup.branding.domain.mashong.*;
 import kr.mashup.branding.domain.member.MemberGeneration;
-import kr.mashup.branding.service.mashong.MashongAttendanceService;
-import kr.mashup.branding.service.mashong.MashongMissionLevelService;
-import kr.mashup.branding.service.mashong.MashongMissionLogService;
-import kr.mashup.branding.service.mashong.MashongPopcornService;
+import kr.mashup.branding.service.mashong.*;
 import kr.mashup.branding.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +15,7 @@ public class MashongFacadeService {
     private final MashongMissionFacadeService mashongMissionFacadeService;
     private final MashongPopcornService mashongPopcornService;
     private final MashongMissionLogService mashongMissionLogService;
+    private final MashongMissionTeamLogService mashongMissionTeamLogService;
     private final MashongMissionLevelService mashongMissionLevelService;
     private final MemberService memberService;
 
@@ -36,20 +31,38 @@ public class MashongFacadeService {
 
     @Transactional
     public Boolean popcorn(Long memberGenerationId, Long missionLevelId) {
+        MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
         MashongMissionLevel mashongMissionLevel = mashongMissionLevelService.findMissionLevel(missionLevelId);
         MashongPopcorn mashongPopcorn = mashongPopcornService.findByMemberGenerationId(memberGenerationId);
-        MashongMissionLog mashongMissionLog = mashongMissionLogService.getMissionLog(mashongMissionLevel, memberGenerationId);
+        if (mashongMissionLevel.getMashongMission().getMissionType() == MissionType.INDIVIDUAL) {
+            MashongMissionLog mashongMissionLog = mashongMissionLogService.getMissionLog(mashongMissionLevel, memberGenerationId);
 
-        if (isCompensatable(mashongMissionLog, mashongMissionLevel)) {
-            mashongPopcornService.increasePopcorn(mashongPopcorn.getId(), mashongMissionLevel.getCompensationValue());
-            mashongMissionLog.compensated();
-            return true;
+            if (isCompensatable(mashongMissionLog, mashongMissionLevel)) {
+                mashongPopcornService.increasePopcorn(mashongPopcorn.getId(), mashongMissionLevel.getCompensationValue());
+                mashongMissionLog.compensated();
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            return false;
+            //todo: 팀별 보상방안 따라
+            MashongMissionTeamLog mashongMissionLog = mashongMissionTeamLogService.getMissionLog(mashongMissionLevel, memberGeneration.getPlatform());
+
+            if (isCompensatable(mashongMissionLog, mashongMissionLevel)) {
+                mashongPopcornService.increasePopcorn(mashongPopcorn.getId(), mashongMissionLevel.getCompensationValue());
+                mashongMissionLog.compensated();
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
     private Boolean isCompensatable(MashongMissionLog mashongMissionLog, MashongMissionLevel mashongMissionLevel) {
+        return !mashongMissionLog.getIsCompensated() && (mashongMissionLog.getCurrentStatus() >= mashongMissionLevel.getMissionGoalValue());
+    }
+
+    private Boolean isCompensatable(MashongMissionTeamLog mashongMissionLog, MashongMissionLevel mashongMissionLevel) {
         return !mashongMissionLog.getIsCompensated() && (mashongMissionLog.getCurrentStatus() >= mashongMissionLevel.getMissionGoalValue());
     }
 }

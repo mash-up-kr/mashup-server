@@ -2,9 +2,11 @@ package kr.mashup.branding.facade.mashong;
 
 import kr.mashup.branding.domain.mashong.*;
 import kr.mashup.branding.domain.member.MemberGeneration;
+import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.service.mashong.MashongMissionLevelService;
 import kr.mashup.branding.service.mashong.MashongMissionLogService;
 import kr.mashup.branding.service.mashong.MashongMissionService;
+import kr.mashup.branding.service.mashong.MashongMissionTeamLogService;
 import kr.mashup.branding.service.mashong.dto.MissionStatus;
 import kr.mashup.branding.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -12,16 +14,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.groupingBy;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MashongMissionFacadeService {
     private final MashongMissionService mashongMissionService;
     private final MashongMissionLogService mashongMissionLogService;
+    private final MashongMissionTeamLogService mashongMissionTeamLogService;
     private final MashongMissionLevelService mashongMissionLevelService;
     private final MemberService memberService;
 
@@ -30,24 +31,31 @@ public class MashongMissionFacadeService {
     public void apply(MissionStrategyType missionStrategyType, MemberGeneration memberGeneration, Long value) {
         MashongMission mission = mashongMissionService.findMissionByStrategyType(missionStrategyType);
         MashongMissionLevel latestMissionLevel = getLatestMissionLevel(memberGeneration, mission);
-        MashongMissionLog mashongMissionLog = mashongMissionLogService.getMissionLog(latestMissionLevel, memberGeneration.getId());
-        mashongMissionLog.incrementCurrentStatus(value);
+        if (mission.getMissionType() == MissionType.INDIVIDUAL) {
+            MashongMissionLog mashongMissionLog = mashongMissionLogService.getMissionLog(latestMissionLevel, memberGeneration.getId());
+            mashongMissionLog.incrementCurrentStatus(value);
+        } else {
+            MashongMissionTeamLog mashongMissionLog = mashongMissionTeamLogService.getMissionLog(latestMissionLevel, memberGeneration.getPlatform());
+            mashongMissionLog.incrementCurrentStatus(value);
+        }
     }
 
     @Transactional(readOnly = true)
-    public MissionStatus missionStatus(Long memberGenerationId, Long missionId) {
-        MashongMission mashongMission = mashongMissionService.findMission(missionId);
+    public MissionStatus missionStatus(Long memberGenerationId, MashongMission mashongMission) {
         MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
-        MashongMissionLevel mashongMissionLevel = getLatestMissionLevel(memberGeneration, mashongMission);
-        MashongMissionLog mashongMissionLog = mashongMissionLogService.getMissionLog(mashongMissionLevel, memberGenerationId);
-        return MissionStatus.of(mashongMission, mashongMissionLevel, mashongMissionLog);
+
+        if (mashongMission.getMissionType() == MissionType.TEAM) {
+            return missionStatus(memberGeneration.getPlatform(), mashongMission);
+        } else {
+            return missionStatus(memberGeneration, mashongMission);
+        }
     }
 
     @Transactional(readOnly = true)
-    public Map<MissionType, List<MissionStatus>> missionStatusList(Long memberGenerationId) {
+    public List<MissionStatus> missionStatusList(Long memberGenerationId) {
         List<MashongMission> mashongMissionList = mashongMissionService.findAll();
-        return mashongMissionList.stream().map(mission -> missionStatus(memberGenerationId, mission.getId()))
-            .collect(groupingBy(MissionStatus::getMissionType));
+        return mashongMissionList.stream().map(mission -> missionStatus(memberGenerationId, mission))
+            .collect(Collectors.toList());
     }
 
     private MashongMissionLevel getLatestMissionLevel(MemberGeneration memberGeneration, MashongMission mashongMission) {
@@ -60,5 +68,29 @@ public class MashongMissionFacadeService {
         } else {
             return mashongMissionLevelService.findMissionLevel(latestMissionLog.get().getMissionLevelId());
         }
+    }
+
+    private MashongMissionLevel getLatestMissionLevel(Platform platform, MashongMission mashongMission) {
+        Optional<MashongMissionTeamLog> latestMissionLog = mashongMissionTeamLogService.getLastAchievedMissionLog(mashongMission, platform);
+        if (latestMissionLog.isEmpty()) {
+            return mashongMission.getFirstMissionLevel();
+        } else if (latestMissionLog.get().getIsCompensated()) {
+            MashongMissionLevel mashongMissionLevel = mashongMissionLevelService.findMissionLevel(latestMissionLog.get().getMissionLevelId());
+            return mashongMissionLevel.getMashongMission().getNextMissionLevel(mashongMissionLevel.getLevel());
+        } else {
+            return mashongMissionLevelService.findMissionLevel(latestMissionLog.get().getMissionLevelId());
+        }
+    }
+
+    private MissionStatus missionStatus(MemberGeneration memberGeneration, MashongMission mashongMission) {
+        MashongMissionLevel latestMissionLevel = getLatestMissionLevel(memberGeneration, mashongMission);
+        MashongMissionLog mashongMissionLog = mashongMissionLogService.getMissionLog(latestMissionLevel, memberGeneration.getId());
+        return MissionStatus.of(mashongMission, latestMissionLevel, mashongMissionLog);
+    }
+
+    private MissionStatus missionStatus(Platform platform, MashongMission mashongMission) {
+        MashongMissionLevel latestMissionLevel = getLatestMissionLevel(platform, mashongMission);
+        MashongMissionTeamLog mashongMissionLog = mashongMissionTeamLogService.getMissionLog(latestMissionLevel, platform);
+        return MissionStatus.of(mashongMission, latestMissionLevel, mashongMissionLog);
     }
 }
