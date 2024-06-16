@@ -32,6 +32,6 @@ public class MashongAttendanceService {
 
     private Boolean isNextAttendEnable(List<MashongAttendance> mashongAttendanceList, LocalDateTime now) {
         Optional<MashongAttendance> latestAttendance = mashongAttendanceList.stream().max(Comparator.comparing(MashongAttendance::getAttendanceAt));
-        return latestAttendance.map(mashongAttendance -> Duration.between(now, mashongAttendance.getAttendanceAt()).toMinutes() > 30).orElse(true);
+        return latestAttendance.map(mashongAttendance -> Duration.between(mashongAttendance.getAttendanceAt(), now).toMinutes() > 30).orElse(true);
     }
 }

@@ -21,8 +21,7 @@ public class MashongMissionLogService {
     }
 
     public MashongMissionLog getMissionLog(MashongMissionLevel mashongMissionLevel, Long memberGenerationId) {
-        return mashongMissionLogRepository.findByMissionLevelIdAndMemberGenerationId(mashongMissionLevel.getId(), memberGenerationId).orElse(
-            mashongMissionLogRepository.save(MashongMissionLog.of(memberGenerationId, mashongMissionLevel))
-        );
+        Optional<MashongMissionLog> mashongMissionLog = mashongMissionLogRepository.findByMissionLevelIdAndMemberGenerationId(mashongMissionLevel.getId(), memberGenerationId);
+        return mashongMissionLog.orElseGet(() -> mashongMissionLogRepository.save(MashongMissionLog.of(memberGenerationId, mashongMissionLevel)));
     }
 }

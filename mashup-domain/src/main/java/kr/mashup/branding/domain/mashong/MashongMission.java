@@ -4,9 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -16,8 +14,10 @@ public class MashongMission {
     @GeneratedValue
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private MissionType missionType;
 
+    @Enumerated(EnumType.STRING)
     private MissionStrategyType missionStrategyType;
 
     private String name;
