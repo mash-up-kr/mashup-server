@@ -4,9 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -18,7 +16,9 @@ public class MashongMissionLevel {
 
     private Long level;
 
-    private Long missionId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "mission_id")
+    private MashongMission mashongMission;
 
     private Long missionGoalValue;
 

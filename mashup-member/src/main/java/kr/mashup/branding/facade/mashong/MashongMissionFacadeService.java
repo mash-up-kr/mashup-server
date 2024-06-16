@@ -34,6 +34,7 @@ public class MashongMissionFacadeService {
         mashongMissionLog.incrementCurrentStatus(value);
     }
 
+    @Transactional(readOnly = true)
     public MissionStatus missionStatus(Long memberGenerationId, Long missionId) {
         MashongMission mashongMission = mashongMissionService.findMission(missionId);
         MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
@@ -42,6 +43,7 @@ public class MashongMissionFacadeService {
         return MissionStatus.of(mashongMission, mashongMissionLevel, mashongMissionLog);
     }
 
+    @Transactional(readOnly = true)
     public Map<MissionType, List<MissionStatus>> missionStatusList(Long memberGenerationId) {
         List<MashongMission> mashongMissionList = mashongMissionService.findAll();
         return mashongMissionList.stream().map(mission -> missionStatus(memberGenerationId, mission.getId()))
@@ -49,11 +51,12 @@ public class MashongMissionFacadeService {
     }
 
     private MashongMissionLevel getLatestMissionLevel(MemberGeneration memberGeneration, MashongMission mashongMission) {
-        Optional<MashongMissionLog> latestMissionLog = mashongMissionLogService.getLastAchievedMissionLog(mashongMission.getId(), memberGeneration.getId());
+        Optional<MashongMissionLog> latestMissionLog = mashongMissionLogService.getLastAchievedMissionLog(mashongMission, memberGeneration.getId());
         if (latestMissionLog.isEmpty()) {
-            return mashongMissionLevelService.getFirstMissionLevel(mashongMission.getId());
+            return mashongMission.getFirstMissionLevel();
         } else if (latestMissionLog.get().getIsCompensated()) {
-            return mashongMissionLevelService.findNextMissionLevel(latestMissionLog.get().getMissionLevelId());
+            MashongMissionLevel mashongMissionLevel = mashongMissionLevelService.findMissionLevel(latestMissionLog.get().getMissionLevelId());
+            return mashongMissionLevel.getMashongMission().getNextMissionLevel(mashongMissionLevel.getLevel());
         } else {
             return mashongMissionLevelService.findMissionLevel(latestMissionLog.get().getMissionLevelId());
         }

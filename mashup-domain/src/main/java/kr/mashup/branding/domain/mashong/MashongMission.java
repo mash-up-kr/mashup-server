@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Comparator;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,4 +23,18 @@ public class MashongMission {
     private MissionStrategyType missionStrategyType;
 
     private String name;
+
+    @OneToMany(mappedBy = "mashongMission")
+    private List<MashongMissionLevel> mashongMissionLevelList;
+
+    public MashongMissionLevel getFirstMissionLevel() {
+        return this.mashongMissionLevelList.stream().max(Comparator.comparing(MashongMissionLevel::getLevel)).orElseThrow(IllegalStateException::new);
+    }
+
+    public MashongMissionLevel getNextMissionLevel(Long level) {
+        return mashongMissionLevelList.stream()
+            .filter(missionLevel -> missionLevel.getLevel() == level + 1)
+            .findFirst()
+            .orElseGet(null);
+    }
 }

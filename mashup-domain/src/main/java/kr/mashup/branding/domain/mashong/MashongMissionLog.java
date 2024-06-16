@@ -19,6 +19,8 @@ public class MashongMissionLog {
 
     private Long missionLevelId;
 
+    private String baseDate;
+
     private Long level;
 
     private Long missionId;
@@ -33,7 +35,15 @@ public class MashongMissionLog {
         Long memberGenerationId,
         MashongMissionLevel mashongMissionLevel
     ) {
-        return new MashongMissionLog(memberGenerationId, mashongMissionLevel.getId(), mashongMissionLevel.getLevel(), mashongMissionLevel.getMissionId(), 0L, null, false);
+        return new MashongMissionLog(memberGenerationId, mashongMissionLevel.getId(), null, mashongMissionLevel.getLevel(), mashongMissionLevel.getMashongMission().getId(), 0L, null, false);
+    }
+
+    public static MashongMissionLog of(
+        Long memberGenerationId,
+        MashongMissionLevel mashongMissionLevel,
+        String baseDate
+    ) {
+        return new MashongMissionLog(memberGenerationId, mashongMissionLevel.getId(), baseDate, mashongMissionLevel.getLevel(), mashongMissionLevel.getMashongMission().getId(), 0L, null, false);
     }
 
     public void incrementCurrentStatus(
@@ -50,6 +60,7 @@ public class MashongMissionLog {
     private MashongMissionLog(
         Long memberGenerationId,
         Long missionLevelId,
+        String baseDate,
         Long level,
         Long missionId,
         Long currentStatus,
@@ -58,6 +69,7 @@ public class MashongMissionLog {
     ) {
         this.memberGenerationId = memberGenerationId;
         this.missionLevelId = missionLevelId;
+        this.baseDate = baseDate;
         this.level = level;
         this.missionId = missionId;
         this.currentStatus = currentStatus;
