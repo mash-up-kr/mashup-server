@@ -42,6 +42,11 @@ public class MashongMissionLog {
         this.currentStatus += value;
     }
 
+    public void compensated() {
+        this.achievedAt = LocalDateTime.now();
+        this.isCompensated = true;
+    }
+
     private MashongMissionLog(
         Long memberGenerationId,
         Long missionLevelId,

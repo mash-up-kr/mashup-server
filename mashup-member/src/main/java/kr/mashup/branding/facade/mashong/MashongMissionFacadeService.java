@@ -1,18 +1,21 @@
 package kr.mashup.branding.facade.mashong;
 
-import kr.mashup.branding.domain.mashong.MashongMission;
-import kr.mashup.branding.domain.mashong.MashongMissionLevel;
-import kr.mashup.branding.domain.mashong.MashongMissionLog;
-import kr.mashup.branding.domain.mashong.MissionStrategyType;
+import kr.mashup.branding.domain.mashong.*;
 import kr.mashup.branding.domain.member.MemberGeneration;
-import kr.mashup.branding.service.mashong.*;
+import kr.mashup.branding.service.mashong.MashongMissionLevelService;
+import kr.mashup.branding.service.mashong.MashongMissionLogService;
+import kr.mashup.branding.service.mashong.MashongMissionService;
 import kr.mashup.branding.service.mashong.dto.MissionStatus;
 import kr.mashup.branding.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +39,13 @@ public class MashongMissionFacadeService {
         MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
         MashongMissionLevel mashongMissionLevel = getLatestMissionLevel(memberGeneration, mashongMission);
         MashongMissionLog mashongMissionLog = mashongMissionLogService.getMissionLog(mashongMissionLevel, memberGenerationId);
-        return MissionStatus.of(mashongMissionLevel, mashongMissionLog);
+        return MissionStatus.of(mashongMission, mashongMissionLevel, mashongMissionLog);
+    }
+
+    public Map<MissionType, List<MissionStatus>> missionStatusList(Long memberGenerationId) {
+        List<MashongMission> mashongMissionList = mashongMissionService.findAll();
+        return mashongMissionList.stream().map(mission -> missionStatus(memberGenerationId, mission.getId()))
+            .collect(groupingBy(MissionStatus::getMissionType));
     }
 
     private MashongMissionLevel getLatestMissionLevel(MemberGeneration memberGeneration, MashongMission mashongMission) {

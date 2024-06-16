@@ -19,20 +19,25 @@ public class MashongController {
     private final MashongFacadeService mashongFacadeService;
 
     @ApiOperation(
-        value = "매숑이 출석",
-        notes =
-            "<h2>Error Code</h2>" +
-                "<p>" +
-                "MEMBER_NOT_FOUND</br>" +
-                "MEMBER_GENERATION_NOT_FOUND</br>" +
-                "</p>"
-
+        value = "매숑이 출석"
     )
     @PostMapping("/attend")
     public ApiResponse<Boolean> attend(
         @ApiIgnore MemberAuth memberAuth
     ) {
         Boolean result = mashongFacadeService.attend(memberAuth.getMemberId());
+        return ApiResponse.success(result);
+    }
+
+    @ApiOperation(
+        value = "매숑이 팝콘주기"
+    )
+    @PostMapping("/popcorn")
+    public ApiResponse<Boolean> popcorn(
+        @ApiIgnore MemberAuth memberAuth,
+        Long missionLevelId
+    ) {
+        Boolean result = mashongFacadeService.popcorn(memberAuth.getMemberGenerationId(), missionLevelId);
         return ApiResponse.success(result);
     }
 }

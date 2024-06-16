@@ -6,6 +6,8 @@ import kr.mashup.branding.repository.mashong.MashongMissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MashongMissionService {
@@ -13,6 +15,10 @@ public class MashongMissionService {
 
     public MashongMission findMission(Long missionId) {
         return mashongMissionRepository.findById(missionId).orElseThrow(RuntimeException::new);//todo runtimeexception
+    }
+
+    public List<MashongMission> findAll() {
+        return mashongMissionRepository.findAll();
     }
 
     public MashongMission findMissionByStrategyType(MissionStrategyType missionStrategyType) {
