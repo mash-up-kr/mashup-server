@@ -34,28 +34,29 @@ public class MashongFacadeService {
         MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
         MashongMissionLevel mashongMissionLevel = mashongMissionLevelService.findMissionLevel(missionLevelId);
         MashongPopcorn mashongPopcorn = mashongPopcornService.findByMemberGenerationId(memberGenerationId);
-        if (mashongMissionLevel.getMashongMission().getMissionType() == MissionType.INDIVIDUAL) {
-            MashongMissionLog mashongMissionLog = mashongMissionLogService.getMissionLog(mashongMissionLevel, memberGenerationId);
+        switch (mashongMissionLevel.getMashongMission().getMissionType()) {
+            case INDIVIDUAL:
+                MashongMissionLog mashongMissionLog = mashongMissionLogService.getMissionLog(mashongMissionLevel, memberGenerationId);
 
-            if (isCompensatable(mashongMissionLog, mashongMissionLevel)) {
-                mashongPopcornService.increasePopcorn(mashongPopcorn.getId(), mashongMissionLevel.getCompensationValue());
-                mashongMissionLog.compensated();
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            //todo: 팀별 보상방안 따라
-            MashongMissionTeamLog mashongMissionLog = mashongMissionTeamLogService.getMissionLog(mashongMissionLevel, memberGeneration.getPlatform());
+                if (isCompensatable(mashongMissionLog, mashongMissionLevel)) {
+                    mashongPopcornService.increasePopcorn(mashongPopcorn.getId(), mashongMissionLevel.getCompensationValue());
+                    mashongMissionLog.compensated();
+                    return true;
+                } else {
+                    return false;
+                }
+            case TEAM:
+                MashongMissionTeamLog mashongMissionTeamLog = mashongMissionTeamLogService.getMissionLog(mashongMissionLevel, memberGeneration.getPlatform());
 
-            if (isCompensatable(mashongMissionLog, mashongMissionLevel)) {
-                mashongPopcornService.increasePopcorn(mashongPopcorn.getId(), mashongMissionLevel.getCompensationValue());
-                mashongMissionLog.compensated();
-                return true;
-            } else {
-                return false;
-            }
+                if (isCompensatable(mashongMissionTeamLog, mashongMissionLevel)) {
+                    mashongPopcornService.increasePopcorn(mashongPopcorn.getId(), mashongMissionLevel.getCompensationValue());
+                    mashongMissionTeamLog.compensated();
+                    return true;
+                } else {
+                    return false;
+                }
         }
+        return false;
     }
 
     private Boolean isCompensatable(MashongMissionLog mashongMissionLog, MashongMissionLevel mashongMissionLevel) {
