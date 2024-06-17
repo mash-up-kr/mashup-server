@@ -24,7 +24,7 @@ public class MashongFacadeService {
         MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
         Boolean result = mashongAttendanceService.attend(memberGeneration);
         if (result) {
-            mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_ATTENDANCE_MISSION, memberGeneration, 1L);
+            mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_ATTENDANCE_INDIVIDUAL, memberGeneration, 1L);
         }
         return result;
     }
