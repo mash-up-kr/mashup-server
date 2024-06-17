@@ -12,7 +12,7 @@ public class MissionStatus {
     private Long goal;
     private String title;
     private Long compensation;
-    private Long currentStatus;
+    private Double currentStatus;
     private Boolean isCompensated;
 
     private MissionStatus(
@@ -23,7 +23,7 @@ public class MissionStatus {
         Long goal,
         String title,
         Long compensation,
-        Long currentStatus,
+        Double currentStatus,
         Boolean isCompensated
     ) {
         this.missionLevelId = missionLevelId;

@@ -1,7 +1,9 @@
 package kr.mashup.branding.facade.mashong;
 
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.mashong.*;
 import kr.mashup.branding.domain.member.MemberGeneration;
+import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.service.mashong.*;
 import kr.mashup.branding.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,8 @@ public class MashongFacadeService {
         MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
         Boolean result = mashongAttendanceService.attend(memberGeneration);
         if (result) {
-            mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_ATTENDANCE_INDIVIDUAL, memberGeneration, 1L);
+            mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_ATTENDANCE_INDIVIDUAL, memberGeneration, 1.0);
+            mashongMissionFacadeService.setToValue(MissionStrategyType.MASHONG_ATTENDANCE_TEAN, memberGeneration, getPlatformAttendStatus(memberGeneration.getPlatform(), memberGeneration.getGeneration()));
         }
         return result;
     }
@@ -57,6 +60,12 @@ public class MashongFacadeService {
                 }
         }
         return false;
+    }
+
+    private Double getPlatformAttendStatus(Platform platform, Generation generation) {
+        int totalMemberCount = memberService.getAllByPlatformAndGeneration(platform, generation).size();
+        Long distinctAttendMemberCount = mashongAttendanceService.distinctPlatformMemberAttendanceCount(platform);
+        return distinctAttendMemberCount.doubleValue() / totalMemberCount;
     }
 
     private Boolean isCompensatable(MashongMissionLog mashongMissionLog, MashongMissionLevel mashongMissionLevel) {

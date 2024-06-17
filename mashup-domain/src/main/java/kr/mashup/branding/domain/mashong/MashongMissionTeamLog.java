@@ -4,6 +4,7 @@ import kr.mashup.branding.domain.member.Platform;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,7 +28,8 @@ public class MashongMissionTeamLog {
 
     private Long missionId;
 
-    private Long currentStatus;
+    @Setter
+    private Double currentStatus;
 
     private LocalDateTime achievedAt;
 
@@ -37,7 +39,7 @@ public class MashongMissionTeamLog {
         Platform platform,
         MashongMissionLevel mashongMissionLevel
     ) {
-        return new MashongMissionTeamLog(platform, mashongMissionLevel.getId(), null, mashongMissionLevel.getLevel(), mashongMissionLevel.getMashongMission().getId(), 0L, null, false);
+        return new MashongMissionTeamLog(platform, mashongMissionLevel.getId(), null, mashongMissionLevel.getLevel(), mashongMissionLevel.getMashongMission().getId(), 0.0, null, false);
     }
 
     public static MashongMissionTeamLog of(
@@ -45,11 +47,11 @@ public class MashongMissionTeamLog {
         MashongMissionLevel mashongMissionLevel,
         String baseDate
     ) {
-        return new MashongMissionTeamLog(platform, mashongMissionLevel.getId(), baseDate, mashongMissionLevel.getLevel(), mashongMissionLevel.getMashongMission().getId(), 0L, null, false);
+        return new MashongMissionTeamLog(platform, mashongMissionLevel.getId(), baseDate, mashongMissionLevel.getLevel(), mashongMissionLevel.getMashongMission().getId(), 0.0, null, false);
     }
 
     public void incrementCurrentStatus(
-        Long value
+        Double value
     ) {
         this.currentStatus += value;
     }
@@ -65,7 +67,7 @@ public class MashongMissionTeamLog {
         String baseDate,
         Long level,
         Long missionId,
-        Long currentStatus,
+        Double currentStatus,
         LocalDateTime achievedAt,
         Boolean isCompensated
     ) {

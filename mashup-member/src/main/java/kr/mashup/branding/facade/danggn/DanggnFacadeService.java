@@ -54,8 +54,8 @@ public class DanggnFacadeService {
         danggnShakeLogService.createLog(memberGeneration, score);
 
         //todo: application event publisher 로 변경
-        mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_DANGGN_SHAKE_INDIVIDUAL, memberGeneration, score);
-        mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_DANGGN_SHAKE_TEAM, memberGeneration, score);
+        mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_DANGGN_SHAKE_INDIVIDUAL, memberGeneration, score.doubleValue());
+        mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_DANGGN_SHAKE_TEAM, memberGeneration, score.doubleValue());
         return DanggnScoreResponse.of(danggnScore.getTotalShakeScore());
     }
 

@@ -28,15 +28,30 @@ public class MashongMissionFacadeService {
 
 
     @Transactional
-    public void apply(MissionStrategyType missionStrategyType, MemberGeneration memberGeneration, Long value) {
+    public void apply(MissionStrategyType missionStrategyType, MemberGeneration memberGeneration, Double value) {
         MashongMission mission = mashongMissionService.findMissionByStrategyType(missionStrategyType);
-        MashongMissionLevel latestMissionLevel = getLatestMissionLevel(memberGeneration, mission);
         if (mission.getMissionType() == MissionType.INDIVIDUAL) {
+            MashongMissionLevel latestMissionLevel = getLatestMissionLevel(memberGeneration, mission);
             MashongMissionLog mashongMissionLog = mashongMissionLogService.getMissionLog(latestMissionLevel, memberGeneration.getId());
             mashongMissionLog.incrementCurrentStatus(value);
         } else {
+            MashongMissionLevel latestMissionLevel = getLatestMissionLevel(memberGeneration.getPlatform(), mission);
             MashongMissionTeamLog mashongMissionLog = mashongMissionTeamLogService.getMissionLog(latestMissionLevel, memberGeneration.getPlatform());
             mashongMissionLog.incrementCurrentStatus(value);
+        }
+    }
+
+    @Transactional
+    public void setToValue(MissionStrategyType missionStrategyType, MemberGeneration memberGeneration, Double value) {
+        MashongMission mission = mashongMissionService.findMissionByStrategyType(missionStrategyType);
+        if (mission.getMissionType() == MissionType.INDIVIDUAL) {
+            MashongMissionLevel latestMissionLevel = getLatestMissionLevel(memberGeneration, mission);
+            MashongMissionLog mashongMissionLog = mashongMissionLogService.getMissionLog(latestMissionLevel, memberGeneration.getId());
+            mashongMissionLog.setCurrentStatus(value);
+        } else {
+            MashongMissionLevel latestMissionLevel = getLatestMissionLevel(memberGeneration.getPlatform(), mission);
+            MashongMissionTeamLog mashongMissionLog = mashongMissionTeamLogService.getMissionLog(latestMissionLevel, memberGeneration.getPlatform());
+            mashongMissionLog.setCurrentStatus(value);
         }
     }
 

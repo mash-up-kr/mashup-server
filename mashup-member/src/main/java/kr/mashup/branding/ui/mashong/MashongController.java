@@ -25,7 +25,7 @@ public class MashongController {
     public ApiResponse<Boolean> attend(
         @ApiIgnore MemberAuth memberAuth
     ) {
-        Boolean result = mashongFacadeService.attend(memberAuth.getMemberId());
+        Boolean result = mashongFacadeService.attend(memberAuth.getMemberGenerationId());
         return ApiResponse.success(result);
     }
 
