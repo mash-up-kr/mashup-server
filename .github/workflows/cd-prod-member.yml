@@ -1,4 +1,4 @@
-name: MashUp Admin Server Dev CD
+name: Mash-Up Member Real CD
 
 on:
   workflow_dispatch:
@@ -35,5 +35,5 @@ jobs:
           envs: TAG
           script: |
             aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 321148231533.dkr.ecr.ap-northeast-2.amazonaws.com
-            cd /home/ec2-user/mashup-server/docker/deploy/admin/prod
-            sh ./deploy-admin.sh $TAG
+            cd /home/ec2-user/mashup-server/docker/deploy/member/prod
+            sh ./deploy-member.sh $TAG

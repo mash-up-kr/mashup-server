@@ -1,4 +1,4 @@
-name: MashUp Recruit Server Dev CD
+name: Mash-Up Recruit Dev CD
 
 on:
   workflow_dispatch:

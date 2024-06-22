@@ -1,4 +1,4 @@
-name: MashUp Admin Server Dev CD
+name: Mash-Up Admin Dev CD
 
 on:
   workflow_dispatch:
