@@ -6,6 +6,7 @@ import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,11 +34,21 @@ public class MashongController {
         value = "매숑이 팝콘주기"
     )
     @PostMapping("/popcorn")
-    public ApiResponse<Boolean> popcorn(
+    public ApiResponse<Boolean> compensatePopcorn(
         @ApiIgnore MemberAuth memberAuth,
         Long missionLevelId
     ) {
-        Boolean result = mashongFacadeService.popcorn(memberAuth.getMemberGenerationId(), missionLevelId);
+        Boolean result = mashongFacadeService.compensatePopcorn(memberAuth.getMemberGenerationId(), missionLevelId);
         return ApiResponse.success(result);
+    }
+
+    @ApiOperation(
+        value = "매숑이 팝콘 조회"
+    )
+    @GetMapping("/popcorn")
+    public ApiResponse<Long> popcorn(
+        @ApiIgnore MemberAuth memberAuth
+    ) {
+        return ApiResponse.success(mashongFacadeService.getPopcornCount(memberAuth.getMemberGenerationId()));
     }
 }

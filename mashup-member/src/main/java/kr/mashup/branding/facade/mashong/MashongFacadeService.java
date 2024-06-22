@@ -28,12 +28,13 @@ public class MashongFacadeService {
         if (result) {
             mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_ATTENDANCE_INDIVIDUAL, memberGeneration, 1.0);
             mashongMissionFacadeService.setToValue(MissionStrategyType.MASHONG_ATTENDANCE_TEAN, memberGeneration, getPlatformAttendStatus(memberGeneration.getPlatform(), memberGeneration.getGeneration()));
+            mashongPopcornService.givePopcorn(memberGenerationId, 1L);
         }
         return result;
     }
 
     @Transactional
-    public Boolean popcorn(Long memberGenerationId, Long missionLevelId) {
+    public Boolean compensatePopcorn(Long memberGenerationId, Long missionLevelId) {
         MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
         MashongMissionLevel mashongMissionLevel = mashongMissionLevelService.findMissionLevel(missionLevelId);
         MashongPopcorn mashongPopcorn = mashongPopcornService.findByMemberGenerationId(memberGenerationId);
@@ -60,6 +61,10 @@ public class MashongFacadeService {
                 }
         }
         return false;
+    }
+
+    public Long getPopcornCount(Long memberGenerationId) {
+        return mashongPopcornService.findByMemberGenerationId(memberGenerationId).getPopcorn();
     }
 
     private Double getPlatformAttendStatus(Platform platform, Generation generation) {

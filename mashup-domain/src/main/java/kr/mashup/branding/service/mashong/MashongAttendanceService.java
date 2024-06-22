@@ -17,6 +17,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MashongAttendanceService {
+    private final int MAX_ATTEND = 4;
+
     private final MashongAttendanceRepository mashongAttendanceRepository;
 
     public Boolean attend(MemberGeneration memberGeneration) {
@@ -37,10 +39,11 @@ public class MashongAttendanceService {
         LocalDateTime end = start.plusDays(1L);
         List<MashongAttendance> mashongAttendanceList = mashongAttendanceRepository.findAllByMemberGeneration_PlatformAndAttendanceAtBetween(platform, start, end);
         return mashongAttendanceList.stream().map(mashongAttendance -> mashongAttendance.getMemberGeneration().getId()).distinct().count();
-     }
+    }
 
     private Boolean isNextAttendEnable(List<MashongAttendance> mashongAttendanceList, LocalDateTime now) {
         Optional<MashongAttendance> latestAttendance = mashongAttendanceList.stream().max(Comparator.comparing(MashongAttendance::getAttendanceAt));
-        return latestAttendance.map(mashongAttendance -> Duration.between(mashongAttendance.getAttendanceAt(), now).toMinutes() > 30).orElse(true);
+        return mashongAttendanceList.size() < MAX_ATTEND &&
+            latestAttendance.map(mashongAttendance -> Duration.between(mashongAttendance.getAttendanceAt(), now).toMinutes() > 30).orElse(true);
     }
 }
