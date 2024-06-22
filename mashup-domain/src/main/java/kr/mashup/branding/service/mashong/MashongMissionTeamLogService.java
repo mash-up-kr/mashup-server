@@ -17,25 +17,25 @@ import java.util.Optional;
 public class MashongMissionTeamLogService {
     private final MashongMissionTeamLogRepository mashongMissionTeamLogRepository;
 
-    public Optional<MashongMissionTeamLog> getLastAchievedMissionLog(MashongMission mashongMission, Platform platform) {
+    public Optional<MashongMissionTeamLog> getLastAchievedMissionLog(MashongMission mashongMission, Platform platform, Long generationId) {
         if (mashongMission.getMissionRepeatType() == MissionRepeatType.DAILY) {
             String baseDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            List<MashongMissionTeamLog> mashongMissionLogList = mashongMissionTeamLogRepository.findAllByPlatformAndMissionIdAndBaseDate(platform, mashongMission.getId(), baseDate);
+            List<MashongMissionTeamLog> mashongMissionLogList = mashongMissionTeamLogRepository.findAllByPlatformAndGenerationIdAndMissionIdAndBaseDate(platform, generationId, mashongMission.getId(), baseDate);
             return mashongMissionLogList.stream().max(Comparator.comparing(MashongMissionTeamLog::getLevel));
         } else {
-            List<MashongMissionTeamLog> mashongMissionLogList = mashongMissionTeamLogRepository.findAllByPlatformAndMissionId(platform, mashongMission.getId());
+            List<MashongMissionTeamLog> mashongMissionLogList = mashongMissionTeamLogRepository.findAllByPlatformAndGenerationIdAndMissionId(platform, generationId, mashongMission.getId());
             return mashongMissionLogList.stream().max(Comparator.comparing(MashongMissionTeamLog::getLevel));
         }
     }
 
-    public MashongMissionTeamLog getMissionLog(MashongMissionLevel mashongMissionLevel, Platform platform) {
+    public MashongMissionTeamLog getMissionLog(MashongMissionLevel mashongMissionLevel, Platform platform, Long generationId) {
         if (mashongMissionLevel.getMashongMission().getMissionRepeatType() == MissionRepeatType.DAILY) {
             String baseDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            Optional<MashongMissionTeamLog> mashongMissionLog = mashongMissionTeamLogRepository.findByMissionLevelIdAndPlatformAndBaseDate(mashongMissionLevel.getId(), platform, baseDate);
-            return mashongMissionLog.orElseGet(() -> mashongMissionTeamLogRepository.save(MashongMissionTeamLog.of(platform, mashongMissionLevel, baseDate)));
+            Optional<MashongMissionTeamLog> mashongMissionLog = mashongMissionTeamLogRepository.findByMissionLevelIdAndPlatformAndGenerationIdAndBaseDate(mashongMissionLevel.getId(), platform, generationId, baseDate);
+            return mashongMissionLog.orElseGet(() -> mashongMissionTeamLogRepository.save(MashongMissionTeamLog.of(platform, generationId, mashongMissionLevel, baseDate)));
         } else {
-            Optional<MashongMissionTeamLog> mashongMissionLog = mashongMissionTeamLogRepository.findByMissionLevelIdAndPlatform(mashongMissionLevel.getId(), platform);
-            return mashongMissionLog.orElseGet(() -> mashongMissionTeamLogRepository.save(MashongMissionTeamLog.of(platform, mashongMissionLevel)));
+            Optional<MashongMissionTeamLog> mashongMissionLog = mashongMissionTeamLogRepository.findByMissionLevelIdAndPlatformAndGenerationId(mashongMissionLevel.getId(), platform, generationId);
+            return mashongMissionLog.orElseGet(() -> mashongMissionTeamLogRepository.save(MashongMissionTeamLog.of(platform, generationId, mashongMissionLevel)));
         }
     }
 }

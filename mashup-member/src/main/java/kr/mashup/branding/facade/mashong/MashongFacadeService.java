@@ -50,7 +50,7 @@ public class MashongFacadeService {
                     return false;
                 }
             case TEAM:
-                MashongMissionTeamLog mashongMissionTeamLog = mashongMissionTeamLogService.getMissionLog(mashongMissionLevel, memberGeneration.getPlatform());
+                MashongMissionTeamLog mashongMissionTeamLog = mashongMissionTeamLogService.getMissionLog(mashongMissionLevel, memberGeneration.getPlatform(), memberGeneration.getGeneration().getId());
 
                 if (isCompensatable(mashongMissionTeamLog, mashongMissionLevel)) {
                     mashongPopcornService.increasePopcorn(mashongPopcorn.getId(), mashongMissionLevel.getCompensationValue());

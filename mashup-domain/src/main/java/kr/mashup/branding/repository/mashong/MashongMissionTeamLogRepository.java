@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MashongMissionTeamLogRepository extends JpaRepository<MashongMissionTeamLog, Long> {
-    List<MashongMissionTeamLog> findAllByPlatformAndMissionId(Platform platform, Long missionId);
+    List<MashongMissionTeamLog> findAllByPlatformAndGenerationIdAndMissionId(Platform platform, Long generationId, Long missionId);
 
-    List<MashongMissionTeamLog> findAllByPlatformAndMissionIdAndBaseDate(Platform platform, Long missionId, String baseDate);
+    List<MashongMissionTeamLog> findAllByPlatformAndGenerationIdAndMissionIdAndBaseDate(Platform platform, Long generationId, Long missionId, String baseDate);
 
-    Optional<MashongMissionTeamLog> findByMissionLevelIdAndPlatform(Long missionLevelId, Platform platform);
+    Optional<MashongMissionTeamLog> findByMissionLevelIdAndPlatformAndGenerationId(Long missionLevelId, Platform platform, Long generationId);
 
-    Optional<MashongMissionTeamLog> findByMissionLevelIdAndPlatformAndBaseDate(Long missionLevelId, Platform platform, String baseDate);
+    Optional<MashongMissionTeamLog> findByMissionLevelIdAndPlatformAndGenerationIdAndBaseDate(Long missionLevelId, Platform platform, Long generationId, String baseDate);
 }

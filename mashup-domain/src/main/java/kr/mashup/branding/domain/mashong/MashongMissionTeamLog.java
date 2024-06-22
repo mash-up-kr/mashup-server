@@ -20,6 +20,8 @@ public class MashongMissionTeamLog {
     @Enumerated(EnumType.STRING)
     private Platform platform;
 
+    private Long generationId;
+
     private Long missionLevelId;
 
     private String baseDate;
@@ -37,17 +39,19 @@ public class MashongMissionTeamLog {
 
     public static MashongMissionTeamLog of(
         Platform platform,
+        Long generationId,
         MashongMissionLevel mashongMissionLevel
     ) {
-        return new MashongMissionTeamLog(platform, mashongMissionLevel.getId(), null, mashongMissionLevel.getLevel(), mashongMissionLevel.getMashongMission().getId(), 0.0, null, false);
+        return new MashongMissionTeamLog(platform, generationId, mashongMissionLevel.getId(), null, mashongMissionLevel.getLevel(), mashongMissionLevel.getMashongMission().getId(), 0.0, null, false);
     }
 
     public static MashongMissionTeamLog of(
         Platform platform,
+        Long generationId,
         MashongMissionLevel mashongMissionLevel,
         String baseDate
     ) {
-        return new MashongMissionTeamLog(platform, mashongMissionLevel.getId(), baseDate, mashongMissionLevel.getLevel(), mashongMissionLevel.getMashongMission().getId(), 0.0, null, false);
+        return new MashongMissionTeamLog(platform, generationId, mashongMissionLevel.getId(), baseDate, mashongMissionLevel.getLevel(), mashongMissionLevel.getMashongMission().getId(), 0.0, null, false);
     }
 
     public void incrementCurrentStatus(
@@ -63,6 +67,7 @@ public class MashongMissionTeamLog {
 
     private MashongMissionTeamLog(
         Platform platform,
+        Long generationId,
         Long missionLevelId,
         String baseDate,
         Long level,
@@ -72,6 +77,7 @@ public class MashongMissionTeamLog {
         Boolean isCompensated
     ) {
         this.platform = platform;
+        this.generationId = generationId;
         this.missionLevelId = missionLevelId;
         this.baseDate = baseDate;
         this.level = level;
