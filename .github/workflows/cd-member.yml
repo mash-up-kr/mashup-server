@@ -1,0 +1,39 @@
+name: MashUp Member Server Dev CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '개발환경에 배포할 서비스 버전을 입력합니다.'
+        required: true
+
+jobs:
+  trigger:
+    name: 개발 환경 ${{ inputs.tag }} 배포한다
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Custom Deployment Task
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          echo "Image Name: $IMAGE_NAME"
+          echo "Tag: $TAG"
+
+      - name: Excuting remote ssh commands
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          TAG: ${{ inputs.tag }}
+        with:
+          host: ${{ secrets.REMOTE_IP }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.REMOTE_PRIVATE_KEY }}
+          envs: TAG
+          script: |
+            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 321148231533.dkr.ecr.ap-northeast-2.amazonaws.com
+            cd /home/ec2-user/mashup-server/docker/deploy/member/prod
+            sh ./deploy-member.sh $TAG
