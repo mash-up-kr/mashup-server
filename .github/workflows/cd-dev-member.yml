@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: '개발환경에 배포할 서비스 버전을 입력합니다.'
+        description: '멤버 개발환경에 배포할 서비스 버전을 입력합니다.'
         required: true
 
 jobs:
