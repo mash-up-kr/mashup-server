@@ -9,13 +9,16 @@ import kr.mashup.branding.domain.attendance.Attendance;
 import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.member.Member;
 
-public interface AttendanceRepository extends JpaRepository<Attendance, Long>, CustomAttendanceRepository{
+public interface AttendanceRepository extends JpaRepository<Attendance, Long>, CustomAttendanceRepository {
     boolean existsAttendanceByMemberAndEvent(Member member, Event event);
+
     Optional<Attendance> findByMemberAndEvent(Member member, Event event);
+
     List<Attendance> findAllByMember(Member member);
 
     void deleteByMember(Member member);
 
+    boolean existsByEvent(Event event);
 }
 /**
  * Attendance 연관관계

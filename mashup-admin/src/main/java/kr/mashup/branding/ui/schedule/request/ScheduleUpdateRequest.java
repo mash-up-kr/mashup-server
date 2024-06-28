@@ -30,9 +30,9 @@ public class ScheduleUpdateRequest {
 
     private Double longitude;
 
-    private String address;
+    private String roadAddress;
 
-    private String placeName;
+    private String detailAddress;
 
     private ScheduleType scheduleType = ScheduleType.ALL;
 

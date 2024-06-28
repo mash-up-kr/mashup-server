@@ -11,16 +11,16 @@ import lombok.NoArgsConstructor;
 public class Location {
     private Double latitude;
     private Double longitude;
-    private String address;
-    private String placeName; // 장소명
+    private String roadAddress;
+    private String detailAddress; // 장소명
 
     private static final double EARTH_RADIUS = 6371000; // 지구 반지름 (미터)
 
-    public Location(Double latitude, Double longitude, String address, String placeName) {
+    public Location(Double latitude, Double longitude, String roadAddress, String detailAddress) {
         this.latitude = latitude;
         this.longitude = longitude;
-        this.address = address;
-        this.placeName = placeName;
+        this.roadAddress = roadAddress;
+        this.detailAddress = detailAddress;
     }
 
     /**

@@ -61,7 +61,7 @@ public class ScheduleFacadeService {
         final DateRange dateRange
                 = DateRange.of(request.getStartedAt(), request.getEndedAt());
         final ScheduleCreateDto createDto =
-                ScheduleCreateDto.of(request.getName(), dateRange, request.getLatitude(), request.getLongitude(), request.getAddress(), request.getPlaceName(), request.getScheduleType());
+                ScheduleCreateDto.of(request.getName(), dateRange, request.getLatitude(), request.getLongitude(), request.getRoadAddress(), request.getDetailAddress(), request.getScheduleType());
         final Schedule schedule
                 = scheduleService.create(generation, createDto);
 
@@ -79,7 +79,7 @@ public class ScheduleFacadeService {
         scheduleService.publishSchedule(schedule);
 
         pushNotiEventPublisher.publishPushNotiSendEvent(
-            new SeminarUpdatedVo(memberService.getPushNotiTargetableMembersBySchedule(schedule), schedule.getScheduleType())
+                new SeminarUpdatedVo(memberService.getPushNotiTargetableMembersBySchedule(schedule), schedule.getScheduleType())
         );
     }
 
@@ -94,7 +94,6 @@ public class ScheduleFacadeService {
     public ScheduleResponse updateSchedule(
             final Long scheduleId,
             final ScheduleUpdateRequest request) {
-
         Schedule schedule
                 = scheduleService.getByIdOrThrow(scheduleId);
 
@@ -103,7 +102,8 @@ public class ScheduleFacadeService {
 
         final DateRange dateRange = DateRange.of(request.getStartedAt(), request.getEndedAt());
         final ScheduleCreateDto scheduleCreateDto =
-                ScheduleCreateDto.of(request.getName(), dateRange, request.getLatitude(), request.getLongitude(), request.getAddress(), request.getPlaceName(), request.getScheduleType());
+                ScheduleCreateDto.of(request.getName(), dateRange, request.getLatitude(), request.getLongitude(),
+                        request.getRoadAddress(), request.getDetailAddress(), request.getScheduleType());
 
         schedule = scheduleService.updateSchedule(schedule, generation, scheduleCreateDto);
 
@@ -135,7 +135,7 @@ public class ScheduleFacadeService {
 
         final DateRange lateTime = DateRange.of(request.getAttendanceCheckEndedAt(), request.getLatenessCheckEndedAt());
 
-        scheduleService.updateAttendanceTime(event, attendantTime,lateTime);
+        scheduleService.updateAttendanceTime(event, attendantTime, lateTime);
 
         final String attendanceCode = event.getAttendanceCode().getCode();
         final String qrCodeUrl = QrGenerator.generate(attendanceCode);
