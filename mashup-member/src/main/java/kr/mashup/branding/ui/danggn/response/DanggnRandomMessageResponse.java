@@ -1,6 +1,6 @@
 package kr.mashup.branding.ui.danggn.response;
 
-import kr.mashup.branding.domain.danggn.DanggnTodayMessage;
+import kr.mashup.branding.domain.randommessage.RandomMessage;
 import lombok.Getter;
 import lombok.Value;
 
@@ -9,7 +9,7 @@ import lombok.Value;
 public class DanggnRandomMessageResponse {
     String todayMessage;
 
-    public static DanggnRandomMessageResponse from(DanggnTodayMessage danggnTodayMessage) {
-        return new DanggnRandomMessageResponse(danggnTodayMessage.getMessage());
+    public static DanggnRandomMessageResponse from(RandomMessage randomMessage) {
+        return new DanggnRandomMessageResponse(randomMessage.getMessage());
     }
 }

@@ -62,7 +62,7 @@ public class BirthdayFacadeService {
     /**
      * 생일자인 경우, 생일 리마인드 푸시
      */
-    @Scheduled(cron = "0 0 24 * * ?")
+    @Scheduled(cron = "0 0 12 * * ?")   // 매일 오후 12시
     @Transactional(readOnly = true)
     public void sendBirthdayPushNotiForRecipient() {
         generationService.getAllActiveInAt(LocalDate.now())
@@ -74,7 +74,7 @@ public class BirthdayFacadeService {
     /**
      * 생일자가 아닌 경우, 생일 축하 독려 푸시
      */
-    @Scheduled(cron = "0 0 12 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")    // 매일 오전 12시
     @Transactional(readOnly = true)
     public void sendBirthdayPushNotiForSender() {
         generationService.getAllActiveInAt(LocalDate.now())

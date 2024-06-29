@@ -8,6 +8,7 @@ import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.pushnoti.vo.DanggnRewardUpdatedVo;
+import kr.mashup.branding.domain.randommessage.RandomMessage;
 import kr.mashup.branding.facade.mashong.MashongMissionFacadeService;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.danggn.*;
@@ -90,9 +91,9 @@ public class DanggnFacadeService {
     }
 
     public DanggnRandomMessageResponse getRandomTodayMessage() {
-        List<DanggnTodayMessage> danggnTodayMessageList = danggnTodayMessageService.findAll();
-        Collections.shuffle(danggnTodayMessageList);
-        return DanggnRandomMessageResponse.from(danggnTodayMessageList.get(0));
+        List<RandomMessage> randomMessageList = danggnTodayMessageService.findAll();
+        Collections.shuffle(randomMessageList);
+        return DanggnRandomMessageResponse.from(randomMessageList.get(0));
     }
 
     @Transactional
