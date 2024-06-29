@@ -26,7 +26,6 @@
         <maxFlushTimeMillis>30000</maxFlushTimeMillis>
         <maxBlockTimeMillis>5000</maxBlockTimeMillis>
         <retentionTimeDays>0</retentionTimeDays>
-        <createLogGroup>false</createLogGroup>
     </appender>
 
     <appender name="cloud_watch_aws_log_real" class="ca.pjer.logback.AwsLogsAppender">
@@ -40,7 +39,6 @@
         <maxFlushTimeMillis>30000</maxFlushTimeMillis>
         <maxBlockTimeMillis>5000</maxBlockTimeMillis>
         <retentionTimeDays>0</retentionTimeDays>
-        <createLogGroup>false</createLogGroup>
     </appender>
 
     <springProfile name="local">
