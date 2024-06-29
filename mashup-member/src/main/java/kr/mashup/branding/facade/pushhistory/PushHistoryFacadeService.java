@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static kr.mashup.branding.ui.pushhistory.response.PushHistoriesResponse.*;
 
@@ -42,7 +43,7 @@ public class PushHistoryFacadeService {
                 pushHistories.stream()
                         .filter(isRead(lastPushCheckTime).negate())
                         .map(it -> PushHistoryResponse.of(it.getTitle(), it.getBody(), it.getCreatedAt()))
-                        .toList();
+                        .collect(Collectors.toList());
 
         return PushHistoriesResponse.of(readPush, unreadPush);
     }
