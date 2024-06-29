@@ -24,8 +24,19 @@ public class PushHistoryFacadeService {
     private final MemberService memberService;
     private final PushHistoryService pushHistoryService;
 
+    @Transactional(readOnly = true)
+    public PushHistoriesResponse getPushHistories(final Long memberId, final Pageable pageable){
+
+        final Member member = memberService.findMemberById(memberId);
+        final LocalDateTime lastPushCheckTime = member.getLastPushCheckTime();
+
+        final List<PushHistory> pushHistories = pushHistoryService.getAllByMember(member, pageable);
+
+        return getPushHistoriesResponse(pushHistories, lastPushCheckTime);
+    }
+
     @Transactional
-    public PushHistoriesResponse getPushHistoryAndUpdateCheckTime(final Long memberId, final Pageable pageable){
+    public PushHistoriesResponse getPushHistoriesAndUpdateCheckTime(final Long memberId, final Pageable pageable){
 
         final Member member = memberService.findMemberById(memberId);
         final LocalDateTime lastPushCheckTime = member.getLastPushCheckTime();
@@ -34,6 +45,12 @@ public class PushHistoryFacadeService {
 
         final List<PushHistory> pushHistories = pushHistoryService.getAllByMember(member, pageable);
 
+        return getPushHistoriesResponse(pushHistories, lastPushCheckTime);
+    }
+
+
+
+    private PushHistoriesResponse getPushHistoriesResponse(List<PushHistory> pushHistories, LocalDateTime lastPushCheckTime) {
         final List<PushHistoryResponse> readPush =
                 pushHistories.stream()
                         .filter(isRead(lastPushCheckTime))
