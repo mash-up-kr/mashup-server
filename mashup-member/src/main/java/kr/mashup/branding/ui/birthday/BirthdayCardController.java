@@ -7,6 +7,7 @@ import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.birthday.request.BirthdayCardRequest;
 import kr.mashup.branding.ui.birthday.response.BirthdayCardDefaultImagesResponse;
 import kr.mashup.branding.ui.birthday.response.BirthdayCardsResponse;
+import kr.mashup.branding.ui.danggn.response.DanggnRandomMessageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -48,5 +49,11 @@ public class BirthdayCardController {
             = birthdayCardFacadeService.getMy(memberAuth.getMemberId());
 
         return ApiResponse.success(response);
+    }
+
+    @ApiOperation(value = "랜덤 문구 메시지")
+    @GetMapping("/random-message")
+    public ApiResponse<DanggnRandomMessageResponse> getRandomMessage() {
+        return ApiResponse.success(birthdayCardFacadeService.getRandomMessage());
     }
 }
