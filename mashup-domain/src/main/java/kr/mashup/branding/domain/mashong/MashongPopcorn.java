@@ -33,4 +33,13 @@ public class MashongPopcorn {
         this.memberGenerationId = memberGenerationId;
         this.popcorn = popcorn;
     }
+
+    public boolean decrease(Long popcornCount) {
+        if (popcorn - popcornCount < 0) {
+            return false;
+        }
+
+        popcorn -= popcornCount;
+        return true;
+    }
 }

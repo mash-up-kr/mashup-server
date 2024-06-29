@@ -118,6 +118,8 @@ public enum ResultCode {
     MASHONG_MISSION_NOT_FOUND("매숑 미션이 존재하지 않습니다."),
 
     MASHONG_MISSION_LEVEL_NOT_FOUND("매숑 미션 레벨이 존재하지 않습니다."),
+    PLATFORM_MASHONG_NOT_FOUND("해당 기수에 플랫폼 매숑이가 존재하지 않습니다."),
+    MASHONG_POPCORN_INSUFFICIENT("보유한 팝콘의 개수가 요청한 개수보다 적습니다."),
 
     // JsonUtil
     JSON_DESERIALIZE_UNABLE("객체를 json string 을 deserialize 할 수 없습니다"),

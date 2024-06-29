@@ -4,8 +4,10 @@ import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.mashong.*;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
+import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.service.mashong.*;
 import kr.mashup.branding.service.member.MemberService;
+import kr.mashup.branding.ui.mashong.response.MashongFeedResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,12 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class MashongFacadeService {
+
     private final MashongAttendanceService mashongAttendanceService;
     private final MashongMissionFacadeService mashongMissionFacadeService;
     private final MashongPopcornService mashongPopcornService;
     private final MashongMissionLogService mashongMissionLogService;
     private final MashongMissionTeamLogService mashongMissionTeamLogService;
     private final MashongMissionLevelService mashongMissionLevelService;
+    private final PlatformMashongService platformMashongService;
     private final MemberService memberService;
 
     @Transactional
@@ -79,5 +83,23 @@ public class MashongFacadeService {
 
     private Boolean isCompensatable(MashongMissionTeamLog mashongMissionLog, MashongMissionLevel mashongMissionLevel) {
         return !mashongMissionLog.getIsCompensated() && (mashongMissionLog.getCurrentStatus() >= mashongMissionLevel.getMissionGoalValue());
+    }
+
+    @Transactional
+    public MashongFeedResponse feedPopcorn(Long memberGenerationId, Long popcornCount) {
+        final MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
+        final Platform platform = memberService.getLatestPlatform(memberGeneration.getMember());
+        final Generation generation = memberGeneration.getGeneration();
+
+        final PlatformMashong platformMashong = platformMashongService.findByPlatformAndGeneration(platform, generation);
+        if (platformMashong.isMaxLevel()) {
+            final MashongPopcorn mashongPopcorn = mashongPopcornService.findByMemberGenerationId(memberGenerationId);
+            return MashongFeedResponse.of(false, platformMashong, mashongPopcorn);
+        }
+
+        platformMashongService.feedPopcorn(platformMashong, popcornCount);
+        final MashongPopcorn mashongPopcorn = mashongPopcornService.decreasePopcorn(memberGenerationId, popcornCount);
+
+        return MashongFeedResponse.of(true, platformMashong, mashongPopcorn);
     }
 }
