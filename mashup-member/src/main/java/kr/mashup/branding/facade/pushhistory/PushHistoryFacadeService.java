@@ -54,12 +54,14 @@ public class PushHistoryFacadeService {
         final List<PushHistoryResponse> readPush =
                 pushHistories.stream()
                         .filter(isRead(lastPushCheckTime))
-                        .map(it -> PushHistoryResponse.of(it.getPushType().name(),it.getTitle(), it.getBody(), it.getCreatedAt()))
+                        .map(it -> PushHistoryResponse.of(
+                                it.getPushType().name(),it.getTitle(), it.getBody(), it.getLinkType(),it.getCreatedAt()))
                         .collect(Collectors.toList());
         final List<PushHistoryResponse> unreadPush =
                 pushHistories.stream()
                         .filter(isRead(lastPushCheckTime).negate())
-                        .map(it -> PushHistoryResponse.of(it.getPushType().name(), it.getTitle(), it.getBody(), it.getCreatedAt()))
+                        .map(it -> PushHistoryResponse.of(
+                                it.getPushType().name(), it.getTitle(), it.getBody(), it.getLinkType(), it.getCreatedAt()))
                         .collect(Collectors.toList());
 
         return PushHistoriesResponse.of(readPush, unreadPush);

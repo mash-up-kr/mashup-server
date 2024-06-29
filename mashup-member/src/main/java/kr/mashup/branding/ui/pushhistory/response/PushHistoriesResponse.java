@@ -1,5 +1,6 @@
 package kr.mashup.branding.ui.pushhistory.response;
 
+import kr.mashup.branding.domain.pushnoti.LinkType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
@@ -20,6 +21,7 @@ public class PushHistoriesResponse {
         String pushType;
         String title;
         String body;
+        LinkType linkType;
         LocalDateTime sendTime;
     }
 }
