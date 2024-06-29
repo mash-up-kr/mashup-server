@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,12 +45,12 @@ public class RnbMetaFacadeService {
         final RnbPolicy appliedPolicy =
                 rnbMetaService.getAppliedPolicyGeneration(latestGeneration, latestGenerationOfMember);
 
-        final Set<String> menus = rnbMetaService.findAllByPolicyWithAll(appliedPolicy)
+        final List<String> menus = rnbMetaService.findAllByPolicyWithAll(appliedPolicy)
                 .stream()
                 .sorted(Comparator.comparing(RnbMeta::getMenuOrder))
                 .map(RnbMeta::getMenuName)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
-        return RnbMetaResponse.of(new ArrayList<>(menus));
+        return RnbMetaResponse.of(menus);
     }
 }
