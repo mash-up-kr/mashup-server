@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class PushHistoryService {
         final List<PushHistory> histories = members
                 .stream()
                 .map(it -> PushHistory.of(it.getId(), title, body))
-                .toList();
+                .collect(Collectors.toList());
         return pushHistoryRepository.saveAll(histories);
     }
 
