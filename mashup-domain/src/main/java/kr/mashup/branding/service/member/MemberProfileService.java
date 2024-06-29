@@ -1,5 +1,6 @@
 package kr.mashup.branding.service.member;
 
+import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.MemberProfile;
 import kr.mashup.branding.repository.member.MemberProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -47,5 +49,9 @@ public class MemberProfileService {
     public MemberProfile findOrSave(Long memberId) {
         return memberProfileRepository.findByMemberId(memberId)
                 .orElseGet(() -> memberProfileRepository.save(MemberProfile.from(memberId)));
+    }
+
+    public List<MemberBirthdayDto> findByBirthDateBetween(LocalDate startDate, LocalDate endDate, Generation generation) {
+        return memberProfileRepository.retrieveByBirthDateBetween(startDate, endDate, generation);
     }
 }

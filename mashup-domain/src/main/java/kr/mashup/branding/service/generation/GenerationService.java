@@ -4,7 +4,11 @@ import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.generation.GenerationStatus;
 import kr.mashup.branding.domain.generation.exception.GenerationNotFoundException;
+import kr.mashup.branding.domain.member.Member;
+import kr.mashup.branding.domain.member.MemberGeneration;
+import kr.mashup.branding.domain.member.exception.InactiveGenerationException;
 import kr.mashup.branding.repository.generation.GenerationRepository;
 import kr.mashup.branding.service.generation.vo.GenerationCreateVo;
 import kr.mashup.branding.service.generation.vo.GenerationUpdateVo;
@@ -17,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,5 +91,14 @@ public class GenerationService {
                 .stream()
                 .filter(generation -> DateUtil.isInTime(generation.getStartedAt(), generation.getEndedAt(), at))
                 .collect(Collectors.toList());
+    }
+
+    public Generation getCurrentGeneration(Member member) {
+        return member.getMemberGenerations()
+            .stream()
+            .map(MemberGeneration::getGeneration)
+            .max(Comparator.comparingInt(Generation::getNumber))
+            .filter(gen -> GenerationStatus.ON_GOING.equals(gen.getStatus()))
+            .orElseThrow(InactiveGenerationException::new);
     }
 }

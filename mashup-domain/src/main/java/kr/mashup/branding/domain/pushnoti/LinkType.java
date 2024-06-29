@@ -6,5 +6,6 @@ public enum LinkType {
     DANGGN,             // 당근 페이지
     MYPAGE,             // 마이 페이지
     DANGGN_REWARD,      // 당근 1등 리워드 페이지
+    BIRTHDAY,           // 생일 페이지
     ;
 }

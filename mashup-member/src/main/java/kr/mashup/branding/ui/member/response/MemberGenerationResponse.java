@@ -23,12 +23,12 @@ public class MemberGenerationResponse {
 
     public static MemberGenerationResponse of(MemberGeneration memberGeneration) {
         return new MemberGenerationResponse(
-                memberGeneration.getId(),
-                memberGeneration.getGeneration().getNumber(),
-                memberGeneration.getPlatform().getName(),
-                memberGeneration.getProjectTeamName(),
-                memberGeneration.getRole(),
-                memberGeneration.getGeneration().getStatus()
+            memberGeneration.getId(),
+            memberGeneration.getGeneration().getNumber(),
+            memberGeneration.getPlatform().getName(),
+            memberGeneration.getProjectTeamName(),
+            memberGeneration.getRole(),
+            memberGeneration.getGeneration().getStatus()
         );
     }
 }
