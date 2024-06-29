@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kr.mashup.branding.domain.schedule.Location;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleType;
 import lombok.Getter;
@@ -26,7 +25,8 @@ public class ScheduleResponse {
 
     Integer generationNumber;
 
-    Location location;
+    // TODO: 앱 배포 완료 후 Location으로 type 변경
+    LocationResponse location;
 
     ScheduleType scheduleType;
 
@@ -40,7 +40,7 @@ public class ScheduleResponse {
             schedule.getStartedAt(),
             schedule.getEndedAt(),
             schedule.getGeneration().getNumber(),
-            schedule.getLocation() == null ? null : schedule.getLocation(),
+            schedule.getLocation() == null ? null : LocationResponse.from(schedule.getLocation()),
             schedule.getScheduleType(),
             schedule.getEventList()
                 .stream()

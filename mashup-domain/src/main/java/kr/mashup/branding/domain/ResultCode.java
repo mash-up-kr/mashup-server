@@ -71,6 +71,7 @@ public enum ResultCode {
     SCHEDULE_NOT_FOUND("스케줄이 존재하지 않습니다."),
     SCHEDULE_STARTED_TIME_OVER("스케줄 시작 시간이 지났습니다."),
     SCHEDULE_ALREADY_PUBLISHED("이미 발행된 스케줄입니다."),
+    SCHEDULE_NOT_UPDATABLE("이미 세션에 출석이 존재해 업데이트 할 수 없습니다."),
 
     // Schedule (일정 내용)
     CONTENT_NOT_FOUND("일정 내용이 존재하지 않습니다."),
@@ -113,6 +114,10 @@ public enum ResultCode {
 
     RANKING_REWARD_ALREADY_WRITTEN("이미 해당 리워드에 코멘트를 작성하였습니다"),
 
+    // Mashong
+    MASHONG_MISSION_NOT_FOUND("매숑 미션이 존재하지 않습니다."),
+
+    MASHONG_MISSION_LEVEL_NOT_FOUND("매숑 미션 레벨이 존재하지 않습니다."),
 
     // JsonUtil
     JSON_DESERIALIZE_UNABLE("객체를 json string 을 deserialize 할 수 없습니다"),

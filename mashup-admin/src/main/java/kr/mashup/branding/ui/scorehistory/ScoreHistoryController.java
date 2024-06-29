@@ -1,6 +1,7 @@
 package kr.mashup.branding.ui.scorehistory;
 
 import kr.mashup.branding.EmptyResponse;
+import kr.mashup.branding.facade.scorehistory.ScoreHistoryProcessor;
 import kr.mashup.branding.ui.scorehistory.request.ScoreAddRequest;
 import kr.mashup.branding.ui.scorehistory.request.ScoreCancelRequest;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,16 +14,13 @@ import kr.mashup.branding.facade.scorehistory.ScoreHistoryFacadeService;
 import kr.mashup.branding.ui.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/score-history")
 @RestController
 public class ScoreHistoryController {
 
     private final ScoreHistoryFacadeService scoreHistoryFacadeService;
+    private final ScoreHistoryProcessor scoreHistoryProcessor;
 
     @ApiOperation("점수 추가")
     @PostMapping("add")
@@ -40,5 +38,11 @@ public class ScoreHistoryController {
     ) {
         scoreHistoryFacadeService.cancelScore(request.getScoreHistoryId(), request.getMemo());
         return ApiResponse.success(EmptyResponse.of());
+    }
+
+    // TODO: 추후 프로세스 타입 추가
+    @PostMapping("process")
+    public void createScore() {
+        scoreHistoryProcessor.create();
     }
 }
