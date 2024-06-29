@@ -284,7 +284,7 @@ public class MemberService {
         }
     }
 
-    public List<MemberGeneration> findMemberGenerationByMemberId(Member member) {
+    public List<MemberGeneration> findMemberGenerationByMember(Member member) {
         return memberGenerationRepository.findByMember(member);
     }
 

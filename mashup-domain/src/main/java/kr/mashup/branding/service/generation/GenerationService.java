@@ -42,6 +42,10 @@ public class GenerationService {
         return generationRepository.findAll();
     }
 
+    public Generation getLatestGeneration(){
+        return generationRepository.findTop1ByOrderByNumberDesc();
+    }
+
     public Generation create(@Valid final GenerationCreateVo createVo){
 
         final Integer generationNumber = createVo.getGenerationNumber();

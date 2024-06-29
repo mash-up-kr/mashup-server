@@ -41,7 +41,7 @@ public class MemberProfileFacadeService {
         Member member = memberService.findMemberById(memberId);
 
         var profile = memberProfileService.findOrSave(memberId);
-        var generations = memberService.findMemberGenerationByMemberId(member);
+        var generations = memberService.findMemberGenerationByMember(member);
 
         return MemberProfileResponse.from(profile, generations);
     }
