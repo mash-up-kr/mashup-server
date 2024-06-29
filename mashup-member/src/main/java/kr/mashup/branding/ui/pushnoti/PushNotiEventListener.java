@@ -15,6 +15,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -43,7 +44,7 @@ public class PushNotiEventListener {
     }
 
     private static List<Long> extractMemberIds(PushNotiSendVo event) {
-        return event.getMembers().stream().map(BaseEntity::getId).toList();
+        return event.getMembers().stream().map(BaseEntity::getId).collect(Collectors.toList());
     }
 
 }
