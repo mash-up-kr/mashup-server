@@ -114,6 +114,10 @@ public enum ResultCode {
 
     RANKING_REWARD_ALREADY_WRITTEN("이미 해당 리워드에 코멘트를 작성하였습니다"),
 
+    // Mashong
+    MASHONG_MISSION_NOT_FOUND("매숑 미션이 존재하지 않습니다."),
+
+    MASHONG_MISSION_LEVEL_NOT_FOUND("매숑 미션 레벨이 존재하지 않습니다."),
 
     // JsonUtil
     JSON_DESERIALIZE_UNABLE("객체를 json string 을 deserialize 할 수 없습니다"),
