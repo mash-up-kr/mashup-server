@@ -38,7 +38,7 @@ public class PushHistoryFacadeService {
                 pushHistories.stream()
                         .filter(isRead(lastPushCheckTime))
                         .map(it -> PushHistoryResponse.of(it.getTitle(), it.getBody(), it.getCreatedAt()))
-                        .toList();
+                        .collect(Collectors.toList());
         final List<PushHistoryResponse> unreadPush =
                 pushHistories.stream()
                         .filter(isRead(lastPushCheckTime).negate())
