@@ -1,15 +1,15 @@
 package kr.mashup.branding.ui.schedule.response;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import kr.mashup.branding.domain.schedule.Location;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleStatus;
 import kr.mashup.branding.domain.schedule.ScheduleType;
 import lombok.Getter;
 import lombok.Value;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Value(staticConstructor = "of")
@@ -39,6 +39,8 @@ public class ScheduleResponse {
 
     LocalDateTime publishedAt;
 
+    String notice;
+
     public static ScheduleResponse from(Schedule schedule) {
         return ScheduleResponse.of(
             schedule.getId(),
@@ -55,7 +57,8 @@ public class ScheduleResponse {
             schedule.getStatus(),
             schedule.getCreatedAt(),
             schedule.getUpdatedAt(),
-            schedule.getPublishedAt()
+            schedule.getPublishedAt(),
+            schedule.getNotice()
         );
     }
 }
