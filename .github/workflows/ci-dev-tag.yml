@@ -1,4 +1,4 @@
-name: Mash-Up Admin Dev CI
+name: Mash-Up Tag Dev CI
 
 on:
   push:
@@ -31,6 +31,8 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build Jib
+        env:
+          IMAGE_TAG: ${{ steps.extract-version.outputs.VERSION || '' }}
         run: |
           chmod +x gradlew
-          ./gradlew :mashup-recruit:jib -PbuildPhase=$GITHUB_REF_NAME -PencryptorPassword=${{ secrets.ENCRYPTOR_PASSWORD }}
+          ./gradlew :mashup-recruit:jib -PbuildPhase=$IMAGE_TAG -PencryptorPassword=${{ secrets.ENCRYPTOR_PASSWORD }}
