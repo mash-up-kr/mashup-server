@@ -17,13 +17,13 @@ public class PlatformMashong {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private PlatformMashongLevel level;
 
     @Enumerated(EnumType.STRING)
     private Platform platform;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Generation generation;
 
     private Long accumulatedPopcorn;
