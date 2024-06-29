@@ -3,4 +3,10 @@ services:
   application:
     image: 321148231533.dkr.ecr.ap-northeast-2.amazonaws.com/mashup-member:develop
     ports:
-      - 8071:8080
+      - 7071:8080
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-northeast-2
+        awslogs-group: MashUp-Server-Dev
+        awslogs-stream: member

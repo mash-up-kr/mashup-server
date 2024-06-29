@@ -1,22 +1,22 @@
 #!/bin/bash
 
 # BLUE가 실행중인지 확인
-APP_NAME=mashup-admin
-EXIST_BLUE=$(docker-compose -p mashup-admin-blue -f docker-compose.blue.yml ps | grep mashup-admin-blue)
+APP_NAME=mashup-admin-dev
+EXIST_BLUE=$(docker-compose -p mashup-admin-dev-blue -f docker-compose.blue.yml ps | grep mashup-admin-dev-blue)
 
 if [ -z "${EXIST_BLUE}" ] # -z는 문자열 길이가 0이면 true.BLUE가 실행중이면 false
 then
   # start blue
   START_CONTAINER=blue
   TERMINATE_CONTAINER=green
-  START_PORT=8090
-  TERMINATE_PORT=8091
+  START_PORT=7090
+  TERMINATE_PORT=7091
 else
   # start green
   START_CONTAINER=green
   TERMINATE_CONTAINER=blue
-  START_PORT=8091
-  TERMINATE_PORT=8090
+  START_PORT=7091
+  TERMINATE_PORT=7090
 fi
 
 echo " ========== [start] change ${APP_NAME}-${TERMINATE_CONTAINER} to ${APP_NAME}-${START_CONTAINER} =========="
@@ -56,7 +56,7 @@ echo "deploy ${APP_NAME}-${START_CONTAINER} success!"
 # 종료되는 포트를 새로 시작되는 포트로 값을 변경해줍니다.
 # ex ) sudo sed -i "s/8080/8081/" /nginx/conf.d/app.conf
 echo -e "\n[step - 2] change port ${TERMINATE_PORT} to ${START_PORT}"
-sed -i "s/${TERMINATE_PORT}/${START_PORT}/" /home/ec2-user/mashup-server/docker/infra-dev/nginx/conf.d/app.conf
+sed -i "s/${TERMINATE_PORT}/${START_PORT}/" /home/ec2-user/mashup-server/docker/infra/nginx/conf.d/app.conf
 
 # 새로운 포트로 스프링부트가 구동 되고, nginx의 포트를 변경해주었다면, nginx 재시작해줍니다.
 # docker exec -it {nginx container name} nginx -s reload
