@@ -28,16 +28,26 @@ public class PlatformMashong {
 
     private Long accumulatedPopcorn;
 
-    public void feed(Long popcornCount, PlatformMashongLevel nextLevel) {
-        if (accumulatedPopcorn + popcornCount >= level.getGoalPopcorn()) {
-            level = nextLevel;
-        }
-
+    public void feed(Long popcornCount) {
         accumulatedPopcorn += popcornCount;
     }
 
     public boolean isMaxLevel() {
         return level.isMaxLevel();
+    }
+
+    public boolean isSameLevel(PlatformMashongLevel level) {
+        return getCurrentLevel() == level.getLevel();
+    }
+
+    public boolean levelUp(PlatformMashongLevel goalLevel) {
+        if (accumulatedPopcorn < goalLevel.getGoalPopcorn()) {
+            return false;
+        }
+
+        level = goalLevel;
+        accumulatedPopcorn -= goalLevel.getGoalPopcorn();
+        return true;
     }
 
     public int getCurrentLevel() {
