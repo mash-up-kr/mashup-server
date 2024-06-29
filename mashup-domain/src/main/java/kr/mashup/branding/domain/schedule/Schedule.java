@@ -57,17 +57,19 @@ public class Schedule extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ScheduleType scheduleType;
 
+    private String notice;
+
     @CreatedBy
     private String createdBy;
 
     @LastModifiedBy
     private String updatedBy;
 
-    public static Schedule of(Generation generation, String name, DateRange dateRange, Location location, ScheduleType scheduleType) {
-        return new Schedule(generation, name, dateRange, location, scheduleType);
+    public static Schedule of(Generation generation, String name, DateRange dateRange, Location location, ScheduleType scheduleType, String notice) {
+        return new Schedule(generation, name, dateRange, location, scheduleType, notice);
     }
 
-    public Schedule(Generation generation, String name, DateRange dateRange, Location location, ScheduleType scheduleType) {
+    public Schedule(Generation generation, String name, DateRange dateRange, Location location, ScheduleType scheduleType, String notice) {
         checkStartBeforeOrEqualEnd(dateRange.getStart(), dateRange.getEnd());
 
         this.generation = generation;
@@ -78,6 +80,7 @@ public class Schedule extends BaseEntity {
         this.isCounted = false; // 기본값은 false 로 설정(배치가 수행되지 않음)
         this.location = location;
         this.scheduleType = scheduleType;
+        this.notice = notice;
     }
 
     public void publishSchedule() {
@@ -178,5 +181,9 @@ public class Schedule extends BaseEntity {
             default:
                 return false;
         }
+    }
+
+    public void updateNotice(String notice) {
+        this.notice = notice;
     }
 }

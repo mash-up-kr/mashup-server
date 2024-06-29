@@ -33,7 +33,7 @@ public class ScheduleService {
     public Schedule create(Generation generation, ScheduleCreateDto dto) {
         try {
             Location location = createLocation(dto);
-            Schedule schedule = Schedule.of(generation, dto.getName(), dto.getDateRange(), location, dto.getScheduleType());
+            Schedule schedule = Schedule.of(generation, dto.getName(), dto.getDateRange(), location, dto.getScheduleType(), dto.getNotice());
 
             return scheduleRepository.save(schedule);
         } catch (DataIntegrityViolationException exception) {
@@ -139,6 +139,7 @@ public class ScheduleService {
         schedule.changeLocation(location);
 
         schedule.changeScheduleType(scheduleCreateDto.getScheduleType());
+        schedule.updateNotice(scheduleCreateDto.getNotice());
 
         return schedule;
     }
