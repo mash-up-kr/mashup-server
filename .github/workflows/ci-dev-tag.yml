@@ -33,6 +33,4 @@ jobs:
       - name: Build Jib
         run: |
           chmod +x gradlew
-          ./gradlew :mashup-member:jib -PbuildPhase=$GITHUB_REF_NAME -PencryptorPassword=${{ secrets.ENCRYPTOR_PASSWORD }}
-          ./gradlew :mashup-admin:jib -PbuildPhase=$GITHUB_REF_NAME -PencryptorPassword=${{ secrets.ENCRYPTOR_PASSWORD }}
           ./gradlew :mashup-recruit:jib -PbuildPhase=$GITHUB_REF_NAME -PencryptorPassword=${{ secrets.ENCRYPTOR_PASSWORD }}
