@@ -4,7 +4,6 @@ import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.domain.generation.GenerationStatus;
 import kr.mashup.branding.domain.generation.exception.GenerationNotFoundException;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
@@ -98,7 +97,7 @@ public class GenerationService {
             .stream()
             .map(MemberGeneration::getGeneration)
             .max(Comparator.comparingInt(Generation::getNumber))
-            .filter(gen -> GenerationStatus.ON_GOING.equals(gen.getStatus()))
+            .filter(generation -> generation.isInProgress(LocalDate.now()))
             .orElseThrow(InactiveGenerationException::new);
     }
 }

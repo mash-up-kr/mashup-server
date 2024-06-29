@@ -5,7 +5,6 @@ import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
 import kr.mashup.branding.domain.generation.Generation;
-import kr.mashup.branding.domain.generation.GenerationStatus;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.MemberStatus;
@@ -343,7 +342,7 @@ public class MemberService {
     public MemberGeneration getCurrentMemberGeneration(Member member) {
         return member.getMemberGenerations()
             .stream()
-            .filter(mg -> GenerationStatus.ON_GOING.equals(mg.getGeneration().getStatus()))
+            .filter(memberGeneration -> memberGeneration.getGeneration().isInProgress(LocalDate.now()))
             .max(Comparator.comparingInt(mg -> mg.getGeneration().getNumber()))
             .orElseThrow(InactiveGenerationException::new);
     }
