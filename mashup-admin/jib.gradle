@@ -6,7 +6,7 @@ jib {
     }
     to {
         image = "321148231533.dkr.ecr.ap-northeast-2.amazonaws.com/${project.name}"
-        tags = ["${buildPhase}"]
+        tags = ["${project.findProperty('tag') ?: buildPhase}"]
         println "to image : ${image}:${tags}"
     }
     container {
