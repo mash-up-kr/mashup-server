@@ -4,7 +4,6 @@ import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.mashong.*;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
-import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.service.mashong.*;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.mashong.response.MashongFeedResponse;
@@ -99,6 +98,13 @@ public class MashongFacadeService {
 
         platformMashongService.feedPopcorn(platformMashong, popcornCount);
         final MashongPopcorn mashongPopcorn = mashongPopcornService.decreasePopcorn(memberGenerationId, popcornCount);
+
+        // TODO: event publisher 로 변경
+        mashongMissionFacadeService.apply(
+                MissionStrategyType.MASHONG_POPCORN_INDIVIDUAL,
+                memberGeneration,
+                popcornCount.doubleValue()
+        );
 
         return MashongFeedResponse.of(true, platformMashong, mashongPopcorn);
     }
