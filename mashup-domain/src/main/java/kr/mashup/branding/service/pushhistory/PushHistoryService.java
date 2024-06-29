@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PushHistoryService {
     private PushHistoryRepository pushHistoryRepository;
 
-    @Transactional
     public List<PushHistory> save(final List<Member> members, String title, String body){
         final List<PushHistory> histories = members
                 .stream()
@@ -25,7 +25,6 @@ public class PushHistoryService {
         return pushHistoryRepository.saveAll(histories);
     }
 
-    @Transactional(readOnly = true)
     public List<PushHistory> getAllByMember(final Member member, final Pageable pageable){
 
         return pushHistoryRepository.findAllByMemberId(member.getId(), pageable);
