@@ -17,6 +17,7 @@ public class PushHistoriesResponse {
     @Getter
     @Value(staticConstructor = "of")
     public static class PushHistoryResponse{
+        String pushType;
         String title;
         String body;
         LocalDateTime sendTime;

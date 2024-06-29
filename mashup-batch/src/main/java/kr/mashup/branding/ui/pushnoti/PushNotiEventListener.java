@@ -30,16 +30,16 @@ public class PushNotiEventListener {
     public void handleSendPushNotiEvent(PushNotiSendVo event) {
         log.info("handle send push noti event");
         try{
-            pushHistoryService.save(event.getMembers(), event.getTitle(), event.getBody());
+            pushHistoryService.save(event);
         }catch (Exception ignored){
-            log.error("[SAVE_HISTORY_FAIL] failed to save push noti history memberIds {} , title {} , body {}",
-                    extractMemberIds(event), event.getTitle(), event.getBody());
+            log.error("[SAVE_HISTORY_FAIL] failed to save push noti history memberIds {} , type {}, title {} , body {}",
+                    extractMemberIds(event), event.getPushType(), event.getTitle(), event.getBody());
         }
         try{
             pushNotiService.sendPushNotification(event);
         }catch (Exception ignored){
-            log.error("[SEND_PUSH_FAIL] failed to send push memberIds {} , title {} , body {}",
-                    extractMemberIds(event), event.getTitle(), event.getBody());
+            log.error("[SEND_PUSH_FAIL] failed to send push memberIds {} , type {}, title {} , body {}",
+                    extractMemberIds(event), event.getPushType(), event.getTitle(), event.getBody());
         }
     }
 

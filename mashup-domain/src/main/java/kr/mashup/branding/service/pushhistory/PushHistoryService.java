@@ -2,6 +2,7 @@ package kr.mashup.branding.service.pushhistory;
 
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.pushhistory.PushHistory;
+import kr.mashup.branding.domain.pushnoti.vo.PushNotiSendVo;
 import kr.mashup.branding.repository.pushhistory.PushHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -15,12 +16,13 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class PushHistoryService {
-    private PushHistoryRepository pushHistoryRepository;
 
-    public List<PushHistory> save(final List<Member> members, String title, String body){
-        final List<PushHistory> histories = members
+    private final PushHistoryRepository pushHistoryRepository;
+
+    public List<PushHistory> save(final PushNotiSendVo event){
+        final List<PushHistory> histories = event.getMembers()
                 .stream()
-                .map(it -> PushHistory.of(it.getId(), title, body))
+                .map(it -> PushHistory.of(it.getId(),event.getPushType(), event.getTitle(), event.getBody()))
                 .collect(Collectors.toList());
         return pushHistoryRepository.saveAll(histories);
     }
