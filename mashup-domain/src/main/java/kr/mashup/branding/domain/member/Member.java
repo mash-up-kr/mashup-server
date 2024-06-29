@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +59,8 @@ public class Member extends BaseEntity {
     private Boolean newsPushNotificationAgreed = true;          // 매시업 소식 알림 동의 여부
 
     private Boolean danggnPushNotificationAgreed = true;        // 당근 흔들기 알림 동의 여부
+
+    private LocalDateTime lastPushCheckTime = LocalDateTime.now();
 
     public boolean isMatchPassword(String rawPassword, PasswordEncoder encoder) {
         return encoder.matches(rawPassword, this.password);
@@ -158,5 +161,9 @@ public class Member extends BaseEntity {
 
     public void setStatus(MemberStatus status) {
         this.status = status;
+    }
+
+    public void updatePushCheckTime(LocalDateTime checkTime){
+        this.lastPushCheckTime = checkTime;
     }
 }

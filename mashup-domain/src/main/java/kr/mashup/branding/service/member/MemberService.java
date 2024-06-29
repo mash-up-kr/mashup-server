@@ -1,6 +1,7 @@
 package kr.mashup.branding.service.member;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -335,5 +336,10 @@ public class MemberService {
         memberGenerationRepository
             .findByMemberIdsAndGenerationNumber(memberIds, generation.getNumber())
             .forEach(MemberGeneration::dropOut);
+    }
+
+    @Transactional
+    public void updatePushCheckTime(final Member member){
+        member.updatePushCheckTime(LocalDateTime.now());
     }
 }
