@@ -36,8 +36,11 @@ public class MashongMission {
 
     public MashongMissionLevel getNextMissionLevel(Long level) {
         return mashongMissionLevelList.stream()
-            .filter(missionLevel -> missionLevel.getLevel() == level + 1)
-            .findFirst()
-            .orElseGet(null);
+                .filter(missionLevel -> missionLevel.getLevel() == level + 1)
+                .findFirst()
+                .orElseGet(() -> mashongMissionLevelList.stream()
+                        .max(Comparator.comparing(MashongMissionLevel::getLevel))
+                        .orElseThrow(IllegalStateException::new)
+                );
     }
 }
