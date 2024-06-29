@@ -22,4 +22,6 @@ public interface MemberRepositoryCustom {
     List<Member> findAllByCurrentGenerationAt(LocalDate at);
 
     List<Member> findAllActiveByGeneration(Generation generation);
+
+    List<Member> retrieveByBirthDate(Generation generation, LocalDate birthDate);
 }

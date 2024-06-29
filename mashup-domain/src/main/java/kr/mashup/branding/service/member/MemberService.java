@@ -1,19 +1,5 @@
 package kr.mashup.branding.service.member;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import kr.mashup.branding.domain.schedule.Schedule;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
@@ -23,9 +9,11 @@ import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.MemberStatus;
 import kr.mashup.branding.domain.member.Platform;
+import kr.mashup.branding.domain.member.exception.InactiveGenerationException;
 import kr.mashup.branding.domain.member.exception.MemberLoginFailException;
 import kr.mashup.branding.domain.member.exception.MemberNotFoundException;
 import kr.mashup.branding.domain.member.exception.MemberPendingException;
+import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.repository.attendance.AttendanceRepository;
 import kr.mashup.branding.repository.danggn.DanggnNotificationMemberRecordRepository;
 import kr.mashup.branding.repository.danggn.DanggnScoreRepository;
@@ -38,6 +26,18 @@ import kr.mashup.branding.repository.scorehistory.ScoreHistoryRepository;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -160,11 +160,11 @@ public class MemberService {
     public void resetPassword(
         final String identification,
         final String newPassword
-    ){
+    ) {
         final Member member = memberRepository.findByIdentification(identification)
-                .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(MemberNotFoundException::new);
 
-        member.setPassword(newPassword,passwordEncoder);
+        member.setPassword(newPassword, passwordEncoder);
     }
 
     public void deleteMember(Long memberId) {
@@ -188,6 +188,7 @@ public class MemberService {
     public boolean existsIdentification(String identification) {
         return memberRepository.existsByIdentification(identification);
     }
+
     private void checkActiveStatus(Member member) {
         if (member.getStatus() != MemberStatus.ACTIVE) {
             throw new MemberPendingException();
@@ -225,7 +226,7 @@ public class MemberService {
 
     public MemberGeneration findByMemberIdAndGenerationNumber(Long memberId, Integer generationNumber) {
         return memberGenerationRepository.findByMemberIdAndGenerationNumber(memberId, generationNumber)
-                .orElseThrow(GenerationIntegrityFailException::new);
+            .orElseThrow(GenerationIntegrityFailException::new);
     }
 
     public Boolean existMemberGenerationByMemberAndGeneration(Member member, Generation generation) {
@@ -234,8 +235,8 @@ public class MemberService {
 
     public List<Member> getAllDanggnPushNotiTargetableMembers() {
         return memberRepository.findAllByCurrentGenerationAt(LocalDate.now()).stream()
-                .filter(Member::getDanggnPushNotificationAgreed)
-                .collect(Collectors.toList());
+            .filter(Member::getDanggnPushNotificationAgreed)
+            .collect(Collectors.toList());
     }
 
     public MemberGeneration findByMemberGenerationId(Long memberGenerationId) {
@@ -267,7 +268,7 @@ public class MemberService {
                     if (existMemberGenerationByMemberAndGeneration(member, generation)) { // memberGeneration 있을면 삭제
 
                         final MemberGeneration memberGeneration
-                                = findByMemberIdAndGenerationNumber(member.getId(), generation.getNumber());
+                            = findByMemberIdAndGenerationNumber(member.getId(), generation.getNumber());
 
                         deleteMemberGeneration(memberGeneration);
                     }
@@ -290,21 +291,21 @@ public class MemberService {
     }
 
     public void updateMemberGeneration(
-            Long memberGenerationId,
-            String projectTeamName,
-            String role
+        Long memberGenerationId,
+        String projectTeamName,
+        String role
     ) {
         var memberGeneration = memberGenerationRepository.findById(memberGenerationId)
-                .orElseThrow(GenerationIntegrityFailException::new);
+            .orElseThrow(GenerationIntegrityFailException::new);
         memberGeneration.updateProjectInfo(
-                projectTeamName,
-                role
+            projectTeamName,
+            role
         );
     }
 
     public List<Member> findAllByMemberIds(final List<Long> memberIds) {
         final List<Member> members = memberRepository.findAllById(memberIds);
-        if(memberIds.size() != members.size()){
+        if (memberIds.size() != members.size()) {
             throw new MemberNotFoundException();
         }
 
@@ -329,7 +330,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void dropOut(final Generation generation,final List<Member> members) {
+    public void dropOut(final Generation generation, final List<Member> members) {
 
         final List<Long> memberIds = members.stream().map(BaseEntity::getId).collect(Collectors.toList());
 
@@ -338,8 +339,32 @@ public class MemberService {
             .forEach(MemberGeneration::dropOut);
     }
 
+    public MemberGeneration getCurrentMemberGeneration(Member member) {
+        return member.getMemberGenerations()
+            .stream()
+            .filter(memberGeneration -> memberGeneration.getGeneration().isInProgress(LocalDate.now()))
+            .max(Comparator.comparingInt(mg -> mg.getGeneration().getNumber()))
+            .orElseThrow(InactiveGenerationException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Member> getAllByBirthdayRecipient(Generation generation) {
+        return memberRepository.retrieveByBirthDate(generation, LocalDate.now());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Member> getAllByBirthdaySender(Generation generation) {
+
+        List<Member> senders = memberRepository.findAllActiveByGeneration(generation);
+        List<Member> recipients = memberRepository.retrieveByBirthDate(generation, LocalDate.now());
+        senders.removeAll(recipients);
+
+        return senders;
+    }
+
+
     @Transactional
-    public void updatePushCheckTime(final Member member){
+    public void updatePushCheckTime(final Member member) {
         member.updatePushCheckTime(LocalDateTime.now());
     }
 }
