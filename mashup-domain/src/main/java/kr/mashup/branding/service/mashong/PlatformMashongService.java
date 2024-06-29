@@ -24,8 +24,9 @@ public class PlatformMashongService {
     }
 
     public void feedPopcorn(PlatformMashong platformMashong, Long popcornCount) {
-        PlatformMashongLevel nextLevel = platformMashongLevelRepository.findNextLevelByLevel(platformMashong.getCurrentLevel())
-                .orElseGet(platformMashongLevelRepository::findMaxLevel);
+        final PlatformMashongLevel nextLevel = platformMashongLevelRepository.findNextLevelByLevel(
+                        platformMashong.getCurrentLevel()
+                ).orElseGet(platformMashongLevelRepository::findMaxLevel);
 
         platformMashong.feed(popcornCount, nextLevel);
     }

@@ -34,7 +34,7 @@ public class MashongPopcornService {
 
     @Transactional
     public MashongPopcorn decreasePopcorn(Long memberGenerationId, Long popcornCount) {
-        MashongPopcorn mashongPopcorn = findByMemberGenerationId(memberGenerationId);
+        final MashongPopcorn mashongPopcorn = findByMemberGenerationId(memberGenerationId);
 
         boolean isSuccess = mashongPopcorn.decrease(popcornCount);
         if (!isSuccess) {

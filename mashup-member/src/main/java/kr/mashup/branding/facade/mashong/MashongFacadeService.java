@@ -85,20 +85,20 @@ public class MashongFacadeService {
         return !mashongMissionLog.getIsCompensated() && (mashongMissionLog.getCurrentStatus() >= mashongMissionLevel.getMissionGoalValue());
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public MashongFeedResponse feedPopcorn(Long memberGenerationId, Long popcornCount) {
-        MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
-        Platform platform = memberService.getLatestPlatform(memberGeneration.getMember());
-        Generation generation = memberGeneration.getGeneration();
+        final MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
+        final Platform platform = memberService.getLatestPlatform(memberGeneration.getMember());
+        final Generation generation = memberGeneration.getGeneration();
 
-        PlatformMashong platformMashong = platformMashongService.findByPlatformAndGeneration(platform, generation);
+        final PlatformMashong platformMashong = platformMashongService.findByPlatformAndGeneration(platform, generation);
         if (platformMashong.isMaxLevel()) {
-            MashongPopcorn mashongPopcorn = mashongPopcornService.findByMemberGenerationId(memberGenerationId);
+            final MashongPopcorn mashongPopcorn = mashongPopcornService.findByMemberGenerationId(memberGenerationId);
             return MashongFeedResponse.of(false, platformMashong, mashongPopcorn);
         }
 
         platformMashongService.feedPopcorn(platformMashong, popcornCount);
-        MashongPopcorn mashongPopcorn = mashongPopcornService.decreasePopcorn(memberGenerationId, popcornCount);
+        final MashongPopcorn mashongPopcorn = mashongPopcornService.decreasePopcorn(memberGenerationId, popcornCount);
 
         return MashongFeedResponse.of(true, platformMashong, mashongPopcorn);
     }
