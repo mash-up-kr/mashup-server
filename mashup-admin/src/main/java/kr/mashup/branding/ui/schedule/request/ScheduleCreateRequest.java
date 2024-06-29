@@ -1,13 +1,15 @@
 package kr.mashup.branding.ui.schedule.request;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import kr.mashup.branding.domain.schedule.ScheduleType;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
-import kr.mashup.branding.domain.schedule.ScheduleType;
-import lombok.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @ToString
@@ -31,21 +33,24 @@ public class ScheduleCreateRequest {
 
     private String detailAddress;
 
+    private String notice;
+
     private ScheduleType scheduleType = ScheduleType.ALL;
 
     @NotEmpty
     private List<EventCreateRequest> eventsCreateRequests;
 
-    private ScheduleCreateRequest(String name, LocalDateTime startedAt, LocalDateTime endedAt, List<EventCreateRequest> eventsCreateRequests) {
+    private ScheduleCreateRequest(String name, LocalDateTime startedAt, LocalDateTime endedAt, List<EventCreateRequest> eventsCreateRequests, String notice) {
         this.name = name;
         this.startedAt = startedAt;
         this.endedAt = endedAt;
         this.eventsCreateRequests = eventsCreateRequests;
+        this.notice = notice;
     }
 
 
     public static ScheduleCreateRequest from(ScheduleUpdateRequest request){
-        return new ScheduleCreateRequest(request.getName(), request.getStartedAt(), request.getEndedAt(), request.getEventsCreateRequests());
+        return new ScheduleCreateRequest(request.getName(), request.getStartedAt(), request.getEndedAt(), request.getEventsCreateRequests(), request.getNotice());
     }
 
 }
