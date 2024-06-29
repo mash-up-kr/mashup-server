@@ -12,4 +12,5 @@ public class ScheduleCreateDto {
     String roadAddress;
     String detailAddress;
     ScheduleType scheduleType;
+    String notice;
 }

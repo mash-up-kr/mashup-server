@@ -1,13 +1,13 @@
 package kr.mashup.branding.ui.schedule.response;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleType;
 import lombok.Getter;
 import lombok.Value;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Value(staticConstructor = "of")
@@ -30,6 +30,8 @@ public class ScheduleResponse {
 
     ScheduleType scheduleType;
 
+    String notice;
+
     List<EventResponse> eventList;
 
     public static ScheduleResponse from(Schedule schedule, Integer dateCount) {
@@ -42,6 +44,7 @@ public class ScheduleResponse {
             schedule.getGeneration().getNumber(),
             schedule.getLocation() == null ? null : LocationResponse.from(schedule.getLocation()),
             schedule.getScheduleType(),
+            schedule.getNotice(),
             schedule.getEventList()
                 .stream()
                 .map(EventResponse::from)
