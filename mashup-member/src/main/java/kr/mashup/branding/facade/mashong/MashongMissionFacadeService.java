@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MashongMissionFacadeService {
+
     private final MashongMissionService mashongMissionService;
     private final MashongMissionLogService mashongMissionLogService;
     private final MashongMissionTeamLogService mashongMissionTeamLogService;
     private final MashongMissionLevelService mashongMissionLevelService;
     private final MemberService memberService;
-
 
     @Transactional
     public void apply(MissionStrategyType missionStrategyType, MemberGeneration memberGeneration, Double value) {
@@ -69,8 +69,9 @@ public class MashongMissionFacadeService {
     @Transactional
     public List<MissionStatus> missionStatusList(Long memberGenerationId) {
         List<MashongMission> mashongMissionList = mashongMissionService.findAll();
-        return mashongMissionList.stream().map(mission -> missionStatus(memberGenerationId, mission))
-            .collect(Collectors.toList());
+        return mashongMissionList.stream()
+                .map(mission -> missionStatus(memberGenerationId, mission))
+                .collect(Collectors.toList());
     }
 
     private MashongMissionLevel getLatestMissionLevel(MemberGeneration memberGeneration, MashongMission mashongMission) {

@@ -31,7 +31,9 @@ public class MashongMission {
     private List<MashongMissionLevel> mashongMissionLevelList;
 
     public MashongMissionLevel getFirstMissionLevel() {
-        return this.mashongMissionLevelList.stream().max(Comparator.comparing(MashongMissionLevel::getLevel)).orElseThrow(IllegalStateException::new);
+        return this.mashongMissionLevelList.stream()
+                .min(Comparator.comparing(MashongMissionLevel::getLevel))
+                .orElseThrow(IllegalStateException::new);
     }
 
     public MashongMissionLevel getNextMissionLevel(Long level) {
