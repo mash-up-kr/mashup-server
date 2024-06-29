@@ -32,7 +32,7 @@ jobs:
 
       - name: Build Jib
         env:
-          IMAGE_TAG: ${{ steps.extract-version.outputs.VERSION || '' }}
+          ENCRYPTOR_PASSWORD: ${{ secrets.ENCRYPTOR_PASSWORD }}
         run: |
           chmod +x gradlew
-          ./gradlew :mashup-recruit:jib -PbuildPhase=$IMAGE_TAG -PencryptorPassword=${{ secrets.ENCRYPTOR_PASSWORD }}
+          ./gradlew :mashup-recruit:jib -PbuildPhase=$GITHUB_REF_NAME -PencryptorPassword=$ENCRYPTOR_PASSWORD
