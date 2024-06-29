@@ -7,6 +7,7 @@ import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.service.mashong.*;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.mashong.response.MashongFeedResponse;
+import kr.mashup.branding.ui.mashong.response.MashongLevelUpResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ public class MashongFacadeService {
     private final MashongMissionTeamLogService mashongMissionTeamLogService;
     private final MashongMissionLevelService mashongMissionLevelService;
     private final PlatformMashongService platformMashongService;
+    private final PlatformMashongLevelService platformMashongLevelService;
     private final MemberService memberService;
 
     @Transactional
@@ -107,5 +109,21 @@ public class MashongFacadeService {
         );
 
         return MashongFeedResponse.of(true, platformMashong, mashongPopcorn);
+    }
+
+    @Transactional
+    public MashongLevelUpResponse levelUp(Long memberGenerationId, int goalLevel) {
+        PlatformMashongLevel goalPlatformMashongLevel = platformMashongLevelService.findByLevel(goalLevel);
+        MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
+        Platform platform = memberService.getLatestPlatform(memberGeneration.getMember());
+        Generation generation = memberGeneration.getGeneration();
+
+        boolean isLevelUp = platformMashongService.levelUp(platform, generation, goalPlatformMashongLevel);
+        if (!isLevelUp) {
+            PlatformMashong platformMashong = platformMashongService.findByPlatformAndGeneration(platform, generation);
+            return MashongLevelUpResponse.of(isLevelUp, platformMashong.getLevel());
+        }
+
+        return MashongLevelUpResponse.of(isLevelUp, goalPlatformMashongLevel);
     }
 }

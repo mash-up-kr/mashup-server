@@ -5,7 +5,9 @@ import kr.mashup.branding.facade.mashong.MashongFacadeService;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.mashong.request.MashongFeedRequest;
+import kr.mashup.branding.ui.mashong.request.MashongLevelUpRequest;
 import kr.mashup.branding.ui.mashong.response.MashongFeedResponse;
+import kr.mashup.branding.ui.mashong.response.MashongLevelUpResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +55,19 @@ public class MashongController {
         MashongFeedResponse result = mashongFacadeService.feedPopcorn(
                 memberAuth.getMemberGenerationId(),
                 request.getPopcornCount()
+        );
+        return ApiResponse.success(result);
+    }
+
+    @ApiOperation(value = "매숑이 레벨업")
+    @PostMapping("/level-up")
+    public ApiResponse<MashongLevelUpResponse> levelUp(
+            @ApiIgnore MemberAuth memberAuth,
+            @RequestBody MashongLevelUpRequest request
+    ) {
+        MashongLevelUpResponse result = mashongFacadeService.levelUp(
+                memberAuth.getMemberGenerationId(),
+                request.getGoalLevel()
         );
         return ApiResponse.success(result);
     }

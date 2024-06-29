@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 public class PlatformMashongService {
 
     private final PlatformMashongRepository platformMashongRepository;
-    private final PlatformMashongLevelRepository platformMashongLevelRepository;
 
     public PlatformMashong findByPlatformAndGeneration(Platform platform, Generation generation) {
         return platformMashongRepository.findByPlatformAndGeneration(platform, generation)
@@ -24,10 +23,15 @@ public class PlatformMashongService {
     }
 
     public void feedPopcorn(PlatformMashong platformMashong, Long popcornCount) {
-        final PlatformMashongLevel nextLevel = platformMashongLevelRepository.findNextLevelByLevel(
-                        platformMashong.getCurrentLevel()
-                ).orElseGet(platformMashongLevelRepository::findMaxLevel);
+        platformMashong.feed(popcornCount);
+    }
 
-        platformMashong.feed(popcornCount, nextLevel);
+    public boolean levelUp(Platform platform, Generation generation, PlatformMashongLevel goalLevel) {
+        PlatformMashong platformMashong = findByPlatformAndGeneration(platform, generation);
+
+        if (platformMashong.isSameLevel(goalLevel)) {
+            return true;
+        }
+        return platformMashong.levelUp(goalLevel);
     }
 }
