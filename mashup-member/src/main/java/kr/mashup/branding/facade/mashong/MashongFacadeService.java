@@ -9,6 +9,7 @@ import kr.mashup.branding.service.mashong.dto.LevelUpResult;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.mashong.response.MashongFeedResponse;
 import kr.mashup.branding.ui.mashong.response.MashongLevelUpResponse;
+import kr.mashup.branding.ui.mashong.response.PlatformMashongStatusResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -136,5 +137,17 @@ public class MashongFacadeService {
         }
 
         return MashongLevelUpResponse.of(levelUpResult, goalPlatformMashongLevel);
+    }
+
+    @Transactional(readOnly = true)
+    public PlatformMashongStatusResponse readCurrentStatus(Long memberGenerationId) {
+        MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
+        Platform platform = memberService.getLatestPlatform(memberGeneration.getMember());
+        Generation generation = memberGeneration.getGeneration();
+
+        PlatformMashong platformMashong = platformMashongService.findByPlatformAndGeneration(platform, generation);
+        MashongPopcorn mashongPopcorn = mashongPopcornService.findByMemberGenerationId(memberGenerationId);
+
+        return PlatformMashongStatusResponse.of(platformMashong, mashongPopcorn);
     }
 }

@@ -8,6 +8,7 @@ import kr.mashup.branding.ui.mashong.request.MashongFeedRequest;
 import kr.mashup.branding.ui.mashong.request.MashongLevelUpRequest;
 import kr.mashup.branding.ui.mashong.response.MashongFeedResponse;
 import kr.mashup.branding.ui.mashong.response.MashongLevelUpResponse;
+import kr.mashup.branding.ui.mashong.response.PlatformMashongStatusResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -80,5 +81,12 @@ public class MashongController {
             @ApiIgnore MemberAuth memberAuth
     ) {
         return ApiResponse.success(mashongFacadeService.getPopcornCount(memberAuth.getMemberGenerationId()));
+    }
+
+    @ApiOperation(value = "플랫폼 매숑이 현재 상태 조회")
+    @GetMapping("/status")
+    public ApiResponse<PlatformMashongStatusResponse> readStatus(@ApiIgnore MemberAuth memberAuth) {
+        PlatformMashongStatusResponse result = mashongFacadeService.readCurrentStatus(memberAuth.getMemberGenerationId());
+        return ApiResponse.success(result);
     }
 }

@@ -58,4 +58,8 @@ public class PlatformMashong {
     public Long getCurrentLevelGoalPopcorn() {
         return level.getGoalPopcorn();
     }
+
+    public Long getCurrentGoalPopcornCount() {
+        return level.getGoalPopcorn();
+    }
 }
