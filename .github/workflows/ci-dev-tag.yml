@@ -35,4 +35,4 @@ jobs:
           ENCRYPTOR_PASSWORD: ${{ secrets.ENCRYPTOR_PASSWORD }}
         run: |
           chmod +x gradlew
-          ./gradlew :mashup-recruit:jib -PbuildPhase=$GITHUB_REF_NAME -PencryptorPassword=$ENCRYPTOR_PASSWORD
+          ./gradlew :mashup-recruit:jib -PbuildPhase=develop -PencryptorPassword=$ENCRYPTOR_PASSWORD -Ptag=$GITHUB_REF_NAME
