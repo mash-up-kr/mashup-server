@@ -8,6 +8,7 @@ import kr.mashup.branding.domain.mashong.PlatformMashongLevel;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.repository.mashong.PlatformMashongLevelRepository;
 import kr.mashup.branding.repository.mashong.PlatformMashongRepository;
+import kr.mashup.branding.service.mashong.dto.LevelUpResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +27,13 @@ public class PlatformMashongService {
         platformMashong.feed(popcornCount);
     }
 
-    public boolean levelUp(Platform platform, Generation generation, PlatformMashongLevel goalLevel) {
+    public LevelUpResult levelUp(Platform platform, Generation generation, PlatformMashongLevel goalLevel) {
         PlatformMashong platformMashong = findByPlatformAndGeneration(platform, generation);
 
         if (platformMashong.isSameLevel(goalLevel)) {
-            return true;
+            return LevelUpResult.DUPLICATED;
         }
+
         return platformMashong.levelUp(goalLevel);
     }
 }

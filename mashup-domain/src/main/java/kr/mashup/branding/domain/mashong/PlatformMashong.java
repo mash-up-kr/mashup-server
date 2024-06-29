@@ -2,6 +2,7 @@ package kr.mashup.branding.domain.mashong;
 
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Platform;
+import kr.mashup.branding.service.mashong.dto.LevelUpResult;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,14 +41,14 @@ public class PlatformMashong {
         return getCurrentLevel() == level.getLevel();
     }
 
-    public boolean levelUp(PlatformMashongLevel goalLevel) {
+    public LevelUpResult levelUp(PlatformMashongLevel goalLevel) {
         if (accumulatedPopcorn < goalLevel.getGoalPopcorn()) {
-            return false;
+            return LevelUpResult.FAIL;
         }
 
         level = goalLevel;
         accumulatedPopcorn -= goalLevel.getGoalPopcorn();
-        return true;
+        return LevelUpResult.SUCCESS;
     }
 
     public int getCurrentLevel() {
