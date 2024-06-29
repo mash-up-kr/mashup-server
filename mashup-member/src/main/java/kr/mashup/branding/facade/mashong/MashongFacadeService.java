@@ -5,6 +5,7 @@ import kr.mashup.branding.domain.mashong.*;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.service.mashong.*;
+import kr.mashup.branding.service.mashong.dto.LevelUpResult;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.mashong.response.MashongFeedResponse;
 import kr.mashup.branding.ui.mashong.response.MashongLevelUpResponse;
@@ -118,12 +119,22 @@ public class MashongFacadeService {
         Platform platform = memberService.getLatestPlatform(memberGeneration.getMember());
         Generation generation = memberGeneration.getGeneration();
 
-        boolean isLevelUp = platformMashongService.levelUp(platform, generation, goalPlatformMashongLevel);
-        if (!isLevelUp) {
+        LevelUpResult levelUpResult = platformMashongService.levelUp(platform, generation, goalPlatformMashongLevel);
+        System.out.println(levelUpResult.toString());
+        if (!levelUpResult.isLevelUpResult()) {
             PlatformMashong platformMashong = platformMashongService.findByPlatformAndGeneration(platform, generation);
-            return MashongLevelUpResponse.of(isLevelUp, platformMashong.getLevel());
+            return MashongLevelUpResponse.of(levelUpResult, platformMashong.getLevel());
         }
 
-        return MashongLevelUpResponse.of(isLevelUp, goalPlatformMashongLevel);
+        // TODO: even publisher 로 변경
+        if (levelUpResult.isUpdateLog()) {
+            mashongMissionFacadeService.setToValue(
+                    MissionStrategyType.MASHONG_LEVEL_TEAM,
+                    memberGeneration,
+                    (double) goalPlatformMashongLevel.getLevel()
+            );
+        }
+
+        return MashongLevelUpResponse.of(levelUpResult, goalPlatformMashongLevel);
     }
 }
