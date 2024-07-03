@@ -19,7 +19,7 @@ public class MetaController {
 
     @GetMapping("/rnb")
     public ApiResponse<RnbMetaResponse> getByGenerationNumber(@ApiIgnore MemberAuth auth) {
-        final RnbMetaResponse response = rnbMetaFacadeService.getRnbMetaData(auth.getMemberGenerationId());
+        final RnbMetaResponse response = rnbMetaFacadeService.getRnbMetaData(auth.getMemberId());
         return ApiResponse.success(response);
     }
 }
