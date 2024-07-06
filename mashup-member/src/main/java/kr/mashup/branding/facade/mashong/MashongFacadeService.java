@@ -121,7 +121,6 @@ public class MashongFacadeService {
         Generation generation = memberGeneration.getGeneration();
 
         LevelUpResult levelUpResult = platformMashongService.levelUp(platform, generation, goalPlatformMashongLevel);
-        System.out.println(levelUpResult.toString());
         if (!levelUpResult.isLevelUpResult()) {
             PlatformMashong platformMashong = platformMashongService.findByPlatformAndGeneration(platform, generation);
             return MashongLevelUpResponse.of(levelUpResult, platformMashong.getLevel());

@@ -42,12 +42,12 @@ public class PlatformMashong {
     }
 
     public LevelUpResult levelUp(PlatformMashongLevel goalLevel) {
-        if (accumulatedPopcorn < goalLevel.getGoalPopcorn()) {
+        if (accumulatedPopcorn < level.getGoalPopcorn()) {
             return LevelUpResult.FAIL;
         }
 
         level = goalLevel;
-        accumulatedPopcorn -= goalLevel.getGoalPopcorn();
+        accumulatedPopcorn -= level.getGoalPopcorn();
         return LevelUpResult.SUCCESS;
     }
 
