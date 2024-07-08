@@ -73,7 +73,7 @@ public class Generation extends BaseEntity {
     }
 
     public boolean isInProgress(LocalDate baseTime){
-        return DateUtil.isInTime(startedAt, baseTime, endedAt);
+        return DateUtil.isInTime(startedAt, endedAt, baseTime);
     }
 
     public GenerationStatus getStatus(){
