@@ -35,6 +35,7 @@ public class MemberBirthdaysResponse {
                 entry.getKey(),
                 entry.getValue().stream()
                     .map(dto -> new MemberBirthdayResponse.Member(
+                        dto.getMemberId(),
                         dto.getName(),
                         dto.getPlatform().getName(),
                         sentMemberIds.contains(dto.getMemberId())

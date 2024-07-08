@@ -16,6 +16,7 @@ public class MemberBirthdayResponse {
     @Getter
     @RequiredArgsConstructor
     public static class Member {
+        private final long id;
         private final String name;
         private final String platform;
         private final boolean congratulated;

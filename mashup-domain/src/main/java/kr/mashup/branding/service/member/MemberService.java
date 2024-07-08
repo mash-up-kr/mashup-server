@@ -342,8 +342,8 @@ public class MemberService {
     public MemberGeneration getCurrentMemberGeneration(Member member) {
         return member.getMemberGenerations()
             .stream()
-            .filter(memberGeneration -> memberGeneration.getGeneration().isInProgress(LocalDate.now()))
             .max(Comparator.comparingInt(mg -> mg.getGeneration().getNumber()))
+            .filter(memberGeneration -> memberGeneration.getGeneration().isInProgress(LocalDate.now()))
             .orElseThrow(InactiveGenerationException::new);
     }
 
