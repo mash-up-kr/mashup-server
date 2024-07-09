@@ -9,6 +9,7 @@ import kr.mashup.branding.service.mashong.MashongMissionService;
 import kr.mashup.branding.service.mashong.MashongMissionTeamLogService;
 import kr.mashup.branding.service.mashong.dto.MissionStatus;
 import kr.mashup.branding.service.member.MemberService;
+import kr.mashup.branding.ui.mashong.response.MashongAttendanceResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,5 +109,16 @@ public class MashongMissionFacadeService {
         MashongMissionLevel latestMissionLevel = getLatestMissionLevel(platform, generationId, mashongMission);
         MashongMissionTeamLog mashongMissionLog = mashongMissionTeamLogService.getMissionLog(latestMissionLevel, platform, generationId);
         return MissionStatus.of(mashongMission, latestMissionLevel, mashongMissionLog);
+    }
+
+    public MashongAttendanceResponse readMashongAttendanceStatus(Long memberGenerationId) {
+        MashongMission mission = mashongMissionService.findMissionByStrategyType(
+                MissionStrategyType.MASHONG_ATTENDANCE_INDIVIDUAL
+        );
+
+        return mashongMissionLogService.getLastAchievedMissionLog(mission, memberGenerationId)
+                .map(mashongMissionLog -> new MashongAttendanceResponse(mashongMissionLog.getCurrentStatus()))
+                .orElseGet(() -> new MashongAttendanceResponse(0));
+
     }
 }
