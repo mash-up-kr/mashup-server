@@ -54,4 +54,10 @@ public class MemberProfileService {
     public List<MemberBirthdayDto> findByBirthDateBetween(LocalDate startDate, LocalDate endDate, Generation generation) {
         return memberProfileRepository.retrieveByBirthDateBetween(startDate, endDate, generation);
     }
+
+    public boolean isBirthdayToday(long memberId) {
+        return memberProfileRepository.findByMemberId(memberId)
+            .filter(memberProfile -> LocalDate.now().equals(memberProfile.getBirthDate()))
+            .isPresent();
+    }
 }

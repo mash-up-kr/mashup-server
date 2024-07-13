@@ -1,13 +1,5 @@
 package kr.mashup.branding.ui.popup;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.annotations.ApiOperation;
 import kr.mashup.branding.domain.popup.PopupType;
 import kr.mashup.branding.facade.popup.MemberPopupFacadeService;
@@ -15,7 +7,10 @@ import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.EmptyResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/member-popups")
@@ -38,7 +33,7 @@ public class MemberPopupController {
 	public ApiResponse<List<PopupType>> getEnabledPopupTypes(
 		@ApiIgnore MemberAuth memberAuth
 	) {
-		return ApiResponse.success(memberPopupFacadeService.getEnabledPopupTypes(memberAuth.getMemberGenerationId()));
+		return ApiResponse.success(memberPopupFacadeService.getEnabledPopupTypes(memberAuth));
 	}
 
 	@ApiOperation(
