@@ -15,18 +15,20 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberBirthdaysResponse {
 
+    private final Boolean isBirthdayToday;
+
     private final MemberBirthdayResponse todayBirthday;
 
     private final List<MemberBirthdayResponse> upcomingBirthdays;
 
-    public static MemberBirthdaysResponse of(Set<Long> sentMemberIds, Map<LocalDate, List<MemberBirthdayDto>> upcomingBirthdays) {
+    public static MemberBirthdaysResponse of(boolean isBirthdayToday, Set<Long> sentMemberIds, Map<LocalDate, List<MemberBirthdayDto>> upcomingBirthdays) {
         List<MemberBirthdayResponse> responses = createResponses(sentMemberIds, upcomingBirthdays);
 
         LocalDate today = LocalDate.now();
         MemberBirthdayResponse todayBirthday = extractTodayBirthday(today, responses);
         List<MemberBirthdayResponse> sortedResponses = sortUpcomingBirthdays(today, responses);
 
-        return new MemberBirthdaysResponse(todayBirthday, sortedResponses);
+        return new MemberBirthdaysResponse(isBirthdayToday, todayBirthday, sortedResponses);
     }
 
     private static List<MemberBirthdayResponse> createResponses(Set<Long> sentMemberIds, Map<LocalDate, List<MemberBirthdayDto>> birthdayDtos) {
