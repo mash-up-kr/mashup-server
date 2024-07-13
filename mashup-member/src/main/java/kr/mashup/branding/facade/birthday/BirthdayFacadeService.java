@@ -45,10 +45,11 @@ public class BirthdayFacadeService {
         Member member = memberService.findMemberById(memberId);
         Generation generation = generationService.getCurrentGeneration(member);
 
+        boolean isBirthdayToday = memberProfileService.isBirthdayToday(memberId);
         Map<LocalDate, List<MemberBirthdayDto>> upcomingBirthdays = calculateUpcomingBirthdays(member, days, generation);
         Set<Long> sentMemberIds = birthdayService.getSentBirthdayCardMemberIds(memberId, generation.getId());
 
-        return MemberBirthdaysResponse.of(sentMemberIds, upcomingBirthdays);
+        return MemberBirthdaysResponse.of(isBirthdayToday, sentMemberIds, upcomingBirthdays);
     }
 
     private Map<LocalDate, List<MemberBirthdayDto>> calculateUpcomingBirthdays(Member member, Integer days, Generation generation) {

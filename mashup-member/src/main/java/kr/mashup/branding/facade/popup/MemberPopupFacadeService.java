@@ -4,7 +4,9 @@ import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.exception.InactiveGenerationException;
 import kr.mashup.branding.domain.popup.MemberPopup;
 import kr.mashup.branding.domain.popup.PopupType;
+import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.service.danggn.DanggnRankingRoundService;
+import kr.mashup.branding.service.member.MemberProfileService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.popup.MemberPopupService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +26,14 @@ public class MemberPopupFacadeService {
 	private final MemberPopupService memberPopupService;
 	private final MemberService memberService;
 	private final DanggnRankingRoundService danggnRankingRoundService;
+	private final MemberProfileService memberProfileService;
 
 	public List<PopupType> getEnabledPopupTypes(
-		Long memberGenerationId
+		MemberAuth memberAuth
 	) {
 
 		List<PopupType> enabledMemberPopupTypes = new ArrayList<>();
-		MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
+		MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberAuth.getMemberGenerationId());
 
 		// 멤버의 기수가 활동 중인 기수가 아닌 경우
 		if (!memberService.isActiveGeneration(memberGeneration)) {
@@ -46,6 +49,11 @@ public class MemberPopupFacadeService {
 		// 당근 1등 리워드 팝업의 경우, 최근 1등인 경우에만 노출
 		if (!danggnRankingRoundService.isLatestFirstPlaceMember(memberGeneration.getGeneration().getNumber(), memberGeneration.getMember().getId())) {
 			enabledMemberPopupTypes.remove(PopupType.DANGGN_REWARD);
+		}
+
+		// 생일 축하 팝업의 경우, 생일자인 경우에만 노출
+		if (!memberProfileService.isBirthdayToday(memberAuth.getMemberId())) {
+			enabledMemberPopupTypes.remove(PopupType.BIRTHDAY_CELEBRATION);
 		}
 
 		return enabledMemberPopupTypes;
