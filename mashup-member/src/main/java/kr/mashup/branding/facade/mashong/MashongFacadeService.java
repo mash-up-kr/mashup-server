@@ -14,6 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class MashongFacadeService {
@@ -148,5 +152,12 @@ public class MashongFacadeService {
         MashongPopcorn mashongPopcorn = mashongPopcornService.findByMemberGenerationId(memberGenerationId);
 
         return PlatformMashongStatusResponse.of(platformMashong, mashongPopcorn);
+    }
+
+    public Long withMashongDaysCount(Long memberGenerationId) {
+        LocalDate now = LocalDate.now();
+        MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
+        Generation generation = memberGeneration.getGeneration();
+        return Duration.between(now, generation.getStartedAt()).toDays();
     }
 }
