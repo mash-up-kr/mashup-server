@@ -14,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 @Service
 @RequiredArgsConstructor
 public class MashongFacadeService {
@@ -148,5 +151,13 @@ public class MashongFacadeService {
         MashongPopcorn mashongPopcorn = mashongPopcornService.findByMemberGenerationId(memberGenerationId);
 
         return PlatformMashongStatusResponse.of(platformMashong, mashongPopcorn);
+    }
+
+    @Transactional(readOnly = true)
+    public Long withMashongDaysCount(Long memberGenerationId) {
+        LocalDate now = LocalDate.now();
+        MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
+        LocalDate generationStartedAt = memberGeneration.getGeneration().getStartedAt();
+        return ChronoUnit.DAYS.between(generationStartedAt, now);
     }
 }

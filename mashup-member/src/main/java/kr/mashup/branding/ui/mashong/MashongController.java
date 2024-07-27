@@ -89,4 +89,11 @@ public class MashongController {
         PlatformMashongStatusResponse result = mashongFacadeService.readCurrentStatus(memberAuth.getMemberGenerationId());
         return ApiResponse.success(result);
     }
+
+    @ApiOperation(value = "매숑이와 함께한 날 Days count")
+    @GetMapping("/with-mashong-days")
+    public ApiResponse<Long> withMashongDays(@ApiIgnore MemberAuth memberAuth) {
+        Long withMashongDays = mashongFacadeService.withMashongDaysCount(memberAuth.getMemberGenerationId());
+        return ApiResponse.success(withMashongDays);
+    }
 }
