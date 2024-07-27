@@ -1,6 +1,9 @@
 package kr.mashup.branding.facade.danggn;
 
-import kr.mashup.branding.domain.danggn.*;
+import kr.mashup.branding.domain.danggn.DanggnRankingReward;
+import kr.mashup.branding.domain.danggn.DanggnRankingRewardStatus;
+import kr.mashup.branding.domain.danggn.DanggnRankingRound;
+import kr.mashup.branding.domain.danggn.DanggnScore;
 import kr.mashup.branding.domain.danggn.Exception.DanggnRankingRewardAlreadyWrittenException;
 import kr.mashup.branding.domain.danggn.Exception.DanggnRankingRewardNotAllowedException;
 import kr.mashup.branding.domain.mashong.MissionStrategyType;
@@ -9,9 +12,11 @@ import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.pushnoti.vo.DanggnRewardUpdatedVo;
 import kr.mashup.branding.domain.randommessage.RandomMessage;
-import kr.mashup.branding.facade.mashong.MashongMissionFacadeService;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.danggn.*;
+import kr.mashup.branding.service.mashong.dto.MissionEventType;
+import kr.mashup.branding.service.mashong.event.MashongMissionEvent;
+import kr.mashup.branding.service.mashong.event.MashongMissionEventPublisher;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.danggn.response.*;
 import kr.mashup.branding.ui.danggn.response.DanggnRankingRoundResponse.DanggnRankingRewardResponse;
@@ -43,7 +48,7 @@ public class DanggnFacadeService {
 
     private final PushNotiEventPublisher pushNotiEventPublisher;
 
-    private final MashongMissionFacadeService mashongMissionFacadeService;
+    private final MashongMissionEventPublisher mashongMissionEventPublisher;
 
     @Transactional
     public DanggnScoreResponse addScore(Long memberGenerationId, Long score) {
@@ -54,9 +59,18 @@ public class DanggnFacadeService {
         danggnScore.addScore(score);
         danggnShakeLogService.createLog(memberGeneration, score);
 
-        //todo: application event publisher 로 변경
-        mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_DANGGN_SHAKE_INDIVIDUAL, memberGeneration, score.doubleValue());
-        mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_DANGGN_SHAKE_TEAM, memberGeneration, score.doubleValue());
+        mashongMissionEventPublisher.publish(new MashongMissionEvent(
+                MissionStrategyType.MASHONG_DANGGN_SHAKE_INDIVIDUAL,
+                memberGeneration,
+                score.doubleValue(),
+                MissionEventType.APPLY
+        ));
+        mashongMissionEventPublisher.publish(new MashongMissionEvent(
+                MissionStrategyType.MASHONG_DANGGN_SHAKE_TEAM,
+                memberGeneration,
+                score.doubleValue(),
+                MissionEventType.APPLY
+        ));
         return DanggnScoreResponse.of(danggnScore.getTotalShakeScore());
     }
 
@@ -67,7 +81,7 @@ public class DanggnFacadeService {
         }
 
         return danggnScoreService.getDanggnScoreOrderedList(generationNumber, danggnRankingRoundId)
-            .stream().map(DanggnMemberRankData::from).collect(Collectors.toList());
+                .stream().map(DanggnMemberRankData::from).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -80,8 +94,8 @@ public class DanggnFacadeService {
 
         Set<Platform> notExistingPlatforms = getNotExistingPlatforms(existingPlatformRankList);
         List<DanggnPlatformRankResponse> notExistingPlatformRankList = notExistingPlatforms.stream()
-            .map(platform -> DanggnPlatformRankResponse.of(platform, 0L))
-            .collect(Collectors.toList());
+                .map(platform -> DanggnPlatformRankResponse.of(platform, 0L))
+                .collect(Collectors.toList());
 
         return Stream.concat(existingPlatformRankList.stream(), notExistingPlatformRankList.stream()).collect(Collectors.toList());
     }
@@ -100,9 +114,9 @@ public class DanggnFacadeService {
     public DanggnRankingRoundsResponse getAllRankingRoundByMemberGeneration(Long memberGenerationId) {
         final MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
         List<DanggnRankingRoundsResponse.DanggnRankingRoundSimpleResponse> simpleResponses = danggnRankingRoundService.findPastAndCurrentByGeneration(memberGeneration.getGeneration())
-            .stream()
-            .map(DanggnRankingRoundsResponse.DanggnRankingRoundSimpleResponse::from)
-            .collect(Collectors.toList());
+                .stream()
+                .map(DanggnRankingRoundsResponse.DanggnRankingRoundSimpleResponse::from)
+                .collect(Collectors.toList());
         return DanggnRankingRoundsResponse.from(simpleResponses);
     }
 
@@ -118,15 +132,15 @@ public class DanggnFacadeService {
 
     @Transactional
     public void writeDanggnRankingRewardComment(
-        Long memberId,
-        Long danggnRankingRewardId,
-        String comment
+            Long memberId,
+            Long danggnRankingRewardId,
+            String comment
     ) {
         DanggnRankingReward danggnRankingReward = danggnRankingRewardService.findById(danggnRankingRewardId);
-        if(danggnRankingReward.getComment() != null) {
+        if (danggnRankingReward.getComment() != null) {
             throw new DanggnRankingRewardAlreadyWrittenException();
         }
-        if(danggnRankingReward.getFirstPlaceRecordMemberId() != memberId) {
+        if (danggnRankingReward.getFirstPlaceRecordMemberId() != memberId) {
             throw new DanggnRankingRewardNotAllowedException();
         }
         danggnRankingRewardService.writeComment(danggnRankingRewardId, comment);
@@ -144,15 +158,15 @@ public class DanggnFacadeService {
 
     private List<DanggnPlatformRankResponse> getExistingPlatformRankList(Integer generationNumber, Long danggnRankingRoundId) {
         return danggnScoreService.getDanggnScorePlatformOrderedList(generationNumber, danggnRankingRoundId).stream()
-            .map(queryResult -> DanggnPlatformRankResponse.of(queryResult.getPlatform(), queryResult.getTotalScore()))
-            .collect(Collectors.toList());
+                .map(queryResult -> DanggnPlatformRankResponse.of(queryResult.getPlatform(), queryResult.getTotalScore()))
+                .collect(Collectors.toList());
     }
 
     private Set<Platform> getNotExistingPlatforms(List<DanggnPlatformRankResponse> existingPlatformRankList) {
         Set<Platform> entirePlatforms = Arrays.stream(Platform.values()).collect(Collectors.toSet());
         Set<Platform> existingPlatforms = existingPlatformRankList.stream()
-            .map(DanggnPlatformRankResponse::getPlatform)
-            .collect(Collectors.toSet());
+                .map(DanggnPlatformRankResponse::getPlatform)
+                .collect(Collectors.toSet());
         entirePlatforms.removeAll(existingPlatforms);
         return entirePlatforms;
     }
@@ -161,7 +175,7 @@ public class DanggnFacadeService {
 
         final DanggnRankingReward reward = danggnRankingRewardService.findByDanggnRankingRoundOrNull(danggnRankingRound);
         final DanggnRankingRewardStatus status =
-            (reward == null || reward.getFirstPlaceRecordMemberId() == null) ? DanggnRankingRewardStatus.FIRST_PLACE_MEMBER_NOT_EXISTED : reward.getRankingRewardStatus();
+                (reward == null || reward.getFirstPlaceRecordMemberId() == null) ? DanggnRankingRewardStatus.FIRST_PLACE_MEMBER_NOT_EXISTED : reward.getRankingRewardStatus();
 
         final Member member = status.hasFirstPlaceMember() ? memberService.getActiveOrThrowById(reward.getFirstPlaceRecordMemberId()) : null;
         final Boolean isFirstPlaceMember = member != null && Objects.equals(memberId, member.getId());

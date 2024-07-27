@@ -6,6 +6,9 @@ import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.service.mashong.*;
 import kr.mashup.branding.service.mashong.dto.LevelUpResult;
+import kr.mashup.branding.service.mashong.dto.MissionEventType;
+import kr.mashup.branding.service.mashong.event.MashongMissionEvent;
+import kr.mashup.branding.service.mashong.event.MashongMissionEventPublisher;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.mashong.response.MashongFeedResponse;
 import kr.mashup.branding.ui.mashong.response.MashongLevelUpResponse;
@@ -19,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MashongFacadeService {
 
     private final MashongAttendanceService mashongAttendanceService;
-    private final MashongMissionFacadeService mashongMissionFacadeService;
     private final MashongPopcornService mashongPopcornService;
     private final MashongMissionLogService mashongMissionLogService;
     private final MashongMissionTeamLogService mashongMissionTeamLogService;
@@ -27,14 +29,25 @@ public class MashongFacadeService {
     private final PlatformMashongService platformMashongService;
     private final PlatformMashongLevelService platformMashongLevelService;
     private final MemberService memberService;
+    private final MashongMissionEventPublisher mashongMissionEventPublisher;
 
     @Transactional
     public Boolean attend(Long memberGenerationId) {
         MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
         Boolean result = mashongAttendanceService.attend(memberGeneration);
         if (result) {
-            mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_ATTENDANCE_INDIVIDUAL, memberGeneration, 1.0);
-            mashongMissionFacadeService.setToValue(MissionStrategyType.MASHONG_ATTENDANCE_TEAN, memberGeneration, getPlatformAttendStatus(memberGeneration.getPlatform(), memberGeneration.getGeneration()));
+            mashongMissionEventPublisher.publish(new MashongMissionEvent(
+                    MissionStrategyType.MASHONG_ATTENDANCE_INDIVIDUAL,
+                    memberGeneration,
+                    1.0,
+                    MissionEventType.APPLY
+            ));
+            mashongMissionEventPublisher.publish(new MashongMissionEvent(
+                    MissionStrategyType.MASHONG_ATTENDANCE_TEAN,
+                    memberGeneration,
+                    getPlatformAttendStatus(memberGeneration.getPlatform(), memberGeneration.getGeneration()),
+                    MissionEventType.SET_TO_VALUE
+            ));
             mashongPopcornService.givePopcorn(memberGenerationId, 1L);
         }
         return result;
@@ -103,12 +116,12 @@ public class MashongFacadeService {
         platformMashongService.feedPopcorn(platformMashong, popcornCount);
         final MashongPopcorn mashongPopcorn = mashongPopcornService.decreasePopcorn(memberGenerationId, popcornCount);
 
-        // TODO: event publisher 로 변경
-        mashongMissionFacadeService.apply(
+        mashongMissionEventPublisher.publish(new MashongMissionEvent(
                 MissionStrategyType.MASHONG_POPCORN_INDIVIDUAL,
                 memberGeneration,
-                popcornCount.doubleValue()
-        );
+                popcornCount.doubleValue(),
+                MissionEventType.APPLY
+        ));
 
         return MashongFeedResponse.of(true, platformMashong, mashongPopcorn);
     }
@@ -126,13 +139,13 @@ public class MashongFacadeService {
             return MashongLevelUpResponse.of(levelUpResult, platformMashong.getLevel());
         }
 
-        // TODO: even publisher 로 변경
         if (levelUpResult.isUpdateLog()) {
-            mashongMissionFacadeService.setToValue(
+            mashongMissionEventPublisher.publish(new MashongMissionEvent(
                     MissionStrategyType.MASHONG_LEVEL_TEAM,
                     memberGeneration,
-                    (double) goalPlatformMashongLevel.getLevel()
-            );
+                    (double) goalPlatformMashongLevel.getLevel(),
+                    MissionEventType.SET_TO_VALUE
+            ));
         }
 
         return MashongLevelUpResponse.of(levelUpResult, goalPlatformMashongLevel);
