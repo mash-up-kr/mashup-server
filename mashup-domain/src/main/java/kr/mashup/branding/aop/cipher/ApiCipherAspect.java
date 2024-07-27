@@ -1,10 +1,10 @@
 package kr.mashup.branding.aop.cipher;
 
+import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.util.CipherUtil;
 import kr.mashup.branding.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,32 +29,31 @@ public class ApiCipherAspect {
     private String cipherTime;
 
     @Before(value = "@annotation(checkApiCipherTime)")
-    public void checkApiCipherTime(CheckApiCipherTime checkApiCipherTime){
+    public void checkApiCipherTime(CheckApiCipherTime checkApiCipherTime) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String encryptedKey = request.getHeader("cipher");
 
-        if(checkApiCipherTime.alwaysRequired()){
-            if(!StringUtils.hasText(encryptedKey)){
-                throw new BadRequestException();
+        if (checkApiCipherTime.alwaysRequired()) {
+            if (!StringUtils.hasText(encryptedKey)) {
+                throw new BadRequestException(ResultCode.BAD_REQUEST);
             }
             checkClientTimeDifference(encryptedKey);
-        }else{
-            if(StringUtils.hasText(encryptedKey)){
+        } else {
+            if (StringUtils.hasText(encryptedKey)) {
                 checkClientTimeDifference(encryptedKey);
             }
         }
     }
 
-    private void checkClientTimeDifference(String auth){
+    private void checkClientTimeDifference(String auth) {
 
         final String clientEpochTime = CipherUtil.decryptAES128(auth, cipherKey);
         final LocalDateTime clientTime = DateUtil.fromEpochString(clientEpochTime);
         final LocalDateTime serverTime = LocalDateTime.now();
         final Long timeDifference = ChronoUnit.SECONDS.between(clientTime, serverTime);
         log.info(timeDifference.toString());
-        if(timeDifference > Long.parseLong(cipherTime)) {
-            throw new BadRequestException();
+        if (timeDifference > Long.parseLong(cipherTime)) {
+            throw new BadRequestException(ResultCode.BAD_REQUEST, String.format("클라이언트 시간 차이가 허용된 범위를 초과했습니다. (%d초)", timeDifference));
         }
     }
-
 }
