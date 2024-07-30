@@ -36,4 +36,4 @@ jobs:
           script: |
             aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 321148231533.dkr.ecr.ap-northeast-2.amazonaws.com
             cd /home/ec2-user/mashup-server/docker/deploy/recruit/dev
-            sh ./deploy-recruit.sh
+            sh ./deploy-recruit.sh $TAG
