@@ -57,7 +57,7 @@ public class MemberBirthdaysResponse {
     private static List<MemberBirthdayResponse> sortUpcomingBirthdays(LocalDate today, List<MemberBirthdayResponse> responses) {
         return responses.stream()
             .filter(response -> !today.equals(response.getDate()))
-            .sorted(Comparator.comparing(MemberBirthdayResponse::getDate).reversed())
+            .sorted(Comparator.comparing(MemberBirthdayResponse::getDate))
             .collect(Collectors.toList());
     }
 }
