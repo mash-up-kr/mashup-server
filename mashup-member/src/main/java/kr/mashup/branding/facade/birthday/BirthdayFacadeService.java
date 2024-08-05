@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,16 +45,17 @@ public class BirthdayFacadeService {
         Member member = memberService.findMemberById(memberId);
         Generation generation = generationService.getCurrentGeneration(member);
 
-        boolean isBirthdayToday = memberProfileService.isBirthdayToday(memberId);
-        Map<LocalDate, List<MemberBirthdayDto>> upcomingBirthdays = calculateUpcomingBirthdays(member, days, generation);
-        Set<Long> sentMemberIds = birthdayService.getSentBirthdayCardMemberIds(memberId, generation.getId());
+        var isBirthdayToday = memberProfileService.isBirthdayToday(memberId);
+        var upcomingBirthdays = calculateUpcomingBirthdays(member, days, generation);
+        var sentMemberIds = birthdayService.getSentBirthdayCardMemberIds(memberId, generation.getId());
 
         return MemberBirthdaysResponse.of(isBirthdayToday, sentMemberIds, upcomingBirthdays);
     }
 
-    private Map<LocalDate, List<MemberBirthdayDto>> calculateUpcomingBirthdays(Member member, Integer days, Generation generation) {
-        LocalDate now = LocalDate.now();
-        return memberProfileService.findByBirthDateBetween(now, now.plusDays(days), generation)
+    private Map<MonthDay, List<MemberBirthdayDto>> calculateUpcomingBirthdays(Member member, Integer days, Generation generation) {
+        MonthDay today = MonthDay.from(LocalDate.now());
+        MonthDay endDay = MonthDay.from(LocalDate.now().plusDays(days));
+        return memberProfileService.findByBirthDateBetween(today, endDay, generation)
             .stream()
             .filter(birthdayDto -> birthdayDto.getMemberId() != member.getId())
             .collect(Collectors.groupingBy(MemberBirthdayDto::getBirthDate));

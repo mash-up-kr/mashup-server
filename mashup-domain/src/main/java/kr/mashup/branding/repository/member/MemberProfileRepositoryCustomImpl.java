@@ -1,12 +1,13 @@
 package kr.mashup.branding.repository.member;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.service.member.MemberBirthdayDto;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.List;
 
 import static kr.mashup.branding.domain.member.QMember.member;
@@ -18,9 +19,9 @@ public class MemberProfileRepositoryCustomImpl implements MemberProfileRepositor
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<MemberBirthdayDto> retrieveByBirthDateBetween(LocalDate startDate, LocalDate endDate, Generation generation) {
+    public List<MemberBirthdayDto> retrieveByBirthDateBetween(MonthDay startDate, MonthDay endDate, Generation generation) {
         return queryFactory
-            .select(Projections.fields(
+            .select(Projections.constructor(
                 MemberBirthdayDto.class,
                 member.id.as("memberId"),
                 member.name.as("name"),
@@ -30,7 +31,18 @@ public class MemberProfileRepositoryCustomImpl implements MemberProfileRepositor
             .from(memberProfile)
             .join(member).on(member.id.eq(memberProfile.memberId))
             .join(memberGeneration).on(member.id.eq(memberGeneration.member.id))
-            .where(memberProfile.birthDate.between(startDate, endDate).and(memberGeneration.generation.eq(generation)))
+            .where(
+                birthDateBetween(startDate, endDate)
+                    .and(memberGeneration.generation.eq(generation))
+            )
             .fetch();
+    }
+
+    private BooleanExpression birthDateBetween(MonthDay startDate, MonthDay endDate) {
+
+        return memberProfile.birthDate.month().gt(startDate.getMonthValue())
+            .or(memberProfile.birthDate.month().eq(startDate.getMonthValue()).and(memberProfile.birthDate.dayOfMonth().goe(startDate.getDayOfMonth())))
+            .and(memberProfile.birthDate.month().lt(endDate.getMonthValue())
+                .or(memberProfile.birthDate.month().eq(endDate.getMonthValue()).and(memberProfile.birthDate.dayOfMonth().loe(endDate.getDayOfMonth()))));
     }
 }
