@@ -58,7 +58,7 @@ public class MemberProfileService {
 
     public boolean isBirthdayToday(long memberId) {
         return memberProfileRepository.findByMemberId(memberId)
-            .filter(memberProfile -> LocalDate.now().equals(memberProfile.getBirthDate()))
+            .filter(memberProfile -> MonthDay.from(LocalDate.now()).equals(MonthDay.from(memberProfile.getBirthDate())))
             .isPresent();
     }
 }
