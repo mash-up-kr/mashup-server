@@ -363,11 +363,13 @@ public class MemberService {
         }
 
         List<Member> senders = memberRepository.findAllActiveByGeneration(generation);
-        senders.removeAll(recipients);
+        // 오늘 생일인 멤버가 한 명뿐인 경우, 그 멤버를 발신자 목록에서 제외
+        if (recipients.size() == 1) {
+            senders.removeAll(recipients);
+        }
 
         return senders;
     }
-
 
     @Transactional
     public void updatePushCheckTime(final Member member) {
