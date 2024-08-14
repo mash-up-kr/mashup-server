@@ -53,7 +53,7 @@ public class BirthdayFacadeService {
     }
 
     private Map<MonthDay, List<MemberBirthdayDto>> calculateUpcomingBirthdays(Member member, Integer days, Generation generation) {
-        MonthDay today = MonthDay.from(LocalDate.now());
+        MonthDay today = MonthDay.now();
         MonthDay endDay = MonthDay.from(LocalDate.now().plusDays(days));
         return memberProfileService.findByBirthDateBetween(today, endDay, generation)
             .stream()

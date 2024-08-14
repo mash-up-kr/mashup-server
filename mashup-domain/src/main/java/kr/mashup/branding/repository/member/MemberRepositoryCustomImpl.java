@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,12 +149,15 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     }
 
     @Override
-    public List<Member> retrieveByBirthDate(Generation generation, LocalDate birthDate) {
+    public List<Member> retrieveByBirthDate(Generation generation, MonthDay monthDay) {
         return queryFactory
             .selectFrom(member)
             .innerJoin(memberProfile).on(memberProfile.memberId.eq(member.id))
-            .innerJoin(memberGeneration).on(memberGeneration.generation.eq(generation))
-            .where(memberProfile.birthDate.eq(birthDate))
+            .innerJoin(memberGeneration).on(memberGeneration.member.eq(member))
+            .where(
+                memberProfile.birthDate.month().eq(monthDay.getMonthValue())
+                    .and(memberProfile.birthDate.dayOfMonth().eq(monthDay.getDayOfMonth()))
+            )
             .fetch();
     }
 }

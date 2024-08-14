@@ -4,7 +4,6 @@ import kr.mashup.branding.service.member.MemberBirthdayDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.MonthDay;
 import java.util.Comparator;
 import java.util.List;
@@ -25,7 +24,7 @@ public class MemberBirthdaysResponse {
     public static MemberBirthdaysResponse of(boolean isBirthdayToday, Set<Long> sentMemberIds, Map<MonthDay, List<MemberBirthdayDto>> upcomingBirthdays) {
         List<MemberBirthdayResponse> responses = createResponses(sentMemberIds, upcomingBirthdays);
 
-        MonthDay today = MonthDay.from(LocalDate.now());
+        MonthDay today = MonthDay.now();
         MemberBirthdayResponse todayBirthday = extractTodayBirthday(today, responses);
         List<MemberBirthdayResponse> sortedResponses = sortUpcomingBirthdays(today, responses);
 

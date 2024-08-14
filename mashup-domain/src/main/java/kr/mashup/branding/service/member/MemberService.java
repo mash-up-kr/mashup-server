@@ -35,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.MonthDay;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -349,14 +350,19 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public List<Member> getAllByBirthdayRecipient(Generation generation) {
-        return memberRepository.retrieveByBirthDate(generation, LocalDate.now());
+        return memberRepository.retrieveByBirthDate(generation, MonthDay.now());
     }
 
     @Transactional(readOnly = true)
     public List<Member> getAllByBirthdaySender(Generation generation) {
 
+        // 생일자가 없는 경우는 푸시 알림을 보내지 않음
+        List<Member> recipients = memberRepository.retrieveByBirthDate(generation, MonthDay.now());
+        if (recipients.isEmpty()) {
+            return List.of();
+        }
+
         List<Member> senders = memberRepository.findAllActiveByGeneration(generation);
-        List<Member> recipients = memberRepository.retrieveByBirthDate(generation, LocalDate.now());
         senders.removeAll(recipients);
 
         return senders;
