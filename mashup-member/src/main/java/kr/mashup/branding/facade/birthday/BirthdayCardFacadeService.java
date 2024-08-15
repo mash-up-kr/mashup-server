@@ -57,7 +57,7 @@ public class BirthdayCardFacadeService {
                 birthdayCard.getSenderMemberName(),
                 birthdayCard.getSenderMemberPlatform().getName(),
                 birthdayCard.getMessage(),
-                birthdayCard.getMessage()
+                birthdayCard.getImageUrl()
             ))
             .collect(Collectors.toList());
 
