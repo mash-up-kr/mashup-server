@@ -31,8 +31,4 @@ public class MemberPopupService {
 		// 페이지에 방문하지 않은 경우(팝업 상태 활성화) && 마지막으로 본 일자가 현재 보다 과거인 경우
 		return memberPopup.get().getIsEnabled() && memberPopup.get().getLastViewedAt().toLocalDate().isBefore(LocalDate.now());
 	}
-
-	public void save(Member member, PopupType popupType) {
-		memberPopupRepository.save(MemberPopup.of(true, LocalDateTime.now().minusDays(1), member, popupType));
-	}
 }
