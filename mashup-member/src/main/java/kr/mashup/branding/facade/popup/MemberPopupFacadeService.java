@@ -1,9 +1,11 @@
 package kr.mashup.branding.facade.popup;
 
+import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.exception.InactiveGenerationException;
 import kr.mashup.branding.domain.popup.MemberPopup;
 import kr.mashup.branding.domain.popup.PopupType;
+import kr.mashup.branding.repository.member.MemberRepository;
 import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.service.danggn.DanggnRankingRoundService;
 import kr.mashup.branding.service.member.MemberProfileService;
@@ -27,6 +29,7 @@ public class MemberPopupFacadeService {
 	private final MemberService memberService;
 	private final DanggnRankingRoundService danggnRankingRoundService;
 	private final MemberProfileService memberProfileService;
+	private final MemberRepository memberRepository;
 
 	public List<PopupType> getEnabledPopupTypes(
 		MemberAuth memberAuth
@@ -90,5 +93,11 @@ public class MemberPopupFacadeService {
 		}
 
 		return memberPopupService.findOrSaveMemberPopupByMemberAndType(memberGeneration.getMember(), popupType);
+	}
+
+	@Transactional
+	public void deleteMemberPopup(Long memberId) {
+		Member member = memberService.findMemberById(memberId);
+		memberPopupService.deleteMemberPopup(member);
 	}
 }
