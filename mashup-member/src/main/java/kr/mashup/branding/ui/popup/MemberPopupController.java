@@ -81,7 +81,7 @@ public class MemberPopupController {
     @DeleteMapping
     public ApiResponse<EmptyResponse> delete(
         @ApiIgnore MemberAuth memberAuth,
-        @Value("${spring.profiles.active}") String activeProfile
+        @ApiIgnore @Value("${spring.profiles.active}") String activeProfile
     ) {
         if (!activeProfile.equals("production")) {
             memberPopupFacadeService.deleteMemberPopup(memberAuth.getMemberId());
