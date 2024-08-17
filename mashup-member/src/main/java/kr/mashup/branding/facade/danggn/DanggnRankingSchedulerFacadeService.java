@@ -52,7 +52,7 @@ public class DanggnRankingSchedulerFacadeService {
                     Member firstScoredMember = firstScore.getMemberGeneration().getMember();
                     DanggnRankingReward danggnRankingReward = DanggnRankingReward.from(firstScoredMember.getId(), currentGeneration.getId());
                     danggnRankingRewardService.save(danggnRankingReward);
-                    memberPopupService.save(firstScoredMember, PopupType.DANGGN_REWARD);
+                    memberPopupService.findOrSaveMemberPopupByMemberAndType(firstScoredMember, PopupType.DANGGN_REWARD);
                 }
             }
         });

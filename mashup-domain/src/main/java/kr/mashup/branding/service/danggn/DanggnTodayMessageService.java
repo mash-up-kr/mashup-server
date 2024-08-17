@@ -1,8 +1,9 @@
 package kr.mashup.branding.service.danggn;
 
-import kr.mashup.branding.domain.danggn.DanggnTodayMessage;
 import kr.mashup.branding.domain.danggn.Exception.DanggnTodayMessageNotFoundException;
-import kr.mashup.branding.repository.danggn.DanggnTodayMessageRepository;
+import kr.mashup.branding.domain.randommessage.RandomMessage;
+import kr.mashup.branding.domain.randommessage.RandomMessageType;
+import kr.mashup.branding.repository.danggn.RandomMessageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,31 +14,31 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DanggnTodayMessageService {
-    private final DanggnTodayMessageRepository danggnTodayMessageRepository;
+    private final RandomMessageRepository randomMessageRepository;
 
-    public List<DanggnTodayMessage> findAll() {
-        return danggnTodayMessageRepository.findAll();
+    public List<RandomMessage> findAll() {
+        return randomMessageRepository.findByType(RandomMessageType.DANGGN);
     }
 
-    public DanggnTodayMessage readTodayMessage(Long id) {
-        return danggnTodayMessageRepository.findById(id).
+    public RandomMessage readTodayMessage(Long id) {
+        return randomMessageRepository.findById(id).
                 orElseThrow(DanggnTodayMessageNotFoundException::new);
     }
 
-    public DanggnTodayMessage createTodayMessage(String message) {
-        DanggnTodayMessage newMessage = DanggnTodayMessage.of(message);
-        danggnTodayMessageRepository.save(newMessage);
+    public RandomMessage createTodayMessage(String message, RandomMessageType randomMessageType) {
+        RandomMessage newMessage = RandomMessage.of(message, randomMessageType);
+        randomMessageRepository.save(newMessage);
 
         return newMessage;
     }
 
-    public DanggnTodayMessage updateTodayMessage(DanggnTodayMessage updateMessage, String message) {
+    public RandomMessage updateTodayMessage(RandomMessage updateMessage, String message) {
         updateMessage.updateMessage(message);
 
         return updateMessage;
     }
 
-    public void deleteTodayMessage(DanggnTodayMessage message) {
-        danggnTodayMessageRepository.delete(message);
+    public void deleteTodayMessage(RandomMessage message) {
+        randomMessageRepository.delete(message);
     }
 }

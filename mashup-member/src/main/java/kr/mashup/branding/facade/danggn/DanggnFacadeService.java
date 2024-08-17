@@ -3,10 +3,13 @@ package kr.mashup.branding.facade.danggn;
 import kr.mashup.branding.domain.danggn.*;
 import kr.mashup.branding.domain.danggn.Exception.DanggnRankingRewardAlreadyWrittenException;
 import kr.mashup.branding.domain.danggn.Exception.DanggnRankingRewardNotAllowedException;
+import kr.mashup.branding.domain.mashong.MissionStrategyType;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.pushnoti.vo.DanggnRewardUpdatedVo;
+import kr.mashup.branding.domain.randommessage.RandomMessage;
+import kr.mashup.branding.facade.mashong.MashongMissionFacadeService;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.danggn.*;
 import kr.mashup.branding.service.member.MemberService;
@@ -40,6 +43,8 @@ public class DanggnFacadeService {
 
     private final PushNotiEventPublisher pushNotiEventPublisher;
 
+    private final MashongMissionFacadeService mashongMissionFacadeService;
+
     @Transactional
     public DanggnScoreResponse addScore(Long memberGenerationId, Long score) {
         final MemberGeneration memberGeneration = memberService.findByMemberGenerationId(memberGenerationId);
@@ -48,6 +53,10 @@ public class DanggnFacadeService {
         DanggnScore danggnScore = danggnScoreService.findByMemberGenerationOrSave(memberGeneration, currentDanggnRankingRoundId);
         danggnScore.addScore(score);
         danggnShakeLogService.createLog(memberGeneration, score);
+
+        //todo: application event publisher 로 변경
+        mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_DANGGN_SHAKE_INDIVIDUAL, memberGeneration, score.doubleValue());
+        mashongMissionFacadeService.apply(MissionStrategyType.MASHONG_DANGGN_SHAKE_TEAM, memberGeneration, score.doubleValue());
         return DanggnScoreResponse.of(danggnScore.getTotalShakeScore());
     }
 
@@ -82,9 +91,9 @@ public class DanggnFacadeService {
     }
 
     public DanggnRandomMessageResponse getRandomTodayMessage() {
-        List<DanggnTodayMessage> danggnTodayMessageList = danggnTodayMessageService.findAll();
-        Collections.shuffle(danggnTodayMessageList);
-        return DanggnRandomMessageResponse.from(danggnTodayMessageList.get(0));
+        List<RandomMessage> randomMessageList = danggnTodayMessageService.findAll();
+        Collections.shuffle(randomMessageList);
+        return DanggnRandomMessageResponse.from(randomMessageList.get(0));
     }
 
     @Transactional

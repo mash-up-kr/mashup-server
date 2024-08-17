@@ -32,7 +32,7 @@ public class MemberPopupService {
 		return memberPopup.get().getIsEnabled() && memberPopup.get().getLastViewedAt().toLocalDate().isBefore(LocalDate.now());
 	}
 
-	public void save(Member member, PopupType popupType) {
-		memberPopupRepository.save(MemberPopup.of(true, LocalDateTime.now().minusDays(1), member, popupType));
+	public void deleteMemberPopup(Member member) {
+		memberPopupRepository.deleteByMember(member);
 	}
 }

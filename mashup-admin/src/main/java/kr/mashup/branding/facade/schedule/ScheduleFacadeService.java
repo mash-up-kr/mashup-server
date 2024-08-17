@@ -61,7 +61,7 @@ public class ScheduleFacadeService {
         final DateRange dateRange
                 = DateRange.of(request.getStartedAt(), request.getEndedAt());
         final ScheduleCreateDto createDto =
-                ScheduleCreateDto.of(request.getName(), dateRange, request.getLatitude(), request.getLongitude(), request.getRoadAddress(), request.getDetailAddress(), request.getScheduleType());
+                ScheduleCreateDto.of(request.getName(), dateRange, request.getLatitude(), request.getLongitude(), request.getRoadAddress(), request.getDetailAddress(), request.getScheduleType(), request.getNotice());
         final Schedule schedule
                 = scheduleService.create(generation, createDto);
 
@@ -103,7 +103,7 @@ public class ScheduleFacadeService {
         final DateRange dateRange = DateRange.of(request.getStartedAt(), request.getEndedAt());
         final ScheduleCreateDto scheduleCreateDto =
                 ScheduleCreateDto.of(request.getName(), dateRange, request.getLatitude(), request.getLongitude(),
-                        request.getRoadAddress(), request.getDetailAddress(), request.getScheduleType());
+                        request.getRoadAddress(), request.getDetailAddress(), request.getScheduleType(), request.getNotice());
 
         schedule = scheduleService.updateSchedule(schedule, generation, scheduleCreateDto);
 

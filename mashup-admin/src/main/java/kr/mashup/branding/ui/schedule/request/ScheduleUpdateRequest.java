@@ -34,6 +34,8 @@ public class ScheduleUpdateRequest {
 
     private String detailAddress;
 
+    private String notice;
+
     private ScheduleType scheduleType = ScheduleType.ALL;
 
     @NotEmpty

@@ -1,36 +1,23 @@
 package kr.mashup.branding.domain.schedule;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.validation.constraints.NotNull;
-
-import kr.mashup.branding.domain.member.Platform;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.util.Assert;
-
 import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.generation.Generation;
+import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.schedule.exception.ScheduleAlreadyPublishedException;
 import kr.mashup.branding.util.DateRange;
 import kr.mashup.branding.util.DateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.util.Assert;
 
-import static kr.mashup.branding.domain.schedule.ScheduleType.*;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -70,17 +57,19 @@ public class Schedule extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ScheduleType scheduleType;
 
+    private String notice;
+
     @CreatedBy
     private String createdBy;
 
     @LastModifiedBy
     private String updatedBy;
 
-    public static Schedule of(Generation generation, String name, DateRange dateRange, Location location, ScheduleType scheduleType) {
-        return new Schedule(generation, name, dateRange, location, scheduleType);
+    public static Schedule of(Generation generation, String name, DateRange dateRange, Location location, ScheduleType scheduleType, String notice) {
+        return new Schedule(generation, name, dateRange, location, scheduleType, notice);
     }
 
-    public Schedule(Generation generation, String name, DateRange dateRange, Location location, ScheduleType scheduleType) {
+    public Schedule(Generation generation, String name, DateRange dateRange, Location location, ScheduleType scheduleType, String notice) {
         checkStartBeforeOrEqualEnd(dateRange.getStart(), dateRange.getEnd());
 
         this.generation = generation;
@@ -91,33 +80,34 @@ public class Schedule extends BaseEntity {
         this.isCounted = false; // 기본값은 false 로 설정(배치가 수행되지 않음)
         this.location = location;
         this.scheduleType = scheduleType;
+        this.notice = notice;
     }
 
-    public void publishSchedule(){
-        if(status == ScheduleStatus.PUBLIC){
+    public void publishSchedule() {
+        if (status == ScheduleStatus.PUBLIC) {
             throw new ScheduleAlreadyPublishedException();
         }
         this.status = ScheduleStatus.PUBLIC;
         this.publishedAt = LocalDateTime.now();
     }
 
-    public void changeGeneration(Generation generation){
+    public void changeGeneration(Generation generation) {
         this.generation = generation;
     }
 
-    public void hide(){
+    public void hide() {
         // TODO: 채워넣기
-        if(status != ScheduleStatus.PUBLIC){
+        if (status != ScheduleStatus.PUBLIC) {
 
         }
-        if(startedAt.isBefore(LocalDateTime.now())){
+        if (startedAt.isBefore(LocalDateTime.now())) {
 
         }
         this.status = ScheduleStatus.ADMIN_ONLY;
         this.publishedAt = null;
     }
 
-    public void addEvent(Event event){
+    public void addEvent(Event event) {
         this.eventList.add(event);
     }
 
@@ -164,19 +154,36 @@ public class Schedule extends BaseEntity {
         this.isCounted = isCounted;
     }
 
-    public Boolean isShowable() { return this.status == ScheduleStatus.PUBLIC; }
+    public Boolean isShowable() {
+        return this.status == ScheduleStatus.PUBLIC;
+    }
 
     public Boolean isOnline() {
         return this.location == null || this.location.getLatitude() == null || this.location.getLongitude() == null;
     }
 
     public Boolean checkAvailabilityByPlatform(Platform platform) {
-        if (scheduleType == ALL) return true;
-        if (scheduleType == SPRING && platform == Platform.SPRING) return true;
-        if (scheduleType == IOS && platform == Platform.IOS) return true;
-        if (scheduleType == DESIGN && platform == Platform.DESIGN) return true;
-        if (scheduleType == WEB && platform == Platform.WEB) return true;
-        if (scheduleType == NODE && platform == Platform.NODE) return true;
-        return false;
+        switch (scheduleType) {
+            case ALL:
+                return true;
+            case SPRING:
+                return platform == Platform.SPRING;
+            case IOS:
+                return platform == Platform.IOS;
+            case DESIGN:
+                return platform == Platform.DESIGN;
+            case WEB:
+                return platform == Platform.WEB;
+            case NODE:
+                return platform == Platform.NODE;
+            case ANDROID:
+                return platform == Platform.ANDROID;
+            default:
+                return false;
+        }
+    }
+
+    public void updateNotice(String notice) {
+        this.notice = notice;
     }
 }

@@ -36,4 +36,3 @@ public class MemberGenerationRepositoryCustomImpl implements MemberGenerationRep
             .fetch();
     }
 }
-

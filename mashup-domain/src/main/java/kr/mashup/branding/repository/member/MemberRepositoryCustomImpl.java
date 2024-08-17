@@ -23,11 +23,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.ArrayList;
 import java.util.List;
 
 import static kr.mashup.branding.domain.member.QMember.member;
 import static kr.mashup.branding.domain.member.QMemberGeneration.memberGeneration;
+import static kr.mashup.branding.domain.member.QMemberProfile.memberProfile;
 import static kr.mashup.branding.domain.scorehistory.QScoreHistory.scoreHistory;
 
 @RequiredArgsConstructor
@@ -145,5 +147,17 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .where(member.status.eq(MemberStatus.ACTIVE))
                 .fetch();
     }
-}
 
+    @Override
+    public List<Member> retrieveByBirthDate(Generation generation, MonthDay monthDay) {
+        return queryFactory
+            .selectFrom(member)
+            .innerJoin(memberProfile).on(memberProfile.memberId.eq(member.id))
+            .innerJoin(memberGeneration).on(memberGeneration.member.eq(member))
+            .where(
+                memberProfile.birthDate.month().eq(monthDay.getMonthValue())
+                    .and(memberProfile.birthDate.dayOfMonth().eq(monthDay.getDayOfMonth()))
+            )
+            .fetch();
+    }
+}

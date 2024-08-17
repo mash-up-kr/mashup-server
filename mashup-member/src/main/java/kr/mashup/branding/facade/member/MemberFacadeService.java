@@ -151,7 +151,7 @@ public class MemberFacadeService {
     @Transactional(readOnly = true)
     public MemberGenerationsResponse findMemberGenerationByMemberId(Long memberId) {
         Member member = memberService.getActiveOrThrowById(memberId);
-        return MemberGenerationsResponse.of(memberService.findMemberGenerationByMemberId(member));
+        return MemberGenerationsResponse.of(memberService.findMemberGenerationByMember(member));
     }
 
     @Transactional

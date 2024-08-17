@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.List;
 
 import static kr.mashup.branding.repository.member.MemberRepositoryCustomImpl.MemberScoreQueryResult;
@@ -22,4 +23,6 @@ public interface MemberRepositoryCustom {
     List<Member> findAllByCurrentGenerationAt(LocalDate at);
 
     List<Member> findAllActiveByGeneration(Generation generation);
+
+    List<Member> retrieveByBirthDate(Generation generation, MonthDay monthDay);
 }

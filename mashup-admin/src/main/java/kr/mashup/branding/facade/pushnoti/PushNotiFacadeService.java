@@ -3,6 +3,7 @@ package kr.mashup.branding.facade.pushnoti;
 import kr.mashup.branding.domain.pushnoti.DataKeyType;
 import kr.mashup.branding.domain.pushnoti.LinkType;
 import kr.mashup.branding.domain.pushnoti.vo.PushNotiSendVo;
+import kr.mashup.branding.domain.pushnoti.vo.PushType;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class PushNotiFacadeService {
         pushNotiEventPublisher.publishPushNotiSendEvent(
             new PushNotiSendVo(
                 memberService.getAllPushNotiTargetableMembers(),
+                PushType.OTHER,
                 title,
                 body,
                 Map.of(DataKeyType.LINK.getKey(), LinkType.MAIN.toString())
@@ -39,6 +41,7 @@ public class PushNotiFacadeService {
         pushNotiEventPublisher.publishPushNotiSendEvent(
             new PushNotiSendVo(
                 memberService.getPushNotiTargetableMembers(memberIds),
+                PushType.OTHER,
                 title,
                 body,
                 Map.of(DataKeyType.valueOf(keyType).getKey(), LinkType.valueOf(linkType).toString())

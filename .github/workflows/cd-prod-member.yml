@@ -1,0 +1,37 @@
+name: Mash-Up Member Real CD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    name: 운영 환경 production 배포한다
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if actor is admin
+        id: check-admin
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          user_login=${{ github.actor }}
+          repo=${{ github.repository }}
+          response=$(gh api repos/$repo/collaborators/$user_login/permission -q .permission)
+          
+          if [[ "$response" != "admin" ]]; then
+            echo "이 워크플로우는 관리자만 실행할 수 있습니다."
+            exit 1
+          fi
+
+      - name: Excuting remote ssh commands
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          TAG: ${{ inputs.tag }}
+        with:
+          host: ${{ secrets.REMOTE_IP }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.REMOTE_PRIVATE_KEY }}
+          envs: TAG
+          script: |
+            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 321148231533.dkr.ecr.ap-northeast-2.amazonaws.com
+            cd /home/ec2-user/mashup-server/docker/deploy/member/prod
+            sh ./deploy-member.sh
