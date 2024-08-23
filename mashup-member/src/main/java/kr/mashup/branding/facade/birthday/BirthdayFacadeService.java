@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.MonthDay;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,7 +58,7 @@ public class BirthdayFacadeService {
         MonthDay endDay = MonthDay.from(LocalDate.now().plusDays(days));
         return memberProfileService.findByBirthDateBetween(today, endDay, generation)
             .stream()
-            .filter(birthdayDto -> birthdayDto.getMemberId() != member.getId())
+            .filter(birthdayDto -> !Objects.equals(birthdayDto.getMemberId(), member.getId()))
             .collect(Collectors.groupingBy(MemberBirthdayDto::getBirthDate));
     }
 
