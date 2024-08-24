@@ -37,7 +37,7 @@ public class MashongMissionController {
     public ApiResponse<List<MissionStatus>> missionStatusList(
             @ApiIgnore MemberAuth memberAuth
     ) {
-        return ApiResponse.success(mashongMissionFacadeService.missionStatusList(memberAuth.getMemberGenerationId()));
+        return ApiResponse.success(mashongMissionFacadeService.getMissionStatusList(memberAuth.getMemberGenerationId()));
     }
 
     @ApiOperation(value = "매숑이 출석 현황")
