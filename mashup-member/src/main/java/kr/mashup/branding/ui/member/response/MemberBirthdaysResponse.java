@@ -4,7 +4,7 @@ import kr.mashup.branding.service.member.MemberBirthdayDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -21,17 +21,17 @@ public class MemberBirthdaysResponse {
 
     private final List<MemberBirthdayResponse> upcomingBirthdays;
 
-    public static MemberBirthdaysResponse of(boolean isBirthdayToday, Set<Long> sentMemberIds, Map<LocalDate, List<MemberBirthdayDto>> upcomingBirthdays) {
+    public static MemberBirthdaysResponse of(boolean isBirthdayToday, Set<Long> sentMemberIds, Map<MonthDay, List<MemberBirthdayDto>> upcomingBirthdays) {
         List<MemberBirthdayResponse> responses = createResponses(sentMemberIds, upcomingBirthdays);
 
-        LocalDate today = LocalDate.now();
+        MonthDay today = MonthDay.now();
         MemberBirthdayResponse todayBirthday = extractTodayBirthday(today, responses);
         List<MemberBirthdayResponse> sortedResponses = sortUpcomingBirthdays(today, responses);
 
         return new MemberBirthdaysResponse(isBirthdayToday, todayBirthday, sortedResponses);
     }
 
-    private static List<MemberBirthdayResponse> createResponses(Set<Long> sentMemberIds, Map<LocalDate, List<MemberBirthdayDto>> birthdayDtos) {
+    private static List<MemberBirthdayResponse> createResponses(Set<Long> sentMemberIds, Map<MonthDay, List<MemberBirthdayDto>> birthdayDtos) {
         return birthdayDtos.entrySet().stream()
             .map(entry -> new MemberBirthdayResponse(
                 entry.getKey(),
@@ -47,17 +47,17 @@ public class MemberBirthdaysResponse {
             .collect(Collectors.toList());
     }
 
-    private static MemberBirthdayResponse extractTodayBirthday(LocalDate today, List<MemberBirthdayResponse> responses) {
+    private static MemberBirthdayResponse extractTodayBirthday(MonthDay today, List<MemberBirthdayResponse> responses) {
         return responses.stream()
             .filter(response -> today.equals(response.getDate()))
             .findFirst()
             .orElse(null);
     }
 
-    private static List<MemberBirthdayResponse> sortUpcomingBirthdays(LocalDate today, List<MemberBirthdayResponse> responses) {
+    private static List<MemberBirthdayResponse> sortUpcomingBirthdays(MonthDay today, List<MemberBirthdayResponse> responses) {
         return responses.stream()
             .filter(response -> !today.equals(response.getDate()))
-            .sorted(Comparator.comparing(MemberBirthdayResponse::getDate).reversed())
+            .sorted(Comparator.comparing(MemberBirthdayResponse::getDate))
             .collect(Collectors.toList());
     }
 }

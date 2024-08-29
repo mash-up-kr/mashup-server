@@ -1,16 +1,18 @@
 package kr.mashup.branding.ui.member.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
 public class MemberBirthdayResponse {
 
-    private final LocalDate date;
+    @JsonFormat(pattern = "MM-dd")
+    private final MonthDay date;
     private final List<Member> members;
 
     @Getter

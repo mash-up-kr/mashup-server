@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.List;
 
 @Service
@@ -51,13 +52,14 @@ public class MemberProfileService {
                 .orElseGet(() -> memberProfileRepository.save(MemberProfile.from(memberId)));
     }
 
-    public List<MemberBirthdayDto> findByBirthDateBetween(LocalDate startDate, LocalDate endDate, Generation generation) {
+    public List<MemberBirthdayDto> findByBirthDateBetween(MonthDay startDate, MonthDay endDate, Generation generation) {
         return memberProfileRepository.retrieveByBirthDateBetween(startDate, endDate, generation);
     }
 
     public boolean isBirthdayToday(long memberId) {
         return memberProfileRepository.findByMemberId(memberId)
-            .filter(memberProfile -> LocalDate.now().equals(memberProfile.getBirthDate()))
+            .filter(memberProfile -> memberProfile.getBirthDate() != null)
+            .filter(memberProfile -> MonthDay.now().equals(MonthDay.from(memberProfile.getBirthDate())))
             .isPresent();
     }
 }

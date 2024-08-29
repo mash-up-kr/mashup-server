@@ -4,6 +4,8 @@ import kr.mashup.branding.domain.exception.UnauthorizedException;
 import kr.mashup.branding.security.JwtService;
 import kr.mashup.branding.security.MemberAuth;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -15,9 +17,11 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class MemberAuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtService jwtService;
+    public static final String MDC_MEMBER_ID = "memberId";
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -38,6 +42,8 @@ public class MemberAuthArgumentResolver implements HandlerMethodArgumentResolver
         if (memberId == null || memberGenerationId == null) {
             throw new UnauthorizedException();
         }
+
+        MDC.put(MDC_MEMBER_ID, String.valueOf(memberId));
         return MemberAuth.of(memberId, memberGenerationId);
     }
 }
