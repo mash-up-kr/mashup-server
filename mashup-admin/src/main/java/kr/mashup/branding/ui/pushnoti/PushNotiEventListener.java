@@ -39,7 +39,7 @@ public class PushNotiEventListener {
             pushNotiService.sendPushNotification(event);
         }catch (Exception ignored){
             log.error("[SEND_PUSH_FAIL] failed to send push memberIds {} , title {} , body {}",
-                    extractMemberIds(event), event.getTitle(), event.getBody());
+                extractMemberIds(event), event.getTitle(), event.getBody(), ignored);
         }
     }
 
