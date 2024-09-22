@@ -5,3 +5,9 @@ springfox:
   documentation:
     enabled: false
 golden-danggn-percent: 1
+
+aws:
+  s3:
+    birthday:
+      bucket-name: ENC(A5LA3eJ87Uq1p1Ym2tcgoK0Tf+xOqiT6kzqA9gAMv6yaKOAKOVCBx9m1YGWZbZ1PED8rR9xbygwydn7hqyKN/Q==)
+      expires-in: 120 # 2 minutes

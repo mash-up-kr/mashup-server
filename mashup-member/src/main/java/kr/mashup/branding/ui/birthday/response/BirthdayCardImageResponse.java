@@ -5,6 +5,6 @@ import lombok.Value;
 
 @Getter
 @Value(staticConstructor = "of")
-public class BirthdayCardDefaultImageResponse {
+public class BirthdayCardImageResponse {
     String imageUrl;
 }

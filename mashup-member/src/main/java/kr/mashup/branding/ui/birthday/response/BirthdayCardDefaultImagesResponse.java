@@ -8,5 +8,5 @@ import java.util.List;
 @Getter
 @Value(staticConstructor = "of")
 public class BirthdayCardDefaultImagesResponse {
-    List<BirthdayCardDefaultImageResponse> defaultImages;
+    List<BirthdayCardImageResponse> defaultImages;
 }
