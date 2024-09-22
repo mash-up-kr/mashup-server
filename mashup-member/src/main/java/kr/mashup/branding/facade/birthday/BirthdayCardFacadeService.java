@@ -4,14 +4,16 @@ import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.randommessage.RandomMessage;
 import kr.mashup.branding.service.birthday.BirthdayCardService;
+import kr.mashup.branding.service.birthday.FileService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.ui.birthday.request.BirthdayCardRequest;
-import kr.mashup.branding.ui.birthday.response.BirthdayCardDefaultImageResponse;
+import kr.mashup.branding.ui.birthday.response.BirthdayCardImageResponse;
 import kr.mashup.branding.ui.birthday.response.BirthdayCardDefaultImagesResponse;
 import kr.mashup.branding.ui.birthday.response.BirthdayCardResponse;
 import kr.mashup.branding.ui.birthday.response.BirthdayCardsResponse;
 import kr.mashup.branding.ui.danggn.response.DanggnRandomMessageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,15 +27,27 @@ public class BirthdayCardFacadeService {
 
     private final BirthdayCardService birthdayCardService;
     private final MemberService memberService;
+    private final FileService fileService;
+
+    @Value("${aws.s3.birthday.bucket-name}")
+    private String bucketName;
+
+    @Value("${aws.s3.birthday.expires-in}")
+    private long expiresIn;
 
     @Transactional(readOnly = true)
     public BirthdayCardDefaultImagesResponse getDefault() {
-        List<BirthdayCardDefaultImageResponse> cardImages = birthdayCardService.getDefault()
+        List<BirthdayCardImageResponse> cardImages = birthdayCardService.getDefault()
             .stream()
-            .map(cardImage -> BirthdayCardDefaultImageResponse.of(cardImage.getImageUrl()))
+            .map(cardImage -> BirthdayCardImageResponse.of(cardImage.getImageUrl()))
             .collect(Collectors.toList());
 
         return BirthdayCardDefaultImagesResponse.of(cardImages);
+    }
+
+    public BirthdayCardImageResponse generatePresignedUrl(long memberId) {
+
+        return BirthdayCardImageResponse.of(fileService.generatePresignedUrl(bucketName, String.valueOf(memberId), expiresIn));
     }
 
     @Transactional

@@ -6,6 +6,7 @@ import kr.mashup.branding.security.MemberAuth;
 import kr.mashup.branding.ui.ApiResponse;
 import kr.mashup.branding.ui.birthday.request.BirthdayCardRequest;
 import kr.mashup.branding.ui.birthday.response.BirthdayCardDefaultImagesResponse;
+import kr.mashup.branding.ui.birthday.response.BirthdayCardImageResponse;
 import kr.mashup.branding.ui.birthday.response.BirthdayCardsResponse;
 import kr.mashup.branding.ui.danggn.response.DanggnRandomMessageResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,15 @@ public class BirthdayCardController {
     public ApiResponse<BirthdayCardDefaultImagesResponse> getDefault() {
         final BirthdayCardDefaultImagesResponse response
             = birthdayCardFacadeService.getDefault();
+
+        return ApiResponse.success(response);
+    }
+
+    @ApiOperation("생일카드 이미지 업로드용 Presigned URL 발급")
+    @GetMapping("/images/presigned-url")
+    public ApiResponse<BirthdayCardImageResponse> generatePresignedUrl(@ApiIgnore MemberAuth memberAuth) {
+        final BirthdayCardImageResponse response
+            = birthdayCardFacadeService.generatePresignedUrl(memberAuth.getMemberId());
 
         return ApiResponse.success(response);
     }
