@@ -53,7 +53,7 @@ public class BirthdayCardFacadeService {
     @Transactional
     public void send(Long memberId, BirthdayCardRequest request) {
         Member senderMember = memberService.findMemberById(memberId);
-        MemberGeneration latestMemberGeneration = memberService.getCurrentMemberGeneration(senderMember);
+        MemberGeneration latestMemberGeneration = memberService.getLatestMemberGeneration(senderMember);
 
         birthdayCardService.checkAlreadySent(request.getRecipientMemberId(), senderMember, latestMemberGeneration);
         birthdayCardService.send(request.getRecipientMemberId(), senderMember, latestMemberGeneration, request.getMessage(), request.getImageUrl());
@@ -62,7 +62,7 @@ public class BirthdayCardFacadeService {
     @Transactional(readOnly = true)
     public BirthdayCardsResponse getMy(Long memberId) {
         Member member = memberService.findMemberById(memberId);
-        MemberGeneration generation = memberService.getCurrentMemberGeneration(member);
+        MemberGeneration generation = memberService.getLatestMemberGeneration(member);
 
         List<BirthdayCardResponse> birthdayCards = birthdayCardService.getMy(member, generation)
             .stream()

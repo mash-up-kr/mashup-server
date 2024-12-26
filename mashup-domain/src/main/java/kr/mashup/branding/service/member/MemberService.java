@@ -4,6 +4,7 @@ import kr.mashup.branding.domain.BaseEntity;
 import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.exception.BadRequestException;
 import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
+import kr.mashup.branding.domain.exception.NotFoundException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
@@ -340,7 +341,12 @@ public class MemberService {
             .forEach(MemberGeneration::dropOut);
     }
 
-    public MemberGeneration getCurrentMemberGeneration(Member member) {
+    public MemberGeneration getLatestMemberGeneration(long memberId) {
+        return memberGenerationRepository.findLatestByMemberId(memberId)
+            .orElseThrow(NotFoundException::new);
+    }
+
+    public MemberGeneration getLatestMemberGeneration(Member member) {
         return member.getMemberGenerations()
             .stream()
             .max(Comparator.comparingInt(mg -> mg.getGeneration().getNumber()))
