@@ -7,8 +7,6 @@ import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberInvalidInviteCodeException;
-import kr.mashup.branding.domain.scorehistory.ScoreHistory;
-import kr.mashup.branding.domain.scorehistory.ScoreType;
 import kr.mashup.branding.security.JwtService;
 import kr.mashup.branding.service.invite.InviteService;
 import kr.mashup.branding.service.member.MemberCreateDto;
@@ -20,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -87,10 +84,6 @@ public class MemberFacadeService {
         final Member member = memberService.save(memberCreateDto);
         final String token = getToken(member);
         Platform latestPlatform = memberService.getLatestPlatform(member);
-
-        // 회원가입 시점에 기본 활동 점수 부여
-        ScoreHistory scoreHistory = ScoreHistory.of(ScoreType.DEFAULT, member, LocalDateTime.now(), "", generation, null);
-        scoreHistoryService.save(scoreHistory);
 
         return AccessResponse.of(member,latestPlatform, token);
     }
