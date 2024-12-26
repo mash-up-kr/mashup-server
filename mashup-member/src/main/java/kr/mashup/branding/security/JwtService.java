@@ -22,12 +22,11 @@ public class JwtService {
     private String secretKey;
 
     public static final String CLAIM_NAME_MEMBER_ID = "MemberId";
-    public static final String CLAIM_NAME_MEMBER_GENERATION_ID = "MemberGenerationId";
 
     private Algorithm algorithm;
     private JWTVerifier jwtVerifier;
 
-    public String encode(Long memberId, Long memberGenerationId) {
+    public String encode(Long memberId) {
 
         LocalDateTime expiredAt = LocalDateTime.now().plusWeeks(4L);
 
@@ -35,7 +34,6 @@ public class JwtService {
 
         return JWT.create()
             .withClaim(CLAIM_NAME_MEMBER_ID, memberId)
-            .withClaim(CLAIM_NAME_MEMBER_GENERATION_ID, memberGenerationId)
             .withExpiresAt(date)
             .sign(algorithm);
     }
@@ -43,10 +41,7 @@ public class JwtService {
     public Map<String, Long> decode(String token) {
         try {
             DecodedJWT jwt = jwtVerifier.verify(token);
-            return Map.of(
-                CLAIM_NAME_MEMBER_ID, jwt.getClaim(CLAIM_NAME_MEMBER_ID).asLong(),
-                CLAIM_NAME_MEMBER_GENERATION_ID, jwt.getClaim(CLAIM_NAME_MEMBER_GENERATION_ID).asLong()
-            );
+            return Map.of(CLAIM_NAME_MEMBER_ID, jwt.getClaim(CLAIM_NAME_MEMBER_ID).asLong());
         } catch (JWTVerificationException e) {
             log.warn("Failed to decode jwt. token: {}", token, e);
             throw new UnauthorizedException();
