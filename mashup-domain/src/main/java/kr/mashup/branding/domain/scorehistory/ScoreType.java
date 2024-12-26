@@ -7,9 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public enum ScoreType {
-    ATTENDANCE("전체 세미나 출석", 0.0),
-    ABSENT("전체 세미나 결석", -1.0),
-    LATE("전체 세미나 지각", -0.5),
+    ATTENDANCE("전체 세미나 출석", 1.0),
+    ABSENT("전체 세미나 결석", 0.0),
+    LATE("전체 세미나 지각", 0.5),
     DEPLOY_FAILURE("프로젝트 배포 실패", -0.5),
     @Deprecated
     DEPLOY_SUCCESS("프로젝트 배포 성공", 1.0),
