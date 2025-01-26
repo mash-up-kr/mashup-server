@@ -20,4 +20,13 @@ public class AsyncConfig {
         return taskExecutor;
     }
 
+    @Bean(name = ThreadPoolName.MASHONG_MISSION_THREAD_POOL)
+    public Executor mashongMissionThreadPoolTaskExecutor() {
+        ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+        taskExecutor.setCorePoolSize(3);
+        taskExecutor.setMaxPoolSize(30);
+        taskExecutor.setQueueCapacity(100);
+        taskExecutor.setThreadNamePrefix("Executor-");
+        return taskExecutor;
+    }
 }
