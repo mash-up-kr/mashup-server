@@ -35,4 +35,16 @@ public class MemberGenerationRepositoryCustomImpl implements MemberGenerationRep
             .where(member.id.in(memberIds), generation.number.eq(generationNumber))
             .fetch();
     }
+
+    public Optional<MemberGeneration> findLatestByMemberId(Long memberId) {
+        return Optional.ofNullable(queryFactory
+            .selectFrom(memberGeneration)
+            .join(memberGeneration.member, member)
+            .join(memberGeneration.generation, generation)
+            .where(member.id.eq(memberId))
+            .orderBy(generation.number.desc())
+            .limit(1)
+            .fetchFirst()
+        );
+    }
 }

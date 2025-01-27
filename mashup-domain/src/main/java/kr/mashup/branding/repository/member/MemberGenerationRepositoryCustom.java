@@ -9,4 +9,6 @@ public interface MemberGenerationRepositoryCustom {
     Optional<MemberGeneration> findByMemberIdAndGenerationNumber(Long memberId, Integer generationNumber);
 
     List<MemberGeneration> findByMemberIdsAndGenerationNumber(List<Long> memberIds, Integer generationNumber);
+
+    Optional<MemberGeneration> findLatestByMemberId(Long memberId);
 }

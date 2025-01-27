@@ -1,12 +1,5 @@
 package kr.mashup.branding.facade.member;
 
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import kr.mashup.branding.domain.exception.GenerationIntegrityFailException;
 import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.invite.Invite;
@@ -14,26 +7,18 @@ import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.member.exception.MemberInvalidInviteCodeException;
-import kr.mashup.branding.domain.scorehistory.ScoreHistory;
-import kr.mashup.branding.domain.scorehistory.ScoreType;
-import kr.mashup.branding.service.member.MemberCreateDto;
 import kr.mashup.branding.security.JwtService;
 import kr.mashup.branding.service.invite.InviteService;
+import kr.mashup.branding.service.member.MemberCreateDto;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.scorehistory.ScoreHistoryService;
-import kr.mashup.branding.ui.member.request.LoginRequest;
-import kr.mashup.branding.ui.member.request.MemberGenerationRequest;
-import kr.mashup.branding.ui.member.request.MemberPasswordChangeRequest;
-import kr.mashup.branding.ui.member.request.PushNotificationRequest;
-import kr.mashup.branding.ui.member.request.SignUpRequest;
-import kr.mashup.branding.ui.member.request.ValidInviteRequest;
-import kr.mashup.branding.ui.member.response.AccessResponse;
-import kr.mashup.branding.ui.member.response.ExistsResponse;
-import kr.mashup.branding.ui.member.response.MemberGenerationsResponse;
-import kr.mashup.branding.ui.member.response.MemberInfoResponse;
-import kr.mashup.branding.ui.member.response.TokenResponse;
-import kr.mashup.branding.ui.member.response.ValidResponse;
+import kr.mashup.branding.ui.member.request.*;
+import kr.mashup.branding.ui.member.response.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service
@@ -100,10 +85,6 @@ public class MemberFacadeService {
         final String token = getToken(member);
         Platform latestPlatform = memberService.getLatestPlatform(member);
 
-        // 회원가입 시점에 기본 활동 점수 부여
-        ScoreHistory scoreHistory = ScoreHistory.of(ScoreType.DEFAULT, member, LocalDateTime.now(), "", generation, null);
-        scoreHistoryService.save(scoreHistory);
-
         return AccessResponse.of(member,latestPlatform, token);
     }
 
@@ -121,8 +102,8 @@ public class MemberFacadeService {
         memberService.deleteMember(memberId);
     }
 
-    public TokenResponse getAccessToken(Long memberId, Long memberGenerationId) {
-        final String token = jwtService.encode(memberId, memberGenerationId);
+    public TokenResponse getAccessToken(Long memberId) {
+        final String token = jwtService.encode(memberId);
         return TokenResponse.of(token);
     }
 
@@ -175,15 +156,8 @@ public class MemberFacadeService {
         memberService.resetPassword(identification, request.getNewPassword());
     }
 
-    private MemberGeneration getLatestMemberGeneration(Member member) {
-        return member.getMemberGenerations().stream().max(Comparator.comparing(
-            memberGeneration -> memberGeneration.getGeneration().getNumber()
-        )).orElseThrow(GenerationIntegrityFailException::new);
-    }
-
     private String getToken(Member member) {
-        final MemberGeneration latestMemberGeneration = getLatestMemberGeneration(member);
-        return jwtService.encode(member.getId(), latestMemberGeneration.getId());
+        return jwtService.encode(member.getId());
     }
 
     private void checkMemberGenerationIsIn(Long memberGenerationId, List<MemberGeneration> memberGenerations) {

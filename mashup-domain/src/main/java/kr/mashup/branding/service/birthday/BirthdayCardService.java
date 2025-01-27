@@ -1,5 +1,6 @@
 package kr.mashup.branding.service.birthday;
 
+import kr.mashup.branding.domain.ResultCode;
 import kr.mashup.branding.domain.birthday.BirthdayCard;
 import kr.mashup.branding.domain.birthday.CardImage;
 import kr.mashup.branding.domain.exception.BadRequestException;
@@ -29,7 +30,7 @@ public class BirthdayCardService {
 
     public void checkAlreadySent(Long recipientMemberId, Member senderMember, MemberGeneration memberGeneration) {
         if (birthdayCardRepository.existsBySenderMemberIdAndRecipientMemberIdAndGenerationId(senderMember.getId(), recipientMemberId, memberGeneration.getGeneration().getId())) {
-            throw new BadRequestException();
+            throw new BadRequestException(ResultCode.BIRTHDAY_CARD_ALREADY_SENT);
         }
     }
 

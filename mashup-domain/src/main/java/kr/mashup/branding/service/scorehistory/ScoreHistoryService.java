@@ -61,27 +61,36 @@ public class ScoreHistoryService {
 
     /**
      * 출석 결과로 최종 출석 결과를 생성한다.
-     * TODO: 리팩토링 진행 by @hocaron
      */
     private ScoreType getScoreTypeByAttendances(
         List<Event> events,
         List<Attendance> attendances
     ) {
-        ScoreType scoreType = ScoreType.ATTENDANCE;
+        long attendanceCount = countAttendance(attendances);
+        long lateCount = countLate(attendances, attendanceCount);
+        long absentCount = countAbsent(events, attendances);
 
-        final long attendanceNumber = attendances.stream()
+        if (absentCount > 0) {
+            return ScoreType.ABSENT; // 결석이 하나 이상인 경우
+        }
+        if (lateCount > 0) {
+            return ScoreType.LATE;   // 지각이 하나 이상인 경우
+        }
+        return ScoreType.ATTENDANCE; // 모두 출석한 경우
+    }
+
+    private long countAttendance(List<Attendance> attendances) {
+        return attendances.stream()
             .filter(attendance -> attendance.getStatus() == AttendanceStatus.ATTENDANCE)
             .count();
-        final long lateNumber = attendances.size() - attendanceNumber;
-        final long absentNumber = events.size() - attendances.size();
+    }
 
-        if (absentNumber > 0) {             // 결석이 하나 이상인 경우
-            scoreType = ScoreType.ABSENT;
-        } else if (lateNumber > 0) {        // 지각이 하나 이상인 경우
-            scoreType = ScoreType.LATE;
-        }
+    private long countLate(List<Attendance> attendances, long attendanceNumber) {
+        return attendances.size() - attendanceNumber;
+    }
 
-        return scoreType;
+    private long countAbsent(List<Event> events, List<Attendance> attendances) {
+        return events.size() - attendances.size();
     }
 
     public void deleteAll(List<ScoreHistory> scoreHistories) {

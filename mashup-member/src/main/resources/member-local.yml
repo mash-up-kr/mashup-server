@@ -1,3 +1,9 @@
 jwt:
   secretKey: ENC(EXfj1mGmsws/YLOc87IZoiHu0l+vKqtao+CrUR843UD0xWM9asYfSMWkYLI8CYQHlEeHwAh51Kt+/Zn8tS7n0g==)
 golden-danggn-percent: 1
+
+aws:
+  s3:
+    birthday:
+      bucket-name: ENC(5wfapIYEplDWd9xav8HeC99yHvZKGzVbNfvAYu/G1dJmaD2Xj9B6YwPBGzF1pMcwb6jb5bF4AjlOTG9TM5ASBQ==)
+      expires-in: 120 # 2 minutes
