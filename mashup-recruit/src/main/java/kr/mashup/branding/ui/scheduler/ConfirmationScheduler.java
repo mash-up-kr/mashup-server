@@ -17,7 +17,7 @@ public class ConfirmationScheduler {
      * 지원 마감시 임시저장인 지원서에 대한 지원자 응답 변경
      * TO_BE_DETERMINED -> NOT_APPLICABLE
      */
-    @Scheduled(cron = "0 0 0 15 2 ?") // 2024-02-15 00:00:00
+    @Scheduled(cron = "0 0 0 17 2 ?") // 2025-02-17 00:00:00
     public void updateConfirmationAtRecruitmentEnded() {
         log.info("[ConfirmationScheduler] updateConfirmationAtRecruitmentEnded >>> start");
         confirmationFacadeService.updateToBeDeterminedToNotApplicable(14);
@@ -28,7 +28,7 @@ public class ConfirmationScheduler {
      * 서류 발표 후 24시간 뒤 서류 합격이지만 응답 대기중인 지원서에 대한 지원자 응답 변경
      * INTERVIEW_CONFIRM_WAITING -> INTERVIEW_CONFIRM_REJECTED
      */
-    @Scheduled(cron = "0 0 21 21 2 ?") // 2024-02-20 21:00:00 24시간 뒤인 02-21 21:00:00
+    @Scheduled(cron = "0 0 21 20 2 ?") // 2025-02-19 21:00:00 24시간 뒤인 02-20 21:00:00
     public void updateConfirmationAtScreeningEnded() {
         log.info("[ConfirmationScheduler] updateConfirmationAtScreeningEnded >>> start");
         confirmationFacadeService.updateInterviewConfirmWaitingToRejected(14);
@@ -39,7 +39,7 @@ public class ConfirmationScheduler {
      * 면접 발표 후 24시간 뒤 면접 합격이지만 응답 대기중인 지원서에 대한 지원자 응답 변경
      * FINAL_CONFIRM_WAITING -> FINAL_CONFIRM_REJECTED
      */
-    @Scheduled(cron = "0 0 21 29 2 ?") // 2024-02-28 21:00:00 24시간 뒤인 02-09 00:00:00
+    @Scheduled(cron = "0 0 21 25 2 ?") // 2025-02-24 21:00:00 24시간 뒤인 02-25 21:00:00
     public void updateConfirmationAtInterviewEnded() {
         log.info("[ConfirmationScheduler] updateConfirmationAtInterviewEnded >>> start");
         confirmationFacadeService.updateFinalConfirmWaitingToRejected(14);

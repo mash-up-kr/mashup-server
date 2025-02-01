@@ -72,7 +72,7 @@ public class AdminMemberController {
 
     @PostMapping("/password/change")
     public ApiResponse<EmptyResponse> changePassword(
-        @ApiIgnore @ModelAttribute("adminId") Long adminMemberId,
+        @ApiIgnore @ModelAttribute("adminMemberId") Long adminMemberId,
         @RequestBody AdminPasswordChangeRequest request
     ){
         adminMemberFacadeService.changePassword(adminMemberId, request);
