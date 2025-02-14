@@ -4,7 +4,7 @@ ENV JAVA_OPTS="-Djava.awt.headless=true"
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p /logs
 
-apk add --no-cache freetype ttf-dejavu fontconfig libfreetype6
+apk add --no-cache freetype ttf-dejavu fontconfig
 #COPY scouter /scouter
 #ARG SCOUTER_OBJECT_NAME
 #ARG SCOUTER_HOST
@@ -16,3 +16,4 @@ ENTRYPOINT exec java ${JAVA_OPTS} \
 #-Dnet_collector_ip=${SCOUTER_HOST} \
 -jar /app.jar
 EXPOSE 8090
+
