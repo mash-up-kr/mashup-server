@@ -1,9 +1,6 @@
 FROM openjdk:8-jdk
 ENV TZ=Asia/Seoul
 
-# 필요한 패키지 설치 (fontconfig와 ttf-dejavu 추가)
-RUN apt-get update; apt-get install -y fontconfig libfreetype6
-
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p /logs
 #COPY scouter /scouter
