@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:8-jdk
 ENV TZ=Asia/Seoul
 
 # 필요한 패키지 설치 (fontconfig와 ttf-dejavu 추가)
