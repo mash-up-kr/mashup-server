@@ -3,6 +3,8 @@ ENV TZ=Asia/Seoul
 ENV JAVA_OPTS="-Djava.awt.headless=true"
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p /logs
+
+apk add --no-cache freetype ttf-dejavu fontconfig libfreetype6
 #COPY scouter /scouter
 #ARG SCOUTER_OBJECT_NAME
 #ARG SCOUTER_HOST
