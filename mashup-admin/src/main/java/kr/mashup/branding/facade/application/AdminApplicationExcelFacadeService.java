@@ -8,6 +8,7 @@ import kr.mashup.branding.domain.applicant.Applicant;
 import kr.mashup.branding.domain.application.Answer;
 import kr.mashup.branding.domain.application.Application;
 import kr.mashup.branding.domain.application.ApplicationQueryVo;
+import kr.mashup.branding.domain.application.ApplicationStatus;
 import kr.mashup.branding.domain.application.form.Question;
 import kr.mashup.branding.domain.exception.UnauthorizedException;
 import kr.mashup.branding.domain.generation.Generation;
@@ -16,7 +17,7 @@ import kr.mashup.branding.service.adminmember.AdminMemberService;
 import kr.mashup.branding.service.application.ApplicationService;
 import kr.mashup.branding.service.generation.GenerationService;
 import kr.mashup.branding.service.team.TeamService;
-import kr.mashup.branding.util.ExcelGenerator;
+import kr.mashup.branding.util.CsvGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +36,7 @@ public class AdminApplicationExcelFacadeService {
     private final GenerationService generationService;
     private final TeamService teamService;
 
-    public ByteArrayResource generateApplicationExcel(Long adminMemberId) {
+    public ByteArrayResource generateCsv(Long adminMemberId) {
         List<Application> applications = getApplicationsByTeam(adminMemberId);
 
         if (applications.isEmpty()) {
@@ -45,8 +46,7 @@ public class AdminApplicationExcelFacadeService {
         List<Question> questions = getSortedQuestions(applications.get(0));
         List<String> headers = getHeaders(questions);
 
-        return ExcelGenerator.generate(
-            "지원자 목록",
+        return CsvGenerator.generate(
             headers,
             applications,
             application -> getRowData(application, questions)
@@ -60,10 +60,14 @@ public class AdminApplicationExcelFacadeService {
         Team teamEntity = findTeamByNameAndGeneration(team, generation);
 
         return applicationService.getApplications(
-            adminMember.getAdminMemberId(),
-            generation,
-            ApplicationQueryVo.of(null, teamEntity.getTeamId(), null, null, null, null, PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.DESC, "submittedAt")))
-        ).getContent();
+                adminMember.getAdminMemberId(),
+                generation,
+                ApplicationQueryVo.of(null, teamEntity.getTeamId(), null, null, null, null, PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.DESC, "submittedAt")))
+            ).getContent()
+            .stream()
+            .filter(application -> application.getStatus() == ApplicationStatus.SUBMITTED)
+            .sorted(Comparator.comparing(Application::getSubmittedAt))
+            .collect(Collectors.toList());
     }
 
     private Position.Team getAdminMemberTeam(AdminMember adminMember) {

@@ -27,7 +27,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     implementation "io.springfox:springfox-boot-starter:$swaggerVersion"
     implementation "org.apache.commons:commons-text:$commonsTextVersion"
-    implementation 'org.apache.poi:poi-ooxml:5.2.3'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
