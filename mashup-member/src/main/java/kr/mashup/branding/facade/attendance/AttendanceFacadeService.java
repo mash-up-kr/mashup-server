@@ -106,8 +106,9 @@ public class AttendanceFacadeService {
                 .forEach(attendanceCode -> {
 
                     final Event checkingEvent = attendanceCode.getEvent();
+                    final Schedule schedule = checkingEvent.getSchedule();
 
-                    final List<Member> pushableMembers = memberService.getAllPushNotiTargetableMembers();
+                    final List<Member> pushableMembers = memberService.getPushNotiTargetableMembersBySchedule(schedule);
 
                     final List<Member> pushTargetMembers = removeAlreadyCheckedMembers(checkingEvent, pushableMembers);
 
@@ -137,18 +138,31 @@ public class AttendanceFacadeService {
     @Transactional(readOnly = true)
     public void sendAttendanceStartedPushNoti() {
         findAllStartsWithin(0L)
-                .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
-                        new AttendanceStartedVo(memberService.getAllPushNotiTargetableMembers())
-                ));
+                .forEach(attendanceCode -> {
+                    final Event checkingEvent = attendanceCode.getEvent();
+                    final Schedule schedule = checkingEvent.getSchedule();
+
+                    final List<Member> pushableMembers = memberService.getPushNotiTargetableMembersBySchedule(schedule);
+
+                    final List<Member> pushTargetMembers = removeAlreadyCheckedMembers(checkingEvent, pushableMembers);
+                    pushNotiEventPublisher.publishPushNotiSendEvent(new AttendanceStartedVo(pushTargetMembers));
+                });
     }
 
     @Scheduled(cron = "0 * * * * *")
     @Transactional(readOnly = true)
     public void sendAttendanceEndingPushNoti() {
         findAllEndsWithin(ATTENDANCE_END_AFTER_MINUTES)
-                .forEach(attendanceCode -> pushNotiEventPublisher.publishPushNotiSendEvent(
-                        new AttendanceEndingVo(memberService.getAllPushNotiTargetableMembers())
-                ));
+                .forEach(attendanceCode -> {
+                    final Event checkingEvent = attendanceCode.getEvent();
+                    final Schedule schedule = checkingEvent.getSchedule();
+
+                    final List<Member> pushableMembers = memberService.getPushNotiTargetableMembersBySchedule(schedule);
+
+                    final List<Member> pushTargetMembers = removeAlreadyCheckedMembers(checkingEvent, pushableMembers);
+
+                    pushNotiEventPublisher.publishPushNotiSendEvent(new AttendanceEndingVo(pushTargetMembers));
+                });
     }
 
     private List<AttendanceCode> findAllStartsWithin(Long afterMinutes) {
