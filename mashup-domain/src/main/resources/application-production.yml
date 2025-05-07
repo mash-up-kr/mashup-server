@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ENC(yVs9ZqVsmxbdeLwTIy9dAGxfqPBEyFwFdZH7GqEFmTZV9J5bwOt0Sg8vEg/tfe1Vi05L6xv/qSq94e8jFOZDopF66KZOKDQeulJ3/dSvUAv4kMYqX7TJDkLEXridopPmE4nI4U1qjpXAuEy2RkAUVK+8aci2DekDnfljSf1JztnOzIaIlMAGcBSI7CV13cdR5McKPZ2QwwtznqiR4gQgJoxxRX4UbbYdFBfCNbbyfXDsyr2XahWLipchYhB0QUgIHkYDKZkWiqjalgKgwSWER978ipuKaDYLtH/t5/8GwUoYE2nLjLaKaHIPOjPyK0rEoSruhzVz3KK2/GMDVBSRbI/Igs9lQwWSPfe2XZQVudB7PthwvjJvJSAAFLtVx26U)
-    username: ENC(L6CNxJcaxJhR6xn+BaBbe+XlLT8GCYnLHIEOcZqF3QWl8uiaZumx4K/PcCcxTfgR)
-    password: ENC(fxWrJBvyF3X7SoFrGYKbeA4nLuchRIXTbaMahilpJFBSRc28VSLo6BN6PV+W/DVF)
+    url: jdbc:mysql://branding.cpc2skmsqj4w.ap-northeast-2.rds.amazonaws.com:3306/branding?characterEncoding=UTF-8&verifyServerCertificate=false&useSSL=false&requireSSL=false&serverTimezone=Asia/Seoul&autoReconnect=true&sendFractionalSeconds=false
+    username: ENC(AISxY5PiU2OiB205Si2Gla/NkaaAZ1GpRmEUnDu41NEiWaZ5gq2GcBgBdwzQE4FF)
+    password: ENC(b2osVu1gJ2fqC5ZGNdeb6oEanz1NYdjY6k391zHQp8twXKOZgSdwpAm9N6TJMapm)
   jpa:
     properties:
       hibernate:
