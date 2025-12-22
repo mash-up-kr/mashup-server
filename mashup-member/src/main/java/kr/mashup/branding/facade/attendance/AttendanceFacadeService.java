@@ -44,7 +44,7 @@ public class AttendanceFacadeService {
     private final static long PUSH_SCHEDULE_INTERVAL_MINUTES = 1;
     private final static long ATTENDANCE_START_AFTER_MINUTES = 1;
     private final static long ATTENDANCE_END_AFTER_MINUTES = 3;
-    private final static double ATTENDANCE_DISTANCE = 500;
+    private final static double ATTENDANCE_DISTANCE = 1000;
     private final AttendanceService attendanceService;
     private final MemberService memberService;
     private final ScheduleService scheduleService;
