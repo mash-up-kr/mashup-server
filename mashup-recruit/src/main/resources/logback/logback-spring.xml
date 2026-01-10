@@ -17,7 +17,7 @@
 
     <appender name="cloud_watch_aws_log_dev" class="ca.pjer.logback.AwsLogsAppender">
         <layout>
-            <pattern>[%thread] [%date] [%level] [%file:%line] - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%file:%line]- %msg%n%xEx{30}</pattern>
         </layout>
         <logGroupName>MashUp-Server-Dev</logGroupName>
         <logStreamName>recruit</logStreamName>
@@ -30,7 +30,7 @@
 
     <appender name="cloud_watch_aws_log_real" class="ca.pjer.logback.AwsLogsAppender">
         <layout>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%file:%line]- %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%file:%line]- %msg%n%xEx{30}</pattern>
         </layout>
         <logGroupName>MashUp-Server-Real</logGroupName>
         <logStreamName>recruit</logStreamName>
