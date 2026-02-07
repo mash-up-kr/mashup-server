@@ -17,7 +17,7 @@ public class ConfirmationScheduler {
      * 지원 마감시 임시저장인 지원서에 대한 지원자 응답 변경
      * TO_BE_DETERMINED -> NOT_APPLICABLE
      */
-    @Scheduled(cron = "0 0 0 12 2 ?") // 서류 마감 26년 2월11일 -> 2월 12일 00시에 변경
+    @Scheduled(cron = "0 0 0 16 2 ?") // 서류 마감 26년 2월11일 -> 2월 12일 00시에 변경
     public void updateConfirmationAtRecruitmentEnded() {
         log.info("[ConfirmationScheduler] updateConfirmationAtRecruitmentEnded >>> start");
         confirmationFacadeService.updateToBeDeterminedToNotApplicable(16);
