@@ -314,6 +314,10 @@ public class MemberService {
         return members;
     }
 
+    public List<Member> findAllByIds(final List<Long> memberIds) {
+        return memberRepository.findAllById(memberIds);
+    }
+
     @Transactional
     public void transfer(final Generation oldGeneration, final Generation newGeneration, final List<Member> members) {
 

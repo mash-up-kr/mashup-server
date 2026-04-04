@@ -1,6 +1,7 @@
 package kr.mashup.branding.service.adminmember;
 
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
+import kr.mashup.branding.domain.adminmember.entity.Position;
 import kr.mashup.branding.domain.adminmember.exception.AdminMemberLoginFailedException;
 import kr.mashup.branding.domain.adminmember.exception.AdminMemberNotFoundException;
 import kr.mashup.branding.domain.adminmember.exception.AdminMemberUsernameDuplicatedException;
@@ -16,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Validated
 @RequiredArgsConstructor
@@ -135,5 +138,12 @@ public class AdminMemberService {
 
     public List<AdminMember> readAdminMembers() {
         return adminMemberRepository.findAll();
+    }
+
+    public List<AdminMember> getLeadersWithMemberId() {
+        List<Position> leaderPositions = Arrays.stream(Position.values())
+            .filter(Position::isLeaderOrSubLeader)
+            .collect(Collectors.toList());
+        return adminMemberRepository.findAllByPositionInAndMemberIdIsNotNull(leaderPositions);
     }
 }
