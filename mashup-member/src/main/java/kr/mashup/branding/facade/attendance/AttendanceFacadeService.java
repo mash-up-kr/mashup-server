@@ -33,6 +33,7 @@ import kr.mashup.branding.ui.attendance.response.*;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +53,10 @@ public class AttendanceFacadeService {
     private final static long ATTENDANCE_START_AFTER_MINUTES = 1;
     private final static long ATTENDANCE_END_AFTER_MINUTES = 3;
     private final static double ATTENDANCE_DISTANCE = 1000;
+
+    @Value("${attendance.leader-noti.before-minutes:3}")
+    private long leaderNotiBeforeMinutes;
+
     private final AttendanceService attendanceService;
     private final MemberService memberService;
     private final ScheduleService scheduleService;
@@ -190,21 +195,21 @@ public class AttendanceFacadeService {
     }
 
     /**
-     * 출석 마감 시점: 플랫폼 리더에게 지각자 명단 푸시
+     * 출석 마감 N분 전: 플랫폼 리더에게 미출석자 명단 푸시
      */
     @Scheduled(cron = "0 * * * * *")
     @Transactional(readOnly = true)
     public void sendAttendanceLatePushNotiToLeaders() {
-        sendLeaderPushNoti(findAllEndsWithin(0L), AttendanceLateForLeaderVo::new);
+        sendLeaderPushNoti(findAllEndsWithin(leaderNotiBeforeMinutes), AttendanceLateForLeaderVo::new);
     }
 
     /**
-     * 지각 마감 시점: 플랫폼 리더에게 결석자 명단 푸시
+     * 지각 마감 N분 전: 플랫폼 리더에게 미출석자 명단 푸시
      */
     @Scheduled(cron = "0 * * * * *")
     @Transactional(readOnly = true)
     public void sendAttendanceAbsentPushNotiToLeaders() {
-        sendLeaderPushNoti(findAllLatenessEndsWithin(0L), AttendanceAbsentForLeaderVo::new);
+        sendLeaderPushNoti(findAllLatenessEndsWithin(leaderNotiBeforeMinutes), AttendanceAbsentForLeaderVo::new);
     }
 
     private void sendLeaderPushNoti(
