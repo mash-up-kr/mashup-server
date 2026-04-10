@@ -201,7 +201,7 @@ public class AttendanceFacadeService {
     @Scheduled(cron = "0 * * * * *")
     @Transactional(readOnly = true)
     public void sendAttendanceLatePushNotiToLeaders() {
-        sendLeaderPushNoti(findAllEndsWithin(leaderNotiBeforeMinutes), AttendanceLateForLeaderVo::new, "출석 마감");
+        sendLeaderPushNoti(findAllEndsWithin(leaderNotiBeforeMinutes), AttendanceLateForLeaderVo::new, "⏰ 출석 마감");
     }
 
     /**
@@ -210,7 +210,65 @@ public class AttendanceFacadeService {
     @Scheduled(cron = "0 * * * * *")
     @Transactional(readOnly = true)
     public void sendAttendanceAbsentPushNotiToLeaders() {
-        sendLeaderPushNoti(findAllLatenessEndsWithin(leaderNotiBeforeMinutes), AttendanceAbsentForLeaderVo::new, "지각 마감");
+        sendLeaderPushNoti(findAllLatenessEndsWithin(leaderNotiBeforeMinutes), AttendanceAbsentForLeaderVo::new, "⚠️ 지각 마감");
+    }
+
+    /**
+     * 지각 마감 시점: Discord에 최종 출석 결과 발송
+     */
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional(readOnly = true)
+    public void sendAttendanceFinalResultToDiscord() {
+        final List<AttendanceCode> attendanceCodes = findAllLatenessEndsWithin(0L);
+        if (attendanceCodes.isEmpty()) return;
+
+        for (AttendanceCode attendanceCode : attendanceCodes) {
+            final Event event = attendanceCode.getEvent();
+            final Schedule schedule = event.getSchedule();
+            final Generation generation = schedule.getGeneration();
+
+            final List<Attendance> attendances = attendanceService.getByEvent(event);
+            int totalAttendance = (int) attendances.stream()
+                    .filter(a -> a.getStatus() == AttendanceStatus.ATTENDANCE).count();
+            int totalLate = (int) attendances.stream()
+                    .filter(a -> a.getStatus() == AttendanceStatus.LATE).count();
+
+            final Map<Member, AttendanceStatus> memberStatusMap = new HashMap<>();
+            attendances.forEach(a -> memberStatusMap.put(a.getMember(), a.getStatus()));
+
+            int totalMembers = 0;
+            final Map<Platform, List<Member>> absentByPlatform = new LinkedHashMap<>();
+            final Map<Platform, List<Member>> lateByPlatform = new LinkedHashMap<>();
+
+            for (Platform platform : Platform.values()) {
+                if (!schedule.checkAvailabilityByPlatform(platform)) continue;
+                final List<Member> platformMembers =
+                        memberService.getAllByPlatformAndGeneration(platform, generation);
+                totalMembers += platformMembers.size();
+
+                final List<Member> absent = new ArrayList<>();
+                final List<Member> late = new ArrayList<>();
+                for (Member m : platformMembers) {
+                    final AttendanceStatus status = memberStatusMap.get(m);
+                    if (status == null) {
+                        absent.add(m);
+                    } else if (status == AttendanceStatus.LATE) {
+                        late.add(m);
+                    }
+                }
+                absentByPlatform.put(platform, absent);
+                lateByPlatform.put(platform, late);
+            }
+
+            final int totalAbsent = totalMembers - totalAttendance - totalLate;
+            final String content = buildDiscordContent(
+                    absentByPlatform, lateByPlatform, "📊 최종 결과", schedule.getName(),
+                    event.getEventName(), null,
+                    totalAttendance, totalLate, totalAbsent, totalMembers);
+            if (content != null) {
+                pushNotiEventPublisher.publishDiscordEvent(new AttendanceDiscordVo(content));
+            }
+        }
     }
 
     private void sendLeaderPushNoti(
@@ -222,21 +280,39 @@ public class AttendanceFacadeService {
 
         final Map<Platform, List<Member>> leadersByPlatform = resolveLeadersByPlatform();
         final Map<Platform, List<Member>> notCheckedByPlatform = new LinkedHashMap<>();
+        int totalAttendance = 0;
+        int totalLate = 0;
+        int totalMembers = 0;
+        String scheduleName = "";
+        String eventName = null;
+        LocalDateTime deadlineAt = null;
 
         for (AttendanceCode attendanceCode : attendanceCodes) {
             final Event event = attendanceCode.getEvent();
             final Schedule schedule = event.getSchedule();
             final Generation generation = schedule.getGeneration();
+            scheduleName = schedule.getName();
+            eventName = event.getEventName();
+            deadlineAt = attendanceCode.getAttendanceCheckEndedAt();
 
-            final List<Member> checkedMembers = attendanceService.getByEvent(event).stream()
+            final List<Attendance> attendances = attendanceService.getByEvent(event);
+            final List<Member> checkedMembers = attendances.stream()
                     .map(Attendance::getMember)
                     .collect(Collectors.toList());
+
+            totalAttendance += attendances.stream()
+                    .filter(a -> a.getStatus() == AttendanceStatus.ATTENDANCE)
+                    .count();
+            totalLate += attendances.stream()
+                    .filter(a -> a.getStatus() == AttendanceStatus.LATE)
+                    .count();
 
             for (Platform platform : Platform.values()) {
                 if (!schedule.checkAvailabilityByPlatform(platform)) continue;
 
                 final List<Member> platformMembers =
                         memberService.getAllByPlatformAndGeneration(platform, generation);
+                totalMembers += platformMembers.size();
 
                 final List<Member> notCheckedMembers = new ArrayList<>(platformMembers);
                 notCheckedMembers.removeAll(checkedMembers);
@@ -255,7 +331,10 @@ public class AttendanceFacadeService {
             }
         }
 
-        final String discordContent = buildDiscordContent(notCheckedByPlatform, notiLabel);
+        final int totalAbsent = totalMembers - totalAttendance - totalLate;
+        final String discordContent = buildDiscordContent(
+                notCheckedByPlatform, Collections.emptyMap(), notiLabel, scheduleName, eventName, deadlineAt,
+                totalAttendance, totalLate, totalAbsent, totalMembers);
         if (discordContent != null) {
             pushNotiEventPublisher.publishDiscordEvent(new AttendanceDiscordVo(discordContent));
         }
@@ -294,23 +373,66 @@ public class AttendanceFacadeService {
 
     private String buildDiscordContent(
             final Map<Platform, List<Member>> notCheckedByPlatform,
-            final String notiLabel
+            final Map<Platform, List<Member>> lateByPlatform,
+            final String notiLabel,
+            final String scheduleName,
+            final String eventName,
+            final LocalDateTime deadlineAt,
+            final int totalAttendance,
+            final int totalLate,
+            final int totalAbsent,
+            final int totalMembers
     ) {
         if (notCheckedByPlatform.isEmpty()) return null;
 
         final StringBuilder sb = new StringBuilder();
-        sb.append("📋 **출석 현황 알림** (").append(notiLabel).append(" ")
-                .append(leaderNotiBeforeMinutes).append("분 전)\n");
+        sb.append("---\n");
+        sb.append("**").append(scheduleName);
+        if (eventName != null && !eventName.isEmpty()) {
+            sb.append(" - ").append(eventName);
+        }
+        sb.append("** | ").append(notiLabel);
+        if (deadlineAt != null) {
+            sb.append(" ").append(leaderNotiBeforeMinutes).append("분 전")
+                    .append(" (마감 ").append(String.format("%02d:%02d", deadlineAt.getHour(), deadlineAt.getMinute())).append(")");
+        }
+        sb.append("\n\n");
+
+        final List<String> allClear = new ArrayList<>();
+        final List<String> issues = new ArrayList<>();
 
         for (Platform platform : Platform.values()) {
-            final List<Member> members = notCheckedByPlatform.get(platform);
-            if (members == null || members.isEmpty()) {
-                sb.append(platform.getName()).append(": ✅ 전원 출석\n");
+            final List<Member> absentMembers = notCheckedByPlatform.get(platform);
+            final List<Member> lateMembers = lateByPlatform.getOrDefault(platform, Collections.emptyList());
+            final boolean hasAbsent = absentMembers != null && !absentMembers.isEmpty();
+            final boolean hasLate = !lateMembers.isEmpty();
+
+            if (!hasAbsent && !hasLate) {
+                allClear.add(platform.getName());
             } else {
-                sb.append(platform.getName()).append(" (").append(members.size())
-                        .append("명): ").append(formatNames(members)).append("\n");
+                final StringBuilder line = new StringBuilder();
+                line.append(platform.getName());
+                if (hasLate) {
+                    line.append(" | 지각 **").append(formatNames(lateMembers)).append("**");
+                }
+                if (hasAbsent) {
+                    line.append(" | 결석 **").append(formatNames(absentMembers)).append("**");
+                }
+                issues.add(line.toString());
             }
         }
+
+        for (String issue : issues) {
+            sb.append(issue).append("\n");
+        }
+        if (!allClear.isEmpty()) {
+            sb.append(String.join(", ", allClear)).append(": ✅ 전원 출석\n");
+        }
+
+        final int attendanceRate = totalMembers > 0 ? (totalAttendance * 100 / totalMembers) : 0;
+        sb.append("\n> 출석 **").append(totalAttendance).append("명** (").append(attendanceRate).append("%)")
+                .append(" / 지각 **").append(totalLate).append("명**")
+                .append(" / 결석 **").append(totalAbsent).append("명**");
 
         return sb.toString();
     }
