@@ -16,6 +16,8 @@ public interface AttendanceCodeRepository extends JpaRepository<AttendanceCode, 
     List<AttendanceCode> findAllByAttendanceCheckStartedAtGreaterThanAndAttendanceCheckStartedAtLessThanEqual(LocalDateTime from, LocalDateTime to);
 
     List<AttendanceCode> findAllByAttendanceCheckEndedAtGreaterThanAndAttendanceCheckEndedAtLessThanEqual(LocalDateTime from, LocalDateTime to);
+
+    List<AttendanceCode> findAllByLatenessCheckEndedAtGreaterThanAndLatenessCheckEndedAtLessThanEqual(LocalDateTime from, LocalDateTime to);
 }
 /**
  * AttendanceCode 연관관계

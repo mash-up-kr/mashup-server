@@ -11,13 +11,19 @@ import kr.mashup.branding.domain.generation.Generation;
 import kr.mashup.branding.domain.member.Member;
 import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
+import kr.mashup.branding.domain.adminmember.entity.AdminMember;
+import kr.mashup.branding.domain.adminmember.entity.Position;
+import kr.mashup.branding.domain.pushnoti.vo.AttendanceAbsentForLeaderVo;
 import kr.mashup.branding.domain.pushnoti.vo.AttendanceEndingVo;
+import kr.mashup.branding.domain.pushnoti.vo.AttendanceLateForLeaderVo;
 import kr.mashup.branding.domain.pushnoti.vo.AttendanceStartedVo;
 import kr.mashup.branding.domain.pushnoti.vo.AttendanceStartingVo;
+import kr.mashup.branding.domain.pushnoti.vo.PushNotiSendVo;
 import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleStatus;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
+import kr.mashup.branding.service.adminmember.AdminMemberService;
 import kr.mashup.branding.service.attendance.AttendanceCodeService;
 import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.member.MemberService;
@@ -27,6 +33,7 @@ import kr.mashup.branding.ui.attendance.response.*;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,11 +53,16 @@ public class AttendanceFacadeService {
     private final static long ATTENDANCE_START_AFTER_MINUTES = 1;
     private final static long ATTENDANCE_END_AFTER_MINUTES = 3;
     private final static double ATTENDANCE_DISTANCE = 1000;
+
+    @Value("${attendance.leader-noti.before-minutes:3}")
+    private long leaderNotiBeforeMinutes;
+
     private final AttendanceService attendanceService;
     private final MemberService memberService;
     private final ScheduleService scheduleService;
     private final AttendanceCodeService attendanceCodeService;
     private final PushNotiEventPublisher pushNotiEventPublisher;
+    private final AdminMemberService adminMemberService;
 
     /**
      * 출석 체크
@@ -181,6 +194,111 @@ public class AttendanceFacadeService {
         );
     }
 
+    /**
+     * 출석 마감 N분 전: 플랫폼 리더에게 미출석자 명단 푸시
+     */
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional(readOnly = true)
+    public void sendAttendanceLatePushNotiToLeaders() {
+        sendLeaderPushNoti(findAllEndsWithin(leaderNotiBeforeMinutes), AttendanceLateForLeaderVo::new);
+    }
+
+    /**
+     * 지각 마감 N분 전: 플랫폼 리더에게 미출석자 명단 푸시
+     */
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional(readOnly = true)
+    public void sendAttendanceAbsentPushNotiToLeaders() {
+        sendLeaderPushNoti(findAllLatenessEndsWithin(leaderNotiBeforeMinutes), AttendanceAbsentForLeaderVo::new);
+    }
+
+    private void sendLeaderPushNoti(
+            final List<AttendanceCode> attendanceCodes,
+            final LeaderNotiVoFactory voFactory
+    ) {
+        if (attendanceCodes.isEmpty()) return;
+
+        final Map<Platform, List<Member>> leadersByPlatform = resolveLeadersByPlatform();
+
+        for (AttendanceCode attendanceCode : attendanceCodes) {
+            final Event event = attendanceCode.getEvent();
+            final Schedule schedule = event.getSchedule();
+            final Generation generation = schedule.getGeneration();
+
+            final List<Member> checkedMembers = attendanceService.getByEvent(event).stream()
+                    .map(Attendance::getMember)
+                    .collect(Collectors.toList());
+
+            for (Platform platform : Platform.values()) {
+                if (!schedule.checkAvailabilityByPlatform(platform)) continue;
+
+                final List<Member> platformMembers =
+                        memberService.getAllByPlatformAndGeneration(platform, generation);
+
+                final List<Member> notCheckedMembers = new ArrayList<>(platformMembers);
+                notCheckedMembers.removeAll(checkedMembers);
+
+                if (notCheckedMembers.isEmpty()) continue;
+
+                final List<Member> leaderMembers = leadersByPlatform.getOrDefault(platform, Collections.emptyList());
+                if (leaderMembers.isEmpty()) continue;
+
+                final String names = formatNames(notCheckedMembers);
+
+                pushNotiEventPublisher.publishPushNotiSendEvent(
+                        voFactory.create(leaderMembers, platform.getName(), names));
+            }
+        }
+    }
+
+    @FunctionalInterface
+    private interface LeaderNotiVoFactory {
+        PushNotiSendVo create(List<Member> leaders, String platformName, String names);
+    }
+
+    private Map<Platform, List<Member>> resolveLeadersByPlatform() {
+        final List<AdminMember> leaders = adminMemberService.getLeadersWithMemberId();
+        if (leaders.isEmpty()) return Collections.emptyMap();
+
+        final List<Long> memberIds = leaders.stream()
+                .map(AdminMember::getMemberId)
+                .collect(Collectors.toList());
+        final Map<Long, Member> memberMap = memberService.findAllByIds(memberIds).stream()
+                .collect(Collectors.toMap(Member::getId, Function.identity()));
+
+        final Map<Platform, List<Member>> result = new HashMap<>();
+        for (AdminMember admin : leaders) {
+            final Member member = memberMap.get(admin.getMemberId());
+            if (member == null) {
+                log.warn("[LEADER_NOTI] member not found for adminMemberId={}, memberId={}",
+                        admin.getAdminMemberId(), admin.getMemberId());
+                continue;
+            }
+            for (Position.Team team : admin.getPosition().getAuthorities()) {
+                final Platform platform = Position.toPlatform(team);
+                result.computeIfAbsent(platform, k -> new ArrayList<>()).add(member);
+            }
+        }
+        return result;
+    }
+
+    private String formatNames(List<Member> members) {
+        final List<String> nameList = members.stream()
+                .map(Member::getName)
+                .collect(Collectors.toList());
+        if (nameList.size() > 20) {
+            return String.join(", ", nameList.subList(0, 20)) + " 외 " + (nameList.size() - 20) + "명";
+        }
+        return String.join(", ", nameList);
+    }
+
+    private List<AttendanceCode> findAllLatenessEndsWithin(Long afterMinutes) {
+        final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        return attendanceCodeService.findAllByLatenessEndedAtLeftOpenBetween(
+                now.plusMinutes(-PUSH_SCHEDULE_INTERVAL_MINUTES + afterMinutes),
+                now.plusMinutes(afterMinutes)
+        );
+    }
 
     /**
      * 이미 출석 체크를 했는지 판별

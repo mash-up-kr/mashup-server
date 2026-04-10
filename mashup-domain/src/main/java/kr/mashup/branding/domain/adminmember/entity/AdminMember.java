@@ -30,6 +30,9 @@ public class AdminMember {
     @Enumerated(EnumType.STRING)
     private Position position;
 
+    @Column(name = "member_id")
+    private Long memberId;
+
     @CreatedBy
     private String createdBy;
 
