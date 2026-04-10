@@ -13,6 +13,7 @@ import kr.mashup.branding.domain.member.MemberGeneration;
 import kr.mashup.branding.domain.member.Platform;
 import kr.mashup.branding.domain.adminmember.entity.AdminMember;
 import kr.mashup.branding.domain.adminmember.entity.Position;
+import kr.mashup.branding.domain.pushnoti.vo.AttendanceDiscordVo;
 import kr.mashup.branding.domain.pushnoti.vo.AttendanceAbsentForLeaderVo;
 import kr.mashup.branding.domain.pushnoti.vo.AttendanceEndingVo;
 import kr.mashup.branding.domain.pushnoti.vo.AttendanceLateForLeaderVo;
@@ -200,7 +201,7 @@ public class AttendanceFacadeService {
     @Scheduled(cron = "0 * * * * *")
     @Transactional(readOnly = true)
     public void sendAttendanceLatePushNotiToLeaders() {
-        sendLeaderPushNoti(findAllEndsWithin(leaderNotiBeforeMinutes), AttendanceLateForLeaderVo::new);
+        sendLeaderPushNoti(findAllEndsWithin(leaderNotiBeforeMinutes), AttendanceLateForLeaderVo::new, "출석 마감");
     }
 
     /**
@@ -209,16 +210,18 @@ public class AttendanceFacadeService {
     @Scheduled(cron = "0 * * * * *")
     @Transactional(readOnly = true)
     public void sendAttendanceAbsentPushNotiToLeaders() {
-        sendLeaderPushNoti(findAllLatenessEndsWithin(leaderNotiBeforeMinutes), AttendanceAbsentForLeaderVo::new);
+        sendLeaderPushNoti(findAllLatenessEndsWithin(leaderNotiBeforeMinutes), AttendanceAbsentForLeaderVo::new, "지각 마감");
     }
 
     private void sendLeaderPushNoti(
             final List<AttendanceCode> attendanceCodes,
-            final LeaderNotiVoFactory voFactory
+            final LeaderNotiVoFactory voFactory,
+            final String notiLabel
     ) {
         if (attendanceCodes.isEmpty()) return;
 
         final Map<Platform, List<Member>> leadersByPlatform = resolveLeadersByPlatform();
+        final Map<Platform, List<Member>> notCheckedByPlatform = new LinkedHashMap<>();
 
         for (AttendanceCode attendanceCode : attendanceCodes) {
             final Event event = attendanceCode.getEvent();
@@ -238,6 +241,8 @@ public class AttendanceFacadeService {
                 final List<Member> notCheckedMembers = new ArrayList<>(platformMembers);
                 notCheckedMembers.removeAll(checkedMembers);
 
+                notCheckedByPlatform.put(platform, notCheckedMembers);
+
                 if (notCheckedMembers.isEmpty()) continue;
 
                 final List<Member> leaderMembers = leadersByPlatform.getOrDefault(platform, Collections.emptyList());
@@ -248,6 +253,11 @@ public class AttendanceFacadeService {
                 pushNotiEventPublisher.publishPushNotiSendEvent(
                         voFactory.create(leaderMembers, platform.getName(), names));
             }
+        }
+
+        final String discordContent = buildDiscordContent(notCheckedByPlatform, notiLabel);
+        if (discordContent != null) {
+            pushNotiEventPublisher.publishDiscordEvent(new AttendanceDiscordVo(discordContent));
         }
     }
 
@@ -280,6 +290,29 @@ public class AttendanceFacadeService {
             }
         }
         return result;
+    }
+
+    private String buildDiscordContent(
+            final Map<Platform, List<Member>> notCheckedByPlatform,
+            final String notiLabel
+    ) {
+        if (notCheckedByPlatform.isEmpty()) return null;
+
+        final StringBuilder sb = new StringBuilder();
+        sb.append("📋 **출석 현황 알림** (").append(notiLabel).append(" ")
+                .append(leaderNotiBeforeMinutes).append("분 전)\n");
+
+        for (Platform platform : Platform.values()) {
+            final List<Member> members = notCheckedByPlatform.get(platform);
+            if (members == null || members.isEmpty()) {
+                sb.append(platform.getName()).append(": ✅ 전원 출석\n");
+            } else {
+                sb.append(platform.getName()).append(" (").append(members.size())
+                        .append("명): ").append(formatNames(members)).append("\n");
+            }
+        }
+
+        return sb.toString();
     }
 
     private String formatNames(List<Member> members) {
