@@ -1,5 +1,6 @@
 package kr.mashup.branding.infrastructure.pushnoti;
 
+import kr.mashup.branding.domain.pushnoti.vo.AttendanceDiscordVo;
 import kr.mashup.branding.domain.pushnoti.vo.PushNotiSendVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -12,5 +13,9 @@ public class PushNotiEventPublisher {
 
     public void publishPushNotiSendEvent(PushNotiSendVo pushNotiSendEvent){
         eventPublisher.publishEvent(pushNotiSendEvent);
+    }
+
+    public void publishDiscordEvent(AttendanceDiscordVo discordEvent){
+        eventPublisher.publishEvent(discordEvent);
     }
 }

@@ -1,5 +1,6 @@
 package kr.mashup.branding.domain.adminmember.entity;
 
+import kr.mashup.branding.domain.member.Platform;
 import lombok.Getter;
 
 @Getter
@@ -39,6 +40,15 @@ public enum Position {
 
     Position(Team... authorities) {
         this.authorities = authorities;
+    }
+
+    public boolean isLeaderOrSubLeader() {
+        return this.name().endsWith("_LEADER") || this.name().endsWith("_SUBLEADER");
+    }
+
+    public static Platform toPlatform(Team team) {
+        if (team == Team.iOS) return Platform.IOS;
+        return Platform.valueOf(team.name());
     }
 
     @Getter

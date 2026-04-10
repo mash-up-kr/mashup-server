@@ -157,6 +157,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
             .where(
                 memberProfile.birthDate.month().eq(monthDay.getMonthValue())
                     .and(memberProfile.birthDate.dayOfMonth().eq(monthDay.getDayOfMonth()))
+                    .and(memberGeneration.generation.eq(generation))
             )
             .fetch();
     }
