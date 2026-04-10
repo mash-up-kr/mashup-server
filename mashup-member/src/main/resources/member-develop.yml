@@ -7,3 +7,6 @@ aws:
     birthday:
       bucket-name: ENC(L67K3xOrB7AFVc42ntwiU30LIvXrQgBs3WL7rDEA68adLfqk1mNCgX8Vgi2k+r+KQWbMF4ukynROsDBRbdk0bA==)
       expires-in: 120 # 2 minutes
+
+discord:
+  webhook-url: ENC(znLjYrU9jbwWYN5wtTFyxFPW2Zg8zO6ok4mJOr31ed65E6iIhrdqoubwEEkmPoRHy/4hDDXnK9J5vs+01DgBMga6mJtluvLDi5ler+5IQfWmfX2ywOgPTCSV0IYAR0uRG9nw9b5y+PDVP1/zN48XgOXkSU8KylC08SzATx+k86B8ae1RlzmB70uuwwvoXt59ECjpQBAXCPQk/ZtoXwX08w==)
