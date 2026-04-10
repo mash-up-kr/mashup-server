@@ -222,21 +222,33 @@ public class AttendanceFacadeService {
 
         final Map<Platform, List<Member>> leadersByPlatform = resolveLeadersByPlatform();
         final Map<Platform, List<Member>> notCheckedByPlatform = new LinkedHashMap<>();
+        int totalAttendance = 0;
+        int totalLate = 0;
+        int totalMembers = 0;
 
         for (AttendanceCode attendanceCode : attendanceCodes) {
             final Event event = attendanceCode.getEvent();
             final Schedule schedule = event.getSchedule();
             final Generation generation = schedule.getGeneration();
 
-            final List<Member> checkedMembers = attendanceService.getByEvent(event).stream()
+            final List<Attendance> attendances = attendanceService.getByEvent(event);
+            final List<Member> checkedMembers = attendances.stream()
                     .map(Attendance::getMember)
                     .collect(Collectors.toList());
+
+            totalAttendance += attendances.stream()
+                    .filter(a -> a.getStatus() == AttendanceStatus.ATTENDANCE)
+                    .count();
+            totalLate += attendances.stream()
+                    .filter(a -> a.getStatus() == AttendanceStatus.LATE)
+                    .count();
 
             for (Platform platform : Platform.values()) {
                 if (!schedule.checkAvailabilityByPlatform(platform)) continue;
 
                 final List<Member> platformMembers =
                         memberService.getAllByPlatformAndGeneration(platform, generation);
+                totalMembers += platformMembers.size();
 
                 final List<Member> notCheckedMembers = new ArrayList<>(platformMembers);
                 notCheckedMembers.removeAll(checkedMembers);
@@ -255,7 +267,9 @@ public class AttendanceFacadeService {
             }
         }
 
-        final String discordContent = buildDiscordContent(notCheckedByPlatform, notiLabel);
+        final int totalAbsent = totalMembers - totalAttendance - totalLate;
+        final String discordContent = buildDiscordContent(
+                notCheckedByPlatform, notiLabel, totalAttendance, totalLate, totalAbsent);
         if (discordContent != null) {
             pushNotiEventPublisher.publishDiscordEvent(new AttendanceDiscordVo(discordContent));
         }
@@ -294,23 +308,31 @@ public class AttendanceFacadeService {
 
     private String buildDiscordContent(
             final Map<Platform, List<Member>> notCheckedByPlatform,
-            final String notiLabel
+            final String notiLabel,
+            final int totalAttendance,
+            final int totalLate,
+            final int totalAbsent
     ) {
         if (notCheckedByPlatform.isEmpty()) return null;
 
         final StringBuilder sb = new StringBuilder();
+        sb.append("---\n");
         sb.append("📋 **출석 현황 알림** (").append(notiLabel).append(" ")
-                .append(leaderNotiBeforeMinutes).append("분 전)\n");
+                .append(leaderNotiBeforeMinutes).append("분 전)\n\n");
 
         for (Platform platform : Platform.values()) {
             final List<Member> members = notCheckedByPlatform.get(platform);
             if (members == null || members.isEmpty()) {
                 sb.append(platform.getName()).append(": ✅ 전원 출석\n");
             } else {
-                sb.append(platform.getName()).append(" (").append(members.size())
-                        .append("명): ").append(formatNames(members)).append("\n");
+                sb.append(platform.getName()).append(" (**").append(members.size())
+                        .append("명**): **").append(formatNames(members)).append("**\n");
             }
         }
+
+        sb.append("\n> 출석 **").append(totalAttendance).append("명**")
+                .append(" / 지각 **").append(totalLate).append("명**")
+                .append(" / 결석 **").append(totalAbsent).append("명**");
 
         return sb.toString();
     }
