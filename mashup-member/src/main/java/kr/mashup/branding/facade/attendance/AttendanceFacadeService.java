@@ -201,7 +201,7 @@ public class AttendanceFacadeService {
     @Scheduled(cron = "0 * * * * *")
     @Transactional(readOnly = true)
     public void sendAttendanceLatePushNotiToLeaders() {
-        sendLeaderPushNoti(findAllEndsWithin(leaderNotiBeforeMinutes), AttendanceLateForLeaderVo::new, "출석 마감");
+        sendLeaderPushNoti(findAllEndsWithin(leaderNotiBeforeMinutes), AttendanceLateForLeaderVo::new, "⏰ 출석 마감");
     }
 
     /**
@@ -210,7 +210,51 @@ public class AttendanceFacadeService {
     @Scheduled(cron = "0 * * * * *")
     @Transactional(readOnly = true)
     public void sendAttendanceAbsentPushNotiToLeaders() {
-        sendLeaderPushNoti(findAllLatenessEndsWithin(leaderNotiBeforeMinutes), AttendanceAbsentForLeaderVo::new, "지각 마감");
+        sendLeaderPushNoti(findAllLatenessEndsWithin(leaderNotiBeforeMinutes), AttendanceAbsentForLeaderVo::new, "⚠️ 지각 마감");
+    }
+
+    /**
+     * 지각 마감 시점: Discord에 최종 출석 결과 발송
+     */
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional(readOnly = true)
+    public void sendAttendanceFinalResultToDiscord() {
+        final List<AttendanceCode> attendanceCodes = findAllLatenessEndsWithin(0L);
+        if (attendanceCodes.isEmpty()) return;
+
+        for (AttendanceCode attendanceCode : attendanceCodes) {
+            final Event event = attendanceCode.getEvent();
+            final Schedule schedule = event.getSchedule();
+            final Generation generation = schedule.getGeneration();
+
+            final List<Attendance> attendances = attendanceService.getByEvent(event);
+            int totalAttendance = (int) attendances.stream()
+                    .filter(a -> a.getStatus() == AttendanceStatus.ATTENDANCE).count();
+            int totalLate = (int) attendances.stream()
+                    .filter(a -> a.getStatus() == AttendanceStatus.LATE).count();
+
+            int totalMembers = 0;
+            final Map<Platform, List<Member>> absentByPlatform = new LinkedHashMap<>();
+            final List<Member> checkedMembers = attendances.stream()
+                    .map(Attendance::getMember).collect(Collectors.toList());
+
+            for (Platform platform : Platform.values()) {
+                if (!schedule.checkAvailabilityByPlatform(platform)) continue;
+                final List<Member> platformMembers =
+                        memberService.getAllByPlatformAndGeneration(platform, generation);
+                totalMembers += platformMembers.size();
+                final List<Member> absent = new ArrayList<>(platformMembers);
+                absent.removeAll(checkedMembers);
+                absentByPlatform.put(platform, absent);
+            }
+
+            final int totalAbsent = totalMembers - totalAttendance - totalLate;
+            final String content = buildDiscordContent(absentByPlatform, "📊 최종 결과",
+                    totalAttendance, totalLate, totalAbsent);
+            if (content != null) {
+                pushNotiEventPublisher.publishDiscordEvent(new AttendanceDiscordVo(content));
+            }
+        }
     }
 
     private void sendLeaderPushNoti(
@@ -317,7 +361,7 @@ public class AttendanceFacadeService {
 
         final StringBuilder sb = new StringBuilder();
         sb.append("---\n");
-        sb.append("📋 **출석 현황 알림** (").append(notiLabel).append(" ")
+        sb.append("**출석 현황 알림** (").append(notiLabel).append(" ")
                 .append(leaderNotiBeforeMinutes).append("분 전)\n\n");
 
         for (Platform platform : Platform.values()) {
