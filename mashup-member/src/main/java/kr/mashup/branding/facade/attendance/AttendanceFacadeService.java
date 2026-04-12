@@ -29,12 +29,12 @@ import kr.mashup.branding.service.attendance.AttendanceCodeService;
 import kr.mashup.branding.service.attendance.AttendanceService;
 import kr.mashup.branding.service.member.MemberService;
 import kr.mashup.branding.service.schedule.ScheduleService;
+import kr.mashup.branding.service.storage.StorageService;
 import kr.mashup.branding.ui.attendance.request.AttendanceCheckRequest;
 import kr.mashup.branding.ui.attendance.response.*;
 import kr.mashup.branding.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,8 +55,8 @@ public class AttendanceFacadeService {
     private final static long ATTENDANCE_END_AFTER_MINUTES = 3;
     private final static double ATTENDANCE_DISTANCE = 1000;
 
-    @Value("${attendance.leader-noti.before-minutes:3}")
-    private long leaderNotiBeforeMinutes;
+    private static final String LEADER_NOTI_BEFORE_MINUTES_KEY = "leader-noti-before-minutes";
+    private static final long DEFAULT_LEADER_NOTI_BEFORE_MINUTES = 3;
 
     private final AttendanceService attendanceService;
     private final MemberService memberService;
@@ -64,6 +64,7 @@ public class AttendanceFacadeService {
     private final AttendanceCodeService attendanceCodeService;
     private final PushNotiEventPublisher pushNotiEventPublisher;
     private final AdminMemberService adminMemberService;
+    private final StorageService storageService;
 
     /**
      * 출석 체크
@@ -201,7 +202,7 @@ public class AttendanceFacadeService {
     @Scheduled(cron = "0 * * * * *")
     @Transactional(readOnly = true)
     public void sendAttendanceLatePushNotiToLeaders() {
-        sendLeaderPushNoti(findAllEndsWithin(leaderNotiBeforeMinutes), AttendanceLateForLeaderVo::new, "⏰ 출석 마감");
+        sendLeaderPushNoti(findAllEndsWithin(getLeaderNotiBeforeMinutes()), AttendanceLateForLeaderVo::new, "⏰ 출석 마감");
     }
 
     /**
@@ -210,7 +211,7 @@ public class AttendanceFacadeService {
     @Scheduled(cron = "0 * * * * *")
     @Transactional(readOnly = true)
     public void sendAttendanceAbsentPushNotiToLeaders() {
-        sendLeaderPushNoti(findAllLatenessEndsWithin(leaderNotiBeforeMinutes), AttendanceAbsentForLeaderVo::new, "⚠️ 지각 마감");
+        sendLeaderPushNoti(findAllLatenessEndsWithin(getLeaderNotiBeforeMinutes()), AttendanceAbsentForLeaderVo::new, "⚠️ 지각 마감");
     }
 
     /**
@@ -393,7 +394,7 @@ public class AttendanceFacadeService {
         }
         sb.append("** | ").append(notiLabel);
         if (deadlineAt != null) {
-            sb.append(" ").append(leaderNotiBeforeMinutes).append("분 전")
+            sb.append(" ").append(getLeaderNotiBeforeMinutes()).append("분 전")
                     .append(" (마감 ").append(String.format("%02d:%02d", deadlineAt.getHour(), deadlineAt.getMinute())).append(")");
         }
         sb.append("\n\n");
@@ -445,6 +446,15 @@ public class AttendanceFacadeService {
             return String.join(", ", nameList.subList(0, 20)) + " 외 " + (nameList.size() - 20) + "명";
         }
         return String.join(", ", nameList);
+    }
+
+    private long getLeaderNotiBeforeMinutes() {
+        try {
+            final Map<String, Object> valueMap = storageService.findByKey(LEADER_NOTI_BEFORE_MINUTES_KEY).getValueMap();
+            return ((Number) valueMap.get("value")).longValue();
+        } catch (Exception e) {
+            return DEFAULT_LEADER_NOTI_BEFORE_MINUTES;
+        }
     }
 
     private List<AttendanceCode> findAllLatenessEndsWithin(Long afterMinutes) {
