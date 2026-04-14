@@ -449,12 +449,9 @@ public class AttendanceFacadeService {
     }
 
     private long getLeaderNotiBeforeMinutes() {
-        try {
-            final Map<String, Object> valueMap = storageService.findByKey(LEADER_NOTI_BEFORE_MINUTES_KEY).getValueMap();
-            return ((Number) valueMap.get("value")).longValue();
-        } catch (Exception e) {
-            return DEFAULT_LEADER_NOTI_BEFORE_MINUTES;
-        }
+        return storageService.findByKeyOptional(LEADER_NOTI_BEFORE_MINUTES_KEY)
+                .map(storage -> ((Number) storage.getValueMap().get("value")).longValue())
+                .orElse(DEFAULT_LEADER_NOTI_BEFORE_MINUTES);
     }
 
     private List<AttendanceCode> findAllLatenessEndsWithin(Long afterMinutes) {
