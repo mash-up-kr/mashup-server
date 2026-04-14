@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -29,6 +30,11 @@ public class StorageService {
     @Transactional(readOnly = true)
     public Storage findByKey(String keyString) {
         return storageRepository.findByKeyString(keyString).orElseThrow(StorageNotFoundException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Storage> findByKeyOptional(String keyString) {
+        return storageRepository.findByKeyString(keyString);
     }
 
     @Transactional(readOnly = true)
