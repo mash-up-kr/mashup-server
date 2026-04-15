@@ -20,6 +20,7 @@ import kr.mashup.branding.domain.pushnoti.vo.AttendanceLateForLeaderVo;
 import kr.mashup.branding.domain.pushnoti.vo.AttendanceStartedVo;
 import kr.mashup.branding.domain.pushnoti.vo.AttendanceStartingVo;
 import kr.mashup.branding.domain.pushnoti.vo.PushNotiSendVo;
+import kr.mashup.branding.domain.pushnoti.vo.SeminarBadgeReminderVo;
 import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleStatus;
@@ -39,6 +40,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -194,6 +196,41 @@ public class AttendanceFacadeService {
                 now.plusMinutes(-PUSH_SCHEDULE_INTERVAL_MINUTES + afterMinutes),
                 now.plusMinutes(afterMinutes)
         );
+    }
+
+    /**
+     * 매시 정각: 당일 오프라인 공식 세미나가 있으면 리더에게 명찰 준비 알림
+     */
+    @Scheduled(cron = "0 0 * * * *")
+    @Transactional(readOnly = true)
+    public void sendSeminarBadgeReminderToLeaders() {
+        final int reminderHour = getSeminarReminderHour();
+        if (LocalDateTime.now().getHour() != reminderHour) return;
+
+        final List<Schedule> todaySchedules = scheduleService.getTodayPublicAllSchedules(LocalDate.now());
+
+        for (Schedule schedule : todaySchedules) {
+            if (schedule.isOnline()) continue;
+
+            final List<Member> leaders = resolveLeadersByPlatform().values().stream()
+                    .flatMap(List::stream)
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            if (leaders.isEmpty()) continue;
+
+            pushNotiEventPublisher.publishPushNotiSendEvent(
+                    new SeminarBadgeReminderVo(leaders, schedule.getName()));
+        }
+    }
+
+    private static final String SEMINAR_REMINDER_HOUR_KEY = "seminar-reminder-hour";
+    private static final int DEFAULT_SEMINAR_REMINDER_HOUR = 10;
+
+    private int getSeminarReminderHour() {
+        return storageService.findByKeyOptional(SEMINAR_REMINDER_HOUR_KEY)
+                .map(storage -> ((Number) storage.getValueMap().get("value")).intValue())
+                .orElse(DEFAULT_SEMINAR_REMINDER_HOUR);
     }
 
     /**

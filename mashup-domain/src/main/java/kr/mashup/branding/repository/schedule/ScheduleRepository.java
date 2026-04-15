@@ -17,6 +17,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Sched
     Optional<Schedule> findByIdAndStatus(Long id, ScheduleStatus status);
 
     List<Schedule> findByGenerationAndStatusOrderByStartedAtAsc(Generation generation, ScheduleStatus status);
+
+    List<Schedule> findAllByStartedAtBetweenAndStatusAndScheduleType(
+            LocalDateTime from, LocalDateTime to, ScheduleStatus status, ScheduleType scheduleType);
 }
 /**
  * Schedule 연관관계
