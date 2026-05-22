@@ -64,6 +64,12 @@ public class ScheduleService {
         return scheduleRepository.findByGenerationAndStatusOrderByStartedAtAsc(generation, status);
     }
 
+    public List<Schedule> getTodayPublicAllSchedules(LocalDate date) {
+        return scheduleRepository.findAllByStartedAtGreaterThanEqualAndStartedAtLessThanAndStatusAndScheduleType(
+                date.atStartOfDay(), date.plusDays(1).atStartOfDay(),
+                ScheduleStatus.PUBLIC, ScheduleType.ALL);
+    }
+
     public Page<Schedule> getByGeneration(Generation generation, String searchWord, ScheduleType scheduleType, ScheduleStatus status, Pageable pageable) {
         return scheduleRepository
                 .retrieveByGenerationAndScheduleType(generation, searchWord, scheduleType, status, pageable);
