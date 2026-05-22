@@ -59,6 +59,8 @@ public class AttendanceFacadeService {
 
     private static final String LEADER_NOTI_BEFORE_MINUTES_KEY = "leader-noti-before-minutes";
     private static final long DEFAULT_LEADER_NOTI_BEFORE_MINUTES = 3;
+    private static final String SEMINAR_REMINDER_HOUR_KEY = "seminar-reminder-hour";
+    private static final int DEFAULT_SEMINAR_REMINDER_HOUR = 10;
 
     private final AttendanceService attendanceService;
     private final MemberService memberService;
@@ -208,24 +210,21 @@ public class AttendanceFacadeService {
         if (LocalDateTime.now().getHour() != reminderHour) return;
 
         final List<Schedule> todaySchedules = scheduleService.getTodayPublicAllSchedules(LocalDate.now());
+        if (todaySchedules.isEmpty()) return;
+
+        final List<Member> leaders = resolveLeadersByPlatform().values().stream()
+                .flatMap(List::stream)
+                .distinct()
+                .collect(Collectors.toList());
+        if (leaders.isEmpty()) return;
 
         for (Schedule schedule : todaySchedules) {
             if (schedule.isOnline()) continue;
-
-            final List<Member> leaders = resolveLeadersByPlatform().values().stream()
-                    .flatMap(List::stream)
-                    .distinct()
-                    .collect(Collectors.toList());
-
-            if (leaders.isEmpty()) continue;
 
             pushNotiEventPublisher.publishPushNotiSendEvent(
                     new SeminarBadgeReminderVo(leaders, schedule.getName()));
         }
     }
-
-    private static final String SEMINAR_REMINDER_HOUR_KEY = "seminar-reminder-hour";
-    private static final int DEFAULT_SEMINAR_REMINDER_HOUR = 10;
 
     private int getSeminarReminderHour() {
         return storageService.findByKeyOptional(SEMINAR_REMINDER_HOUR_KEY)

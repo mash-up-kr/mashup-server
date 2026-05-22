@@ -65,7 +65,7 @@ public class ScheduleService {
     }
 
     public List<Schedule> getTodayPublicAllSchedules(LocalDate date) {
-        return scheduleRepository.findAllByStartedAtBetweenAndStatusAndScheduleType(
+        return scheduleRepository.findAllByStartedAtGreaterThanEqualAndStartedAtLessThanAndStatusAndScheduleType(
                 date.atStartOfDay(), date.plusDays(1).atStartOfDay(),
                 ScheduleStatus.PUBLIC, ScheduleType.ALL);
     }
