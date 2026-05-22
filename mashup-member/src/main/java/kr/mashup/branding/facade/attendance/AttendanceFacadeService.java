@@ -23,6 +23,7 @@ import kr.mashup.branding.domain.pushnoti.vo.PushNotiSendVo;
 import kr.mashup.branding.domain.schedule.Event;
 import kr.mashup.branding.domain.schedule.Schedule;
 import kr.mashup.branding.domain.schedule.ScheduleStatus;
+import kr.mashup.branding.domain.schedule.ScheduleType;
 import kr.mashup.branding.infrastructure.pushnoti.PushNotiEventPublisher;
 import kr.mashup.branding.service.adminmember.AdminMemberService;
 import kr.mashup.branding.service.attendance.AttendanceCodeService;
@@ -226,6 +227,9 @@ public class AttendanceFacadeService {
         for (AttendanceCode attendanceCode : attendanceCodes) {
             final Event event = attendanceCode.getEvent();
             final Schedule schedule = event.getSchedule();
+
+            if (schedule.getScheduleType() != ScheduleType.ALL) continue;
+
             final Generation generation = schedule.getGeneration();
 
             final List<Attendance> attendances = attendanceService.getByEvent(event);
@@ -291,6 +295,9 @@ public class AttendanceFacadeService {
         for (AttendanceCode attendanceCode : attendanceCodes) {
             final Event event = attendanceCode.getEvent();
             final Schedule schedule = event.getSchedule();
+
+            if (schedule.getScheduleType() != ScheduleType.ALL) continue;
+
             final Generation generation = schedule.getGeneration();
             scheduleName = schedule.getName();
             eventName = event.getEventName();
