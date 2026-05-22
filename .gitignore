@@ -36,3 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 /mashup-domain/src/main/generated/
+
+### Claude Code ###
+CLAUDE.local.md
+.serena/

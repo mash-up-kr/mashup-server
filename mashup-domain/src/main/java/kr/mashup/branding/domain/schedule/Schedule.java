@@ -159,7 +159,7 @@ public class Schedule extends BaseEntity {
     }
 
     public Boolean isOnline() {
-        return this.location == null || this.location.getLatitude() == null || this.location.getLongitude() == null;
+        return this.location == null || "ZOOM".equals(this.location.getDetailAddress());
     }
 
     public Boolean checkAvailabilityByPlatform(Platform platform) {
