@@ -3,6 +3,8 @@ services:
   nginx:
     container_name: 'nginx'
     image: nginx
+    # certbot이 갱신한 인증서를 반영하도록 6시간마다 reload
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     ports:
       - 80:80
       - 443:443
@@ -18,7 +20,7 @@ services:
         awslogs-stream: nginx
   certbot:
     container_name: 'certbot'
-    image: certbot/certbot:v0.36.0
+    image: certbot/certbot:latest
     volumes:
       - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/www:/var/www/certbot
